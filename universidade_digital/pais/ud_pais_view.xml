@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+		País
+		-->
+
+        <record id="view_pais_tree" model="ir.ui.view">
+            <field name="name">ud.pais.tree</field>
+            <field name="model">ud.pais</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="País">
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_pais_form" model="ir.ui.view">
+            <field name="name">ud.pais.form</field>
+            <field name="model">ud.pais</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="País">
+                    <field name="name" select="1"/>
+                    <field name="code" select="1"/>
+                     <field name="address_format" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pais" model="ir.actions.act_window">
+            <field name="name">Paises</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.pais</field>
+            <field name="view_type">form</field>
+            <field name="help">Mostra e gerencia uma lista de todos os países.</field>
+        </record>
+
+<!--         <menuitem id="menu_localisation" name="Localisation" parent="menu_config_address_book" sequence="1"/>
+
+        <menuitem action="action_country" id="menu_country_partner" parent="menu_localisation" sequence="0"/>
+ -->
+
+
+        <!--
+          State
+        -->
+
+        <record id="view_pais_estado_tree" model="ir.ui.view">
+            <field name="name">ud.pais.estado.tree</field>
+            <field name="model">ud.pais.estado</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Estado">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="pais_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_pais_estado_form" model="ir.ui.view">
+            <field name="name">ud.pais.estado.form</field>
+            <field name="model">ud.pais.estado</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Estado">
+                    <field name="pais_id" select="1"/>
+                    <field name="name" select="1"/>
+                    <field name="code" select="1"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pais_estado" model="ir.actions.act_window">
+            <field name="name">Estado</field>
+            <field name="res_model">ud.pais.estado</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+        </record>
+        
+<!-- 
+          <menuitem action="action_country_state" id="menu_country_state_partner" parent="menu_localisation" sequence="1"/>
+ -->
+    </data>
+</openerp>
