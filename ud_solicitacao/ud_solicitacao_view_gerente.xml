@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- Menu Inicial -->
+<openerp>
+	<data>
+		<record id="ud_solicitacao_action_gerente" model="ir.actions.act_window">
+			<field name="name">Solicitações</field>
+			<field name="res_model">ud.solicitacao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<!--Visualização de cadastro de responsável -->
+		
+		<record id="ud_solicitacao_responsavel_form" model="ir.ui.view">
+			<field name="name"> Cadastrar Responsável </field>
+			<field name="model">ud.solicitacao.responsavel</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Cadastrar Responsável" version="7.0">
+					<sheet>
+						<group>
+							<field name="responsavel_id"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record id="ud_solicitacao_responsavel_tree" model="ir.ui.view">
+			<field name="name">Cadastrar Responsável</field>
+			<field name="model">ud.solicitacao.responsavel</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Cadastrar Responsável">
+					<field name="responsavel_id"/>
+				</tree>
+			</field>
+		</record>
+		<record id="ud_solicitacao_cadastro_responsavel" model="ir.actions.act_window">
+			<field name="name">Cadastrar Responsável</field>
+			<field name="res_model">ud.solicitacao.responsavel</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem string="Solicitações" action="ud_solicitacao_action_gerente" 
+		id="gerente" parent="solicitacao_top" groups="base.gerente_os"/>
+		
+		<menuitem string="Cadastrar Responsável" action="ud_solicitacao_cadastro_responsavel"
+		 id="cadastra_responsavel" parent="solicitacao_top" groups="base.gerente_os"/>
+	</data>
+</openerp>

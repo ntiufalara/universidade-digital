@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ud_solicitacao_solicitante,ud_solicitacao.solicitante,ud_solicitacao.model_ud_solicitacao,base.solicitante_os,1,1,1,0
+access_ud_solicitacao_solicitante_polo,ud_solicitacao.solicitante_polo,ud.model_ud_polo,base.solicitante_os,1,0,0,0
+access_ud_solicitacao_solicitante_campus,ud_solicitacao.solicitante_campus,ud.model_ud_campus,base.solicitante_os,1,0,0,0
+access_ud_solicitacao_solicitante_espaco,ud_solicitacao.solicitante_espaco,ud.model_ud_espaco,base.solicitante_os,1,0,0,0
+access_ud_solicitacao_gerente,ud_solicitacao.gerente,ud_solicitacao.model_ud_solicitacao,base.gerente_os,1,1,1,1
+access_ud_solicitacao_gerente_polo,ud_solicitacao.gerente_polo,ud.model_ud_polo,base.gerente_os,1,0,0,0
+access_ud_solicitacao_gerente_campus,ud_solicitacao.gerente_campus,ud.model_ud_campus,base.gerente_os,1,0,0,0
+access_ud_solicitacao_gerente_employee,access_ud_solicitacao_gerente_employee,ud.model_ud_employee,base.gerente_os,1,0,0,0
+access_ud_solicitacao_gerente_espaco,ud_solicitacao.gerente_espaco,ud.model_ud_espaco,base.gerente_os,1,0,0,0
+access_ud_solicitacao_gerente_responsavel,ud_solicitacao.gerente_responsavel,ud_solicitacao.model_ud_solicitacao_responsavel,base.gerente_os,1,1,1,1
+access_ud_solicitacao_responsavel,ud_solicitacao.responsavel,ud_solicitacao.model_ud_solicitacao,base.responsavel_os,1,1,1,0
+access_ud_solicitacao_responsavel_polo,ud_solicitacao.responsavel_polo,ud.model_ud_polo,base.responsavel_os,1,0,0,0
+access_ud_solicitacao_responsavel_campus,ud_solicitacao.responsavel_campus,ud.model_ud_campus,base.responsavel_os,1,0,0,0
+access_ud_solicitacao_responsavel_espaco,ud_solicitacao.responsavel_espaco,ud.model_ud_espaco,base.responsavel_os,1,0,0,0

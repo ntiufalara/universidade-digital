@@ -1,0 +1,363 @@
+.openerp .oe_application{
+	padding-top: 70px !important;
+}
+/* Classes OpenERP */
+.oe_user_menu {
+	height: 69px !important;
+}
+.openerp .oe_topbar {
+	position: fixed;
+	top: 0;
+	height: 69px !important;
+	z-index: 1;
+	box-shadow: 1px 1px 5px #000;
+	border: none !important;
+}
+.openerp .oe_topbar .oe_topbar_avatar {
+	display: none;
+}
+.oe_logo {
+	width: 500px;
+}
+.openerp .oe_topbar {
+	background: -moz-linear-gradient(top, rgba(0,35,96,0.8) 15%, rgba(0,35,96,0.85) 35%, rgba(19,18,91,0.96) 80%, rgba(19,18,91,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(15%,rgba(0,35,96,0.8)), color-stop(35%,rgba(0,35,96,0.85)), color-stop(80%,rgba(19,18,91,0.96)), color-stop(99%,rgba(19,18,91,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc002360', endColorstr='#13125b',GradientType=0 ); /* IE6-9 */
+}
+
+.openerp .oe_systray, .openerp .oe_user_menu, .openerp .oe_user_menu img{
+	position: absolute;
+	top: 0;	
+}
+.openerp .oe_user_menu {
+	right: 5px;
+	padding-top: 25px !important;
+}
+.openerp .oe_systray {
+	right: 120px;
+	padding-top: 23px !important;
+}
+.openerp .oe_dropdown_menu {
+	margin-top: 38px;
+}
+.openerp .oe_form_dropdown_section .oe_dropdown_menu {
+	margin-top: 18px;
+}
+.openerp .oe_form header ul li{
+	padding: 5px 10px !important;
+}
+.openerp .ui-dialog-content .oe_view_manager,
+.openerp .oe_form_field_one2many .oe_view_manager {
+	position: relative;
+	margin: 0 !important;
+}
+.openerp .oe_user_menu img{
+	right: 120px;
+	margin-top: 15px !important;
+	height: 50px !important;
+	width: auto !important;
+}
+.openerp .oe_menu {
+	position: absolute;
+	max-width: 100%;
+	margin-left: 200px;
+	background: rgba(0,0,0,0.5);
+}
+.openerp .oe_menu, .openerp .oe_menu li, .openerp .oe_menu li a {
+	height: 10px !important;
+}
+.openerp .oe_menu > li > a > span {
+	position: relative;
+	top: 5px;
+	color: #000;
+}
+.oe_secondary_menu_section {
+	color: #ffffff!important;
+	font-size: 13pt;
+	font-weight: bolder;
+	text-shadow: 1px 1px 1px #000;
+}
+.openerp .oe_secondary_submenu .oe_menu_text {
+	color: #FFF;
+	text-shadow: none;
+}
+.openerp .oe_leftbar {
+	position: absolute;
+	max-width: 200px;
+	border-radius: 0 0 30px 0;
+	margin-top: 70px !important;
+	background: -moz-linear-gradient(top, rgba(0,35,96,0.8) 15%, rgba(0,35,96,0.85) 35%, rgba(19,18,91,0.96) 80%, rgba(19,18,91,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(15%,rgba(0,35,96,0.8)), color-stop(35%,rgba(0,35,96,0.85)), color-stop(80%,rgba(19,18,91,0.96)), color-stop(99%,rgba(19,18,91,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc002360', endColorstr='#13125b',GradientType=0 ); /* IE6-9 */
+}
+.openerp .oe_import {
+	margin-left: 200px !important;
+}
+.openerp .oe_import .oe_view_manager {
+	margin: 35px 0;
+	
+}
+
+/* 
+ 
+ CSS incluindo itens do Bootstrap nos formulários
+ 
+ */
+
+input::-moz-placeholder {
+  color: #999;
+  opacity: 1;
+}
+input:-ms-input-placeholder {
+  color: #999;
+}
+input::-webkit-input-placeholder {
+  color: #999;
+}
+input[disabled],
+input[readonly],
+fieldset[disabled] input {
+  cursor: not-allowed;
+  background-color: #eee;
+  opacity: 1;
+}
+
+.openerp .oe_form .oe_form_field {
+    min-height: 40px;
+    padding-top: 0 !important;
+}
+.form-login li input,
+.openerp .oe_form input[type="text"], 
+.openerp .oe_form input[type="password"], 
+.openerp .oe_form input[type="file"], 
+.openerp .oe_form select {
+	min-height: 40px;
+}
+
+.openerp .oe_form td 
+.oe_form_group_cell_label {
+	
+}
+
+.openerp .oe_form .oe_form_required input:not([disabled]):not([readonly]), 
+.openerp .oe_form .oe_form_required select:not([disabled]):not([readonly]),
+.openerp .oe_form .oe_form_required textarea:not([disabled]):not([readonly]) 
+{
+		background-color: transparent !important;
+        border-color: #66afe9;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.openerp .oe_list_content > tbody > tr:nth-child(2n+1) {
+	background: #FFF;
+}
+.openerp .oe_list_content > tfoot {
+	display: none;
+}
+.openerp .oe_view_manager table.oe_view_manager_header{
+	background: transparent;
+}
+.form-login li button,
+.openerp a.button:link,
+.openerp a.button:visited,
+.openerp button,
+.openerp .oe_button,
+.openerp input[type="submit"]
+{
+	font-weight: normal;
+	font-size: 12;
+	padding: 8px 15px;
+}
+.oe_kanban_action_button {
+	height: 36px !important;
+}
+.form-login li button,
+.openerp button.oe_highlight {
+	transition: all 2s ease 2s;
+	background:rgba(0, 0, 138, 1);
+}
+.form-login li button,
+.openerp button.oe_highlight:hover {
+	background:rgba(0, 0, 138, 1);
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+			box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.openerp .oe_view_manager {
+	width: 75%;
+	margin-left: 200px;
+	margin-top: 40px;
+	margin-right: auto;
+}
+.openerp .oe_searchview  {
+	max-width: 100%;
+}
+.openerp .oe_list_content {
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	-webkit-box-shadow: 1px 1px 5px #000;
+	box-shadow: 1px 1px 5px #000;
+}
+
+.openerp .oe_list_content tr th,
+.openerp .oe_list_content tr td
+{
+	padding: 10px 3px !important;
+	text-align: center;
+}
+.oe_list_header_columns div{
+	height: 30px;
+}
+.modal-header {
+	min-height: 60px !important;
+}
+.modal-title {
+	display: none;
+}
+.form-login li input:focus,
+input:focus, 
+.openerp .oe_form .oe_form_required input:not([disabled]):not([readonly]):focus, 
+.openerp .oe_form .oe_form_required select:not([disabled]):not([readonly]):focus,
+.openerp .oe_form .oe_form_required textarea:not([disabled]):not([readonly]):focus 
+{
+	border-color: rgba(60, 228, 27, 1);
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(60, 228, 27, 1);
+			box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(60, 228, 27, 1);
+}
+.openerp .oe_login {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background: -moz-linear-gradient(top, rgba(0,35,96,0.8) 15%, rgba(0,35,96,0.85) 35%, rgba(19,18,91,0.96) 80%, rgba(19,18,91,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(15%,rgba(0,35,96,0.8)), color-stop(35%,rgba(0,35,96,0.85)), color-stop(80%,rgba(19,18,91,0.96)), color-stop(99%,rgba(19,18,91,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc002360', endColorstr='#13125b',GradientType=0 ); /* IE6-9 */
+}
+.openerp .oe_login .oe_login_logo {
+	margin-left: -35px;
+}
+.oe_login_pane {
+	background: none !important;
+	box-shadow: 0 0 8px #FFF !important;
+	min-height: 270px;
+}
+.oe_form_field_many2many .oe_list_content{
+	margin: 0 !important;
+	width: 100% !important;	
+}
+.openerp .oe_form_field_many2many  .oe_list_content tr th, .openerp .oe_form_field_many2many .oe_list_content tr td{
+	text-align: left;
+}
+.openerp .oe_application .oe_form_sheet button{
+	float: left !important;
+}
+
+/* Minhas Classes */
+.img-logo {
+	background: url(../img/logo.png) no-repeat;
+	margin-top: 10px !important;
+	margin-left: 10px;
+	height: 65px !important;
+	width: 500px;
+}
+.menu-principal {
+	background: -moz-linear-gradient(top, rgba(0,35,96,0.8) 15%, rgba(0,35,96,0.85) 35%, rgba(19,18,91,0.96) 80%, rgba(19,18,91,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(15%,rgba(0,35,96,0.8)), color-stop(35%,rgba(0,35,96,0.85)), color-stop(80%,rgba(19,18,91,0.96)), color-stop(99%,rgba(19,18,91,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(0,35,96,0.8) 15%,rgba(0,35,96,0.85) 35%,rgba(19,18,91,0.96) 80%,rgba(19,18,91,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc002360', endColorstr='#13125b',GradientType=0 ); /* IE6-9 */
+	border-radius: 0 0 20px 70px;
+	padding: 10px;
+	z-index: 1;
+	position: absolute;
+	top: 69px;
+	min-height: 500px;
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 80%;
+	display: none;
+}
+.menu-principal h2 {
+	color: #FFF;
+}
+#botao-menu-opcoes {
+	position: absolute;
+	top: 33px;
+	left: 500px;
+}
+#botao-menu-opcoes span{
+	color: #FFF;
+	font-size: 15px;
+	font-weight: bolder;
+	z-index: 0;
+}
+#botao-menu-opcoes span:hover{
+	color: #FFF;
+	text-shadow: 1px 1px 1px #000;
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+			box-shadow: inset 1px 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+#botao-fechar {
+	color: white;
+	background: red;
+	border-radius:  5px 0 0 5px;
+	padding: 5px 10px;
+	position: absolute;
+	top: 4px;
+	right: 0;
+}
+.form-login li input {
+	color: black;
+	font-size: 15pt;
+	border-radius: 5px !important;
+}
+.form-login li button {
+	background: rgb(30,87,153)!important; /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(30,87,153,1) 0%, rgba(41,137,216,1) 50%, rgba(32,124,202,1) 51%, rgba(52,152,229,1) 100%) !important; /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(50%,rgba(41,137,216,1)), color-stop(51%,rgba(32,124,202,1)), color-stop(100%,rgba(52,152,229,1))) !important; /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(52,152,229,1) 100%) !important; /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(52,152,229,1) 100%) !important; /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(52,152,229,1) 100%) !important; /* IE10+ */
+	background: linear-gradient(to bottom, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(52,152,229,1) 100%) !important; /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#3498e5',GradientType=0 ) !important; /* IE6-9 */
+	margin-top: 10px !important;
+	width: 100%;
+	height: 50px !important;
+}
+.db-form {
+	position: absolute !important;
+	top: 70px !important;
+	width: 50% !important;
+}
+.data input, .data-ano input, .numero input{
+	width: 80px !important;
+}
+.telefone input {
+	width: 110px !important;
+}
+.half-screem {
+	width: 50% !important;
+}
+.botoes-direita button {
+	float: right;
+}
+/*Bootstrap*/

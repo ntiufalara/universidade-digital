@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<openerp>
+	<data>
+		<record id="aprovar_form" model="ir.ui.view">
+			<field name="name">Encaminhar para Execução</field>
+			<field name="model">aprovar.wiz</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Encaminhar para execução" version="7.0">
+                	<group>
+                		<group>
+                			<field name="previsao" colspan="2"/>
+                		</group>
+                	</group>
+					<footer>
+                		<group>
+                			<button string="Encaminhar" name="aprovar" type="object"/>
+                		</group>
+                	</footer>
+				</form>
+			</field>
+		</record>
+		
+		<record id="aprovar_action0" model="ir.actions.act_window">
+			<field name="name">Encaminhar para Execução</field>
+			<field name="res_model">aprovar.wiz</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="aprovar_form"/>
+			<field name="target">new</field>
+			<field name="multi">True</field>
+		</record>
+<!--
+        <record model="ir.values" id="atribuir_item">
+            <field name="name">Atribuir Responsável</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('atribuir_action0'))" />
+            <field name="key">action</field>
+            <field name="model">ud.solicitacao</field>
+        </record>
+        	-->
+	</data>
+</openerp>

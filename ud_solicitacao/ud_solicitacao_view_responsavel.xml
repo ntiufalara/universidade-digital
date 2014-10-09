@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- Menu Inicial -->
+<openerp>
+	<data>
+		<record id="ud_solicitacao_action_responsavel" model="ir.actions.act_window">
+			<field name="name">Solicitações Pendentes</field>
+			<field name="res_model">ud.solicitacao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state','in',['atribuida', 'aprovada','execucao','finalizada'] )]</field>
+		</record>
+
+		<menuitem string="Solicitações Pendentes" action="ud_solicitacao_action_responsavel" 
+		id="menu_responsavel" parent="solicitacao_top" groups="base.responsavel_os"/>
+	</data>
+</openerp>
