@@ -213,8 +213,8 @@ fieldset[disabled] input {
 .openerp .oe_list_content tr th,
 .openerp .oe_list_content tr td
 {
-	padding: 10px 3px !important;
-	text-align: center;
+	padding: 10px 4px !important;
+	text-align: left;
 }
 .oe_list_header_columns div{
 	height: 30px;

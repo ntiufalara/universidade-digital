@@ -79,13 +79,29 @@ class ud_nova_solicitacao (osv.osv):
     def busca_dados (self, cr, uid, ids, field, args, context):
         dados = self.browse(cr, uid, ids, context)[0]
         if field == "matricula":
-            return {dados.id:str(self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].matricula)}
+            if self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].matricula != None:
+                return {dados.id:self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].matricula}
+            else:
+                raise except_orm(u"Matrícula não encontrada", u"Pessoa não possui nenhuma matrícula")
         elif field == "telefone":
-            return {dados.id:str(self.browse(cr, uid, ids, context)[0].solicitante_id.mobile_phone or self.browse(cr, uid, ids, context)[0].solicitante_id.work_phone)}
+            if self.browse(cr, uid, ids, context)[0].solicitante_id.mobile_phone != None:
+                return {dados.id:self.browse(cr, uid, ids, context)[0].solicitante_id.mobile_phone}
+            elif self.browse(cr, uid, ids, context)[0].solicitante_id.work_phone != None:
+                return {dados.id : self.browse(cr, uid, ids, context)[0].solicitante_id.work_phone }
+            else:
+                raise except_orm(u"Telefone não encontrado", u"É necessário ao menos um telefone cadastrado")
         elif field == "setor_id":
-            return {dados.id:str(self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_setores.name) or str(self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_cursos.name)}
+            if self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_setores.name != None:
+                return {dados.id:self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_setores.name}
+            elif self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_cursos.name != None:
+                return {dados.id : self.browse(cr, uid, ids, context)[0].solicitante_id.papel_ids[0].ud_cursos.name}
+            else:
+                raise except_orm(u"Setor não encontrado", u"Pessoa está vinculada a nenhum setor")
         elif field == "email":
-            return {dados.id:str(self.browse(cr, uid, ids, context)[0].solicitante_id.work_email)}
+            if self.browse(cr, uid, ids, context)[0].solicitante_id.work_email != None:
+                return {dados.id:self.browse(cr, uid, ids, context)[0].solicitante_id.work_email}
+            else:
+                raise except_orm(u"E-mail não encontrado", u"É necessário existir um e-mail cadastrado")
     
     def limpa_mnt (self, cr, uid, ids):
         '''
