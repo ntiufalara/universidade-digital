@@ -13,7 +13,7 @@
                 <form string="Solicitação" version="7.0">
                 	<header class="botoes-direita">
                 		<button string="Para Análise" states="nova" type="action" name="ud_solicitacao.atribuir_action0" groups="base.gerente_os"/>
-                		<button string="Encaminhar para execução" states="atribuida" type="action" name="ud_solicitacao.aprovar_action0" groups="base.gerente_os"/>
+                		<button string="Encaminhar para execução" states="atribuida" type="action" name="ud_solicitacao.aprovar_action0" groups="base.gerente_os,base.responsavel_os"/>
                 		<button string="Executar Solicitação" states="aprovada" type="action" name="ud_solicitacao.executar_wiz_action" groups="base.gerente_os"/>
                 		<button string="Finalizar Solicitação" states="execucao" type="action" name="ud_solicitacao.finalizar_wiz_action" groups="base.gerente_os"/>
                 		<button string="Cancelar Solicitação" states="nova" type="action" name="ud_solicitacao.cancelar_wiz_action"/>

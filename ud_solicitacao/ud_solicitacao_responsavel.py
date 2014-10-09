@@ -1,6 +1,6 @@
 #coding:utf8
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 
 
 class ud_solicitacao_responsavel (osv.osv):
