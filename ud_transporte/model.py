@@ -208,9 +208,11 @@ class transporte_solicitacao(osv.osv):
     _description = 'Solicitacao'
     
     conta_passageiros = lambda self, cr, uid, ids, field, args, context: self._conta_passageiros(cr, uid, ids,field,args, context)
+    busca_telefone = lambda self, cr, uid, ids, field, args, context: self.recupera_telefone( cr, uid, ids, field, args, context)
+    busca_email =  lambda self,cr, uid, ids, field, args, context: self.recupera_email(cr, uid, ids, field, args, context)
     
     _columns = {
-                'solicitante':fields.many2one('ud.employee',u'Solicitante',required=True,change_default=True, readonly=True),  
+                'solicitante':fields.many2one('ud.employee',u'Solicitante',required=True,change_default=True),  
                 'state':fields.selection([
                       ('aguardando','Aguardando'),
                       ('deferido','Deferido'),
@@ -219,8 +221,8 @@ class transporte_solicitacao(osv.osv):
                                           ],
                       'Status', required=True),
                 'data_hora_saida':fields.datetime(u'Data de saída', required=True),
-                'solicitante_email': fields.char('E-mail', size=240, change_default=True, readonly=True),
-                'solicitante_telefone': fields.char('Telefone', size=10, required=True, change_default=True, readonly=True),
+                'solicitante_email': fields.function(busca_email,  string='E-mail', type="char",method=True),
+                'solicitante_telefone': fields.function(busca_telefone, string='Telefone', type="char",method=True),
                 'data_hora_chegada':fields.datetime(u'Previsão de chegada', required=True),
                 'estado_saida':fields.selection([('ac', 'AC'), ('al', 'AL'), ('ap', 'AP'), ('am', 'AM'), ('ba','BA'), ('ce','CE'), ('df','DF'), ('es','ES'), ('go','GO'), ('ma','MA') , ('mg','MG'), ('ms','MS'), ('mt','MT'), ('pa','PA'), ('pe','PE'), ('pi','PI'), ('pr','PR'), ('rj','RJ'), ('rn','RN'), ('ro','RO'), ('rr','RR'), ('rs', 'RS'), ('sc','SC'), ('se','SE'), ('sp','SP'), ('to', 'TO')], 'Estado', required=True),
                 'cidade_saida':fields.char( "Cidade", required=True),
@@ -240,14 +242,14 @@ class transporte_solicitacao(osv.osv):
     _defaults = {  
         'state': lambda *a: 'aguardando',
         'solicitante': lambda self,cr,uid,context: self.recupera_usuario(cr,uid,context),
-        'solicitante_telefone': lambda self,cr,uid,context: self.recupera_telefone(cr,uid,context),
-        'solicitante_email': lambda self,cr,uid,context: self.recupera_email(cr,uid,context),
+        #'solicitante_telefone': lambda self,cr,uid,context: self.recupera_telefone(cr,uid,context),
+        #'solicitante_email': lambda self,cr,uid,context: self.recupera_email(cr,uid,context),
         }
     
     def onchange_passageiros (self, cr, uid, ids, passageiros):
-        return {"value": {"qtd_passageiros": len(passageiros)}}
+        return {"value": {"qtd_passageiros": len(passageiros[0][2])}}
     
-    def _conta_passageiros (self, cr, uid, ids,field,args, context):
+    def _conta_passageiros (self,  cr, uid, ids, field, args, context):
         dados = self.browse(cr, uid, ids, context)[0]
         return {dados.id : len(dados.passageiros)}
     
@@ -282,10 +284,11 @@ class transporte_solicitacao(osv.osv):
         else:
             raise except_orm("Pessoa não localizada".decode("UTF-8"), "Não há pessoa associada a esse usuário".decode("UTF-8"))
         
-    def recupera_telefone (self, cr, uid, c):
+    def recupera_telefone (self, cr, uid, ids, field, args, context):
         '''
         Retorna o telefone cadastrado
         '''
+        dados = self.browse(cr, uid, ids, context)[0]
         cr.execute('''SELECT 
                           ud_employee.mobile_phone
                         FROM 
@@ -299,14 +302,15 @@ class transporte_solicitacao(osv.osv):
         telefone = cr.fetchone()
         if telefone:
             if telefone[0] != None:
-                return telefone[0]
+                return {dados.id : telefone[0]}
         else:
             raise except_orm("Pessoa não possui telefone".decode("UTF-8"), "É necessário possuir um telefone cadastrado para realizar solicitações".decode("UTF-8"))
         
-    def recupera_email (self, cr, uid, c):
+    def recupera_email (self, cr, uid, ids, field, args, context):
         '''
         Retorna o email do usuário atual
         '''
+        dados = self.browse(cr, uid, ids, context)[0]
         cr.execute('''SELECT 
                           ud_employee.work_email
                         FROM 
@@ -320,7 +324,7 @@ class transporte_solicitacao(osv.osv):
         email = cr.fetchone()
         if email:
             if email[0] != None:
-                return email[0]
+                return {dados.id : email[0]}
         else:
             raise except_orm("Pessoa não possui e-mail".decode("UTF-8"), "É necessário que a pessoa tenha um email cadastrado para realizar solicitações".decode("UTF-8"))
         
@@ -346,10 +350,9 @@ class transporte_solicitacao(osv.osv):
         '''
         Função: Verifica se a data de chegada é posterior a data de saída
         '''
-        obj_solicitacao0 = self.read(cr,uid,ids,context=context)
-        obj_solicitacao = obj_solicitacao0[0]
-        solicitante_data_hora_chegada = obj_solicitacao["data_hora_chegada"]
-        solicitante_data_hora_saida = obj_solicitacao["data_hora_saida"]
+        obj_solicitacao = self.browse(cr,uid,ids,context=context)[0]
+        solicitante_data_hora_chegada = obj_solicitacao.data_hora_chegada
+        solicitante_data_hora_saida = obj_solicitacao.data_hora_saida
         dataSaidaOrdinal = self.converteData(solicitante_data_hora_saida)
         dataChegadaOrdinal = self.converteData(solicitante_data_hora_chegada)
         if (dataChegadaOrdinal <= dataSaidaOrdinal):
@@ -370,8 +373,8 @@ class passageiro (osv.osv):
     _columns = {
                 'name':fields.char('Nome', required=True),
                 'telefone':fields.char('Telefone', required=True),
-                'cpf':fields.char('CPF'),
-                'rg':fields.char('RG'), 
+                'cpf':fields.char('CPF', required=True),
+                'rg':fields.char('RG', required=True), 
                 }
     
 class viagem (osv.osv):

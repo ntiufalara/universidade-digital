@@ -33,8 +33,8 @@
 								<field name="solicitante" />
 							</group>
 							<group>
-								<field name="solicitante_telefone"  class="work_phone" />
-								<field name="solicitante_email" />
+								<field name="solicitante_telefone" attrs="{'invisible' : [('solicitante_telefone','=',False)]}"  class="work_phone" />
+								<field name="solicitante_email" attrs="{'invisible' : [('solicitante_email','=',False)]}"/>
 							</group>
 						</group>
 						<group>
@@ -51,7 +51,7 @@
 							</group>
 						</group>
 						<label for="qtd_passageiros" string="Quantidade de passageiros" />
-						<field name="qtd_passageiros"/>
+						<field name="qtd_passageiros" />
 						<p>Obs: Para uma quantidade de passageiros maior que 5 é necessário inserir CPF e RG de todos os passageiros</p>
 						<label string="Passageiros"/>
 						<field name="passageiros" on_change="onchange_passageiros(passageiros)" nolabel="1" />
