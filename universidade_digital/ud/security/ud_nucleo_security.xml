@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+	<data noupdate="0">
+	    <record model="ir.module.category" id="base.module_category_ud">
+		    <field name="name">Adminstrador Núcleo UD</field>
+		</record>
+		<record id="base.admin_ud" model="res.groups">
+			<field name="name">Permitir Acesso</field>
+			<field name="category_id" ref="base.module_category_ud"/>
+		</record>
+		
+	</data>
+</openerp>

@@ -198,9 +198,12 @@
 	            <page string="Detalhes">           	
 	            	 <group colspan="2" col="5" >           		                	               		
 	                	<field name="name" colspan="2" />
+	                	<field name="sigla" colspan="2"/>
 	                	<separator orientation="vertical" />
+	                	
 	                	<field name="is_active" />
 	                	<field name="polo_id" colspan="2"/>
+	                	
 	                 </group>
 	                <newline/>
 	                	<separator string="Outras informações" colspan="4"/>
@@ -222,6 +225,7 @@
                     <field name="name" />
                     <field name="polo_id"/>
                     <field name="descricao"/>
+                    <field name="sigla"/>
                     <field name="is_active" />
                     
                 </tree>
@@ -236,9 +240,10 @@
                 <search string="Setor">
                     <field name="name"/>
                     <newline />
-                    <group expand="0" string="Grupo por...">
+                    <group expand="0" string="Filtrar por...">
 	                    <filter string="Nome" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
 	                    <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+	                    <filter string="Sigla" icon="terp-personal" domain="[]" context="{'group_by':'sigla'}"/>
 	                    <filter string="Ativo" icon="terp-personal" domain="[]" context="{'group_by':'is_active'}"/>	                    
                     </group>
                 </search>
@@ -391,15 +396,16 @@
                 <form string="Employee" version="7.0">                              
                     <group colspan="4" col="8">
                         <group colspan="6" col="6">
-                        <field colspan="6" name="name" />
+                        <field colspan="6" name="name" string="Nome"/>
+                        <field colspan="6" name="login" string="Login" groups="base.admin_ud"/>
+                        <field name="new_password" password="True" string="Senha" required="1"/>
+                        <field name="confirm_senha" password="True"/>
+                                               
                         
-                        <field name="active" groups="base.group_extended"/>
-                        
-                       <field name="user_id"/>
                         <newline/>
                         </group>
                         <group colspan="2" col="1">
-                          <field name="photo" widget='image' nolabel="1"/>
+                          <field name="image" widget='image' nolabel="1" class="oe_left oe_avatar"/>
                         </group>
                     </group>
                     <notebook colspan="6">
@@ -421,8 +427,8 @@
                             <group col="4" colspan="6">
 	                            <separator string="Outras informações" colspan="6"/>
    	                            <group col="2" colspan="2" >
-   	                                <field name="endereco"/>
-	                                <field name="endereco_com" colspan="2"/>
+   	                                <field name="rua"/>
+	                                <field name="cidade" colspan="2"/>
 	                                
 	                                <field name="bairro" />
 	                                <field name="estado"/>
@@ -430,7 +436,8 @@
 	                            <group col="2" colspan="2">
 	                            	<field name="work_phone" class="work_phone"/>
 	                                <field name="mobile_phone" class="mobile_phone"/>
-	                                <field name="work_email" />	                                	                             
+	                                <field name="work_email" widget="email"/>
+	                                <field name="polo_id"/>	                                	                             
 	                            </group>
 	                        </group>
                         </page>
@@ -439,6 +446,7 @@
 							<tree string="Papéis">							    
 							    <field name="tipo" />
 							    <field name="ud_setores" />
+							    <field name="ud_cursos" />
 							    <field name="matricula"/>
 							    <field name="data_validade"/>	   
 							</tree>
@@ -480,6 +488,9 @@
 	                            </form>
                             </field>
                         </page>
+                        <page string="Grupos de Usuário" >
+                            <field name="groups_id" />
+                        </page>
                     </notebook>
                 </form>
             </field>
@@ -491,7 +502,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Employees">
-                    <field name="name"/>
+                    <field name="name" string="Nome"/>
                     <field name="mobile_phone"/>
                     <field name="work_email"/>
                     <field name="cpf"/>
@@ -505,8 +516,23 @@
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">ud.employee</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
 		</record>
+		
+		<record id="view_pessoas_filter" model="ir.ui.view">
+            <field name="name">Setor</field>
+            <field name="model">ud.employee</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Setor">
+                    <field name="name"/>
+                    <newline />
+                    <group expand="0" string="Filtrar por...">
+	                    <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+	                    <filter string="CPF" icon="terp-personal" domain="[]" context="{'group_by':'cpf'}"/>
+                    </group>
+                </search>
+             </field>
+         </record>
 
 		
 
@@ -514,7 +540,7 @@
 			sequence="0" icon="terp-partner"
 			web_icon="imagens/unidig.jpg" />
 		<menuitem name="Núcleo" id="menu_nucleo" parent="menu_point_root"
-			sequence="1" icon="terp-partner" />
+			sequence="1" icon="terp-partner" groups="base.admin_ud"/>
 		<menuitem action="ud_campus_action" id="menu_campus" parent="menu_nucleo"
 			sequence="2" />
 		<menuitem action="ud_polo_action" id="menu_polo" parent="menu_nucleo"

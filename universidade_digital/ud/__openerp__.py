@@ -32,8 +32,9 @@ Núcleo da aplicação Universidade Digital.
     'depends': ['base','hr', 'web'],
     'init_xml': [],
 
-    'update_xml': [
+    'data': [
         'ud_view.xml',
+        "security/ir.model.access.csv",
     ],
     'demo_xml': [
     ],
@@ -43,5 +44,8 @@ Núcleo da aplicação Universidade Digital.
     'application': True,
     # Web client
     'js': ['static/src/js/*.js'],
+    'update_xml':[
+            'security/ud_nucleo_security.xml'
+            ],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

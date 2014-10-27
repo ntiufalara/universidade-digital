@@ -1,14 +1,17 @@
 #coding: utf-8
 import datetime
 import logging
+import openerp
+from openerp.osv import osv, fields
 import re
 import time
 from types import NoneType
 
 from account.account import _logger
 import addons
+from base.res import res_users
 from hr.hr import hr_employee
-from osv import fields, osv
+import openerp.tools as tools
 
 
 class ud_campus(osv.osv):
@@ -88,6 +91,9 @@ class ud_bloco(osv.osv):
         'ud_bloco_ids': fields.many2one('ud.polo', 'Polo', ondelete='cascade', invisible=True),
                  
     }
+    
+    _order = "name"
+    
 ud_bloco()
 
 
@@ -105,6 +111,7 @@ class ud_setor(osv.osv):
             'name': fields.char('Nome', size=80, required=True),
             'descricao': fields.text('Descrição'),
             'polo_id': fields.many2one('ud.polo', 'Polo',required=True, ondelete='cascade'),
+            'sigla': fields.char('Sigla', size=50, required=True),
             'is_active': fields.boolean('Ativo?'),
                            
     }
@@ -192,7 +199,7 @@ class ud_papel(osv.osv): #Classe papel
         return True
         
     _sql_constraints = [
-        ('papel_uniq', 'unique (matricula,tipo)', u'A matrícula já cadastrada para esse tipo de papel.'),
+        ('papel_uniq', 'unique (matricula,tipo)', u'Matricula já cadastrada para esse tipo de papel.'),
     ]
     
     _constraints = [(_setor_ou_curso, 'Preencha pelo menos um dos campos.', ['Setor', 'Curso'])]
@@ -260,6 +267,7 @@ class ud_dado_bancario(osv.osv):
     
 ud_dado_bancario()
 
+
 class ud_employee(osv.osv):
     '''
         Classe que representa os campos do formulário Pessoa.
@@ -267,41 +275,83 @@ class ud_employee(osv.osv):
     _name = "ud.employee"
     
     _description = "Employee"
-    _inherits = {'res.users': "user_id", 'mail.alias':"alias_id"}
+    _inherits = {'res.users': 'res_users_id'}
+    
+    def _get_image(self, cr, uid, ids, name, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = tools.image_get_resized_images(obj.image)
+        return result
+    
+    def _set_image(self, cr, uid, id, name, value, args, context=None):
+        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+    
     _columns = {
         #'login': fields.related('user_id', 'login', type='char', string='Login', readonly=0),
         #'password': fields.related('user_id', 'password', type='char', string='Senha', readonly=0),
-        'user_id': fields.many2one('res.users', "Usuário", ondelete='cascade'),
-        'last_login': fields.related('user_id', 'date', type='datetime', string='Latest Connection', readonly=1),
-        'alias_id': fields.related('alias_id', 'alias', type='char', string='alias', readonly=0),
+        u'res_users_id': fields.many2one('res.users', u"Usuário", ondelete='cascade', required=True),
+        u'confirm_senha': fields.char('Confirme a Senha', size=120, required=True),
         #'country_id': fields.many2one('res.country', 'Nacionalidad:'),
-        'birthday': fields.date("Data de Nascimento", required=False),
-        'gender': fields.selection([('masculino', 'Masculino'),('feminino', 'Feminino')], u'Gênero', required=False),
-        'marital': fields.selection([('solteiro', 'Solteiro'), ('casado', 'Casado'), ('viuvo', 'Viúvo'), ('divorciado', 'Divorciado')], 'Estado Civil',required=False),
+        u'birthday': fields.date("Data de Nascimento", required=False),
+        u'image_medium': fields.function(_get_image, fnct_inv=_set_image,
+            string=u"Smal-sized photo", type="binary", multi="_get_image",
+            store = {
+                'ud.employee': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10),
+            }),
+        u'image_small': fields.function(_get_image, fnct_inv=_set_image,
+            string="Smal-sized photo", type="binary", multi="_get_image",
+            store = {
+                'hr.employee': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10),
+            },
+            help="Small-sized photo of the employee. It is automatically "\
+                 "resized as a 64x64px image, with aspect ratio preserved. "\
+                 "Use this field anywhere a small image is required."),
+        u'gender': fields.selection([('masculino', 'Masculino'),('feminino', 'Feminino')], u'Gênero', required=False),
+        u'marital': fields.selection([('solteiro', 'Solteiro'), ('casado', 'Casado'), ('viuvo', u'Viúvo'), ('divorciado', 'Divorciado')], 'Estado Civil',required=False),
         #'department_id':fields.many2one('hr.department', 'Departamento'),
         #'address_id': fields.many2one('res.partner', 'Endereço comercial'),
        # 'address_home_id': fields.many2one('res.partner', 'Endereço'),
         #'partner_id': fields.related('address_home_id', 'partner_id', type='many2one', relation='res.partner', readonly=True, help="Partner that is related to the current employee. Accounting transaction will be written on this partner belongs to employee."),
-        'work_phone': fields.char('Telefone Fixo', size=32),
-        'mobile_phone': fields.char('Celular', size=32, required=False),
-        'work_email': fields.char(u'E-mail', size=240, required=False),
-        'notes': fields.text('Notas'),
+        u'work_phone': fields.char('Telefone Fixo', size=32),
+        u'mobile_phone': fields.char('Celular', size=32, required=False),
+        u'work_email': fields.char(u'E-mail', size=240, required=False),
+        u'polo_id': fields.many2one('ud.polo', 'Polo'),
+        u'notes': fields.text('Notas'),
         #'parent_id': fields.many2one('ud.employee', 'Gerenciador'),
         #'child_ids': fields.one2many('ud.employee', 'parent_id', 'Subordinates'),
-        'photo': fields.binary('Foto'),        
+        u'photo': fields.binary('Foto'),        
         # Adicionados por mim
-        'cpf':fields.char('CPF', size=14, required=True, help="Entre o CPF no formato: XXX.XXX.XXX-XX"),
+        u'cpf':fields.char('CPF', size=14, required=True, help="Entre o CPF no formato: XXX.XXX.XXX-XX"),
         'rg':fields.char('RG', size=20, required=False),
-        'orgaoexpedidor':fields.char(u'Orgão Expedidor', size=8, help="Sigla: Ex. SSP/SP", required=False),
-        'papel_ids': fields.one2many('ud.perfil', 'ud_papel_id', 'Papel', ondelete='cascade'),
-        'dados': fields.one2many('ud.dados', 'ud_conta_id', u'Dados Bancários'),
-        'nacionalidade': fields.selection((('al','Alemã'),('es','Espanhola'),('fr','Francesa'),('gr','Grega'),('hu','Húngaro'),('ir', 'Irlandesa'), ('it','Italiana'), ('ho','Holandesa'), ('pt','Portuguesa'), ('in','Inglesa'), ('rs', 'Russa'), ('ar','Argentina'), ('br', 'Brasileira'), ('ch','Chilena'), ('eu', 'Norte-Americana'), ('mx', 'Mexicana'),('chi', 'Chinesa'),('jp', 'Japonesa'),('sf','Sul-Africana'),('as','Australiana')),'Nacionalidade',required=False),
-        'endereco': fields.char(u'Endereço', size=120, required=False),
-        'bairro': fields.char('Bairro', size=32, required=False),
-        'endereco_com': fields.char('Cidade', size=120, required=False),
-        'estado': fields.selection([('ac', 'AC'), ('al', 'AL'), ('ap', 'AP'), ('am', 'AM'), ('ba','BA'), ('ce','CE'), ('df','DF'), ('es','ES'), ('go','GO'), ('ma','MA') , ('mg','MG'), ('ms','MS'), ('mt','MT'), ('pa','PA'), ('pe','PE'), ('pi','PI'), ('pr','PR'), ('rj','RJ'), ('rn','RN'), ('ro','RO'), ('rr','RR'), ('rs', 'RS'), ('sc','SC'), ('se','SE'), ('sp','SP'), ('to', 'TO')], 'Estado', required=True),
+        u'orgaoexpedidor':fields.char(u'Orgão Expedidor', size=8, help=u"Sigla: Ex. SSP/SP", required=False),
+        u'papel_ids': fields.one2many('ud.perfil', 'ud_papel_id', 'Papel', ondelete='cascade'),
+        u'dados': fields.one2many('ud.dados', 'ud_conta_id', u'Dados Bancários'),
+        u'nacionalidade': fields.selection((('al',u'Alemã'),('es','Espanhola'),('fr','Francesa'),('gr','Grega'),('hu',u'Húngaro'),('ir', 'Irlandesa'), ('it','Italiana'), ('ho','Holandesa'), ('pt','Portuguesa'), ('in','Inglesa'), ('rs', 'Russa'), ('ar','Argentina'), ('br', 'Brasileira'), ('ch','Chilena'), ('eu', 'Norte-Americana'), ('mx', 'Mexicana'),('chi', 'Chinesa'),('jp', 'Japonesa'),('sf','Sul-Africana'),('as','Australiana')),'Nacionalidade',required=False),
+        u'rua': fields.char(u'Rua', size=120, required=False),
+        u'bairro': fields.char('Bairro', size=32, required=False),
+        u'cidade': fields.char('Cidade', size=120, required=False),
+        u'estado': fields.selection([('ac', 'AC'), ('al', 'AL'), ('ap', 'AP'), ('am', 'AM'), ('ba','BA'), ('ce','CE'), ('df','DF'), ('es','ES'), ('go','GO'), ('ma','MA') , ('mg','MG'), ('ms','MS'), ('mt','MT'), ('pa','PA'), ('pe','PE'), ('pi','PI'), ('pr','PR'), ('rj','RJ'), ('rn','RN'), ('ro','RO'), ('rr','RR'), ('rs', 'RS'), ('sc','SC'), ('se','SE'), ('sp','SP'), ('to', 'TO')], 'Estado', required=True),
     }
     
+    def unlink(self, cr, uid, ids, context=None):
+        res_users_ids = []
+        for employee in self.browse(cr, uid, ids, context=context):
+            res_users_ids.append(employee.res_users_id.id)
+        return self.pool.get('res.users').unlink(cr, uid, res_users_ids, context=context)
+    
+    
+    
+    def _get_default_image(self, cr, uid, context=None):
+        image_path = addons.get_module_resource('hr', 'static/src/img', 'default_image.png')
+        return tools.image_resize_image_big(open(image_path, 'rb').read().encode('base64'))
+    
+    
+    def _confirma_senha(self, cr, uid, ids,context=None):
+        conf = self.read(cr, uid, ids, ["confirm_senha"], context = context, load = "_classic_write")[0].get("confirm_senha")
+        psw = self.read(cr, uid, ids, ["password"], context = context, load = "_classic_write")[0].get("password")
+        if conf != psw:              
+            return False          
+        return True
     
 
     def _valida_cpf(self, cr, uid, ids, context=None):
@@ -322,15 +372,6 @@ class ud_employee(osv.osv):
         cpf.append(dig_verif(resto(seq(11))))
         if dv[0] != str(cpf[-2]) or dv[1] != str(cpf[-1]):
             return False
-        return True
-    
-    
-
-    
-    def _cria_usuario(self, cr, uid, ids, context=None):
-        name = self.browse(cr,uid, ids)[0].name
-        cpf = self.browse(cr,uid, ids)[0].cpf[0:3]
-        cr.execute('''INSERT INTO res_users (login, password, company_id, partner_id, alias_id, write_uid, menu_id, create_uid) VALUES ('%s', '%s', '1', '3', '1', '1', '1', '1');'''% (name, cpf))
         return True
     
     
@@ -356,7 +397,7 @@ class ud_employee(osv.osv):
         '''
         record = self.browse(cr, uid, ids, context=None)
         for data in record:
-            if type(re.match("(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)",data.work_email)) != NoneType:
+            if type(re.match("(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)",str(data.work_email))) != NoneType:
                 return True
         else:
             return False
@@ -392,25 +433,7 @@ class ud_employee(osv.osv):
                 return True
             else:
                 return False
-        return True    
-    
-    def _checar_data_nascimento(self, cr, uid, ids, context=None):
-        '''
-            Método que verifica se a Pessoa é maior de 18 anos.
-            return: False se a pessoa tiver idade menor que 18 anos ou True, caso contrário.
-        '''
-        obj_data_employee = self.pool.get('ud.employee').browse(cr, uid, ids)
-        for obj in obj_data_employee:
-            data_nascimento = datetime.datetime.strptime(obj.birthday, "%Y-%m-%d").date()
-            if datetime.date.today().year - data_nascimento.year < 18:
-                return False
-        return True       
-
-    
-
-    def _get_photo(self, cr, uid, context=None):
-        photo_path = addons.get_module_resource('hr','images','hr.png')
-        return open(photo_path, 'rb').read().encode('base64')
+        return True
 
     
     
@@ -422,20 +445,29 @@ class ud_employee(osv.osv):
                 return False
         return True
     
+   
+    
     _constraints = [
         (_obrigar_papel, 'Pessoa precisa ter pelo menos um papel.', [u'Papéis']),
         (_valida_cpf, u"CPF inválido.", ["\nCPF"]),
         (_valida_email, u"E-mail inválido.", ["E-mail"]),
+        (_confirma_senha, u"Confirmação de Senha e Senha não coincidem!", ["Senha"])
+
+        
         
         
     ]
     
     _defaults = {
-        'photo': _get_photo,
+        'image': _get_default_image,
         'marital': 'solteiro',
         'nacionalidade': 'br'
     }
     
+
+    
     _sql_constraints = [('ud_cpf_uniq', 'unique(cpf)',u'Já existe CPF com esse número cadastrado.'),('ud_rg_uniq','unique(rg)',u'Já existe RG com esse número cadastrado.')]
 
 ud_employee()
+
+
