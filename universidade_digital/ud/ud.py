@@ -275,7 +275,7 @@ class ud_employee(osv.osv):
     _name = "ud.employee"
     
     _description = "Employee"
-    _inherits = {'res.users': 'res_users_id'}
+    _inherits = {'resource.resource': 'resource_id', 'res.users':'res_users_id'}
     
     def _get_image(self, cr, uid, ids, name, args, context=None):
         result = dict.fromkeys(ids, False)
@@ -290,7 +290,7 @@ class ud_employee(osv.osv):
         #'login': fields.related('user_id', 'login', type='char', string='Login', readonly=0),
         #'password': fields.related('user_id', 'password', type='char', string='Senha', readonly=0),
         u'res_users_id': fields.many2one('res.users', u"Usuário", ondelete='cascade', required=True),
-        u'confirm_senha': fields.char('Confirme a Senha', size=120, required=True),
+        u'login_user':fields.related('res_users_id', 'login', store=True, type="char"),
         #'country_id': fields.many2one('res.country', 'Nacionalidad:'),
         u'birthday': fields.date("Data de Nascimento", required=False),
         u'image_medium': fields.function(_get_image, fnct_inv=_set_image,
@@ -315,7 +315,6 @@ class ud_employee(osv.osv):
         u'work_phone': fields.char('Telefone Fixo', size=32),
         u'mobile_phone': fields.char('Celular', size=32, required=False),
         u'work_email': fields.char(u'E-mail', size=240, required=False),
-        u'polo_id': fields.many2one('ud.polo', 'Polo'),
         u'notes': fields.text('Notas'),
         #'parent_id': fields.many2one('ud.employee', 'Gerenciador'),
         #'child_ids': fields.one2many('ud.employee', 'parent_id', 'Subordinates'),
@@ -325,8 +324,10 @@ class ud_employee(osv.osv):
         'rg':fields.char('RG', size=20, required=False),
         u'orgaoexpedidor':fields.char(u'Orgão Expedidor', size=8, help=u"Sigla: Ex. SSP/SP", required=False),
         u'papel_ids': fields.one2many('ud.perfil', 'ud_papel_id', 'Papel', ondelete='cascade'),
+        u'papel_setor':fields.related('papel_ids', 'tipo', store=True, type="char"),
+        u'matricula':fields.related('papel_ids', 'matricula', store=True, type="char"),
         u'dados': fields.one2many('ud.dados', 'ud_conta_id', u'Dados Bancários'),
-        u'nacionalidade': fields.selection((('al',u'Alemã'),('es','Espanhola'),('fr','Francesa'),('gr','Grega'),('hu',u'Húngaro'),('ir', 'Irlandesa'), ('it','Italiana'), ('ho','Holandesa'), ('pt','Portuguesa'), ('in','Inglesa'), ('rs', 'Russa'), ('ar','Argentina'), ('br', 'Brasileira'), ('ch','Chilena'), ('eu', 'Norte-Americana'), ('mx', 'Mexicana'),('chi', 'Chinesa'),('jp', 'Japonesa'),('sf','Sul-Africana'),('as','Australiana')),'Nacionalidade',required=False),
+        u'nacionalidade': fields.selection((('al',u'Alemã'), ('es','Espanhola'), ('fr','Francesa'),('gr','Grega'),('hu',u'Húngaro'),('ir', 'Irlandesa'), ('it','Italiana'), ('ho','Holandesa'), ('pt','Portuguesa'), ('in','Inglesa'), ('rs', 'Russa'), ('ar','Argentina'), ('br', 'Brasileira'), ('ch','Chilena'), ('eu', 'Norte-Americana'), ('mx', 'Mexicana'),('chi', 'Chinesa'),('jp', 'Japonesa'),('sf','Sul-Africana'),('as','Australiana')),'Nacionalidade',required=False),
         u'rua': fields.char(u'Rua', size=120, required=False),
         u'bairro': fields.char('Bairro', size=32, required=False),
         u'cidade': fields.char('Cidade', size=120, required=False),
@@ -345,13 +346,6 @@ class ud_employee(osv.osv):
         image_path = addons.get_module_resource('hr', 'static/src/img', 'default_image.png')
         return tools.image_resize_image_big(open(image_path, 'rb').read().encode('base64'))
     
-    
-    def _confirma_senha(self, cr, uid, ids,context=None):
-        conf = self.read(cr, uid, ids, ["confirm_senha"], context = context, load = "_classic_write")[0].get("confirm_senha")
-        psw = self.read(cr, uid, ids, ["password"], context = context, load = "_classic_write")[0].get("password")
-        if conf != psw:              
-            return False          
-        return True
     
 
     def _valida_cpf(self, cr, uid, ids, context=None):
@@ -444,14 +438,14 @@ class ud_employee(osv.osv):
             if not data.papel_ids:
                 return False
         return True
+            
     
    
     
     _constraints = [
-        (_obrigar_papel, 'Pessoa precisa ter pelo menos um papel.', [u'Papéis']),
-        (_valida_cpf, u"CPF inválido.", ["\nCPF"]),
-        (_valida_email, u"E-mail inválido.", ["E-mail"]),
-        (_confirma_senha, u"Confirmação de Senha e Senha não coincidem!", ["Senha"])
+        (_obrigar_papel, 'Pessoa precisa ter pelo menos um papel!', [u'Papéis']),
+        (_valida_cpf, u"CPF inválido!", ["\nCPF"]),
+        (_valida_email, u"E-mail inválido!", ["E-mail"]),
 
         
         

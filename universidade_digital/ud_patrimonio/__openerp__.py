@@ -21,20 +21,20 @@
 
 
 {
-    'name': 'Universidade Digital',
+    'name': 'Gerenciamento de Patrimônio',
     'version': '1.0',
     'category': 'college',
     'description': """
-Núcleo da aplicação Universidade Digital.   
+Módulo de Gerenciamento de Patrimônio.  
     """,
-    'author': 'LAMP e LAPEC',
+    'author': 'LAPEC',
     'images': [],
-    'depends': ['base','hr', 'web'],
+    'depends': ['ud'],
     'init_xml': [],
 
     'data': [
-        'ud_view.xml',
-       'wizards/change_password_wizard_ud_view.xml',
+        'ud_patrimonio_view.xml',
+#       'wizards/change_password_wizard_ud_view.xml',
         "security/ir.model.access.csv",
     ],
     'demo_xml': [
@@ -44,9 +44,9 @@ Núcleo da aplicação Universidade Digital.
     'installable': True,
     'application': True,
     # Web client
-    'js': ['static/src/js/*.js'],
+    'js': [],
     'update_xml':[
-            'security/ud_nucleo_security.xml'
+    'security/ud_patrimonio_security.xml'
             ],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

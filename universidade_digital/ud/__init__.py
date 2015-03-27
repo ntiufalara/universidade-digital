@@ -1,1 +1,1 @@
-import ud
+import ud, wizards

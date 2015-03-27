@@ -19,12 +19,14 @@
             <field name="model">ud.campus</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Campus">
-                	<group colspan="2" col="5">
-                	    <field name="name" colspan="2" />                	    
-                	    <separator orientation="vertical" />
-                	    <field name="is_active"/>
+                <form string="Campus">               
+                	<group colspan="2" col="5">                		
+	                	    <field name="name" colspan="2" />                	    
+	                	    <separator orientation="vertical" />
+	                	    <field name="is_active"/>
+                	    
                 	</group>
+                
                 	<newline />
                 	<group colspan="2" col="5">  
                 	    <field name="diretor" colspan="2"/>
@@ -393,15 +395,18 @@
             <field name="model">ud.employee</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
+            
                 <form string="Employee" version="7.0">                              
                     <group colspan="4" col="8">
                         <group colspan="6" col="6">
                         <field colspan="6" name="name" string="Nome"/>
-                        <field colspan="6" name="login" string="Login" groups="base.admin_ud"/>
-                        <field name="new_password" password="True" string="Senha" required="1"/>
-                        <field name="confirm_senha" password="True"/>
-                                               
+                        <field colspan="6" name="res_users_id" groups="base.admin_ud"/>
                         
+                        <div class="oe_edit_only">
+                        <group col="9" colspan="10">
+                        </group>
+                        </div>
+                                                
                         <newline/>
                         </group>
                         <group colspan="2" col="1">
@@ -437,7 +442,7 @@
 	                            	<field name="work_phone" class="work_phone"/>
 	                                <field name="mobile_phone" class="mobile_phone"/>
 	                                <field name="work_email" widget="email"/>
-	                                <field name="polo_id"/>	                                	                             
+	                                	                                	                             
 	                            </group>
 	                        </group>
                         </page>
@@ -488,13 +493,26 @@
 	                            </form>
                             </field>
                         </page>
-                        <page string="Grupos de Usuário" >
-                            <field name="groups_id" />
-                        </page>
+                        
                     </notebook>
                 </form>
             </field>
         </record>
+        
+<!--           
+        <record model="ir.values" id="atribuir_item">
+            <field name="name">Atribuir Responsável</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('change_password_wizard_action0'))" />
+            <field name="key">action</field>
+            <field name="model">ud.employee</field>
+        </record>
+        
+-->
+        
+ 
+        	
+        
 
         <record id="view_employee_tree" model="ir.ui.view">
             <field name="name">ud.employee.tree</field>
@@ -502,10 +520,11 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Employees">
+                    <field name="cpf"/>
                     <field name="name" string="Nome"/>
                     <field name="mobile_phone"/>
                     <field name="work_email"/>
-                    <field name="cpf"/>
+
                 </tree>
             </field>
         </record>
@@ -518,6 +537,8 @@
 			<field name="view_type">form</field>
 		</record>
 		
+	 
+		
 		<record id="view_pessoas_filter" model="ir.ui.view">
             <field name="name">Setor</field>
             <field name="model">ud.employee</field>
@@ -525,10 +546,15 @@
             <field name="arch" type="xml">
                 <search string="Setor">
                     <field name="name"/>
-                    <newline />
-                    <group expand="0" string="Filtrar por...">
-	                    <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
-	                    <filter string="CPF" icon="terp-personal" domain="[]" context="{'group_by':'cpf'}"/>
+                    <field name="cpf"/>
+                    <field string="Matrícula" name="matricula"/>
+                    
+                    <group expand="0" string="Agrupar por...">
+	                     <filter string="Papel Professor" icon="terp-personal" domain="[('papel_setor','=','p')]" context="{'group_by':'papel_setor'}"/>
+	                     <filter string="Papel Técnico" icon="terp-personal" domain="[('papel_setor','=','t')]" context="{'group_by':'papel_setor'}"/>
+	                     <filter string="Papel Discente" icon="terp-personal" domain="[('papel_setor','=','a')]" context="{'group_by':'papel_setor'}"/>
+	                     <filter string="Papel Terceirizado" icon="terp-personal" domain="[('papel_setor','=','x')]" context="{'group_by':'papel_setor'}"/>
+	                     <filter string="Papel Outra" icon="terp-personal" domain="[('papel_setor','=','o')]" context="{'group_by':'papel_setor'}"/>
                     </group>
                 </search>
              </field>

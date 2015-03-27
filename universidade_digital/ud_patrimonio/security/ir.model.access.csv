@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ud_patrimonio_admin_marca,ud_patrimonio_admin_marca,ud_patrimonio.model_patrimonio_marca,base.patrimonio_admin,1,1,1,1
+access_ud_patrimonio_admin_modelo,ud_patrimonio_admin_modelo,ud_patrimonio.model_patrimonio_modelo,base.patrimonio_admin,1,1,1,1
+access_ud_patrimonio_admin_grupo,ud_patrimonio_admin_grupo,ud_patrimonio.model_patrimonio_grupo,base.patrimonio_admin,1,1,1,1
+access_ud_patrimonio_admin_estado,ud_patrimonio_admin_estado,ud_patrimonio.model_patrimonio_estado,base.patrimonio_admin,1,1,1,1
+access_ud_patrimonio_admin_bem,ud_patrimonio_admin_bem,ud_patrimonio.model_patrimonio_bem,base.patrimonio_admin,1,1,1,1
+access_ud_patrimonio_admin_espaco,ud_patrimonio_admin_espaco,ud.model_ud_espaco,base.patrimonio_admin,1,0,0,0
+

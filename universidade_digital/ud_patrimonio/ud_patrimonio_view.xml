@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<!--
+        =======================
+        		Marca
+        =======================
+        -->
+        <record id="view_patrimonio_marca_action" model="ir.actions.act_window">
+			<field name="name">Marca</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.marca</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_marca_form" model="ir.ui.view">
+            <field name="name">patrimonio.marca.form</field>
+            <field name="model">patrimonio.marca</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Marca" version="7.0">
+		            <group col="2">
+		            	<field name="name" />
+		            	<separator string="Outras informações" colspan="4"/>
+                		<newline />
+		            	<field name="descricao"/>
+		            </group>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_marca_tree" model="ir.ui.view">
+            <field name="name">patrimonio.marca.tree</field>
+            <field name="model">patrimonio.marca</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Marca">
+	            	<field name="name"/>
+	            	<field name="descricao"/>
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+       <!--
+        =======================
+        		Propriedade
+        =======================
+        -->
+        <record id="view_patrimonio_propriedade_modelo_action" model="ir.actions.act_window">
+			<field name="name">Propriedade</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.modelo.propriedade</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_propriedade_modelo_form" model="ir.ui.view">
+            <field name="name">patrimonio.modelo.propriedade.form</field>
+            <field name="model">patrimonio.modelo.propriedade</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Marca" version="7.0">
+		            <group col="2">
+		            	<field name="name" />
+		            	<field name="valor"/>
+		            </group>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_propriedade_modelo_tree" model="ir.ui.view">
+            <field name="name">patrimonio.modelo.propriedade.tree</field>
+            <field name="model">patrimonio.modelo.propriedade</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Propriedade">
+	            	<field name="name"/>
+	            	<field name="valor"/>
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+        <record id="view_patrimonio_propriedade_modelo_filter" model="ir.ui.view">
+            <field name="name">Marca</field>
+            <field name="model">patrimonio.modelo.propriedade</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+            <search string="Propriedade">
+            	<field name="name"/>
+            </search>  
+            </field>
+        </record>
+        
+        <!--
+        =======================
+        		Modelo
+        =======================
+        -->
+        
+        <record id="view_patrimonio_modelo_action" model="ir.actions.act_window">
+			<field name="name">Modelo</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.modelo</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_modelo_form" model="ir.ui.view">
+            <field name="name">patrimonio.modelo.form</field>
+            <field name="model">patrimonio.modelo</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Modelo" version="7.0">
+		            <group col="2">
+		            	<field name="name" />
+		            	<field name="marca" />
+		            	<separator string="Outras informações" colspan="4"/>
+                		<newline />
+		            	<field name="descricao"/>
+		            </group>
+		            <notebook colspan="6">
+		            <page string="Propriedades">
+		            <field name="propriedade_ids" colspan="4" nolabel="1" widget="one2many"/>
+		            </page>
+		            </notebook>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_modelo_tree" model="ir.ui.view">
+            <field name="name">patrimonio.modelo.tree</field>
+            <field name="model">patrimonio.modelo</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Modelo">
+	            	<field name="name"/>
+	            	<field name="marca"/>
+	            	<field name="descricao"/>
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+        <record id="view_patrimonio_modelo_filter" model="ir.ui.view">
+            <field name="name">Modelo</field>
+            <field name="model">patrimonio.modelo</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+            <search string="Modelo">
+            	<field name="name"/> 
+            </search>  
+            </field>
+        </record>
+        
+        <!--
+        =======================
+        		Grupo
+        =======================
+        -->
+        <record id="view_patrimonio_grupo_action" model="ir.actions.act_window">
+			<field name="name">Grupo</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.grupo</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_grupo_form" model="ir.ui.view">
+            <field name="name">patrimonio.grupo.form</field>
+            <field name="model">patrimonio.grupo</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Grupo" version="7.0">
+		            <group col="2">
+		            	<field name="name" />
+		            	<separator string="Outras informações" colspan="4"/>
+                		<newline />
+		            	<field name="descricao"/>
+		            </group>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_grupo_tree" model="ir.ui.view">
+            <field name="name">patrimonio.grupo.tree</field>
+            <field name="model">patrimonio.grupo</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Grupo">
+	            	<field name="name"/>
+	            	<field name="descricao"/>
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+        <record id="view_patrimonio_grupo_filter" model="ir.ui.view">
+            <field name="name">Grupo</field>
+            <field name="model">patrimonio.grupo</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+            <search string="Grupo">
+            	<field name="name"/>
+            </search>   
+            </field>
+        </record>
+        
+        <!--
+        =======================
+        		Estado
+        =======================
+        -->
+        <record id="view_patrimonio_estado_action" model="ir.actions.act_window">
+			<field name="name">Estado</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.estado</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_estado_form" model="ir.ui.view">
+            <field name="name">patrimonio.estado.form</field>
+            <field name="model">patrimonio.estado</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Estado" version="7.0">
+		            <group col="2">
+		            	<field name="name" />
+		            	<separator string="Outras informações" colspan="4"/>
+                		<newline />
+		            	<field name="descricao"/>
+		            </group>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_estado_tree" model="ir.ui.view">
+            <field name="name">patrimonio.estado.tree</field>
+            <field name="model">patrimonio.estado</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Estado">
+	            	<field name="name"/>
+	            	<field name="descricao"/>
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+        <record id="view_patrimonio_estado_filter" model="ir.ui.view">
+            <field name="name">Estado</field>
+            <field name="model">patrimonio.estado</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+            <search string="Estado">
+            	<field name="name"/>
+            </search>   
+            </field>
+        </record>
+        
+         <!--
+        =======================
+        		Bem
+        =======================
+        -->
+        <record id="view_patrimonio_bem_action" model="ir.actions.act_window">
+			<field name="name">Bem</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">patrimonio.bem</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="view_patrimonio_bem_form" model="ir.ui.view">
+            <field name="name">patrimonio.bem.form</field>
+            <field name="model">patrimonio.bem</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">           
+	            <form string="Bem" version="7.0">
+		            <group col="4" colspan="6">
+		            	<field name="numero_patrimonio" />
+		            	<field name="name" />
+		            	<field name="serie" />
+		            	<field name="espaco" />
+		            	<field name="grupo" />
+		            	<field name="estado" />
+		            	<field name="marca_local" on_change="limpa_modelo()"/>
+		            	<field name="modelo" domain="[('marca', '=', marca_local)]"/>
+		            	<separator string="Outras informações" colspan="4"/>
+                		<newline />
+		            	<field name="descricao"/>
+		            </group>
+		           
+	            </form>
+        	</field>
+       </record>
+       
+       <record id="view_patrimonio_bem_tree" model="ir.ui.view">
+            <field name="name">patrimonio.bem.tree</field>
+            <field name="model">patrimonio.bem</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+	            <tree string="Bem">
+	            	<field name="numero_patrimonio" />
+	            	<field name="name"/>
+	            	<field name="serie" />
+		            	<field name="espaco" />
+		            	<field name="grupo" />
+		            	<field name="estado" />
+		            	<field name="marca_local" />
+		            	<field name="modelo" />	            	
+	            </tree>
+	            
+        	</field>
+       </record>
+       
+        <record id="view_patrimonio_bem_filter" model="ir.ui.view">
+            <field name="name">Bem</field>
+            <field name="model">patrimonio.bem</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+	            <search string="Bem">
+	            	<field name="marca_filtro" string="Marca"/>
+		            <field name="numero_patrimonio" />
+		            <field name="name"/> 
+		            <field name="serie" />
+				    <field name="espaco" />
+				    <field name="grupo" />
+				    <field name="estado" />
+				    <field name="modelo" />
+			    </search>  
+            </field>
+        </record>
+        
+        <menuitem name="Patrimônio" id="menu_patrimonio" parent="ud.menu_point_root" sequence="1"/>
+		<menuitem action="view_patrimonio_marca_action" id="menu_patrimonio_marca" parent="menu_patrimonio" sequence="2" />
+		<menuitem action="view_patrimonio_modelo_action" id="menu_patrimonio_modelo" parent="menu_patrimonio" sequence="3" />
+		<menuitem action="view_patrimonio_grupo_action" id="menu_patrimonio_grupo" parent="menu_patrimonio" sequence="4" />
+		<menuitem action="view_patrimonio_estado_action" id="menu_patrimonio_estado" parent="menu_patrimonio" sequence="5" />
+		<menuitem action="view_patrimonio_bem_action" id="menu_patrimonio_bem" parent="menu_patrimonio" sequence="6" />
+       
+	</data>
+</openerp>
