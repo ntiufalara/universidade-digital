@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+    <record id="ud_transporte_solicitacao_tree_view" model="ir.ui.view">
+			<field name="name">ud.transporte.solicitacao.tree</field>
+			<field name="model">ud.transporte.solicitacao</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Solicitações">
+					<field name="solicitante" />
+					<field name="rotulo" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="ud_transporte_solicitacao_form_view" model="ir.ui.view">
+			<field name="name">ud.transporte.solicitacao.form</field>
+			<field name="model">ud.transporte.solicitacao</field>
+			<field name="arch" type="xml">
+				<form string="Solicitação" version="7.0">
+					<header>
+						<field name="state" widget="statusbar"/>
+						<button name="status_indeferido" states="aguardando" string="Indeferir" type="object" />
+						<button name="status_deferido_com_custeio" states="aguardando" string="Deferir com custeio" type="object" />
+						<button name="status_deferido" states="aguardando" string="Deferir" type="object"/>
+					</header>
+					<sheet>
+						<h1>Nova solicitação</h1>
+						<group>
+							<group>
+								<field name="solicitante" />
+								<field name="solicitante_matricula" />
+							</group>
+							<group>
+								<field name="solicitante_telefone"  class="work_phone" />
+								<field name="solicitante_email" />
+							</group>
+						</group>
+						<group>
+							<group string="Origem">
+								<field name="cidade_saida" />
+								<field name="estado_saida" />
+								<field name="data_hora_saida" class="data-hora"/>
+								<field name="data_hora_chegada" class="data-hora"/>
+							</group>
+							<group string="Destino">
+								<field name="cidade_destino" />
+								<field name="estado_destino" />
+								<field name="rota" />
+							</group>
+						</group>
+						<label for="qtd_passageiros" string="Quantidade de passageiros" />
+						<field name="qtd_passageiros"/>
+						<p>Obs: Para uma quantidade de passageiros maior que 5 é necessário inserir CPF e RG de todos os passageiros</p>
+						<label string="Passageiros"/>
+						<field name="passageiros" on_change="onchange_passageiros(passageiros)" nolabel="1" />
+						<label string="Objetivo"/>
+						<field name="objetivo" nolabel="1" />
+						<label string="Notas"/>
+						<field name="notas" nolabel="1" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_ud_transporte_solicitacao_tree_view">
+			<field name="name">Solicitações</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">ud.transporte.solicitacao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+			<field name="context">{}</field>
+		</record>
+		
+		<record model="ir.ui.view" id="ud_transporte_passageiro_tree_view">
+            <field name="name">ud.transporte.passageiro.tree</field>
+            <field name="model">ud.transporte.passageiro</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Passageiros">
+                    <field name="name"/>
+                    <field name="telefone"/>
+                    <field name="cpf"/>
+                    <field name="rg"/>
+                </tree>
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="ud_transporte_passageiro_form_view">
+	         <field name="name">ud.transporte.passageiro.form</field>
+	         <field name="model">ud.transporte.passageiro</field>
+	         <field name="type">form</field>
+	         <field name="arch" type="xml">
+	             <form string="Passageiro" version="7.0">
+	              <group>
+	              	<group>
+	                   <field name="name" select="1"/>
+	                   <field name="telefone" class="work_phone" />
+	                   <field name="matricula" />
+	                </group>
+	                <group>
+	                   <field name="cpf" class="cpf" />
+	                   <field name="rg" />
+					</group>
+	              </group>
+	             </form>
+	         </field>
+	     </record>
+		
+		<menuitem sequence="0" id="ud_transporte_solicitacao_menu" name="Solicitações" parent="ud_transporte_menu" action="action_ud_transporte_solicitacao_tree_view" groups="base.group_ud_transporte_solicitante,base.group_ud_transporte_gerente"/>
+    
+    </data>
+</openerp>

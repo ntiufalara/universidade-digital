@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<openerp>
+	<data>
+		<record id="cancelar_form" model="ir.ui.view">
+			<field name="name">Cancelar</field>
+			<field name="model">cancelar</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Cancelar" version="7.0">
+                	<group>
+                		<field name="motivo"/>
+                		<field name="data_cancelamento" readonly="1"/>
+                	</group>
+                	<footer>
+                		<button string="OK" name="cancelar" type="object"/>
+                	</footer>
+				</form>
+			</field>
+		</record>
+		
+		<record id="cancelar_action" model="ir.actions.act_window">
+			<field name="name">Cancelar</field>
+			<field name="res_model">cancelar</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="multi">true</field>
+		</record>
+	</data>
+</openerp>

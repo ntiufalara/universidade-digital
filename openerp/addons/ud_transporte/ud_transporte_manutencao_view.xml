@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    <record id="ud_transporte_manutencao_tree_view" model="ir.ui.view">
+			<field name="name">ud.transporte.manutencao.tree</field>
+			<field name="model">ud.transporte.manutencao</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Menutenções">
+					<field name="descricao_manutencao" />
+					<field name="data_entrada" />
+					<field name="data_saida" />
+					<field name="custo_manutencao" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="ud_transporte_manutencao_form_view" model="ir.ui.view">
+			<field name="name">ud.transporte.manutencao.form</field>
+			<field name="model">ud.transporte.manutencao</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="OpenERP Version 7" version="7.0">
+					<header>
+						<field name="state" widget="statusbar"/>
+						<button name="concluir" states="aberta" string="Concluir manutenção" type="object"/>
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="veiculo" />
+								<field name="data_entrada" />
+								<field name="data_saida" />
+								<field name="custo_manutencao"/>
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="descricao_manutencao" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<!-- 
+		<record id="ud_transporte_manutencao_search_view" model="ir.ui.view">
+			<field name="name">ud.transporte.manutencao.search</field>
+			<field name="model">ud.transporte.manutencao</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					<field name="Name" string="Name" filter_domain="[()]" />
+					<separator />
+					<filter string="Open" name="open" domain="[('state','!=','cancel')]"
+						help="Open" />
+
+					<group expand="0" string="Group By...">
+						<filter string="Name" domain="[]" context="{'group_by':'name'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		 -->
+		<record model="ir.actions.act_window" id="action_ud_transporte_manutencao_tree_view">
+			<field name="name">Menutenção de veículo</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">ud.transporte.manutencao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="search_view_id" ref="view_ud_transporte_manutencao_search" />  -->
+			<!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+			<field name="context">{}</field>
+		</record>
+		
+		<menuitem id="ud_transporte_manutencao_menu" name="Manutenção de veículo" parent="ud_transporte_menu" action="action_ud_transporte_manutencao_tree_view" groups="base.group_ud_transporte_solicitante,base.group_ud_transporte_gerente"/>
+    
+    </data>
+</openerp>

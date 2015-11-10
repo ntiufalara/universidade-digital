@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<openerp>
+	<data>
+		<record id="finalizar_wiz_form" model="ir.ui.view">
+			<field name="name">Finalizar</field>
+			<field name="model">finalizar.wiz</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Finalizar" version="7.0">
+                	<group>
+                		<field name="finalizar"/>
+                	</group>
+                	<footer>
+                		<button string="Finalizar Solicitação" name="finalizar" type="object"/>
+                	</footer>
+				</form>
+			</field>
+		</record>
+		
+		<record id="finalizar_wiz_action" model="ir.actions.act_window">
+			<field name="name">Finalizar</field>
+			<field name="res_model">finalizar.wiz</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="multi">True</field>
+		</record>
+	</data>
+</openerp>

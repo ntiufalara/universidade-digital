@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="base.module_category_ud_biblioteca">
+            <field name="name">Biblioteca</field>
+            <field name="sequence">0</field>
+            <field name="visible" eval="1" />
+        </record>
+        <record model="res.groups" id="base.group_ud_biblioteca_bibliotecario_admin">
+            <field name="name">Bibliotecário/ Administrador</field>
+            <field name="category_id" ref="base.module_category_ud_biblioteca"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <record model="res.groups" id="base.group_ud_biblioteca_bibliotecario">
+            <field name="name">Bibliotecário</field>
+            <field name="category_id" ref="base.module_category_ud_biblioteca"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+           
+        </record>
+        <record model="res.groups" id="base.group_ud_biblioteca_visitante">
+            <field name="name">Visitante</field>
+            <field name="category_id" ref="base.module_category_ud_biblioteca"/>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Menu Inicial -->
+<openerp>
+	<data noupdate="0">		
+			<!-- Formulário de Solicitação -->
+		<record id="nova_solicitacao_form" model="ir.ui.view">
+			<field name="name">Formulário de solicitação</field>
+			<field name="model">ud.solicitacao</field>
+			<field name="type">form</field>
+			<field name="priority" eval="1" />
+			<field name="arch" type="xml">
+                <form string="Solicitação" version="7.0">
+                	<header class="botoes-direita">
+                		<button string="Para Análise" states="nova" type="action" name="ud_solicitacao.atribuir_action0" groups="base.gerente_os"/>
+                		<button string="Encaminhar para execução" states="atribuida" type="action" name="ud_solicitacao.aprovar_action0" groups="base.gerente_os,base.responsavel_os"/>
+                		<button string="Executar Solicitação" states="aprovada" type="action" name="ud_solicitacao.executar_wiz_action" groups="base.gerente_os"/>
+                		<button string="Finalizar Solicitação" states="execucao" type="action" name="ud_solicitacao.finalizar_wiz_action" groups="base.gerente_os"/>
+                		<button string="Cancelar Solicitação" states="nova" type="action" name="ud_solicitacao.cancelar_wiz_action"/>
+                		<button string="Cancelar Solicitação" states="atribuida,aprovada,execucao" type="action" name="ud_solicitacao.cancelar_wiz_action" groups="base.gerente_os"/>
+            			<field name="state" widget="statusbar" statusbar_visible="nova,atribuida,aprovada,execucao,finalizada,cancelada" readonly="1"/>
+                	</header>
+                	<!-- Formulário de Solicitação -->
+                	<sheet>
+	                	<group string="Solicitação de Ordem de Serviço">
+	                	    <group>
+		                		<field name="solicitante_id" on_change="onchange_solicitante(solicitante_id)"/>
+								<field name="matricula" />
+								<field name="telefone" />
+							</group>
+							<group>
+		                		<field name="email" email="1"/>
+		                		<field name="setor_id" />
+	                		</group>
+	                	</group>
+	                	<group string="Dados da Solicitação">
+	                		<group string="Informações">
+		                		<!-- Formulário de manutenção -->
+								<field name="manutencao" on_change="limpa_mnt()"/>
+									<field name="pat" />
+									<field name="equipamento" on_change="limpa_equip()" attrs="{ 'invisible':[('manutencao','!=','equip')],'required':[('manutencao','=','equip')]}"/>
+										<field name="eq_eletricos" on_change="limpa_tipo_equip()" attrs="{ 'invisible':[('equipamento','!=','elt')],'required':[('equipamento','=','elt')]}" />
+										<field name="equip_denominacao" attrs="{ 'invisible':[('eq_eletricos','!=','outros')],'required':[('eq_eletricos','=','outros')] }" />
+											<field name="refrigeradores" attrs="{ 'invisible':[('eq_eletricos','!=','apref')],'required':[('eq_eletricos','=','apref')]}"/>
+											<field name="marca" attrs="{ 'invisible':[('eq_eletricos','!=','apref')],'required':[('eq_eletricos','=','apref')]}" />
+											<field name="modelo" attrs="{ 'invisible':[('eq_eletricos','!=','apref')],'required':[('eq_eletricos','=','apref')]}" />
+											<field name="marca1" attrs="{ 'invisible':[('equipamento','!=','hid')],'required':[('equipamento','=','hid')]}" />
+											<field name="modelo1" attrs="{ 'invisible':[('equipamento','!=','hid')],'required':[('equipamento','=','hid')]}" />
+												<field name="ref_tipo" attrs="{ 'invisible':[('refrigeradores','!=','arc')],'required':[('refrigeradores','=','arc')]}" />
+									<field name="predial" on_change="limpa_pred()" attrs="{ 'invisible':[('manutencao','!=','pred')],'required':[('manutencao','=','pred')]}" />
+										<field name="instalacoes" attrs="{ 'invisible':[('predial','!=','inst')],'required':[('predial','=','inst')]}" />
+									<field name="mov_denominacao" attrs="{ 'invisible':[('manutencao','!=','movmat')],'required':[('manutencao','=','movmat')]}"/>
+							</group>
+							<group string="Localização">
+								<field name="local_camp" />
+								<field name="local_polo" domain="[('campus_id','=',local_camp)]"/>
+								<field name="local_espaco" domain="[('local_polo','=',local_polo)]" />
+								<field name="detalhes_espaco"/>
+							</group>
+							<group string="Destino" attrs="{ 'invisible':[('manutencao','!=','movmat')]}">
+								<field name="local_camp_destino" attrs="{'required':[('manutencao','=','movmat')] }"/>
+								<field name="local_polo_destino" domain="[('campus_id','=',local_camp_destino)]" attrs="{'required':[('manutencao','=','movmat')] }"/>
+								<field name="local_espaco_destino" attrs="{'required':[('manutencao','=','movmat')] }" domain="[('local_polo','=',local_polo_destino)]"/>
+								<field name="detalhes_espaco_destino" />
+							</group>
+	                	</group>
+	                	<group string="Detalhes">
+	                		<field name="descricao"  colspan="4" />
+	                		<group>
+	                			<field name="data" readonly="1"/>
+	                		</group>
+	                	</group>
+	                	<group>
+		                	<group string="Outras Informações" colspan="4" col="2" states="atribuida,aprovada,execucao,finalizada,cancelada">
+		                		<field name="responsavel" states="atribuida,aprovada,execucao,finalizada,cancelada"/>
+		                		<field name="previsao" states="aprovada,execucao,finalizada,cancelada"/>
+	                			<field name="execucao" states="execucao,finalizada,cancelada" rowspan="5"/>
+	                			<field name="data_execucao" states="execucao,finalizada,cancelada"/>
+	                			<field name="finalizar" states="finalizada,cancelada"/>
+		                	</group>
+	                	</group>
+	                	<group states="cancelada" String="Solicitação Cancelada">
+	               			<field name="motivo"/>
+	                	</group>
+                	</sheet>
+	                <div class="oe_chatter">
+	                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+	                    <field name="message_ids" widget="mail_thread"/>
+	                </div>
+                </form>
+			</field>
+		</record>
+
+		<record id="solicitacao_filter" model="ir.ui.view">
+		    <field name="name">busca.solicitacoes</field>
+		    <field name="model">ud.solicitacao</field>
+		    <field name="arch" type="xml">
+		        <search string="Buscar Solicitações">
+					<field name="id" string="Código"/>
+					<field name="descricao"/>
+					<field name="solicitante_id" />
+					<field name="state"/>
+					<field name="data"/>
+					<field name="manutencao" />
+					<field name="equipamento" />
+					<field name="predial" />
+                    <group expand="0" string="Agrupar Por...">
+                        <filter string="Solicitante" icon="terp-personal" domain="[]" context="{'group_by':'solicitante_id'}"/>
+                        <filter string="Data" domain="[]" context="{'group_by':'data'}"/>
+                        <filter string="Status" domain="[]" context="{'group_by':'state'}" />
+                    </group>
+		        </search>
+		    </field>
+		</record>
+
+		<record id="nova_solicitacao_tree" model="ir.ui.view">
+			<field name="name">Solicitações</field>
+			<field name="model">ud.solicitacao</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Solicitação" colors="red:state=='cancelada';green:state=='execucao'; blue:state=='finalizada'">
+					<field name="id" string="Código"/>
+					<field name="descricao"/>
+					<field name="solicitante_id" />
+					<field name="manutencao"/>
+					<field name="state"/>
+					<field name="data"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="ud_solicitacao_action" model="ir.actions.act_window">
+			<field name="name">Solicitações abertas</field>
+			<field name="res_model">ud.solicitacao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('create_uid','=',uid), ('state', '!=', 'finalizada')]</field>
+			<field name="view_id" ref="nova_solicitacao_tree"/>
+		</record>
+		
+		<record id="ud_solicitacao_finalizada_action" model="ir.actions.act_window">
+			<field name="name">Solicitações finalizadas</field>
+			<field name="res_model">ud.solicitacao</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('create_uid','=',uid), ('state', '=', 'finalizada')]</field>
+		</record>
+
+		<!--MENU ITEM-->
+		<menuitem name="Ordem de Serviço" id="solicitacao_top"
+				sequence = "3" parent = "ud.menu_point_root" />
+
+		<menuitem string="Solicitações abertas" action="ud_solicitacao_action"
+		 id="solicitante" parent="solicitacao_top" groups="base.solicitante_os,base.responsavel_os"/>
+		 
+		<menuitem string="Solicitações finalizadas" action="ud_solicitacao_finalizada_action"
+		id="solicitante_finalizadas" parent="solicitacao_top" groups="base.solicitante_os,base.responsavel_os"/>
+	</data>
+</openerp>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="base.module_category_ud_patrimonio">
+           <field name="name">Patrimonio</field> 
+        </record>
+        <record id="base.patrimonio_administrador" model="res.groups">
+            <field name="name">Administrador Geral</field>
+            <field name="category_id" ref="base.module_category_ud_patrimonio"/>
+        </record>
+        <record id="base.patrimonio_bem_gerente" model="res.groups">
+            <field name="name">Gerente de Bens</field>
+            <field name="category_id" ref="base.module_category_ud_patrimonio"/>
+        </record>
+        
+    </data>
+</openerp>

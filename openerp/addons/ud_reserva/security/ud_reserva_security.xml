@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="base.module_category_ud_reserva">
+           <field name="name">Reserva de Espaço</field> 
+        </record>
+        <record id="base.solicitante_reserva" model="res.groups">
+            <field name="name">Solicitante de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>
+        </record>
+        <record id="base.gerente_reserva" model="res.groups">
+            <field name="name">Gerente de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>            
+        </record>
+        <record id="base.visitante_reserva" model="res.groups">
+            <field name="name">Visitante de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>
+        </record>
+    </data>
+</openerp>

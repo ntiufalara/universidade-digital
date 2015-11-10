@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>tutorial_testes_openerp7</title>
+      <style>.markdown-preview { font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px; line-height: 1.6; overflow: scroll; box-sizing: border-box; padding: 20px; background-color: rgb(255, 255, 255); }
+.markdown-preview code { color: rgb(51, 51, 51); }
+.markdown-preview code, .markdown-preview tt, .markdown-preview pre.editor-colors { font-size: 12px; font-family: Consolas, 'Liberation Mono', Courier, monospace; }
+.markdown-preview a, .markdown-preview a code { color: rgb(65, 131, 196); }
+.markdown-preview ol > li { list-style-type: decimal; }
+.markdown-preview ul > li { list-style-type: disc; }
+.markdown-preview li > pre.editor-colors { display: inline-block; vertical-align: top; width: 100%; }
+.markdown-preview li:last-child > pre.editor-colors { margin-bottom: 0px; }
+.markdown-preview > :first-child { margin-top: 0px !important; }
+.markdown-preview > :last-child { margin-bottom: 0px !important; }
+.markdown-preview a.absent { color: rgb(204, 0, 0); }
+.markdown-preview a.anchor { display: block; padding-left: 30px; margin-left: -30px; cursor: pointer; position: absolute; top: 0px; left: 0px; bottom: 0px; }
+.markdown-preview h1, .markdown-preview h2, .markdown-preview h3, .markdown-preview h4, .markdown-preview h5, .markdown-preview h6 { font-family: 'Helvetica Neue', Helvetica, sans-serif; margin: 20px 0px 10px; padding: 0px 0px 10px; font-weight: bold; -webkit-font-smoothing: antialiased; cursor: text; position: relative; }
+.markdown-preview h1 .octicon-link, .markdown-preview h2 .octicon-link, .markdown-preview h3 .octicon-link, .markdown-preview h4 .octicon-link, .markdown-preview h5 .octicon-link, .markdown-preview h6 .octicon-link { display: none; color: rgb(0, 0, 0); }
+.markdown-preview h1:hover a.anchor, .markdown-preview h2:hover a.anchor, .markdown-preview h3:hover a.anchor, .markdown-preview h4:hover a.anchor, .markdown-preview h5:hover a.anchor, .markdown-preview h6:hover a.anchor { text-decoration: none; line-height: 1; padding-left: 0px; margin-left: -22px; top: 15%; }
+.markdown-preview h1:hover a.anchor .octicon-link, .markdown-preview h2:hover a.anchor .octicon-link, .markdown-preview h3:hover a.anchor .octicon-link, .markdown-preview h4:hover a.anchor .octicon-link, .markdown-preview h5:hover a.anchor .octicon-link, .markdown-preview h6:hover a.anchor .octicon-link { display: inline-block; }
+.markdown-preview h1 tt, .markdown-preview h2 tt, .markdown-preview h3 tt, .markdown-preview h4 tt, .markdown-preview h5 tt, .markdown-preview h6 tt, .markdown-preview h1 code, .markdown-preview h2 code, .markdown-preview h3 code, .markdown-preview h4 code, .markdown-preview h5 code, .markdown-preview h6 code { font-size: inherit; }
+.markdown-preview h1 { font-size: 28px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(221, 221, 221); color: rgb(0, 0, 0); }
+.markdown-preview h2 { font-size: 24px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(0, 0, 0); }
+.markdown-preview h3 { font-size: 18px; }
+.markdown-preview h4 { font-size: 16px; }
+.markdown-preview h5 { font-size: 14px; }
+.markdown-preview h6 { color: rgb(119, 119, 119); font-size: 14px; }
+.markdown-preview p, .markdown-preview blockquote, .markdown-preview ul, .markdown-preview ol, .markdown-preview dl, .markdown-preview table, .markdown-preview pre.editor-colors { margin: 15px 0px; }
+.markdown-preview hr { border: 0px none; color: rgb(204, 204, 204); height: 4px; padding: 0px; margin: 15px 0px; background: url('data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC') 0px 0px repeat-x transparent; }
+.markdown-preview > h2:first-child, .markdown-preview > h1:first-child, .markdown-preview > h1:first-child + h2, .markdown-preview > h3:first-child, .markdown-preview > h4:first-child, .markdown-preview > h5:first-child, .markdown-preview > h6:first-child { margin-top: 0px; padding-top: 0px; }
+.markdown-preview a:first-child h1, .markdown-preview a:first-child h2, .markdown-preview a:first-child h3, .markdown-preview a:first-child h4, .markdown-preview a:first-child h5, .markdown-preview a:first-child h6 { margin-top: 0px; padding-top: 0px; }
+.markdown-preview h1 + p, .markdown-preview h2 + p, .markdown-preview h3 + p, .markdown-preview h4 + p, .markdown-preview h5 + p, .markdown-preview h6 + p { margin-top: 0px; }
+.markdown-preview li p.first { display: inline-block; }
+.markdown-preview ul, .markdown-preview ol { padding-left: 30px; }
+.markdown-preview ul.no-list, .markdown-preview ol.no-list { list-style-type: none; padding: 0px; }
+.markdown-preview ul li > :first-child, .markdown-preview ol li > :first-child, .markdown-preview ul li ul:first-of-type, .markdown-preview ol li ul:first-of-type { margin-top: 0px; }
+.markdown-preview ul ul, .markdown-preview ul ol, .markdown-preview ol ol, .markdown-preview ol ul { margin-bottom: 0px; }
+.markdown-preview dl { padding: 0px; }
+.markdown-preview dl dt { font-size: 14px; font-weight: bold; font-style: italic; padding: 0px; margin: 15px 0px 5px; }
+.markdown-preview dl dt:first-child { padding: 0px; }
+.markdown-preview dl dt > :first-child { margin-top: 0px; }
+.markdown-preview dl dt > :last-child { margin-bottom: 0px; }
+.markdown-preview dl dd { margin: 0px 0px 15px; padding: 0px 15px; }
+.markdown-preview dl dd > :first-child { margin-top: 0px; }
+.markdown-preview dl dd > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote { border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); padding: 0px 15px; color: rgb(119, 119, 119); }
+.markdown-preview blockquote > :first-child { margin-top: 0px; }
+.markdown-preview blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote p { font-size: 16px; line-height: 1.5; }
+.markdown-preview table th { font-weight: bold; }
+.markdown-preview table th, .markdown-preview table td { border: 1px solid rgb(204, 204, 204); padding: 6px 13px; }
+.markdown-preview table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview img { max-width: 100%; }
+.markdown-preview span.frame { display: block; overflow: hidden; }
+.markdown-preview span.frame > span { border: 1px solid rgb(221, 221, 221); display: block; float: left; overflow: hidden; margin: 13px 0px 0px; padding: 7px; width: auto; }
+.markdown-preview span.frame span img { display: block; float: left; }
+.markdown-preview span.frame span span { clear: both; color: rgb(51, 51, 51); display: block; padding: 5px 0px 0px; }
+.markdown-preview span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-center > span { display: block; overflow: hidden; margin: 13px auto 0px; text-align: center; }
+.markdown-preview span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-right > span { display: block; overflow: hidden; margin: 13px 0px 0px; text-align: right; }
+.markdown-preview span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview span.float-left { display: block; margin-right: 13px; overflow: hidden; float: left; }
+.markdown-preview span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview span.float-right { display: block; margin-left: 13px; overflow: hidden; float: right; }
+.markdown-preview span.float-right > span { display: block; overflow: hidden; margin: 13px auto 0px; text-align: right; }
+.markdown-preview code, .markdown-preview tt { margin: 0px 2px; padding: 0px 5px; border: 1px solid rgb(234, 234, 234); border-radius: 3px; text-shadow: none; background-color: rgb(248, 248, 248); }
+.markdown-preview pre.editor-colors { font-size: 13px; line-height: 19px; overflow: auto; padding: 6px 10px; border-radius: 3px; border: 1px solid rgb(18, 20, 23); background: rgb(41, 44, 51); }
+.markdown-preview kbd { border-radius: 2px; border-width: 1px; border-style: solid; border-color: rgb(221, 221, 221) rgb(204, 204, 204) rgb(204, 204, 204) rgb(221, 221, 221); padding: 1px 4px; line-height: 10px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-image: linear-gradient(rgb(241, 241, 241), rgb(221, 221, 221)); background-color: rgb(221, 221, 221); background-repeat: repeat-x; }
+.markdown-preview .emoji { height: 20px; width: 20px; }
+.markdown-preview { font-size: 1.25em; color: rgb(201, 205, 212); background-color: rgb(48, 52, 60); }
+.markdown-preview h1, .markdown-preview h2 { color: inherit; border-color: rgb(29, 31, 36); }
+.markdown-preview a { color: rgb(100, 148, 237); }
+.markdown-preview hr { background-color: rgb(48, 52, 60); }
+.markdown-preview blockquote { color: rgb(159, 165, 178); border-left-color: rgba(159, 165, 178, 0.6); }
+.markdown-preview table th, .markdown-preview table td { border-color: rgb(29, 31, 36); }
+.markdown-preview table th { background-color: rgb(54, 59, 68); }
+.markdown-preview table tr { background-color: rgb(48, 52, 60); }
+.markdown-preview table tr:nth-child(2n) { background-color: rgb(41, 44, 51); }
+.markdown-preview code { color: rgb(244, 244, 246); border-color: rgb(29, 31, 36); background-color: rgb(63, 69, 79); background-clip: padding-box; }
+.markdown-preview pre.editor-colors::shadow .line.cursor-line { background-color: transparent; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+
+pre.editor-colors,
+.host {
+  background-color: #292c33;
+  color: #95a2bb;
+}
+pre.editor-colors .line.cursor-line,
+.host .line.cursor-line {
+  background-color: rgba(153, 187, 255, 0.04);
+}
+pre.editor-colors .invisible,
+.host .invisible {
+  color: #95a2bb;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-left: 2px solid #3d7af5;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #3f454f;
+}
+pre.editor-colors .bracket-matcher .region,
+.host .bracket-matcher .region {
+  border-bottom: 1px solid #3d7af5;
+  box-sizing: border-box;
+  background-color: #363b44;
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(149, 162, 187, 0.15);
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(149, 162, 187, 0.15);
+}
+pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  background-color: rgba(149, 162, 187, 0.15);
+}
+pre.editor-colors .gutter .line-number,
+.host .gutter .line-number {
+  color: #5a5b5e;
+  -webkit-font-smoothing: antialiased;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:before,
+.host .gutter .line-number.git-line-removed:before {
+  bottom: -3px;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:after,
+.host .gutter .line-number.git-line-removed:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 25px;
+  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);
+  pointer-events: none;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  color: #95a2bb;
+  background-color: #2d3139;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,
+.host .gutter .line-number.cursor-line-no-selection {
+  background-color: transparent;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #95a2bb;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #95a2bb;
+}
+pre.editor-colors .gutter .line-number.folded,
+.host .gutter .line-number.folded,
+pre.editor-colors .gutter .line-number:after,
+.host .gutter .line-number:after,
+pre.editor-colors .fold-marker:after,
+.host .fold-marker:after {
+  color: #95a2bb;
+}
+.comment {
+  color: #5f6b85;
+  font-style: italic;
+}
+.entity.name.type {
+  color: #d9bd86;
+}
+.entity.other.inherited-class {
+  color: #88b379;
+}
+.keyword {
+  color: #b27ecd;
+}
+.keyword.control {
+  color: #b27ecd;
+}
+.keyword.operator {
+  color: #95a2bb;
+}
+.keyword.other.special-method {
+  color: #66a5df;
+}
+.keyword.other.unit {
+  color: #d49a67;
+}
+.storage {
+  color: #b27ecd;
+}
+.constant {
+  color: #d49a67;
+}
+.constant.character.escape {
+  color: #59b3c5;
+}
+.constant.numeric {
+  color: #d49a67;
+}
+.constant.other.color {
+  color: #59b3c5;
+}
+.constant.other.symbol {
+  color: #59b3c5;
+}
+.variable {
+  color: #bf6e7c;
+}
+.variable.interpolation {
+  color: #8f5355;
+}
+.variable.parameter.function {
+  color: #95a2bb;
+}
+.invalid.illegal {
+  background-color: #bf6e7c;
+  color: #292c33;
+}
+.string {
+  color: #88b379;
+}
+.string.regexp {
+  color: #59b3c5;
+}
+.string.regexp .source.ruby.embedded {
+  color: #f18217;
+}
+.string.other.link {
+  color: #bf6e7c;
+}
+.punctuation.definition.comment {
+  color: #5f6b85;
+}
+.punctuation.definition.parameters,
+.punctuation.definition.array {
+  color: #95a2bb;
+}
+.punctuation.definition.heading,
+.punctuation.definition.identity {
+  color: #66a5df;
+}
+.punctuation.definition.bold {
+  color: #d9bd86;
+  font-weight: bold;
+}
+.punctuation.definition.italic {
+  color: #b27ecd;
+  font-style: italic;
+}
+.punctuation.section.embedded {
+  color: #8f5355;
+}
+.support.class {
+  color: #d9bd86;
+}
+.support.function {
+  color: #59b3c5;
+}
+.support.function.any-method {
+  color: #66a5df;
+}
+.entity.name.function {
+  color: #66a5df;
+}
+.entity.name.class,
+.entity.name.type.class {
+  color: #d9bd86;
+}
+.entity.name.section {
+  color: #66a5df;
+}
+.entity.name.tag {
+  color: #bf6e7c;
+}
+.entity.other.attribute-name {
+  color: #d49a67;
+}
+.entity.other.attribute-name.id {
+  color: #66a5df;
+}
+.meta.class {
+  color: #d9bd86;
+}
+.meta.link {
+  color: #d49a67;
+}
+.meta.require {
+  color: #66a5df;
+}
+.meta.selector {
+  color: #b27ecd;
+}
+.meta.separator {
+  background-color: #373b41;
+  color: #95a2bb;
+}
+.meta.tag {
+  color: #95a2bb;
+}
+.none {
+  color: #95a2bb;
+}
+.markup.bold {
+  color: #d49a67;
+  font-weight: bold;
+}
+.markup.changed {
+  color: #b27ecd;
+}
+.markup.deleted {
+  color: #bf6e7c;
+}
+.markup.italic {
+  color: #b27ecd;
+  font-style: italic;
+}
+.markup.heading .punctuation.definition.heading {
+  color: #66a5df;
+}
+.markup.inserted {
+  color: #88b379;
+}
+.markup.list {
+  color: #bf6e7c;
+}
+.markup.quote {
+  color: #d49a67;
+}
+.markup.raw.inline {
+  color: #88b379;
+}
+.source.gfm .markup {
+  -webkit-font-smoothing: auto;
+}
+.source.gfm .markup.heading {
+  color: #bf6e7c;
+}
+.source.gfm .markup.link {
+  color: #b27ecd;
+}
+.source.gfm .link .entity {
+  color: #66a5df;
+}
+.ruby.symbol > .punctuation {
+  color: inherit;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h1 id="tutorial-api-de-testes-openerp-v7">Tutorial API de testes OpenERP v7</h1>
+<p>Usando a API YAML para testes (baseado <a href="http://www.zbeanztech.com/blog/how-effective-yaml-testing-openerp">nesse tutorial</a>)</p>
+<p>Os testes usando YAML são uma maneira simples de realizar testes em módulos do OpenERP sem possuir muito conhecimento (envolvimento) com programação, no tutorial do link acima fica demonstrado a construção colaborativa entre especialista e desenvolvedor dos casos de teste.</p>
+<h2 id="criando-testes-yaml">Criando testes YAML</h2>
+<p>A estrutura básica de um teste YAML é exemplificada a seguir:</p>
+<pre class="editor-colors lang-yaml"><div class="line"><span class="source yaml"><span class="string unquoted yaml"><span class="punctuation definition entry yaml"><span>-</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;Testamdo&nbsp;a&nbsp;inserção&nbsp;do&nbsp;campus&nbsp;Arapiraca</span></span></div><div class="line"><span class="source yaml"><span class="string unquoted yaml"><span class="punctuation definition entry yaml"><span>-</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;</span><span class="string unquoted yaml"><span class="entity name tag yaml"><span>!record&nbsp;{model</span><span class="punctuation separator key-value yaml"><span>:</span></span></span><span>&nbsp;</span><span class="string unquoted yaml"><span>ud.campus,&nbsp;id:&nbsp;campus_arapiraca}:</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string unquoted yaml"><span class="entity name tag yaml"><span>name</span><span class="punctuation separator key-value yaml"><span>:</span></span></span><span>&nbsp;</span><span class="string unquoted yaml"><span>Arapiraca</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;</span></span></div><div class="line"><span class="source yaml"><span class="string unquoted yaml"><span class="punctuation definition entry yaml"><span>-</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;</span><span class="string unquoted yaml"><span class="entity name tag yaml"><span>!assert&nbsp;{model</span><span class="punctuation separator key-value yaml"><span>:</span></span></span><span>&nbsp;</span><span class="string unquoted yaml"><span>ud.campus,&nbsp;id:&nbsp;campus_arapiraca,&nbsp;severity:&nbsp;error,&nbsp;string:&nbsp;O&nbsp;nome&nbsp;do&nbsp;campus&nbsp;precisa&nbsp;ser&nbsp;Arapiraca}:</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string unquoted yaml"><span class="punctuation definition entry yaml"><span>-</span></span><span>&nbsp;</span><span class="string unquoted yaml"><span>name&nbsp;==&nbsp;&quot;Arapis&quot;</span></span></span></span></div></pre>
+<p>O teste exemplificaddo acima deve causar um erro pois os nomes comparados são diferentes.</p>
+<p>Também é possível executar código Python nos testes, por exemplo:</p>
+<pre class="editor-colors lang-yaml"><div class="line"><span class="source yaml"><span class="string unquoted yaml"><span class="punctuation definition entry yaml"><span>-</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;</span><span class="string unquoted yaml"><span class="entity name tag yaml"><span>!python&nbsp;{model</span><span class="punctuation separator key-value yaml"><span>:</span></span></span><span>&nbsp;</span><span class="string unquoted yaml"><span>survey.request}:&nbsp;|</span></span></span></span></div><div class="line"><span class="source yaml"><span>&nbsp;&nbsp;&nbsp;&nbsp;self.survey_req_waiting_answer(cr,&nbsp;uid,&nbsp;[ref(</span><span class="string quoted double yaml"><span class="punctuation definition string begin yaml"><span>&quot;</span></span><span>survey_request_1</span><span class="punctuation definition string end yaml"><span>&quot;</span></span></span><span>)],&nbsp;context)</span></span></div></pre>
+<p>Para executar, é necessário adicionar o arquivo YML aos metadados do módulo:</p>
+<p>Arquivo __init__.py</p>
+<p><strong>Obs</strong>: Supondo que o nome do arquivo <code>.yml</code> é <code>campus.yml</code> e ele está tentro da pasta <code>test</code>.</p>
+<pre class="editor-colors lang-python"><div class="line"><span class="source python"><span>...</span></span></div><div class="line"><span class="source python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>test</span><span class="punctuation definition string end python"><span>&#39;</span></span></span><span>:&nbsp;</span><span class="meta structure list python"><span class="punctuation definition list begin python"><span>[</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="meta structure list item python"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>test/campus.yml</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation separator list python"><span>,</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="punctuation definition list end python"><span>]</span></span></span><span>,</span></span></div><div class="line"><span class="source python"><span>...</span></span></div></pre>
+<h2 id="executando-os-testes">Executando os testes</h2>
+<p>É recomendado criar um banco de dados só para realizar os testes, visto que os módulos precisam ser atualizados e/ou resinstalados para executar os testes.</p>
+<p>Executando o comando:</p>
+<p><code>./openerp-server -d dbteste -i ud --test-enable --log-level=test</code></p>
+<p>O <code>-i</code> pode ser subistituído por <code>-u</code> caso o módulo já esteja instalado</p>
+<h2 id="usando-o-unittest2-com-python">Usando o unittest2 com Python</h2>
+<p>A seguir exemplificaremos o uso do framework python <code>unittest2</code> em conjunto com a API de testes do OpenERP para criar testes unitários. Esse método é um complemento a API XML/YAML para testes server-side. Para realizar testes client-side existe um framework de testes unitários javaScript dentro do pacote padrão do OpenERP que também funciona com o QUnit e o PhamtonJS.</p>
+<p>Os teste unitários com unittes2 devem ser usados para testes em cenários específicos ou para testar funcionalidades ou permissões que não podem ser testadas através da API YAML de testes, portanto, esses testes unitários não devem cobrir testes de CRUD (apesar de ser possível, é bem mais trabalhoso realizar testes CRUD dessa forma).</p>
+<h2 id="estrutura-de-arquivos">Estrutura de arquivos</h2>
+<p>Para começar, vamos criar a estrutura básica de testes de módulo e entender alguns conceitos.</p>
+<h3 id="exemplo-">Exemplo:</h3>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ud/</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>__init__.py</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;ud.py</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;tests/</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>__init__.py</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test_ud_emplyee.py</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...</span></span></span></div></pre><p>A estrutura acima adicionada ao módulo <code>ud</code> acrescenta o pacote python <code>tests</code> onde serão armazenados e escritos os testes unitários para o módulo.</p>
+<h2 id="su-tes-de-teste">Suítes de teste</h2>
+<p>Para adicionar testes unitários ao OpenERP, é necessário adicionar os módulos de teste ao mecanismo <code>test suite</code>, a versão 7 utiliza duas suites de testes nomeadas <code>fast_suite</code> e <code>checks</code></p>
+<p>A suite <code>fast_suite</code> deve conter apenas os testes que podem ser executados frequentemente após a instalação ou atualização do módulo (testes longos não devem ser especificados nessa lista).</p>
+<p>O funcionamento da suite <code>checks</code> é análogo a <code>fast_suite</code>, porém os testes dessa lista são executados a cada instalação de módulo (Qualquer módulo), migração de banco de dados ou mesmo periodicamente durante o estado de produção através de <code>Cron Threads</code>.</p>
+<p>Quando o teste não é listado em nenhuma das suites, ele é adicionado automaticamente as duas listas.</p>
+<h2 id="adicionando-teste-a-su-te">Adicionando teste a Suíte</h2>
+<p>Exemplificando essa etapa, temos:</p>
+<p>Arquivo __init__.py</p>
+<pre class="editor-colors lang-python"><div class="line"><span class="source python"><span class="keyword control import python"><span>import</span></span><span>&nbsp;</span><span>test_ud_employee</span></span></div><div class="line"><span class="source python"><span>...</span></span></div><div class="line"><span class="source python"><span>fast_suite</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta structure list python"><span class="punctuation definition list begin python"><span>[</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="meta structure list item python"><span>&nbsp;&nbsp;</span><span>test_ud_employee</span></span><span class="punctuation separator list python"><span>,</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="meta structure list item python"><span>&nbsp;&nbsp;...</span></span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="punctuation definition list end python"><span>]</span></span></span></span></div><div class="line"><span class="source python"><span>checks</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta structure list python"><span class="punctuation definition list begin python"><span>[</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="meta structure list item python"><span>&nbsp;&nbsp;</span><span>test_ud_employee</span></span><span class="punctuation separator list python"><span>,</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="meta structure list item python"><span>&nbsp;&nbsp;...</span></span></span></span></div><div class="line"><span class="source python"><span class="meta structure list python"><span class="punctuation definition list end python"><span>]</span></span></span></span></div></pre>
+<h2 id="criando-caso-de-teste">Criando caso de teste</h2>
+<p>Vamos criar um caso de teste simples para exemplificar o uso do <code>unittest2</code></p>
+<p>Arquivo test_ud_emplyee.py</p>
+<pre class="editor-colors lang-python"><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;-*-&nbsp;encoding:&nbsp;UTF-8&nbsp;-*-</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;</span></span></div><div class="line"><span class="source python"><span class="keyword control import python"><span>import</span></span><span>&nbsp;</span><span>unittest2</span></span></div><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Para&nbsp;testar&nbsp;as&nbsp;views,&nbsp;usaremos&nbsp;o&nbsp;lxml</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="keyword control import from python"><span>from</span></span><span>&nbsp;</span><span>lxml</span><span>&nbsp;</span><span class="keyword control import python"><span>import</span></span><span>&nbsp;</span><span>etree</span></span></div><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Importando&nbsp;o&nbsp;framework&nbsp;de&nbsp;testes</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="keyword control import from python"><span>from</span></span><span>&nbsp;</span><span>openerp</span><span>.</span><span>tests</span><span>&nbsp;</span><span class="keyword control import python"><span>import</span></span><span>&nbsp;</span><span>common</span></span></div><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Importanto&nbsp;o&nbsp;logger</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="keyword control import from python"><span>from</span></span><span>&nbsp;</span><span>openerp</span><span>.</span><span>tools</span><span>.</span><span>misc</span><span>&nbsp;</span><span class="keyword control import python"><span>import</span></span><span>&nbsp;</span><span>mute_logger</span></span></div><div class="line"><span class="source python"><span>&nbsp;</span></span></div><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Grupo&nbsp;usado&nbsp;para&nbsp;teste&nbsp;(Opcional)</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>GROUP</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="string quoted double single-line python"><span class="punctuation definition string begin python"><span>&quot;</span></span><span>base.admin_ud</span><span class="punctuation definition string end python"><span>&quot;</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;</span></span></div><div class="line"><span class="source python"><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;também&nbsp;e&nbsp;possível&nbsp;criar&nbsp;casos&nbsp;de&nbsp;teste&nbsp;usando&nbsp;a&nbsp;classe&nbsp;unittest2.TestCase,&nbsp;porém&nbsp;os&nbsp;testes&nbsp;devem&nbsp;ser&nbsp;estáticos</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="meta class python"><span class="storage type class python"><span>class</span></span><span>&nbsp;</span><span class="entity name type class python"><span>Teste_ud_emplyee</span></span><span class="punctuation definition inheritance begin python"><span>(</span></span><span class="meta class inheritance python"><span class="entity other inherited-class python"><span>common</span><span>.</span><span>TransactionCase</span></span></span><span class="punctuation definition inheritance end python"><span>)</span></span><span class="punctuation section class begin python"><span>:</span></span></span></span></div><div class="line"><span class="source python"><span class="meta function python"><span>&nbsp;&nbsp;</span><span class="storage type function python"><span>def</span></span><span>&nbsp;</span><span class="entity name function python"><span>setUp</span></span><span class="punctuation definition parameters begin python"><span>(</span></span><span class="meta function parameters python"><span class="variable parameter function python"><span>self</span></span></span><span class="punctuation definition parameters end python"><span>)</span></span><span class="punctuation section function begin python"><span>:</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta function-call python"><span class="support function builtin python"><span>super</span></span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span>Teste_ud_emplyee</span><span>,&nbsp;</span><span class="variable language python"><span>self</span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span>.</span><span class="meta function-call python"><span>s</span><span>etUp</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="punctuation definition arguments end python"><span>)</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>u</span><span>d_employee</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta function-call python"><span class="variable language python"><span>self</span></span><span>.</span><span>registry</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>ud.employee</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>d</span><span>emo_uid</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="constant numeric integer decimal python"><span>3</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>g</span><span>roup</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta function-call python"><span class="variable language python"><span>self</span></span><span>.</span><span>registry</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>ir.model.data</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span>.</span><span class="meta function-call python"><span>g</span><span>et_object</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="variable language python"><span>self</span></span><span>.</span><span>c</span><span>r</span><span>,&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>u</span><span>id</span><span>,</span><span class="keyword operator arithmetic python"><span>*</span></span><span>(</span><span class="meta function-call python"><span>GROUP</span><span>.</span><span>split</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>.</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span>)</span></span><span class="punctuation definition arguments end python"><span>)</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;</span></span></div><div class="line"><span class="source python"><span class="meta function python"><span>&nbsp;&nbsp;</span><span class="storage type function python"><span>def</span></span><span>&nbsp;</span><span class="entity name function python"><span>test_fields_browse_restriction</span></span><span class="punctuation definition parameters begin python"><span>(</span></span><span class="meta function parameters python"><span class="variable parameter function python"><span>self</span></span></span><span class="punctuation definition parameters end python"><span>)</span></span><span class="punctuation section function begin python"><span>:</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double block python"><span class="punctuation definition string begin python"><span>&quot;&quot;&quot;</span></span></span></span></div><div class="line"><span class="source python"><span class="string quoted double block python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Testamdo&nbsp;acesso&nbsp;a&nbsp;campos&nbsp;restritos</span></span></span></div><div class="line"><span class="source python"><span class="string quoted double block python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation definition string end python"><span>&quot;&quot;&quot;</span></span></span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Adiciona&nbsp;o&nbsp;grupo&nbsp;como&nbsp;atributo&nbsp;de&nbsp;permissão&nbsp;do&nbsp;campo&nbsp;matrícula</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta item-access python"><span class="variable language python"><span>self</span></span><span>.</span><span>ud_employee</span><span>.</span><span>_columns</span><span class="punctuation definition arguments begin python"><span>[</span></span><span class="meta item-access arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>matricula</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>]</span></span></span><span>.</span><span>g</span><span>roups</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span>GROUP</span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control exception python"><span>try</span></span><span>:</span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>P</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>u</span><span>d_employee</span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Buscando&nbsp;um&nbsp;employee&nbsp;qualquer</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>pid</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta function-call python"><span>P</span><span>.</span><span>search</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="variable language python"><span>self</span></span><span>.</span><span>c</span><span>r</span><span>,&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>d</span><span>emo_uid</span><span>,&nbsp;</span><span class="meta structure list python"><span class="punctuation definition list begin python"><span>[</span></span><span class="punctuation definition list end python"><span>]</span></span></span><span>,&nbsp;</span><span class="variable parameter function python"><span>limit</span></span><span class="keyword operator assignment python"><span>=</span></span><span class="constant numeric integer decimal python"><span>1</span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span class="meta item-access python"><span class="punctuation definition arguments begin python"><span>[</span></span><span class="meta item-access arguments python"><span class="constant numeric integer decimal python"><span>0</span></span></span><span class="punctuation definition arguments end python"><span>]</span></span></span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Recuperando&nbsp;os&nbsp;registros</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>part</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="meta function-call python"><span>P</span><span>.</span><span>browse</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="variable language python"><span>self</span></span><span>.</span><span>c</span><span>r</span><span>,&nbsp;</span><span class="variable language python"><span>self</span></span><span>.</span><span>d</span><span>emo_uid</span><span>,&nbsp;</span><span>pid</span></span><span class="punctuation definition arguments end python"><span>)</span></span></span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Esse&nbsp;acesso&nbsp;não&nbsp;deve&nbsp;levantar&nbsp;excessão</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>part</span><span>.</span><span>cidade</span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;...&nbsp;Esse&nbsp;acesso&nbsp;deve&nbsp;levantar&nbsp;uma&nbsp;excessão&nbsp;caso&nbsp;o&nbsp;grupo&nbsp;não&nbsp;seja&nbsp;permitido</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Nesse&nbsp;caso,&nbsp;a&nbsp;excessão&nbsp;ocorre&nbsp;dentro&nbsp;do&nbsp;bloco&nbsp;with,&nbsp;não&nbsp;influenciando&nbsp;na&nbsp;execução</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;A&nbsp;excessão&nbsp;é&nbsp;armazenada&nbsp;na&nbsp;variável&nbsp;&quot;cm&quot;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control statement python"><span>with</span></span><span>&nbsp;</span><span class="meta function-call python"><span class="variable language python"><span>self</span></span><span>.</span><span>assertRaises</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span>openerp</span><span>.</span><span>osv</span><span>.</span><span>orm</span><span>.</span><span>except_orm</span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span>&nbsp;</span><span class="keyword other python"><span>as</span></span><span>&nbsp;</span><span>cm</span><span>:</span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control statement python"><span>with</span></span><span>&nbsp;</span><span class="meta function-call python"><span>mute_logger</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>openerp.osv.orm</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span><span>:</span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>part</span><span>.</span><span>matricula</span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;...&nbsp;Verifica&nbsp;se&nbsp;o&nbsp;acesso&nbsp;foi&nbsp;mesmo&nbsp;proibido,&nbsp;caso&nbsp;contrário,&nbsp;o&nbsp;teste&nbsp;falha</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta function-call python"><span class="variable language python"><span>self</span></span><span>.</span><span>assertEqual</span><span class="punctuation definition arguments begin python"><span>(</span></span><span class="meta function-call arguments python"><span class="meta item-access python"><span>cm</span><span>.</span><span>exception</span><span>.</span><span>args</span><span class="punctuation definition arguments begin python"><span>[</span></span><span class="meta item-access arguments python"><span class="constant numeric integer decimal python"><span>0</span></span></span><span class="punctuation definition arguments end python"><span>]</span></span></span><span>,&nbsp;</span><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>Access&nbsp;Denied</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>)</span></span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control exception python"><span>finally</span></span><span>:</span></span></div><div class="line"><span class="source python"><span class="punctuation whitespace comment leading python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign python"><span class="punctuation definition comment python"><span>#</span></span><span>&nbsp;Retira&nbsp;o&nbsp;atributo&nbsp;adicionado&nbsp;para&nbsp;o&nbsp;teste,&nbsp;retornando&nbsp;ao&nbsp;estado&nbsp;original</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source python"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta item-access python"><span class="variable language python"><span>self</span></span><span>.</span><span>ud_employee</span><span>.</span><span>_columns</span><span class="punctuation definition arguments begin python"><span>[</span></span><span class="meta item-access arguments python"><span class="string quoted single single-line python"><span class="punctuation definition string begin python"><span>&#39;</span></span><span>email</span><span class="punctuation definition string end python"><span>&#39;</span></span></span></span><span class="punctuation definition arguments end python"><span>]</span></span></span><span>.</span><span>g</span><span>roups</span><span>&nbsp;</span><span class="keyword operator assignment python"><span>=</span></span><span>&nbsp;</span><span class="constant language python"><span>False</span></span></span></div></pre>
+<h2 id="executando-os-testes">Executando os testes</h2>
+<p>É recomendado criar um banco de dados só para realizar os testes, visto que os módulos precisam ser atualizados e/ou resinstalados para executar os testes.</p>
+<p>Executando o comando:</p>
+<p><code>./openerp-server -d dbteste -i ud --test-enable --log-level=test</code></p>
+<p>O <code>-i</code> pode ser subistituído por <code>-u</code> caso o módulo já esteja instalado</p></body>
+</html>
