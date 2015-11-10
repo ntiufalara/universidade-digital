@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ud_nucelo_espaco,ud.nucleo_espaco,ud.model_ud_espaco,base.admin_ud,base.admin_ud,base.admin_ud,base.admin_ud,base.admin_ud
-access_ud_nucleo_setor,ud.nucleo_setor,ud.model_ud_setor,base.admin_ud,1,1,1,1
-access_ud_nucleo_polo,ud.nucleo_polo,ud.model_ud_polo,base.admin_ud,1,1,1,1
-access_ud_nucleo_campus,ud.nucleo_campus,ud.model_ud_campus,base.admin_ud,1,1,1,1
-access_ud_nucleo_employee,ud.nucleo_employee,ud.model_ud_employee,base.admin_ud,1,1,1,1
-access_ud_nucleo_usuario,ud.nucleo_employee,base.model_res_users,base.admin_ud,1,1,1,1
-access_ud_nucleo_papel,ud.nucleo_employee,ud.model_ud_perfil,base.admin_ud,1,1,1,1
-access_ud_nucleo_dados,ud.nucleo_employee,ud.model_ud_dados,base.admin_ud,1,1,1,1
