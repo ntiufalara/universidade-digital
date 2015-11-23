@@ -14,3 +14,4 @@ access_ud_nucleo_espaco_gerente,ud.nucleo_espaco,ud.model_ud_espaco,base.gerente
 access_ud_nucleo_polo,ud.nucleo_polo,ud.model_ud_polo,base.gerente_espaco_ud,1,0,0,0
 access_ud_nucleo_bloco,ud.nucleo_polo,ud.model_ud_bloco,base.admin_ud,1,1,1,1
 access_ud_nucleo_bloco,ud.nucleo_polo,ud.model_ud_bloco,base.gerente_espaco_ud,1,0,0,0
+access_ud_nucleo_usuario,ud.nucleo_usuario,base.model_res_users,base.usuario_ud,1,1,0,0

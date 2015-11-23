@@ -1,13 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-import logging
-import openerp
 from openerp.osv import osv, fields
-import re
-from types import NoneType
-from account.account import _logger
-import addons
-import openerp.tools as tools
+
 
 class patrimonio_marca(osv.osv):
     '''
@@ -104,7 +98,7 @@ class patrimonio_bem(osv.osv):
         u'marca_local': fields.many2one('patrimonio.marca', u'Marca', required=True),
         u'descricao':fields.text(u'Descrição'),
         u'marca_filtro': fields.related('modelo', 'marca.name', type='char'),
-                
+        #u"solicitacao_os" : fields.many2many('ud.solicitacao', 'patrimonio_bem_solicitacao', 'bem_id', 'solicitacao_id', string="Ordens de serviço")
     }
     
     def limpa_modelo(self, cr, uid, ids):

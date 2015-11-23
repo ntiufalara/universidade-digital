@@ -76,6 +76,10 @@ class ud_nova_solicitacao (osv.osv):
                  }
     _rec_name = "data"
     
+    def create(self, cr, uid, values, context=None):
+        context['mail_create_nolog'] = True
+        return super(ud_nova_solicitacao, self).create(cr, uid, values, context)
+    
     def busca_dados (self, cr, uid, ids, field, args, context):
         '''
         Descrição: Chamada pelas funções inline para buscar valores funcionais

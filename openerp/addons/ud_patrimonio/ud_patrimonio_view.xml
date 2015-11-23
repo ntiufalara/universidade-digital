@@ -19,7 +19,7 @@
             <field name="name">patrimonio.marca.form</field>
             <field name="model">patrimonio.marca</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">           
+            <field name="arch" type="xml">
 	            <form string="Marca" version="7.0">
 		            <group col="2">
 		            	<field name="name" />
@@ -27,7 +27,6 @@
                 		<newline />
 		            	<field name="descricao"/>
 		            </group>
-		           
 	            </form>
         	</field>
        </record>
@@ -41,7 +40,6 @@
 	            	<field name="name"/>
 	            	<field name="descricao"/>
 	            </tree>
-	            
         	</field>
        </record>
        
@@ -82,7 +80,6 @@
 	            	<field name="name"/>
 	            	<field name="valor"/>
 	            </tree>
-	            
         	</field>
        </record>
        
@@ -326,14 +323,7 @@
 		            	<field name="estado" />
 		            	<field name="marca_local" />
 		            	<field name="modelo" />
-		            		            	
 	            </tree>
-	            
-	            
-	            
-	            
-	            
-	            
         	</field>
        </record>
       <!--            
