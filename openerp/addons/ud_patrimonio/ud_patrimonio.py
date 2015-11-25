@@ -98,8 +98,12 @@ class patrimonio_bem(osv.osv):
         u'marca_local': fields.many2one('patrimonio.marca', u'Marca', required=True),
         u'descricao':fields.text(u'Descrição'),
         u'marca_filtro': fields.related('modelo', 'marca.name', type='char'),
-        #u"solicitacao_os" : fields.many2many('ud.solicitacao', 'patrimonio_bem_solicitacao', 'bem_id', 'solicitacao_id', string="Ordens de serviço")
+        u'solicitacao_os' : fields.one2many('ud.solicitacao', 'pat', "solicitacao"),
     }
+
+    def create(self, cr, uid, values, context=None):
+        context['mail_create_nolog'] = True
+        return super(ud_nova_solicitacao, self).create(cr, uid, values, context)
     
     def limpa_modelo(self, cr, uid, ids):
         '''

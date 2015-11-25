@@ -4,7 +4,7 @@
 'category':'Universidade Digital',
 'description':'Aplicação para solicitação de ordem de serviço',
 'author':'NTI',
-'depends':['base','ud', 'ud_patrimonio'],
+'depends':['base','ud'],
 'data': [
          'ud_solicitacao_view.xml',
          "ud_solicitacao_view_gerente.xml",

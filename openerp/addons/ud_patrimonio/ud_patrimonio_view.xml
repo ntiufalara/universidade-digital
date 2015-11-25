@@ -283,33 +283,38 @@
             <field name="type">form</field>
             <field name="arch" type="xml">           
 	            <form string="Bem" version="7.0">
-		            <group col="4" colspan="6">
-		            	<field name="name" />
-		            	<field name="nome" />
-		            	<field name="espaco" />
-		            	<field name="grupo" />
-		            	<field name="estado" />
-		            	<field name="marca_local" on_change="limpa_modelo()"/>
-		            	<field name="modelo" domain="[('marca', '=', marca_local)]"/>
-		            	<separator string="Outras informações" colspan="4"/>
-                		<newline />
-		            	<field name="descricao"/>
-		            </group>	            
+		            <sheet>
+		            	<group>
+			            	<group>
+			          			<field name="name" />
+				            	<field name="nome" />
+				            	<field name="espaco" />
+				            	<field name="grupo" />
+			            	</group>
+			            	<group>
+				            	<field name="estado" />
+				            	<field name="marca_local" on_change="limpa_modelo()"/>
+				            	<field name="modelo" domain="[('marca', '=', marca_local)]"/>
+			            	</group>
+			            	<group string="Outras informações">
+			            		<group>
+			            			<field name="descricao"/>
+			            		</group>
+			            	</group>
+		            	</group>
+		            	<group string="Solicitações de OS">
+	            			<field nolabel="1" name="solicitacao_os" context="{'pat': id}" />
+	            		</group>
+		            </sheet>
 		            	            
 		            <div class="oe_chatter">
 	               <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
 	                	<field name="message_ids" widget="mail_thread"/>
 	         		</div>
-		           
 	            </form>
-        	</field>
-        	
+        	</field>        	
        </record>
-       
-		
-       
-		
-       
+
        <record id="view_patrimonio_bem_tree" model="ir.ui.view">
             <field name="name">patrimonio.bem.tree</field>
             <field name="model">patrimonio.bem</field>

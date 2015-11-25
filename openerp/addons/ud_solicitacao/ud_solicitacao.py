@@ -61,7 +61,7 @@ class ud_nova_solicitacao (osv.osv):
                 "local_polo_destino": fields.many2one("ud.polo","Polo"),
                 "local_espaco_destino": fields.many2one("ud.espaco","Espaço"),
                 "detalhes_espaco_destino": fields.char('Sala / Bloco'),
-                "pat":fields.many2one("patrimonio.bem","Patrimônio ref."),
+                "pat":fields.char("Patrimônio ref."),
                 "pat_bool":fields.boolean("Patrimônio"),
                 'descricao':fields.text('Descrição', required=True),
                     
@@ -116,7 +116,7 @@ class ud_nova_solicitacao (osv.osv):
         Limpa os campos dependentes
         método on_change
         '''
-        campos = ["mov_denominacao","equipamento","eq_eletricos","equip_denominacao","modelo","marca","refrigeradores","ref_tipo","predial","instalacoes","pat","pat_bool","local_camp_destino","local_polo_destino","local_bloco_destino","local_sala_destino"]
+        campos = ["mov_denominacao","equipamento","eq_eletricos","equip_denominacao","modelo","marca","refrigeradores","ref_tipo","predial","instalacoes","local_camp_destino","local_polo_destino","local_bloco_destino","local_sala_destino"]
         valores = {}
         for campo in campos:
             valores[campo] = ""

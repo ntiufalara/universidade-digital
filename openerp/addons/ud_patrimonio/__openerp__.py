@@ -29,7 +29,7 @@ Módulo de Gerenciamento de Patrimônio.
     """,
     'author': 'LAPEC',
     'images': [],
-    'depends': ['base','ud'],
+    'depends': ['base','ud', 'ud_solicitacao'],
     'init_xml': [],
 
     'data': [
