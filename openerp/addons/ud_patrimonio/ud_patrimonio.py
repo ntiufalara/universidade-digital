@@ -103,7 +103,7 @@ class patrimonio_bem(osv.osv):
 
     def create(self, cr, uid, values, context=None):
         context['mail_create_nolog'] = True
-        return super(ud_nova_solicitacao, self).create(cr, uid, values, context)
+        return super(patrimonio_bem, self).create(cr, uid, values, context)
     
     def limpa_modelo(self, cr, uid, ids):
         '''
