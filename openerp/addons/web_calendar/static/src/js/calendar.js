@@ -30,7 +30,7 @@ openerp.web_calendar = function(instance) {
 var _t = instance.web._t,
    _lt = instance.web._lt;
 var QWeb = instance.web.qweb;
-instance.web.views.add('ud-calendar', 'instance.web_calendar.CalendarView');
+instance.web.views.add('calendar', 'instance.web_calendar.CalendarView');
 instance.web_calendar.CalendarView = instance.web.View.extend({
     template: "CalendarView",
     display_name: _lt('Calendar'),
