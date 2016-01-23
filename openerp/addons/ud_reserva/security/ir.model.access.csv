@@ -1,8 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ud_reserva_solicitante,ud_reserva_solicitante,ud_reserva.model_ud_reserva,base.solicitante_reserva,1,1,1,0
-access_ud_reserva_solicitante_employee,ud_reserva_solicitante_employee,ud.model_ud_employee,base.solicitante_reserva,1,0,0,0
-access_ud_reserva_solicitante_espaco,ud_reserva_solicitante_espaco,ud.model_ud_espaco,base.solicitante_reserva,1,0,0,0
-access_ud_reserva_gerente,ud_reserva_gerente,ud_reserva.model_ud_reserva,base.gerente_reserva,1,1,1,1
-access_ud_reserva_gerente_employee,ud_reserva_gerente_employee,ud.model_ud_employee,base.gerente_reserva,1,0,0,0
-access_ud_reserva_gerente_espaco,ud_reserva_gerente_espaco,ud.model_ud_espaco,base.gerente_reserva,1,0,0,0
-access_ud_reserva_solicitante,ud_reserva_visitante,ud_reserva.model_ud_reserva,base.visitante_reserva,1,0,0,0
