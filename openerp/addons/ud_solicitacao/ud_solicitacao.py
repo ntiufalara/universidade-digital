@@ -61,8 +61,6 @@ class ud_nova_solicitacao (osv.osv):
                 "local_polo_destino": fields.many2one("ud.polo","Polo"),
                 "local_espaco_destino": fields.many2one("ud.espaco","Espaço"),
                 "detalhes_espaco_destino": fields.char('Sala / Bloco'),
-                "pat":fields.char("Patrimônio ref."),
-                "pat_bool":fields.boolean("Patrimônio"),
                 'descricao':fields.text('Descrição', required=True),
                     
                 }
