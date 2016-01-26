@@ -152,7 +152,7 @@ openerp.ud_web_calendar = function(instance) {
             //if quick_add = False, we don't allow quick_add
             //if quick_add = not specified in view, we use the default quick_create_instance
             //if quick_add = is NOT False and IS specified in view, we this one for quick_create_instance'   
-
+            
             this.quick_add_pop = (isNullOrUndef(attrs.quick_add) || _.str.toBoolElse(attrs.quick_add, true));
             if (this.quick_add_pop && !isNullOrUndef(attrs.quick_add)) {
                 self.quick_create_instance = 'instance.' + attrs.quick_add;
@@ -1074,7 +1074,7 @@ openerp.ud_web_calendar = function(instance) {
                     return self.dataset.create(data, options).done(function(r) {
                     }).fail(function (r, event) {
                        if (!r.data.message) { //else manage by openerp
-                            throw new Error(r);
+                            // instance.web.CrashManager.show_warning(r.data.fault_code);
                        }
                     });
                 },
@@ -1082,7 +1082,7 @@ openerp.ud_web_calendar = function(instance) {
                     return self.dataset.read_ids.apply(self.dataset, arguments).done(function() {
                     }).fail(function (r, event) {
                         if (!r.data.message) { //else manage by openerp
-                            throw new Error(r);
+                            // throw new Error(r.data.fault_code);
                         }
                     });
                 },
