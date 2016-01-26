@@ -155,13 +155,10 @@ class ud_reserva (osv.osv):
 #         return False
     
     def total_dias(self, cr, uid, data_final, data_inicial, context):
-        print "hora de saida"
         va = self.obter_datetime(cr, uid, data_inicial, context)  
         try:
-            print "hora de fim de frequencia"
             vb = self.obter_datetime(cr, uid, data_final, context)
         except:       
-            print "hora de saida"
             vb = self.obter_datetime(cr, uid, data_inicial, context)         
         return (vb - va).days
      
@@ -187,11 +184,13 @@ class ud_reserva (osv.osv):
     
     def _checar_data(self, cr, uid, ids, context=None):
         obj_data_reserva = self.pool.get('ud.reserva').browse(cr, uid, ids)
+        print obj_data_reserva[0].hora_entrada
+        print obj_data_reserva[0].hora_saida
         for obj in obj_data_reserva:
             #depois colocar os dois 'if' em uma unica linha
             if datetime.strptime(obj.hora_entrada, "%Y-%m-%d %H:%M:%S") < datetime.now():
                 return False
-            if datetime.strptime(obj.hora_saida, "%Y-%m-%d %H:%M:%S") < datetime.now():
+            elif datetime.strptime(obj.hora_saida, "%Y-%m-%d %H:%M:%S") < datetime.now():
                 return False
         return True
       
@@ -216,7 +215,6 @@ class ud_reserva (osv.osv):
     def _checar_dia_reserva(self, cr, uid, ids, context=None):        
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)
         for obj in obj_data_reserva2:
-            print "checando o dia da reserva"
             data_e = self.obter_datetime(cr, uid, obj.hora_entrada, context)
             data_s = self.obter_datetime(cr, uid, obj.hora_saida, context)  
             if data_e.date()!= data_s.date():
@@ -231,8 +229,8 @@ class ud_reserva (osv.osv):
         return True
 
      
-    _constraints = [(_checar_data, "Não é possível reservar em data ultrapassada!",['Entrada', 'Saida']),
-                    (_checar_dia_reserva, "Entrada e Saída devem ser na mesma data!",['Entrada', 'Saida']),
+    _constraints = [(_checar_data, "Não é possível reservar em data ultrapassada!",['Entrada']),
+                    (_checar_dia_reserva, "Entrada e Saída devem ser na mesma data!",['Entrada']),
                     (_checar_reserva, "Horário indisponível. Há uma reserva neste mesmo horário e espaço!", ['Reserva e Espaço'.decode("UTF-8")]),
                     (_checar_horario, "Horário de Saída não pode ser menor ou igual ao Horário de Entrada!",['Entrada','Saída'.decode("UTF-8")]),
                     (envia_solicitacao, "Solicitação Enviada", ["Enviar"]),]
