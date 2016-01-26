@@ -59,7 +59,8 @@ body {
 .home-sec {
     padding-top: 10px;
     padding-bottom: 60px;
-    background: url(../img/header.jpg) no-repeat center center;
+    /*background: url(../img/header.jpg) no-repeat center center;*/
+    background: url(../img/servidor_dados.jpg) no-repeat center center;
     padding: 0;
     -webkit-background-size: cover;
     background-size: cover;
@@ -238,7 +239,8 @@ h1::after {
 #contact-sec {
     padding-top: 10px;
     padding-bottom: 60px;
-    background: url(../img/contact.jpg) no-repeat center center;
+    /*background: url(../img/contact.jpg) no-repeat center center;*/
+    background: url(../img/contato.jpg) no-repeat center center;
     padding: 0;
     -webkit-background-size: cover;
     background-size: cover;
