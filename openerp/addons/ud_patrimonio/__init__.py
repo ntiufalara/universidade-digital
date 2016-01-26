@@ -1,1 +1,1 @@
-import ud_patrimonio, wizards, ud_solicitacao_ow
+import ud_patrimonio, ud_solicitacao_override
