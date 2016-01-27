@@ -363,10 +363,7 @@
         
         <menuitem name="Patrimônio" id="menu_patrimonio" parent="ud.menu_point_root" groups="base.patrimonio_administrador" sequence="1"/>
         <menuitem name="Patrimônio" id="menu_patrimonio_gerente_bem" parent="ud.menu_point_root" groups="base.patrimonio_bem_gerente" sequence="1"/>
-{#		<menuitem action="view_patrimonio_marca_action" id="menu_patrimonio_marca" parent="menu_patrimonio" sequence="2" />#}
-{#		<menuitem action="view_patrimonio_modelo_action" id="menu_patrimonio_modelo" parent="menu_patrimonio" sequence="3" />#}
-{#		<menuitem action="view_patrimonio_grupo_action" id="menu_patrimonio_grupo" parent="menu_patrimonio" sequence="4" />#}
-{#		<menuitem action="view_patrimonio_estado_action" id="menu_patrimonio_estado" parent="menu_patrimonio" sequence="5" />#}
+
 		<menuitem action="view_patrimonio_bem_action" id="menu_patrimonio_bem_admim" parent="menu_patrimonio" sequence="6" />
 		<menuitem action="view_patrimonio_bem_action" id="menu_patrimonio_bem_gerente" parent="menu_patrimonio_gerente_bem"  sequence="6" />
 		

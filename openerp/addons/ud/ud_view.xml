@@ -594,8 +594,8 @@
 	                            </group>
 	                            <group col="2" colspan="2">
 	                            	<field name="work_phone" class="work_phone"/>
-	                                <field name="mobile_phone" class="mobile_phone"/>
-	                                <field name="work_email" widget="email"/>
+	                                <field name="mobile_phone" class="telefone" required="1" />
+	                                <field name="work_email" widget="email" required="1" />
 	                                <field name="curriculo_lattes_link" widget="url"/>	                                	                             
 	                            </group>
 	                        </group>

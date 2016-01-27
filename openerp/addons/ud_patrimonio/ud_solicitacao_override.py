@@ -21,29 +21,29 @@ class ud_solicitacao(osv.Model):
     }
 
     def patrimonio_default(self, cr, uid, context):
-        if context.has_key('pat'):
+        if context.get('pat'):
             return context['pat']
         return False
 
     def manutencao_default(self, cr, uid, context):
-        if context.has_key('pat'):
+        if context.get('pat'):
             return 'equip'
         return False
 
     def campus_default(self, cr, uid, context):
-        if context.has_key('espaco'):
+        if context.get('espaco'):
             espaco = self.pool.get('ud.espaco').browse(cr, uid, context.get('espaco'))
             return espaco.local_polo.campus_id.id
         return False
 
     def polo_default(self, cr, uid, context):
-        if context.has_key('espaco'):
+        if context.get('espaco'):
             espaco = self.pool.get('ud.espaco').browse(cr, uid, context.get('espaco'))
             return espaco.local_polo.id
         return False
 
     def espaco_default(self, cr, uid, context):
-        if context.has_key('espaco'):
+        if context.get('espaco'):
             espaco = self.pool.get('ud.espaco').browse(cr, uid, context.get('espaco'))
             return espaco.id
         return False
