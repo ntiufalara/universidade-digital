@@ -1,61 +1,46 @@
-About OpenERP
--------------
+# ![Universidade Digital](http://ntiufalara.github.io/universidade-digital/assets/img/logo_old.png)
 
-OpenERP is an OpenSource/Free software Enterprise Resource Planning and
-Customer Relationship Management software. More info at:
+Instalação e configuração do ambiente de desenvolvimento:
 
-    http://www.openerp.com
+Usaremos como base o sistema Linux Ubuntu 14.04 LTS (Isso não impede a configuração em outros sistemas, porém isso não será explicado aqui).
 
-Installation on Debian/Ubuntu
------------------------------
+1. Instalando as dependências do projeto (Dependências do OpenERP/Odoo):
 
-Add the the apt repository
+```bash
+ $ sudo apt-get install graphviz ghostscript python-dateutil python-feedparser python-gdata \
+          python-ldap python-libxslt1 python-lxml python-mako \
+          python-openid python-psycopg2 python-pybabel python-pychart \
+          python-pydot python-pyparsing python-reportlab python-simplejson \
+          python-tz python-vatnumber python-vobject python-webdav \
+          python-werkzeug python-xlwt python-yaml python-imaging \
+          python-matplotlib python-unittest2 python-mock python-docutils \
+          python-decorator python-requests python-jinja2 python-pypdf python-passlib \
+          python-psutil
+```
 
-    deb http://nightly.openerp.com/6.1/deb/ ./
+2. Instale o servidor de banco de dados PostgreSQL.
 
-in your source.list and type:
+```bash
+ $ sudo apt-get install postgresql
+```
 
-    $ sudo apt-get update
-    $ sudo apt-get install openerp
+3. Configure o usuário para criar e apagar Bancos de dados no servidor PostgreSQL:
 
-Or download the deb file and type:
+Acesse o usuário de manutenção de bancos de sados:
 
-    $ sudo dpkg -i <openerp-deb-filename>
-    $ sudo apt-get install install -f
+```bash
+ $ sudo su postgres
+```
 
-Installation on RedHat, Fedora, CentOS
---------------------------------------
+Configure o usuário que executará o servidor Web para obter controle total no servidor: **(Por questões de segurança, você deve usar um superusuário apenas para desenvolvimento, em produção, configure um usuário com permissões de criar e alterar bancos de dados)**
 
-Install the required dependencies:
+```bash
+ $ createuser nomedousuario -P   # Subistitua "nomedousuario" pelo seu nome de usuário
+```
 
-    $ yum install python
-    $ easy_install pip
-    $ pip install .....
+Execute o script para levantar o servidor de desenvolvimento na porta 8069:
 
-Install the openerp rpm
-
-    $ rpm -i openerp-VERSION.rpm
-
-Installation on Windows
------------------------
-
-    Check the notes in setup.py
-
-Installation on MacOSX
------------------------
-
-Setuping you first database
----------------------------
-
-Point your browser to http://localhost:8069/ and click "Manage Databases", the
-default master password is "admin".
-
-Detailed System Requirements
-----------------------------
-
-The dependencies are listed in setup.py
-
-For Luxembourg localization, you also need:
-
- pdftk (http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+```bash
+ $ ./openerp-server.py # use -h para saber mais sobre esse script
+```
 
