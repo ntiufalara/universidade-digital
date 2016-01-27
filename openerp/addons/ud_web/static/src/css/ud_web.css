@@ -455,6 +455,10 @@ input:focus,
 	width: 100%;
 }
 
+.ui-datepicker {
+	min-width:  300px;
+}
+
 
 
 /*Media Queries*/
