@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Circular</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style type="text/css">
+            @page{
+                margin-top: 6cm;
+                margin-bottom: 5cm;
+                margin-left: 3cm;
+                margin-right: 2cm;
+                @top-center {
+                    font-size: 11pt;
+                    font-weight: bold;
+                    white-space: pre;
+                    content: url("{{IMG_UFAL}}")
+                        "\00000aUniversidade Federal de Alagoas - UFAL"
+                        "\00000aCampus de Arapiraca"
+                        % if cabecalho:
+                            "\00000a${cabecalho.replace("\n", "\\00000a")}"
+                        % endif
+                        ;
+                };
+                @bottom-center{
+                    margin-top: 1cm;
+                    padding-top: 0cm;
+                    font-size: 10pt;
+                    white-space: pre;
+                    content: "UFAL - Universidade Federal de Alagoas - Campus Arapiraca"
+                        "\00000aAv . Manoel Severino Barbosa, s/n, CEP: 57.309-005, Bairro Bom Sucesso, Arapiraca-AL"
+                        "\00000aRod. AL 115 - Km 6,5 Caixa Postal Nº 61, CEP: 57.300-970, Arapiraca - AL ";
+                };
+            }
+            
+            html {
+                height:100%;
+            }
+            body {
+                height:100%;
+                font-family: Arial, sans-serif;
+                font-size: 11pt;
+                text-align: justify;
+                position: relative;
+            }
+            section#conteudo p {
+                text-indent: 1.5cm;
+            }
+            footer {
+                min-height: 100%;
+                position: absolute;
+                top: 90%;
+                bottom: 5%;
+                left: 0cm;
+                right: 2cm;
+                margin-top: 1cm;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <p style="text-align: left;">Circular Nº {{NUMERO}}</p>
+            <p style="text-align: right;">Arapiraca - AL, {{DATA}}</p>
+            <p>Para: {{DESTINATARIO}}</p>
+            <p>Assunto: {{ASSUNTO}}</p>
+        </section>
+        <section id="conteudo">
+            <p>${conteudo.replace("\n", "</p><p>")}</p>
+        </section>
+        <footer>
+            <p>Atenciosamente,</p>
+            <p>{{RODAPE}}</p>
+        </footer>
+    </body>
+</html>
