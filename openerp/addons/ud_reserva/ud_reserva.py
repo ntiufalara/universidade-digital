@@ -1,8 +1,10 @@
 #coding:utf8
 from datetime import datetime, timedelta, date
 import copy
+import itertools
 from openerp.osv import fields, osv
 from openerp.osv.orm import except_orm
+from openerp import SUPERUSER_ID
 from dateutil.relativedelta import relativedelta
 
 
@@ -23,15 +25,48 @@ class ud_reserva (osv.osv):
                 'hora_saida':fields.datetime('Saída', required=True),
                 'periodo_final': fields.datetime('Fim'),  
                 'frequencia': fields.selection(freq, 'Período'),
-                            
+                'teste':fields.char('Data da Solicitação', required=True, readonly=True), 
+                'grupo_id': fields.many2one('ud.reserva.grupo', 'Grupo de reservas', required=True, ondelete='cascade')
     }
     _defaults = {
         'data_solicitacao_reserva':lambda self,cr,uid,c: self.data_reserva(cr, uid, c),
+        'teste':lambda self,cr,uid,c: self.data_teste(cr, uid, c),
         'state': "nova",
      }
+
+    def read(self, cr, user, ids, fields=None, context=None, load='_classic_read'):
+        employee_id = self.pool.get('ud.employee').search(cr, user, [('resource_id.user_id.id', '=', user)])
+        if not len(employee_id) or user == SUPERUSER_ID:
+            return super(ud_reserva, self).read(cr, user, ids)
+
+        if type(ids) == int:
+            print "int"
+            return super(ud_reserva, self).read(cr, user, ids)
+
+        # Verifica os espaços pelo qual ele é responsável e mostra apenas esses
+        employee_id = employee_id[0]
+        responsavel_id = self.pool.get('ud.reserva.responsavel').search(cr, user, [('responsavel_id', '=', employee_id)])
+        if responsavel_id:
+            result = []
+            responsavel = self.pool.get('ud.reserva.responsavel').browse(cr, user, responsavel_id)
+            for resp in responsavel:
+                reserva_ids = self.search(cr, user, [('espaco_id', '=', resp.espaco_id.id)])
+                # print reserva_ids
+                for id in ids:
+                    if id in reserva_ids:
+                        result.append(id)
+            # Cria uma Flatlist
+            # result = list(itertools.chain(*result))
+            return super(ud_reserva, self).read(cr, user, result)
+
+        # Caso não ache nada, retorne a lista vazia
+        return []
  
     def data_reserva (self, cr, uid, c):        
         return fields.datetime.context_timestamp(cr, uid, datetime.now(), c).strftime('%d/%m/%Y')
+
+    def data_teste (self, cr, uid, c):        
+        return fields.datetime.context_timestamp(cr, uid, datetime.now(), c)
     
 
     def obter_datetime(self, cr, uid, d, context):
@@ -187,6 +222,7 @@ class ud_reserva (osv.osv):
     
     def _checar_data(self, cr, uid, ids, context=None):
         obj_data_reserva = self.pool.get('ud.reserva').browse(cr, uid, ids)
+	
         for obj in obj_data_reserva:
             #depois colocar os dois 'if' em uma unica linha
             if datetime.strptime(obj.hora_entrada, "%Y-%m-%d %H:%M:%S") < datetime.now():
@@ -195,22 +231,37 @@ class ud_reserva (osv.osv):
                 return False
         return True
       
-    def _checar_reserva(self, cr, uid, ids, context=None):        
+    def _checar_reserva(self, cr, uid, ids, context=None):
         cr.execute('''SELECT
-                      hora_entrada, hora_saida, espaco_id, state
+                      hora_entrada, hora_saida, espaco_id, state, teste
                       FROM ud_reserva
                       ;''')
-        reserva_lista = cr.fetchall() 
+        reserva_lista = cr.fetchall()
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)[0]
+        entrada_usuario = datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S")
+        saida_usuario = datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S")
+        espaco_usuario = int(obj_data_reserva2.espaco_id)
+        teste_usuario = obj_data_reserva2.teste   
+
         for reserva in reserva_lista:
-            if datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S") == datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S") and datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S") == datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S") and int(obj_data_reserva2.espaco_id) == int(reserva[2]) and reserva[3]!= "cancelada":
-                return False
-            elif datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S") > datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S") and datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S") < datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S") and int(obj_data_reserva2.espaco_id) == int(reserva[2]) and reserva[3]!= "cancelada":
-                return False
-            elif datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S") > datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S") and datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S") < datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S") and int(obj_data_reserva2.espaco_id) == int(reserva[2]) and reserva[3]!= "cancelada":
-                return False
-            elif datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S") < datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S") and datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S") > datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S") and int(obj_data_reserva2.espaco_id) == int(reserva[2]) and reserva[3]!= "cancelada":
-                return False
+            entrada_banco = datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S")
+            saida_banco = datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S")
+            espaco_banco = int(reserva[2])
+            estado_banco = reserva[3]
+            teste_banco = reserva[4]
+
+            print("entrada_usuario",entrada_usuario,"entrada_banco",entrada_banco)
+
+            if (espaco_usuario == espaco_banco and teste_usuario != teste_banco):
+                if (entrada_usuario == entrada_banco or saida_usuario == saida_banco):
+                    return False
+
+                elif(entrada_usuario < entrada_banco and saida_usuario > entrada_banco):
+                    return False
+
+                elif(entrada_usuario > entrada_banco and entrada_usuario < saida_banco):
+                    return False
+
         return True
     
     def _checar_dia_reserva(self, cr, uid, ids, context=None):        
@@ -239,3 +290,23 @@ class ud_reserva (osv.osv):
 
     
 ud_reserva()
+
+
+class ud_reserva_responsavel(osv.Model):
+    _name = 'ud.reserva.responsavel'
+
+    _columns = {
+        'name': fields.related('responsavel_id', 'resource_id', 'name', string="Nome", type='char'),
+        'responsavel_id': fields.many2one('ud.employee', u"Responsável", required=True),
+        'campus_id': fields.many2one('ud.campus', u'Campus', required=True),
+        'polo_id': fields.many2one('ud.polo', u'Polo', required=True),
+        'espaco_id': fields.many2one('ud.espaco', u'Espaço', required=True)
+    }
+
+class ud_reserva_grupo(osv.Model):
+    _name = 'ud.reserva.grupo'
+
+    _columns = {
+        'name' : fields.char('Nome', required=True),
+        'reserva_ids': fields.one2many('ud.reserva', 'grupo_id', u"Reservas", required=True, ondelete='cascade')
+    }

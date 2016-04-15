@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- Menu Inicial -->
-<openerp> 
+<openerp>
 	<data>
-        	
+
         <!--
         =======================
         		RESERVA
         =======================
-        -->        
-        
+        -->
+
         <record id="ud_reserva_form" model="ir.ui.view">
 			<field name="name">Formulário de Reserva</field>
 			<field name="model">ud.reserva</field>
@@ -20,40 +20,40 @@
                     <header>
                          <button name="aprovar" type="object" string="Aprovar" states="enviada" groups="base.gerente_reserva" />
                          <button name="ud_reserva.cancelar_action" type="action" string="Cancelar" states="enviada,aprovada" groups="base.gerente_reserva"/>
-                         <field name="state" widget="statusbar" statusbar_visible="nova,enviada,aprovada,cancelada" readonly="1"/>               		 
-                    </header> 
-                    <group string="">	                	
-						<field name="solicitante_id" attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>						
-                	</group> 
+                         <field name="state" widget="statusbar" statusbar_visible="nova,enviada,aprovada,cancelada" readonly="1"/>
+                    </header>
+                    <group string="">
+						<field name="solicitante_id" attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>
+                	</group>
                     <newline/>
-                    <group string="Reserva">	                	
-						<field name="hora_entrada"/>					
+                    <group string="Reserva">
+						<field name="hora_entrada"/>
 						<field name="hora_saida"/>
-                	</group>  
+                	</group>
 					<newline/>
-                	<group string="Evento" colspan="5">             		
+                	<group string="Evento" colspan="5">
                 		<field name="name" placeholder="Ex: Novo evento" />
-						<field name="descricao_evento" />			
+						<field name="descricao_evento" />
 					</group>
 					<group>
 						<field name="espaco_id" domain="[('permite_reserva','=',True)]" />
 					</group>
 					<newline/>
-					<group string="Frequência" attrs="{'invisible':[('periodo_final', '=', False),('state', '!=', 'nova')]}">	
+					<group string="Frequência" attrs="{'invisible':[('periodo_final', '=', False),('state', '!=', 'nova')]}">
 						<field name="frequencia" on_change="periodo_final(hora_saida, frequencia)" />
-						<field name="periodo_final" attrs="{'invisible':[('frequencia','not in',('0','1','2'))], 'required':[('frequencia', 'in', ('0','1','2'))]}"/>												                		
+						<field name="periodo_final" attrs="{'invisible':[('frequencia','not in',('0','1','2'))], 'required':[('frequencia', 'in', ('0','1','2'))]}"/>
 					</group>
-					<group>																	                		
+					<group>
 						<field name="data_solicitacao_reserva" attrs="{ 'readonly':[('state','in', ('nova','enviada','aprovada','cancelada'))]}"/>
 					</group>
 					<group states="cancelada" String="Solicitação Cancelada">
 	               		<field name="motivo" readonly='1'/>
-						<field name="data_cancelamento" readonly='1'/>	               		
-	                </group>				
+						<field name="data_cancelamento" readonly='1'/>
+	                </group>
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="ud_reserva_tree" model="ir.ui.view">
             <field name="name">Visualizaçao dos Espaços</field>
             <field name="model">ud.reserva</field>
@@ -61,27 +61,27 @@
             <field name="arch" type="xml">
                 <tree string="Solicitações" colors="red:state=='cancelada'; blue:state=='aprovada'">
                 	<field name="hora_entrada" string="Reserva"/>
-					<field name="hora_saida" string="Saida"/>                	
-                   	<field name="solicitante_id"/>					
-					<field name="name"/>				
+					<field name="hora_saida" string="Saida"/>
+                   	<field name="solicitante_id"/>
+					<field name="name"/>
 					<field name="espaco_id"/>
-					<field name="state"/>					          
+					<field name="state"/>
                 </tree>
             </field>
         </record>
-		
+
 		<record id="ud_reserva_calendar" model="ir.ui.view">
             <field name="name">Visualização das Reservas</field>
             <field name="model">ud.reserva</field>
             <field name="type">calendar</field>
             <field name="priority" eval="2"/>
             <field name="arch" type="xml">
-                <calendar date_start ="hora_entrada"  date_stop="hora_saida" color="espaco_id">
-                	<field name="name"/>			   		    	
+                <calendar date_start="hora_entrada"  date_stop="hora_saida" color="espaco_id">
+                	<field name="name" attrs="{'invisible': [('state', '=', 'cancelada')]}" />
 	            </calendar>
             </field>
-        </record>  
-        
+        </record>
+
         <record id="ud_reserva_filter" model="ir.ui.view">
 		    <field name="name">Filtros</field>
 				<field name="model">ud.reserva</field>
@@ -96,23 +96,101 @@
 						<group expand="0" string="Agrupar por...">
 							<filter string="Solicitante" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'solicitante_id'}"/>
 							<filter string="Espaço" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'espaco_id'}"/>
-							<filter string="Data/Hora de Entrada" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'hora_entrada'}"/>							
+							<filter string="Data/Hora de Entrada" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'hora_entrada'}"/>
 							<filter string="Data/Hora de Saida" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'hora_saida'}"/>
 							<filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
 						</group>
  					</search>
 			</field>
-		</record>       
-               
+		</record>
+
+		<!--Responsável por reserva-->
+
+		<record model="ir.ui.view" id="ud_reserva_responsavel_agendamento_tree">
+		    <field name="name">Responsáveis por agendamento</field>
+		    <field name="model">ud.reserva.responsavel</field>
+		    <field name="arch" type="xml">
+		        <tree string="Responsáveis por agendamento">
+		            <field name="responsavel_id"/>
+					<field name="campus_id" />
+					<field name="polo_id" />
+					<field name="espaco_id" />
+		        </tree>
+		    </field>
+		</record>
+
+		<record model="ir.ui.view" id="ud_reserva_responsavel_agendamento_form">
+		    <field name="name">Cadastrar responsavel</field>
+		    <field name="model">ud.reserva.responsavel</field>
+			<field name="priority">5</field>
+		    <field name="arch" type="xml">
+		        <form version="7.0" string="Cadastrar responsavel">
+		            <sheet>
+						<group>
+							<group>
+								<field name="responsavel_id" />
+							</group>
+							<group>
+
+							</group>
+						</group>
+						<group string="Espaço">
+							<group>
+								<field name="campus_id" />
+								<field name="espaco_id" domain="[('local_polo', '=', polo_id)]" />
+							</group>
+							<group>
+								<field name="polo_id" domain="[('campus_id', '=', campus_id)]" />
+							</group>
+						</group>
+		            </sheet>
+		        </form>
+		    </field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="ud_reserva_responsavel_agendamento_action">
+		    <field name="name">Responsável por agendamento</field>
+		    <field name="res_model">ud.reserva.responsavel</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+			<field name="view_id" eval="ud_reserva_responsavel_agendamento_tree" />
+		    <field name="help" type="html">
+		        <p class="oe_view_nocontent_create">
+		            Clque para registrar um Responsável
+		        </p>
+		        <p>
+
+		        </p>
+		    </field>
+		</record>
+
        	<record id="ud_reserva_action" model="ir.actions.act_window">
-			<field name="name"> Solicitação</field>
+			<field name="name">Reservas de espaço</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">ud.reserva</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">calendar,tree,form</field>
-			<field name="view_id" ref="ud_reserva_calendar"/>		
+			<field name="view_id" ref="ud_reserva_calendar"/>
+            <field name="domain">[('state', '!=', 'cancelada')]</field>
 		</record>
-		
+
+        <record model="ir.actions.act_window" id="ud_reserva_cancelada_action">
+            <field name="name">Solicitações Canceladas</field>
+            <field name="res_model">ud.reserva</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('state', '=', 'cancelada')]</field>
+        </record>
+
+		<record model="ir.actions.act_window" id="ud_reserva_pendente_action">
+            <field name="name">Solicitações Pendentes</field>
+            <field name="res_model">ud.reserva</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('state', '=', 'nova')]</field>
+        </record>
+
         <record model="ir.values" id="atribuir_item">
             <field name="name">Replicar</field>
             <field name="key2">client_action_multi</field>
@@ -120,11 +198,29 @@
             <field name="key">action</field>
             <field name="model">ud.reserva</field>
         </record>
-		
-	                	
+
+
         <!-- Menus -->
-		<menuitem id="menu_espaco" 		name="Reserva de Espaço" 	parent="ud.menu_point_root"/>
-        	<menuitem id="reserva" 		name="Solicitações"		parent="menu_espaco"	
-        	action="ud_reserva_action" groups="base.gerente_reserva,base.solicitante_reserva,base.visitante_reserva"/>       	
-	</data>	
+		<menuitem id="menu_espaco" name="Reserva de Espaço" parent="ud.menu_point_root"/>
+        	<menuitem id="reserva" name="Solicitações" parent="menu_espaco"
+                      action="ud_reserva_action"
+                      groups="base.gerente_reserva,base.solicitante_reserva"/>
+            <menuitem id="reserva_visitante"
+                      name="Consultar Solicitações"
+                      parent="menu_espaco"
+                      action="ud_reserva_action"
+                      groups="base.visitante_reserva"  />
+
+            <menuitem id="reserva_cancelada" name="Solicitações Canceladas" parent="menu_espaco"
+                      action="ud_reserva_cancelada_action"
+                      groups="base.gerente_reserva" />
+
+			<menuitem id="reserva_pendente" name="Solicitações Pendentes" parent="menu_espaco"
+                      action="ud_reserva_pendente_action"
+                      groups="base.gerente_reserva" />
+
+			<menuitem id="reserva_responsavel" name="Responsável por agendamento"
+					  parent="menu_espaco" action="ud_reserva_responsavel_agendamento_action"
+					  groups="base.gerente_espaco_ud" />
+	</data>
 </openerp>

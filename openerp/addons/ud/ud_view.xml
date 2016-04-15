@@ -415,6 +415,26 @@
                 </form>
 			</field>
 		</record>
+
+        <record id="ud_espaco_filter" model="ir.ui.view">
+            <field name="name">Buscar espaço</field>
+            <field name="model">ud.espaco</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Setor">
+                    <field name="name"/>
+                    <field name="local_polo"/>
+                    <field name="local_bloco_polo"/>
+                    <field name="capacidade" />
+                    <field name="permite_reserva" />
+
+                    <group expand="0" string="Agrupar por...">
+                        <filter string="Bloco" icon="terp-personal" domain="" name="bloco" context="{'group_by':'local_bloco_polo'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="" name="polo" context="{'group_by':'local_polo'}"/>
+                    </group>
+                </search>
+             </field>
+         </record>
 		
 		<record id="ud_espaco_tree" model="ir.ui.view">
             <field name="name">Visualizaçao dos Espaços</field>
@@ -436,6 +456,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="view_id" ref="ud_espaco_tree"/>
+            <field name="context">{'search_default_polo': 1}</field>
 		</record>
 		
         <!-- ==========
@@ -594,8 +615,8 @@
 	                            </group>
 	                            <group col="2" colspan="2">
 	                            	<field name="work_phone" class="work_phone"/>
-	                                <field name="mobile_phone" class="mobile_phone"/>
-	                                <field name="work_email" widget="email"/>
+	                                <field name="mobile_phone" class="telefone" required="1" />
+	                                <field name="work_email" widget="email" required="1" />
 	                                <field name="curriculo_lattes_link" widget="url"/>	                                	                             
 	                            </group>
 	                        </group>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record id="nova_solicitacao_form2" model="ir.ui.view">
+			<field name="name">Formulário de solicitação</field>
+			<field name="model">ud.solicitacao</field>
+			<field name="inherit_id" ref="ud_solicitacao.nova_solicitacao_form"/>
+			<field name="priority" eval="1" />
+			<field name="arch" type="xml">
+				<xpath expr="/form/sheet/group/group/field[@name='manutencao']" position="before">
+					<field name="pat" string="Patrimônio nº"/>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</openerp>

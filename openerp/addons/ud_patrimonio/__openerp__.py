@@ -25,7 +25,7 @@
     'version': '1.0',
     'category': 'college',
     'description': """
-Módulo de Gerenciamento de Patrimônio.  
+Módulo de Gerenciamento de Patrimônio.
     """,
     'author': 'LAPEC',
     'images': [],
@@ -34,8 +34,8 @@ Módulo de Gerenciamento de Patrimônio.
 
     'data': [
         'ud_patrimonio_view.xml',
+        'ud_solicitacao_override_view.xml',
         "security/ir.model.access.csv",
-        'wizards/nova_solicitacao.xml',
     ],
     'demo_xml': [
     ],

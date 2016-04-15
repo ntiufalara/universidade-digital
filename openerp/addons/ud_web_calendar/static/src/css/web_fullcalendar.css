@@ -273,3 +273,7 @@ img.attendee_head {
   color: #a47ae2; }
 .openerp .oe_calendar_table .oe_calendar_buttons_add_contact .add_contacts_link_btn {
   margin-top: 10px; }
+
+.fc-button-agendaWeek {
+  display: none !important;
+}

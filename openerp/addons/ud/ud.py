@@ -431,12 +431,10 @@ class ud_employee(osv.osv):
                  u"Use this field anywhere a small image is required."),
         u'gender': fields.selection([('masculino', u'Masculino'),('feminino', u'Feminino')], u'Gênero', required=False),
         u'marital': fields.selection([('solteiro', u'Solteiro'), ('casado', u'Casado'), ('viuvo', u'Viúvo'), ('divorciado', u'Divorciado')], u'Estado Civil',required=False),
-
         u'work_phone': fields.char(u'Telefone Fixo', size=32),
         u'mobile_phone': fields.char(u'Celular', size=32, required=False),
         u'work_email': fields.char(u'E-mail', size=240, required=False),
         u'notes': fields.text(u'Notas'),
-
         u'photo': fields.binary(u'Foto'),        
         # Adicionados por mim
         u'cpf':fields.char(u'CPF', size=14, help=u"Entre o CPF no formato: XXX.XXX.XXX-XX"),
@@ -445,13 +443,13 @@ class ud_employee(osv.osv):
         u'papel_ids': fields.one2many('ud.perfil', 'ud_papel_id', u'Papel', ondelete='cascade'),
         u'papel_setor':fields.related('papel_ids', 'tipo', store=True, type="char"),
         u'matricula':fields.related('papel_ids', 'matricula', store=True, type="char"),
-
         u'dados': fields.one2many('ud.dados.bancarios', 'ud_conta_id', u'Dados Bancários'),
         u'nacionalidade': fields.selection((('al',u'Alemã'), ('es',u'Espanhola'), ('fr',u'Francesa'),('gr',u'Grega'),('hu',u'Húngaro'),('ir', u'Irlandesa'), ('it',u'Italiana'), ('ho',u'Holandesa'), ('pt',u'Portuguesa'), ('in',u'Inglesa'), ('rs', u'Russa'), ('ar',u'Argentina'), ('br', u'Brasileira'), ('ch',u'Chilena'), ('eu', u'Norte-Americana'), ('mx', u'Mexicana'),('chi', u'Chinesa'),('jp', u'Japonesa'),('sf',u'Sul-Africana'),('as',u'Australiana')),u'Nacionalidade',required=False),
         u'rua': fields.char(u'Rua', size=120, required=False),
         u'bairro': fields.char(u'Bairro', size=32, required=False),
         u'cidade': fields.char(u'Cidade', size=120, required=False),
         u'estado': fields.selection([('ac', u'AC'), ('al', u'AL'), ('ap', u'AP'), ('am', u'AM'), ('ba',u'BA'), ('ce',u'CE'), ('df',u'DF'), ('es',u'ES'), ('go',u'GO'), ('ma',u'MA') , ('mg',u'MG'), ('ms',u'MS'), ('mt',u'MT'), ('pa',u'PA'), ('pe',u'PE'), ('pi',u'PI'), ('pr',u'PR'), ('rj',u'RJ'), ('rn',u'RN'), ('ro',u'RO'), ('rr',u'RR'), ('rs',u'RS'), ('sc',u'SC'), ('se',u'SE'), ('sp',u'SP'), ('to', u'TO')], u'Estado', required=True),
+        u'resource_id': fields.many2one('resource.resource', ondelete='set null')
     }
         
     def unlink(self, cr, uid, ids, context=None):
@@ -581,7 +579,7 @@ class ud_employee(osv.osv):
     _constraints = [
         #(_obrigar_papel, 'Pessoa precisa ter pelo menos um papel!', [u'Papéis']),
         #(_valida_cpf, u"CPF inválido!", ["\nCPF"]),
-        (_valida_email, u"E-mail inválido!", ["E-mail"]),
+        # (_valida_email, u"E-mail inválido!", ["E-mail"]),
 
         
         

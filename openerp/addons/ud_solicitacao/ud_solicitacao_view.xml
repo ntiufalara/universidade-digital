@@ -8,7 +8,7 @@
 			<field name="name">Formulário de solicitação</field>
 			<field name="model">ud.solicitacao</field>
 			<field name="type">form</field>
-			<field name="priority" eval="1" />
+			<field name="priority" eval="2" />
 			<field name="arch" type="xml">
                 <form string="Solicitação" version="7.0">
                 	<header class="botoes-direita">
@@ -37,7 +37,7 @@
 	                		<group string="Informações">
 		                		<!-- Formulário de manutenção -->
 								<field name="manutencao" on_change="limpa_mnt()"/>
-									<field name="pat" />
+									<!-- <field name="pat" /> -->
 									<field name="equipamento" on_change="limpa_equip()" attrs="{ 'invisible':[('manutencao','!=','equip')],'required':[('manutencao','=','equip')]}"/>
 										<field name="eq_eletricos" on_change="limpa_tipo_equip()" attrs="{ 'invisible':[('equipamento','!=','elt')],'required':[('equipamento','=','elt')]}" />
 										<field name="equip_denominacao" attrs="{ 'invisible':[('eq_eletricos','!=','outros')],'required':[('eq_eletricos','=','outros')] }" />
