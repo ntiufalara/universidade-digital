@@ -83,7 +83,7 @@
         </record>
 
         <record id="ud_reserva_filter" model="ir.ui.view">
-		    <field name="name">Filtros</field>
+		    <field name="name">Busca</field>
 				<field name="model">ud.reserva</field>
 				<field name="type">search</field>
  				<field name="arch" type="xml">
@@ -96,6 +96,7 @@
 						<group expand="0" string="Agrupar por...">
 							<filter string="Solicitante" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'solicitante_id'}"/>
 							<filter string="Espaço" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'espaco_id'}"/>
+							<filter string="Grupo" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'grupo_id'}"/>
 							<filter string="Data/Hora de Entrada" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'hora_entrada'}"/>
 							<filter string="Data/Hora de Saida" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'hora_saida'}"/>
 							<filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
