@@ -222,6 +222,6 @@
 
 			<menuitem id="reserva_responsavel" name="Responsável por agendamento"
 					  parent="menu_espaco" action="ud_reserva_responsavel_agendamento_action"
-					  groups="base.gerente_espaco_ud" />
+					  groups="base.gerente_espaco_ud,base.admin_ud" />
 	</data>
 </openerp>

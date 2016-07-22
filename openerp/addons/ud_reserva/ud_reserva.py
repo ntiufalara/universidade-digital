@@ -50,6 +50,9 @@ class ud_reserva(osv.osv):
         employee_id = employee_id[0]
         responsavel_id = self.pool.get('ud.reserva.responsavel').search(cr, user,
                                                                         [('responsavel_id', '=', employee_id)])
+        # Busca também as reservas do qual ele é solicitante
+        solicitante_reserva_ids = self.search(cr, user, [('solicitante_id', '=', employee_id)])
+
         if responsavel_id:
             result = []
             responsavel = self.pool.get('ud.reserva.responsavel').browse(cr, user, responsavel_id)
@@ -57,14 +60,14 @@ class ud_reserva(osv.osv):
                 reserva_ids = self.search(cr, user, [('espaco_id', '=', resp.espaco_id.id)])
                 # print reserva_ids
                 for id in ids:
-                    if id in reserva_ids:
+                    if id in reserva_ids or id in solicitante_reserva_ids:
                         result.append(id)
             # Cria uma Flatlist
             # result = list(itertools.chain(*result))
             return super(ud_reserva, self).read(cr, user, result)
 
         # Caso não ache nada, retorne a lista vazia
-        return []
+        return super(ud_reserva, self).read(cr, user, solicitante_reserva_ids)
 
     def data_reserva(self, cr, uid, c):
         return fields.datetime.context_timestamp(cr, uid, datetime.now(), c).strftime('%d/%m/%Y')
