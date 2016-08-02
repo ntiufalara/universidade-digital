@@ -114,7 +114,7 @@
 		        <tree string="Responsáveis por agendamento">
 		            <field name="responsavel_id"/>
 					<field name="campus_id" />
-					<field name="polo_id" />
+					<field name="polo_id" domain="[('campus_id', '=', campus_id)]" />
 					<field name="espaco_id" />
 		        </tree>
 		    </field>

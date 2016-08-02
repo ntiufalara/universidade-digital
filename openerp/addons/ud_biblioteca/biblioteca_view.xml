@@ -19,8 +19,8 @@
 	                		<field name="tipo"/>
 	                		<field name="orientador_ids" placeholder="Digite o nome e tecle Enter para adicionar" widget="many2many_tags"/>
 	                		<field name="coorientador_ids" placeholder="Digite o nome e tecle Enter para adicionar" widget="many2many_tags"/>
-	                		<field name="ud_campus_id"/>
-	                		<field name="polo_id" domain="[('campus_id','=',ud_campus_id)]"/>
+	                		<field name="ud_campus_id" readonly="1"/>
+	                		<field name="polo_id" domain="[('campus_id','=',ud_campus_id)]" readonly="1"/>
 	                		<field name="curso_indefinido" />
 	                		<field name="curso_indefinido_detalhes" attrs="{'invisible' : [('curso_indefinido', '=', False )], 'required' : [('curso_indefinido', '=', True)] }"/>
 	                		<field name="curso" domain="[('polo_id','=',polo_id)]" attrs="{'invisible' : [('curso_indefinido', '=', True )], 'required' : [('curso_indefinido', '=', False)] }"/>
@@ -124,6 +124,39 @@
 				</tree>
 			</field>
 		</record>
+        
+        <record id="ud_biblioteca_responsavel_tree_view" model="ir.ui.view">
+			<field name="name">ud.biblioteca.responsavel.tree</field>
+			<field name="model">ud.biblioteca.responsavel</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Responsáveis">
+					<field name="employee_id" />
+					<field name="campus_id" />
+                    <field name="polo_id" />
+				</tree>
+			</field>
+		</record>
+
+        <record id="ud_biblioteca_responsavel_form_view" model="ir.ui.view">
+            <field name="name">Responsável</field>
+            <field name="model">ud.biblioteca.responsavel</field>
+            <field name="arch" type="xml">
+                <form string="Responsável" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="employee_id" />
+                                <field name="polo_id" domain="[('campus_id', '=', campus_id)]" />
+                            </group>
+                            <group>
+                                <field name="campus_id" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
 		<record id="ud_biblioteca_anexo_action" model="ir.actions.act_window">
 			<field name="name">Anexos</field>
@@ -142,6 +175,13 @@
 			<field name="target">new</field>
 			<field name="domain">[('publicacao_id','=',context["active_id"])]</field>
 		</record>
+        
+        <record id="ud_biblioteca_responsavel_action" model="ir.actions.act_window">
+            <field name="name">Responsável</field>
+            <field name="res_model">ud.biblioteca.responsavel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
 		<!--MENU ITEM-->
 		<menuitem name="Repositório Institucional" id="biblioteca_top"
@@ -149,6 +189,9 @@
 
 		<menuitem string="Campus Arapiraca" action="ud_biblioteca_publicacao_action"
 		 id="cadsatro_publicacao" parent="biblioteca_top" groups="base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario,base.group_ud_biblioteca_visitante"/>
+        
+        <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
+                  action="ud_biblioteca_responsavel_action" groups="base.admin_ud" />
 
 	</data>
 </openerp>

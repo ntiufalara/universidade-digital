@@ -10,43 +10,18 @@ class ud_biblioteca_publicacao(osv.osv):
     Descrição: Cadastro de publicações do repositório institucional
     '''
     _name = "ud.biblioteca.publicacao"
-    
-    def _user_admin(self, cr, uid, *arg, **kwarg):
-        res = True
-        cr.execute("""SELECT 
-                            res_groups.name
-                        FROM
-                            res_groups_users_rel,
-                            res_groups
-                        WHERE 
-                            res_groups.name like 'Bibliotecário%'
-                            and
-                            res_groups.id=res_groups_users_rel.gid
-                            and
-                            res_groups_users_rel.uid = {};""".format(uid))
-        result = cr.fetchall()
-        if result:
-            if any(map(lambda l: "Admin" in l[0], result)):
-                res = False
-        return res
-    
-    def _somente_leitura(self, cr, uid, ids, context = {}, *arg, **kwarg):
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        return {}.fromkeys(ids, self._user_admin(cr, uid))
+
         
     _columns = {
                 'name' : fields.char(u'Título', required=True),
                 'autor' : fields.char(u'Autor', required=True),
                 'ano_pub' : fields.char(u'Ano de publicação',required=True),
-                'ud_campus_id' : fields.many2one("ud.campus",u"Campus", required=True, readonly=True, change_default=True),
+                'ud_campus_id' : fields.many2one("ud.campus",u"Campus", required=True, change_default=True),
                 'curso' : fields.many2one('ud.curso',u'Curso', ondelete='set null'),
                 "curso_indefinido" : fields.boolean("Outro curso"),
                 "curso_indefinido_detalhes" : fields.char("Curso"),
                 'palavras-chave_ids':fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id', 'pc_id', u'Palavras-chave', required=True),
-                "polo_somente_leitura": fields.function(_somente_leitura, type = "boolean", store = False, method = True,
-                                                   string = u"Polo Somente Leitura", invisible = True),
-                'polo_id' : fields.many2one('ud.polo', u'Polo', required=True, readonly=True, change_default=True),
+                'polo_id' : fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
                 'orientador_ids':fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_orientador_rel', 'pub_id', 'orientador_id', string='Orientadores', required=True),
                 'coorientador_ids':fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_coorientador_rel', 'pub_id', 'coorientador_id', string='Coorientadores'),
                 'anexo_ids':fields.one2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF', required=True),
@@ -65,41 +40,30 @@ class ud_biblioteca_publicacao(osv.osv):
     
     _order = "ano_pub desc"
     
-    _defaults = {  
-        'polo_id': lambda self,cr,uid,context: self.polo_default(cr,uid,context),
+    _defaults = {
         'ud_campus_id': lambda self,cr,uid,context: self.busca_campus(cr,uid,context),
-        'polo_somente_leitura': lambda self, cr, uid, context: self._user_admin(cr, uid),
+        'polo_id': lambda self, cr, uid, context: self.busca_polo(cr,uid,context)
         }
     
     def busca_campus (self, cr,uid,context):
-        exp_campus = re.compile(r'[a-zA-Z]*[arapiraca]')
-        cr.execute('''
-            SELECT ud_campus.id
-            FROM ud_campus
-        ''')
-        try:
-            lista_campus = list(cr.fetchall()[0])
-        except:
-            raise except_orm(u"Não é possível localizar o Campus Arapiraca", u"É preciso que o campus Arapiraca esteja cadastrado corretamente")
-        campus = self.pool.get('ud.campus').browse(cr,uid,lista_campus)
-        for camp in campus:
-            if exp_campus.match(camp.name.lower()):
-                return camp.id
-          
-    def polo_default(self, cr, uid, context):
-        cr.execute("""SELECT
-                          ud_employee.polo_id
-                      FROM
-                          ud_employee,
-                          res_users
-                      WHERE
-                          res_users.id=%d
-                          and
-                          ud_employee.user_id=res_users.id""" %uid)
-        result = cr.fetchall()
-        if result:
-            return result[0]
-        return None
+        employee = self.pool.get('ud.employee').browse(cr, uid,
+                                    self.pool.get('ud.employee').search(cr, uid, [('resource_id.user_id', '=', uid)]))[0]
+        responsavel_model = self.pool.get('ud.biblioteca.responsavel')
+        responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
+        responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
+        for obj in responsavel_objs:
+            return obj.campus_id.id
+
+    def busca_polo(self, cr, uid, context):
+        employee = self.pool.get('ud.employee').browse(cr, uid,
+                                                       self.pool.get('ud.employee').search(cr, uid, [
+                                                           ('resource_id.user_id', '=', uid)]))[0]
+        responsavel_model = self.pool.get('ud.biblioteca.responsavel')
+        responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
+        responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
+        for obj in responsavel_objs:
+            return obj.polo_id.id
+
     
 class ud_biblioteca_orientador (osv.osv):
     '''
@@ -160,3 +124,24 @@ class ud_biblioteca_pc(osv.osv):
             'name':fields.char('Palavra-chave', required=True),
             'publicacao_id':fields.many2one('ud.biblioteca.publicacao', 'publicacao'), 
     }
+
+
+class ud_biblioteca_bibliotecario(osv.osv):
+    _name = 'ud.biblioteca.responsavel'
+
+    _get_name = lambda self, cr, uid, ids, field, args, context: self.get_name(cr, uid, ids, field, args, context)
+
+    _columns = {
+        'name': fields.function(_get_name),
+        'employee_id': fields.many2one('ud.employee', u'Pessoa', required=True),
+        'campus_id': fields.many2one('ud.campus', u'Campus', required=True),
+        'polo_id': fields.many2one('ud.polo', u'Polo', required=True)
+    }
+
+    def get_name(self, cr, uid, ids,  field, args, context):
+        res = {}
+        for obj in self.browse(cr, uid, ids):
+            string = obj.employee_id.name + "; Campus: " + obj.campus_id.name + "; Polo: " + obj.polo_id.name
+            res[obj.id] = string
+        return res
+
