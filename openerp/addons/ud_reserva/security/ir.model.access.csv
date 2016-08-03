@@ -9,5 +9,7 @@ access_ud_reserva_gerente_campus,ud_reserva_gerente_campus,ud.model_ud_campus,ba
 access_ud_reserva_gerente_polo,ud_reserva_gerente_polo,ud.model_ud_polo,base.gerente_reserva,1,0,0,0
 access_ud_reserva_gerente_employee,ud_reserva_gerente_employee,ud.model_ud_employee,base.gerente_reserva,1,0,0,0
 access_ud_reserva_gerente_responsavel,ud_reserva_gerente_responsavel,ud_reserva.model_ud_reserva_responsavel,base.gerente_reserva,1,1,1,1
+access_ud_reserva_gerente_grupo,ud_reserva_gerente_grupo,ud_reserva.model_ud_reserva_grupo,base.gerente_reserva,1,1,1,1
 access_ud_reserva_visitante,ud_reserva_visitante,ud_reserva.model_ud_reserva,base.visitante_reserva,1,0,0,0
 access_ud_reserva_visitante_employee,ud_reserva_visitante_employee,ud.model_ud_employee,base.visitante_reserva,1,0,0,0
+access_ud_reserva_visitante_grupo,ud_reserva_gerente_grupo,ud_reserva.model_ud_reserva_grupo,base.visitante_reserva,1,0,0,0
