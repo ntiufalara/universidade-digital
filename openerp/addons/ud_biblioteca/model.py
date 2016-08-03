@@ -1,4 +1,5 @@
 # -*- encoding: UTF-8 -*-
+import copy
 
 from openerp.osv import osv, fields
 import re
@@ -11,7 +12,7 @@ class ud_biblioteca_publicacao(osv.osv):
     '''
     _name = "ud.biblioteca.publicacao"
 
-        
+
     _columns = {
                 'name' : fields.char(u'Título', required=True),
                 'autor' : fields.char(u'Autor', required=True),
@@ -37,17 +38,19 @@ class ud_biblioteca_publicacao(osv.osv):
                      ),    string=u'Tipo'),
                 "autorizar_publicacao" : fields.boolean(u"Autorizar publicação"),
                 }
-    
+
     _order = "ano_pub desc"
-    
+
     _defaults = {
         'ud_campus_id': lambda self,cr,uid,context: self.busca_campus(cr,uid,context),
         'polo_id': lambda self, cr, uid, context: self.busca_polo(cr,uid,context)
         }
-    
+
     def busca_campus (self, cr,uid,context):
+        user_id = copy.copy(uid)
+        uid = 1
         employee = self.pool.get('ud.employee').browse(cr, uid,
-                                    self.pool.get('ud.employee').search(cr, uid, [('resource_id.user_id', '=', uid)]))[0]
+                                    self.pool.get('ud.employee').search(cr, uid, [('resource_id.user_id', '=', user_id)]))[0]
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -55,26 +58,28 @@ class ud_biblioteca_publicacao(osv.osv):
             return obj.campus_id.id
 
     def busca_polo(self, cr, uid, context):
+        user_id = copy.copy(uid)
+        uid = 1
         employee = self.pool.get('ud.employee').browse(cr, uid,
                                                        self.pool.get('ud.employee').search(cr, uid, [
-                                                           ('resource_id.user_id', '=', uid)]))[0]
+                                                           ('resource_id.user_id', '=', user_id)]))[0]
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
         for obj in responsavel_objs:
             return obj.polo_id.id
 
-    
+
 class ud_biblioteca_orientador (osv.osv):
     '''
     Nome: ud.biblioteca.orientador
     Deescrição: Relação many2many de publicação para orientador, permite adicionar mais de um orientador
     '''
-    _name = 'ud.biblioteca.orientador' 
+    _name = 'ud.biblioteca.orientador'
     _columns = {
             'name':fields.char('Nome', size=64, required=True),
             'publicacao_orientador_id':fields.many2many('ud.biblioteca.publicacao','orientador_ids', string=u'Publicação'),
-            'publicacao_coorientador_id':fields.many2many('ud.biblioteca.publicacao','coorientador_ids', string=u'Publicação'), 
+            'publicacao_coorientador_id':fields.many2many('ud.biblioteca.publicacao','coorientador_ids', string=u'Publicação'),
     }
 
 class ud_biblioteca_anexo(osv.osv):
@@ -86,7 +91,7 @@ class ud_biblioteca_anexo(osv.osv):
     _columns = {
             "name" : fields.char("Anexo", required=True),
             'arquivo':fields.binary('Arquivo PDF', filters="*.pdf"),
-            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', u'Publicação', required=False), 
+            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', u'Publicação', required=False),
     }
     _defaults = {
         'publicacao_id': lambda self, cr, uid, context: self.publicacao_ctx(cr, uid, context),
@@ -102,15 +107,15 @@ class ud_biblioteca_anexo(osv.osv):
         """
             Delete all record(s) from table heaving record id in ids
             return True on success, False otherwise
-    
+
             @param cr: cursor to database
             @param uid: id of current user
             @param ids: list of record ids to be removed from table
             @param context: context arguments, like lang, time zone
-    
+
             @return: True on success, False otherwise
         """
-    
+
         return super(ud_biblioteca_anexo, self).unlink(cr, uid, ids, context=context)
 
 class ud_biblioteca_pc(osv.osv):
@@ -122,7 +127,7 @@ class ud_biblioteca_pc(osv.osv):
 
     _columns = {
             'name':fields.char('Palavra-chave', required=True),
-            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', 'publicacao'), 
+            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
     }
 
 
@@ -144,4 +149,3 @@ class ud_biblioteca_bibliotecario(osv.osv):
             string = obj.employee_id.name + "; Campus: " + obj.campus_id.name + "; Polo: " + obj.polo_id.name
             res[obj.id] = string
         return res
-
