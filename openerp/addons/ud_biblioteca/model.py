@@ -67,6 +67,8 @@ class ud_biblioteca_publicacao(osv.osv):
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
         for obj in responsavel_objs:
+            if obj.admin_campus:
+                return False
             return obj.polo_id.id
 
 
@@ -141,12 +143,13 @@ class ud_biblioteca_bibliotecario(osv.osv):
         'employee_id': fields.many2one('ud.employee', u'Pessoa', required=True),
         'campus_id': fields.many2one('ud.campus', u'Campus', required=True),
         'admin_campus': fields.boolean(u'Administrador do campus'),
-        'polo_id': fields.many2one('ud.polo', u'Polo')
+        'polo_id': fields.many2one('ud.polo', u'Polo', required=False)
     }
 
     def get_name(self, cr, uid, ids,  field, args, context):
         res = {}
         for obj in self.browse(cr, uid, ids):
-            string = obj.employee_id.name + "; Campus: " + obj.campus_id.name + "; Polo: " + obj.polo_id.name
+            polo_name = "--" if not obj.polo_id.name else obj.polo_id.name
+            string = u"%s; Campus: %s; Polo: %s" % (obj.employee_id.name, obj.campus_id.name, polo_name)
             res[obj.id] = string
         return res
