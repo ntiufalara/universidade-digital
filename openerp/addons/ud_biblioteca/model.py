@@ -140,7 +140,8 @@ class ud_biblioteca_bibliotecario(osv.osv):
         'name': fields.function(_get_name),
         'employee_id': fields.many2one('ud.employee', u'Pessoa', required=True),
         'campus_id': fields.many2one('ud.campus', u'Campus', required=True),
-        'polo_id': fields.many2one('ud.polo', u'Polo', required=True)
+        'admin_campus': fields.boolean(u'Administrador do campus'),
+        'polo_id': fields.many2one('ud.polo', u'Polo')
     }
 
     def get_name(self, cr, uid, ids,  field, args, context):

@@ -20,7 +20,7 @@
 	                		<field name="orientador_ids" placeholder="Digite o nome e tecle Enter para adicionar" widget="many2many_tags"/>
 	                		<field name="coorientador_ids" placeholder="Digite o nome e tecle Enter para adicionar" widget="many2many_tags"/>
 	                		<field name="ud_campus_id" readonly="1"/>
-	                		<field name="polo_id" domain="[('campus_id','=',ud_campus_id)]" readonly="1"/>
+	                		<field name="polo_id" domain="[('campus_id','=',ud_campus_id)]" readonly="1" attrs="{'readonly': [('polo_id', '!=', False)]}"/>
 	                		<field name="curso_indefinido" />
 	                		<field name="curso_indefinido_detalhes" attrs="{'invisible' : [('curso_indefinido', '=', False )], 'required' : [('curso_indefinido', '=', True)] }"/>
 	                		<field name="curso" domain="[('polo_id','=',polo_id)]" attrs="{'invisible' : [('curso_indefinido', '=', True )], 'required' : [('curso_indefinido', '=', False)] }"/>
@@ -147,7 +147,10 @@
                         <group>
                             <group>
                                 <field name="employee_id" />
-                                <field name="polo_id" domain="[('campus_id', '=', campus_id)]" />
+                                <field name="admin_campus" />
+                                <field name="polo_id" domain="[('campus_id', '=', campus_id)]"
+                                       attrs="{'invisible': [('admin_campus', '=', True)],
+                                       'required': [('admin_campus', '!=', True)]}" />
                             </group>
                             <group>
                                 <field name="campus_id" />
