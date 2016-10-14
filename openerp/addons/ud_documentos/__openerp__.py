@@ -21,8 +21,8 @@
 
 
 {
-    "name": u"Módulo de Documentos",
-    "version": "1.0",
+    "name": u"Módulo de Documentos (UD)",
+    "version": "1.1",
     "category": u"Documentos",
     "description": u"""Módulo de Documentos
 ====================
@@ -38,7 +38,7 @@ Instalação do WeasyPrint:
 * sudo pip install WeasyPrint
 
 Se necessário, instale: sudo apt-get install python-setuptools
-    
+
 Maiores informações, acesse: http://weasyprint.org/docs/install/""",
     "author": u"Cloves Oliveira",
     "data": ["security/ud_documentos_security.xml",
