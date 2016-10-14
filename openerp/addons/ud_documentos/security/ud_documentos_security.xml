@@ -15,6 +15,7 @@
 		<record id="group_ud_documentos_administrador" model="res.groups">
 			<field name="name">Adminstrador</field>
 			<field name="category_id" ref="module_category_ud_documentos"/>
+			<field name="users" eval="[(4, ref('base.user_root'))]"/>
 			<field name="implied_ids" eval="[(4, ref('group_ud_documentos_regular'))]"/>
 			<field name="comment">Possui total acesso às funcionalidades do módulo.</field>
 		</record>
