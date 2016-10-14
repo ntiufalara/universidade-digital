@@ -51,46 +51,51 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Tipo de Documento" version="7.0">
-					<group col="1">
-						<field name="name" colspam="1"/>
+					<group>
+						<field name="name"/>
 					</group>
+					<label for="info"/>
+					<field name="info" nolabel="1"/>
 					<notebook>
 						<page string="Configuração Básica">
 							<group>
-								<field name="modulo_externo" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
+								<field name="modulo_externo" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
 								<field name="modelo_id" attrs="{'invisible': [('modulo_externo', '=', False)]}"/>
 							</group>
 							<group string="Campos disponíveis para o template" cols="4" attrs="{'invisible': [('modulo_externo', '=', False)]}">
-								<field name="campos_ids" nolabel="1" colspan="4" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
+								<field name="campos_ids" nolabel="1" colspan="4" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
 								<button name="botao_adicionar_campos" string="Adicionar campos" type="object" attrs="{'invisible': [('modelo_id','=',False)]}" help="Adiciona todos os campos do modelo selecionado a tabela" colspan="2"/>
 								<button name="botao_remover_campos" string="Remover campos" type="object" attrs="{'invisible': [('campos_ids','=',[])]}" help="Remove o modelo e todos os campos da tabela" colspan="2"/>
 							</group>
 							<group col="8" attrs="{'invisible': [('modulo_externo', '=', True)]}">
-								<field name="numero" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="data" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="destinatario" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="cabecalho" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="assunto" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="conteudo" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="rodape" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
-								<field name="anexos" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, assunto, conteudo, rodape, modulo_externo, campos_ids)"/>
+								<field name="numero" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="data" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="destinatario" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="cabecalho" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="preambulo" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="assunto" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="conteudo" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="assinatura" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="rodape" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
+								<field name="anexos" colspam="2" on_change="onchange_campo(numero, destinatario, data, cabecalho, preambulo, assunto, conteudo, assinatura, rodape, modulo_externo, campos_ids)"/>
 							</group>
-							<p><b>Obs.:</b> Documentos antigos não serão atualizados até que seja alterados</p>
+							<p attrs="{'invisible': [('modulo_externo', '!=', False)]}">
+								<b>Obs.:</b> Documentos antigos não serão atualizados até que sejam alterados
+							</p>
 						</page>
 						<page string="Template">
 							<notebook>
 								<page string="Edição">
-									<label for="ajuda_campos"/>
+<!-- 									<label for="ajuda_campos"/> -->
 									<field name="ajuda_campos"/>
 									<group>
-										<field name="template_padrao" on_change="onchange_template(template_padrao)"/>
+										<field name="template_padrao" on_change="onchange_template(template_padrao, modulo_externo)"/>
 									</group>
-									<p><b>Obs.:</b> Ao selecionar qualquer "Template Padrão" os campos "Nome" e "Template" terão seus valores substituídos.</p>
+									<p><b>Obs.:</b> Ao selecionar um template padrão se o campo "Módulo externo" estiver marcado, somente o campo "Template" será substituído, caso contrário, o campo "Nome" também será substituído.</p>
 									<label for="template"/>
 									<field name="template"/>
 								</page>
 								<page string="Ajuda" class="tuto">
-								
 									<!--========= Construção do template ==
 									====================================-->
 									<article>
@@ -124,7 +129,7 @@
 											Link útil: <a href="http://dev.w3.org/csswg/css-page/" target="_blank">http://dev.w3.org/csswg/css-page/</a>
 										</div>
 										<h2 style="padding-top: 10px; padding-bottom: 10px;">Tutorial Básico</h2>
-										<b>Repetindo rodapé em todas as páginas:</b>
+										<b>Repetindo cabeçalho e rodapé em todas as páginas:</b>
 										<div class="css_head codigo">
 											@page {
 											<p class="css_cont nivel_1">margin-top: <span>6cm;</span></p>
@@ -137,7 +142,7 @@
 													<p class="css_cont nivel_2">content: <span class="tooltip">
 													<span>Conteúdo que será repetido no rodapé de todas as páginas</span>
 													url("{{IMG_UFAL}}") "\00000aUniversidade Federal de Alagoas - UFAL" "\00000aalgum complemento...";</span></p>
-											
+
 											<p class="css_head nivel_1">@bottom-center {</p>
 													<p class="css_cont nivel_2">font-size: <span>12px;</span></p>
 													<p class="css_cont nivel_2">white-space: <span>pre;</span></p>
@@ -220,7 +225,7 @@
 											ou colocar um link da WEB.
 										</p>
 										<p>
-											Vale ressaltar que onde existir uma quebra de linha será inserido a tag 
+											Vale ressaltar que onde existir uma quebra de linha será inserido a tag
 											<![CDATA[&lt;]]>br/<![CDATA[&gt;]]>, caso não seja esse o objetivo deve-se
 											usar as variáveis reconhecidas pelo Mako para tratar da maneira desejada.
 										</p>
@@ -265,7 +270,7 @@
 									</article>
 									<!--===================================
 									====================================-->
-									
+
 								</page>
 							</notebook>
 						</page>
@@ -273,7 +278,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_ud_documento_tipo_tree_view">
 			<field name="name">Tipo de documento</field>
 			<field name="type">ir.actions.act_window</field>
@@ -294,7 +299,19 @@
 				</div>
 			</field>
 		</record>
-		
+
+		<record model="ir.ui.view" id="ud_documento_tipo_search_view">
+			<field name="name">ud.documento.tipo.search</field>
+			<field name="model">ud.documento.tipo</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					<filter string="Uso Interno" domain="[('modulo_externo', '=', True)]" help="Mostra somente os tipos de documentos usados internamente pelo módulo"/>
+					<filter string="Uso Externo" domain="[('modulo_externo', '=', False)]" help="Mostra somente os tipos de documentos usados por outros módulos"/>
+				</search>
+			</field>
+		</record>
+
+
 		<!-- ===============
 		ANEXOS DE DOCUMENTOS
 		================ -->
@@ -305,7 +322,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_anexo_tree_view">
 			<field name="name">ud.documento.anexo.tree</field>
 			<field name="model">ud.documento.anexo</field>
@@ -317,7 +334,7 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_anexo_form_view">
 			<field name="name">ud.documento.anexo.form</field>
 			<field name="model">ud.documento.anexo</field>
@@ -331,7 +348,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<!-- ====
 		DOCUMENTO
 		===== -->
@@ -344,11 +361,12 @@
 					<field name="tipo_id"/>
 					<field name="numero"/>
 					<field name="data"/>
-					<field name="pdf"/>
+					<field name="nome_pdf" invisible="1"/>
+					<field name="pdf" filename="nome_pdf"/>
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_tree_todos_view">
 			<field name="name">ud.documento.tree</field>
 			<field name="model">ud.documento</field>
@@ -360,18 +378,29 @@
 					<field name="criador_id"/>
 					<field name="setor_id"/>
 					<field name="data"/>
-					<field name="pdf"/>
+					<field name="nome_pdf" invisible="1"/>
+					<field name="pdf" filename="nome_pdf"/>
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_form_view">
 			<field name="name">ud.documento.form</field>
 			<field name="model">ud.documento</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Documento" version="7.0">
-					<group col="6">
+					<div attrs="{'invisible': [('criador_id', '!=', False)]}">
+						<p>
+							<b>Atenção:</b> Não é permitido criar documentos enquanto não houver registro de Pessoa
+							cadastrado no Núcleo vinculado ao seu login ou houver mais de uma pessoa vinculada ao mesmo
+							login.
+						</p>
+						<p>
+							Entre em contato com o Administrador e tente novamente.
+						</p>
+					</div>
+					<group col="6" attrs="{'invisible': [('criador_id', '=', False)]}">
 						<field name="tipo_id" colspam="2" on_change="onchange_tipo(tipo_id,context)" context="{'tipo_id': tipo_id}"/>
 						<field name="numero" colspam="2"/>
 						<field name="data" colspam="2" class="data_validade"/>
@@ -379,25 +408,32 @@
 						<field name="setores" attrs="{'invisible': [('setor_id', '!=', False)], 'required': [('setor_id', '=', False)]}" colspam="2"/>
 						<field name="setor_id" attrs="{'invisible': [('setor_id', '=', False)]}" colspam="2"/>
 					</group>
-					<group>
+					<group attrs="{'invisible': ['|', ('criador_id', '=', False), ('tipo_id', '=', False)]}">
 						<sheet>
-							<label for="cabecalho" attrs="{'invisible':[('cabecalho_func', '==', False)]}" help="Cabeçalho do documento"/>
+							<label for="cabecalho" attrs="{'invisible':[('cabecalho_func', '==', False)]}"/>
 							<field name="cabecalho" attrs="{'invisible':[('cabecalho_func', '==', False)],'required':[('cabecalho_func','=',True)]}"/>
-							
-							<label for="destinatario" attrs="{'invisible':[('destinatario_func', '==', False)]}" help="Nome do destinatário do documento"/>
+
+							<label for="preambulo" placeholder="Parte inicial do documento, tal como um título" attrs="{'invisible':[('preambulo_func', '==', False)]}"/>
+							<field name="preambulo" attrs="{'invisible':[('preambulo_func', '==', False)],'required':[('preambulo_func','=',True)]}"/>
+
+							<label for="destinatario" attrs="{'invisible':[('destinatario_func', '==', False)]}"/>
 							<field name="destinatario" attrs="{'invisible':[('destinatario_func', '==', False)],'required':[('destinatario_func','=',True)]}"/>
-							
-							<label for="assunto" attrs="{'invisible':[('assunto_func', '==', False)]}" help="O que o documento trata"/>
+
+							<label for="assunto" attrs="{'invisible':[('assunto_func', '==', False)]}"/>
 							<field name="assunto" attrs="{'invisible':[('assunto_func', '==', False)],'required':[('assunto_func','=',True)]}"/>
-							
-							<label for="conteudo" attrs="{'invisible':[('conteudo_func', '==', False)]}" help=">Corpo do documento"/>
+
+							<label for="conteudo" attrs="{'invisible':[('conteudo_func', '==', False)]}"/>
 							<field name="conteudo" attrs="{'invisible':[('conteudo_func', '==', False)],'required':[('conteudo_func','=',True)]}"/>
-							
-							<label for="rodape" attrs="{'invisible':[('rodape_func', '==', False)]}" help="Informações como: seu nome, cargo e SIAPE"/>
+
+							<label for="assinatura" attrs="{'invisible':[('assinatura_func', '==', False)]}"/>
+							<field name="assinatura" placeholder="Ex.: Nome da Pessoa/SIAPE"
+								attrs="{'invisible':[('assinatura_func', '==', False)],'required':[('assinatura_func','=',True)]}"/>
+
+							<label for="rodape" attrs="{'invisible':[('rodape_func', '==', False)]}"/>
 							<field name="rodape" attrs="{'invisible':[('rodape_func', '==', False)],'required':[('rodape_func','=',True)]}"/>
 						</sheet>
 					</group>
-					<group>
+					<group attrs="{'invisible': ['|', ('criador_id', '=', False), ('tipo_id', '=', False)]}">
 						<field name="nome_pdf" invisible="1"/>
 						<field name="pdf" filename="nome_pdf"/>
 						<field name="anexos" attrs="{'invisible':[('anexos_func', '==', False)]}">
@@ -411,16 +447,41 @@
 						<field name="numero_func"/>
 						<field name="data_func"/>
 						<field name="cabecalho_func"/>
+						<field name="preambulo_func"/>
 						<field name="destinatario_func"/>
 						<field name="assunto_func"/>
 						<field name="conteudo_func"/>
+						<field name="assinatura_func"/>
 						<field name="rodape_func"/>
 						<field name="anexos_func"/>
 					</group>
 				</form>
 			</field>
 		</record>
-		
+
+		<record model="ir.ui.view" id="ud_documento_search_view">
+			<field name="name">ud.documento.search</field>
+			<field name="model">ud.documento</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					<filter string="Com Anexo(s)" name="c_anexo" domain="[('anexos', '!=', False)]"
+							help="Mostra somente os documentos que possuam anexos"/>
+					<filter string="Sem Anexo(s)" name="s_anexo" domain="[('anexos', '=', False)]"
+							help="Mostra somente os documentos que não possuam anexos"/>
+					<filter string="Criados Hoje" name="c_hoje" domain="[('create_date', '&gt;=', time.strftime('%%Y-%%m-%%d 00:00:01'))]"
+							help="Mostra documentos que foram criados hoje"/>
+					<group name="agrupamentos" expand="0" string="Agrupar por...">
+						<filter string="Setor Proprietário" name="setor" context="{'group_by':'setor_id'}"
+								help="Agrupa todos os documentos pelo setor do mesmo"/>
+						<filter string="Tipo de Documento" name="tipo" context="{'group_by':'tipo_id'}"
+								help="Agrupa todos os documentos pelo tipo"/>
+						<filter string="Criador" name="criador" context="{'group_by':'criador_id'}"
+								help="Agrupa todos os documentos pelo criador" position="inside"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
 		<record model="ir.actions.act_window" id="action_ud_documento_tree_view">
 			<field name="name">Meus Documentos</field>
 			<field name="type">ir.actions.act_window</field>
@@ -428,6 +489,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('create_uid','=',uid)]</field>
+			<field name="context">{'search_default_tipo': 1}</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">
 					Clique aqui pra criar um novo documento.
@@ -440,7 +502,7 @@
 				</div>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_ud_documento_tree_todos_view">
 			<field name="name">Todos os Documentos</field>
 			<field name="type">ir.actions.act_window</field>
@@ -448,6 +510,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="view_id" ref="ud_documento_tree_todos_view"/>
+			<field name="context">{'search_default_setor': 1}</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">
 					Clique aqui pra criar um novo documento.
@@ -460,7 +523,7 @@
 				</div>
 			</field>
 		</record>
-		
+
 		<!-- ============
 		DOCUMENTO ENVIADO
 		============= -->
@@ -471,6 +534,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('create_uid','=',uid)]</field>
+			<field name="context">{'search_default_setor_dest': 1}</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">
 					Clique aqui para selecionar um documento e enviar para algum setor.
@@ -483,22 +547,23 @@
 				</div>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_enviado_tree_view">
 			<field name="name">ud.documento.enviado.tree</field>
 			<field name="model">ud.documento.enviado</field>
 			<field name="type">tree</field>
-			<!-- <field name="domain">[('create_uid', '=', uid)]</field> -->
+			<field name="domain">[('create_uid', '=', uid)]</field>
 			<field name="arch" type="xml">
 				<tree string="Documentos enviados" delete="false" version="7.0">
 					<field name="setor_destino_id"/>
-					<field name="pdf"/>
+					<field name="nome_pdf" invisible="1"/>
+					<field name="pdf" filename="nome_pdf"/>
 					<field name="create_date"/>
 					<field name="state"/>
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_enviado_form_view">
 			<field name="name">ud.documento.enviado.form</field>
 			<field name="model">ud.documento.enviado</field>
@@ -523,7 +588,30 @@
 				</form>
 			</field>
 		</record>
-		
+
+		<record model="ir.ui.view" id="ud_documento_enviado_search_view">
+			<field name="name">ud.documento.enviado.search</field>
+			<field name="model">ud.documento.enviado</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					<filter string="Recebidos" name="recebido" context="{'recebido': True}"
+							help="Mostra documentos que foram marcados como recebidos"/>
+					<filter string="Não recebidos" name="n_recebido" context="{'n_recebido': True}"
+							help="Mostra documentos que não foram marcados como recebidos"/>
+					<filter string="Compartilhados Hoje" name="c_hoje" domain="[('create_date', '&gt;=', time.strftime('%%Y-%%m-%%d 00:00:01'))]"
+							help="Mostra os documentos que foram enviados/compartilhados hoje"/>
+					<group expand="0" string="Agrupar por...">
+						<filter string="Setor Destino" name="setor_dest" context="{'group_by':'setor_destino_id'}"
+								help="Agrupa todos os documentos pelo setor destinatário do documento"/>
+						<filter string="Pessoa que recebeu" name="pessoa_rec" context="{'group_by':'recebido_por'}"
+								help="Agrupa os documentos pelas pessoas que receberam"/>
+						<filter string="Status" name="status" context="{'group_by':'state'}"
+								help="Agrupa por status"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
 		<!-- =============
 		DOCUMENTO RECEBIDO
 		============== -->
@@ -533,13 +621,14 @@
 			<field name="res_model">ud.documento.recebido</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="context">{'setor': True, 'search_default_setor_dest': 1}</field>
 			<field name="help" type="html">
 				<p>
-					Aqui você pode visualizar todos os documentos que enviam para o seu setor.
+					Aqui você pode visualizar todos os documentos que enviam para um dos setores você possui vínculo.
 				</p>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_recebido_tree_view">
 			<field name="name">ud.documento.recebido.tree</field>
 			<field name="model">ud.documento.recebido</field>
@@ -547,13 +636,14 @@
 			<field name="arch" type="xml">
 				<tree string="Documentos Recebidos" create="false" delete="false" version="7.0">
 					<field name="name"/>
-					<field name="pdf"/>
+					<field name="nome_pdf" invisible="1"/>
+					<field name="pdf" filename="nome_pdf"/>
 					<field name="create_date"/>
 					<field name="state"/>
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="ud_documento_recebido_form_view">
 			<field name="name">ud.documento.recebido.form</field>
 			<field name="model">ud.documento.recebido</field>
@@ -579,6 +669,29 @@
 					<label for="info"/>
 					<field name="info"/>
 				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="ud_documento_recebido_search_view">
+			<field name="name">ud.documento.recebido_search</field>
+			<field name="model">ud.documento.recebido</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					<filter string="Recebidos" name="recebido" context="{'recebido': True}"
+							help="Mostra documentos que foram marcados como recebidos"/>
+					<filter string="Não recebidos" name="n_recebido" context="{'n_recebido': True}"
+							help="Mostra documentos que não foram marcados como recebidos"/>
+					<filter string="Recebidos Hoje" name="r_hoje" domain="[('create_date', '&gt;=', time.strftime('%%Y-%%m-%%d 00:00:01'))]"
+							help="Mostra documentos que foram recebidos hoje"/>
+					<group expand="0" string="Agrupar por...">
+						<filter string="Setor Remetente" name="setor_rem" context="{'group_by':'setor_remetente_id'}"
+								help="Agrupa todos os documentos pelo setor que enviou o documento"/>
+						<filter string="Setor Destinatário" name="setor_dest" context="{'group_by':'setor_destino_id'}"
+								help="Agrupa todos os documentos pelo setor de destino"/>
+						<filter string="Pessoa que Recebeu" name="pessoa_rec" context="{'group_by':'recebido_por'}"
+								help="Agrupa todos os documentos pelas pessoas que marcaram como recebido"/>
+					</group>
+				</search>
 			</field>
 		</record>
 		
