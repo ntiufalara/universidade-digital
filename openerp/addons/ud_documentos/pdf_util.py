@@ -6,18 +6,20 @@ from mako.template import Template
 from os.path import join
 from pyPdf import PdfFileReader, PdfFileWriter
 from weasyprint import HTML
-from re import match, UNICODE
+from re import match, sub, UNICODE
+
 
 class TemplateError(Exception):
     pass
+
 
 class Pdf():
     """
     Cria um PDF a partir de um template em HTML5 e CSS3, codificado ou não em Base 64, além de permitir a
     mesclagem de outros PDFs no final do PDF resultante.
 
-    O template pode conter marcadores entre de chaves duplas e caracters maiúsculos ou utilizando a sintax
-    do Mako para execultar códigos em python. A única restrição é que o dicionário que contém os dados que
+    O template pode conter marcadores entre de chaves duplas e caracteres maiúsculos ou utilizando a sintaxe
+    do pyMako para execultar códigos em python. A única restrição é que o dicionário que contém os dados que
     serão inseridos no template deve conter como uma de suas chaves a string correspondente.
         Ex.: {{MARCADOR_1}},
              {{MARCADOR_PERSONALIZADO}} ==> {'Marcador_1': VALOR, 'marcador_personalizado': VALOR, ...}
@@ -51,25 +53,32 @@ class Pdf():
     % endtry
     % endif
     <thead>
-        <th>
-        % for dado in dados[0]:
-        % try:
-            <td>${dado}</td>
-        % except UnicodeDecodeError:
-            <td>${unicode(dado)}</td>
+        <tr>
+        <% title = u"" %>
+        % for c in range(len(dados[0])):
+        % if titles:
+        %try:
+        <% title = unicode(titles[0][c] or "") %>
+        % except:
+        <% title = u"" %>
         % endtry
+        % endif
+            <th title="${title}">${unicode(dados[0][c] or "")}</th>
         % endfor
-        </th>
+        </tr>
     </thead>
     <tbody>
-        % for linha in dados[1:]:
+        % for l in range(1, len(dados)):
         <tr>
-        % for dado in linha:
-        % try:
-            <td>${dado}</td>
-        % except UnicodeDecodeError:
-            <td>${unicode(dado)}</td>
+        % for c in range(len(dados[l])):
+        % if titles:
+        %try:
+        <% title = unicode(titles[l][c] or "") %>
+        % except:
+        <% title = u"" %>
         % endtry
+        % endif
+            <td title="${title.replace('"', "&#34;")}">${unicode(dados[l][c] or "")}</td>
         % endfor
         </tr>
         % endfor
@@ -83,12 +92,12 @@ class Pdf():
         :param abs_path: Local absoluto do módulo.
         :param base64: Define se o PDF será codificado para base64. Padrão True.
 
-        :attention: As as chaves do dicionário devem ter os mesmos símbolos e letras, maiúsculas ou não,
-                    em relação as tags do HTML.
-        :attention: Para inserir uma imagem com a tag {{IMG_UFAL}}, o caminho absoluto deve preceder
-                    o local "static/src/img/ufal.png".
+        :attention: Para inserir uma imagem com a tag {{IMG_UFAL}}, a variável "abs_path" deve ser
+                    informada para formar o caminho absoluto para o local "static/src/img/ufal.png".
 
         :raise TemplateError: Caso exista algum erro no processamento do template para código python.
+        :raise UnicodeDecodeError: Há a possibilidade de ocorrer se houver valores em 'dic' do tipo
+                                   'str' em vez de 'unicode'.
         """
         if dic.has_key("data"):
             data = match("^(?P<ano>\d{4})(?P<sep>[-/])(?P<mes>\d\d)(?P=sep)(?P<dia>\d\d)$", dic["data"], UNICODE)
@@ -105,7 +114,7 @@ class Pdf():
                 dic["data"] = u"{dia} de {mes} de {ano}".format(**g)
             else:
                 dic.pop("data")
-        template = template.replace(u"{{IMG_UFAL}}", join(u"static", u"src", u"img", u"ufal.png"))
+        template = sub("\{\{IMG_UFAL\}\}", join(u"static", u"src", u"img", u"ufal.png"), template, flags=UNICODE)
         self.base64 = base64
         try:
             template_mako = Template(text=template, output_encoding="utf-8")
@@ -119,7 +128,7 @@ class Pdf():
                 if isinstance(campo[0], (list, tuple)):
                     campo = Pdf.tabela_default(campo)
             campo = unicode(campo if campo else "")
-            template = template.replace("{{%s}}" %(key.upper()), campo.replace("\n", "<br>"))
+            template = template.replace("{{%s}}" % (key.upper()), campo.replace("\n", "<br>"))
 
         self.__pdf = Pdf.to_pdf(template, abs_path)
         if dic.has_key("anexo"):
@@ -205,33 +214,36 @@ class Pdf():
     @staticmethod
     def tabela_default(dados):
         """
-        Cria uma tabela em HTML a partir de um conjunto de listas ou tuplas, sendo a primeira linha o cabeçalho da tabela.
+        Cria uma tabela em HTML a partir de um conjunto de listas ou tuplas. Deve-se sempre
+        considerar que a primeira linha das listas representa os valores do cabeçalho da tabela
         Atributo padrão: style="border-collapse: collapse;"
 
-        :param dados: lista de valores que serão convertidos em tabela em HTML.
-        :type dados: array bidimensional
+        :param dados: list/list de valores que serão inseridos nas linhas da tabela.
 
         :raise UnicodeDecodeError: Se existir alguma string não Unicode com caracter especial.
 
-        :return: HTML Unicode com os dados das listas.
+        :return: unicode com os dados no padrão HTML.
         """
         return Pdf.tabela(dados, border=1, style="border-collapse: collapse;")
 
     @staticmethod
-    def tabela(dados, caption=None, **attrs_table):
+    def tabela(dados, caption=None, titles=None, **attrs_table):
         """
-        Cria uma tabela em HTML a partir de um conjunto de listas ou tuplas, sendo a primeira linha o cabeçalho da tabela.
+        Cria uma tabela em HTML a partir de um conjunto de listas ou tuplas permitindo que a
+        adição de valores ao atributo "title" para as tags <th>..</th> e <td>...</td>. Deve-se
+        sempre considerar que a primeira linha das listas representa os valores do cabeçalho da
+        tabela tanto para "dados" quanto para "titles".
 
-        :param dados: lista de valores que serão convertidos em tabela em HTML.
-        :type dados: array bidimensional
+        :param dados: list/list de valores que serão inseridos nas linhas da tabela.
         :param caption: Cabeçalho da tabela.
+        :param titles: list/list com os valores correspondentes à "dados" para cada célula da tabela.
         :keyword **attrs_table: Devem ser os atributos que serão inseridos na tag "table", tal como style".
 
-        :raise UnicodeDecodeError: Se existir alguma string não Unicode com caracter especial nos parâmetros 'dados' ou 'caption'.
+        :raise UnicodeDecodeError: Se existir alguma string não Unicode com caracter especial.
 
-        :return: HTML Unicode com os dados das listas.
+        :return: unicode com os dados no padrão HTML.
         """
         template = Template(text=Pdf._template_table, output_encoding="utf-8")
-        tabela = template.render_unicode(dados=dados, caption=caption)
+        tabela = template.render_unicode(dados=dados, caption=caption, titles=titles)
         atributos = lambda dic: "".join([" {}=\"{}\"".format(chave, dic.get(chave)) for chave in dic])
         return tabela.replace("{attrs}", atributos(attrs_table) if attrs_table else "")
