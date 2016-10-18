@@ -133,9 +133,8 @@ class DadosBancarios(osv.osv):
             banco = self.pool.get("ud.banco").read(
                 cr, uid, banco_id, ["agencia", "dv_agencia", "conta", "dv_conta", "operacao"],
                 context=context, load="_classic_write")
-            vals = {"agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}.update(
-                {"%s_v" % dado: banco.get(dado) for dado in banco.keys()}
-            )
+            vals = {"agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}
+            vals.update({"%s_v" % dado: banco.get(dado) for dado in banco.keys()})
             return {"value": vals}
         return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,
                           "operacao_v": False, "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False,
