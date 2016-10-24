@@ -102,6 +102,11 @@ class DadosBancarios(osv.osv):
     }
 
     _rec_name = "banco_id"
+    
+    _constraints = [
+        (lambda self, *args, **kwargs: self.valida_dados(*args, **kwargs),
+         u"Já existe um registro com essas informações!", [u"Dados Bancários"]),
+    ]
 
     def name_get(self, cr, uid, ids, context=None):
         """
@@ -124,6 +129,23 @@ class DadosBancarios(osv.osv):
         ids = self.search(cr, uid, [("id", "in", ids)], limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
+    def valida_dados(self, cr, uid, ids, context=None):
+        for dados in self.browse(cr, uid, ids, context):
+            args = [("banco_id", "=", dados.banco_id.id), ("id", "!=", dados.id)]
+            if dados.agencia_v:
+                args.append(("agencia", "=", dados.agencia))
+            if dados.dv_agencia_v:
+                args.append(("dv_agencia", "=", dados.dv_agencia))
+            if dados.conta_v:
+                args.append(("conta", "=", dados.conta))
+            if dados.dv_conta_v:
+                args.append(("dv_conta", "=", dados.dv_conta))
+            if dados.operacao_v:
+                args.append(("operacao", "=", dados.operacao))
+            if self.search(cr, uid, args, context=context):
+                return False
+        return True
+    
     def onchange_banco(self, cr, uid, ids, banco_id, context=None):
         """
         Ao atualizar o banco do registro atual, ele irá atualizar uns campos funcionais instantaneamente para mostrar
