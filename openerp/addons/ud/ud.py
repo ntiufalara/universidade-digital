@@ -520,7 +520,7 @@ class Employee(osv.osv):
         Método que valida os campos do formulário Pessoa. Ex.: RG:111111 (sem traços).
         return: False se dados passados estão fora desse padrão ou True, caso contrário.
         """
-        padrao_email = re.compile("^[a-zA-Z]+(?:\.\w+)*@[a-zA-Z]+(?:\.[a-zA-Z]+)+$")
+        padrao_email = re.compile("^[a-zA-Z]+(?:[.\w+]*)@[a-zA-Z]+(?:\.[a-zA-Z]+)+$")
         for data in self.browse(cr, uid, ids, context=context):
             if data.work_email and not padrao_email.match(data.work_email):
                 return False
