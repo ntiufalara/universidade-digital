@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<openerp>
+    <data>
+        <!--  MENU LATERAL -->
+        <menuitem id="ud_monitoria_lateral" name="Monitoria" parent="ud.menu_point_root"/>
+
+        <!--  MENU LATERAL: Menus Internos -->
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_processo_seletivo_menu"
+                  action="action_ud_monitoria_processo_seletivo_tree_view" sequence="0"/>
+        <!--<menuitem parent="ud_monitoria_lateral" id="ud_monitoria_inscricao_menu"-->
+                  <!--action="action_ud_monitoria_inscricao_wizard_form_view" sequence="1"/>-->
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="2"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_curso_menu" name="Curso" sequence="3"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discentes_menu" name="Discente" sequence="4"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horarios_discente_menu" name="Horários"
+                  action="ud_monitoria_horarios_discente_action" sequence="5"/>
+
+
+        <!-- Menu Interno Coordenação -->
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_registro_menu" name="Registros Semestrais"
+                  action="action_ud_monitoria_registro_tree_view" sequence="0"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_oferta_disciplina_menu" name="Ofertas de disciplina"
+                  action="action_ud_monitoria_oferta_disciplina_tree_view" sequence="1"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_inscritos_menu" name="Inscrições"
+                  action="action_ud_monitoria_inscricao_tree_view" sequence="2"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_discente_menu" name="Discentes"
+                  action="ud_monitoria_discente_action" sequence="3"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_orientador_menu" name="Orientadores"
+                  action="ud_monitoria_orientador_action" sequence="4"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_disciplina_menu" name="Disciplinas"
+                  action="ud_monitoria_disciplina_action" sequence="5"/>
+
+        <!-- Menu Interno Curso -->
+        <menuitem parent="ud_monitoria_curso_menu" id="ud_monitoria_solicitacao_menu"
+                  action="action_ud_monitoria_solicitacao_tree_view" sequence="0"/>
+
+        <!-- Menu Interno Discente -->
+        <menuitem parent="ud_monitoria_discentes_menu" id="ud_monitoria_minhas_inscricoes_menu" name="Minhas Inscrições"
+                  action="action_ud_monitoria_minhas_inscricoes_tree_view" sequence="1"/>
+        <menuitem parent="ud_monitoria_discentes_menu" id="ud_monitoria_documentos_discente_menu" name="Documentos"
+                  action="ud_monitoria_documentos_discente_action" sequence="2"/>
+
+
+        <!-- MENUS TEMPORÁRIOS: Excluir/Comentar ao finalizar -->
+         <!--<menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horario_menu" name="Horário" action="ud_monitoria_horario_action" sequence="10"/>-->
+    </data>
+</openerp>

@@ -1,0 +1,3 @@
+import alteracao_bolsas_wizard
+import anexos_wizard
+import inscricao_wizard

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- DISCENTE -->
+        <record id="ud_monitoria_discente_action" model="ir.actions.act_window">
+            <field name="name">Discente</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.discente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_monitoria_discente_tree" model="ir.ui.view">
+            <field name="name">ud.monitoria.discente.form</field>
+            <field name="model">ud.monitoria.discente</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Discentes" >
+                    <field name="matricula"/>
+                    <field name="pessoa_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_discente_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.discente.form</field>
+            <field name="model">ud.monitoria.discente</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Discente" version="7.0">
+                    <field name="id" invisible="1"/>
+                    <field name="tipo" invisible="1"/>
+                    <group col="4">
+                        <field name="matricula" on_change="onchange_matricula_tipo(matricula,tipo)" colspan="2"
+                        attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="pessoa_id" colspan="2"
+                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
+                        <field name="email" attrs="{'invisible': [('email', '=', False)]}" colspan="2"/>
+                    </group>
+                    <group string="Documentos">
+                        <field name="documentos_ids" nolabel="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- ORIENTADOR -->
+        <record id="ud_monitoria_orientador_action" model="ir.actions.act_window">
+            <field name="name">Orientador</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.orientador</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_monitoria_orientador_tree" model="ir.ui.view">
+            <field name="name">ud.monitoria.orientador.form</field>
+            <field name="model">ud.monitoria.orientador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Orientadores">
+                    <field name="matricula"/>
+                    <field name="pessoa_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_orientador_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.orientador.form</field>
+            <field name="model">ud.monitoria.orientador</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Orientador" version="7.0">
+                    <field name="tipo" invisible="1"/>
+                    <group>
+                        <field name="matricula" on_change="onchange_matricula_tipo(matricula,tipo)"/>
+                        <field name="pessoa_id"
+                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
+                        <field name="email" attrs="{'invisible': [('email', '=', False)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>
