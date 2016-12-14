@@ -10,6 +10,8 @@ Não há sentido:
 Dúvida:
 =======
     - É para deletar um "Curso" quando deletar o "Polo" relacionado a ele? Não seria melhor restringir a deleção?
+    - No perfil, caso a pessoa seja um discente, deve ser mostrado o campo de seleção de setor? Visto que um discente
+      possui vínculo com curso.
 
 =================
 Novas Alterações:
@@ -21,13 +23,18 @@ Novas Alterações:
     - Nome das Classes renomeadas para um padrão recomendado de Orientação a Objetos;³
     - Correção dos erros que ocorria ao tentar alterar a senha usando a interface de pessoa no núcleo;
     - Alteração do campo de digitação da nova senha para tipo "password";
-    - Adição de um método de validação da Carga Horária de disciplinas.
+    - Adição de um método de validação da Carga Horária de disciplinas;
+    - Restringir dados bancários de modo que impessa registros duplicados.
 
 =========
 Sugestões
 =========
     - Alterar o tipo do campo "Carga horária" em disciplina de "char" para "integer";
-    - Inpedir que mais de uma pessoa tenha vínculo com o mesmo usuário.
+    - Inpedir que mais de uma pessoa tenha vínculo com o mesmo usuário;
+    - Se o objetivo do campo "papel_setor" em Employee é filtrar por tipo de usuário, então ele não funcionará de
+      maneira correta. Isso porque uma pessoa pode possuir mais de um tipo de vínculo. O melhor a ser feito era
+      sobrescrever o método search e usar os valores do context para filtrar de acordo com a necessidade. Outra boa
+      opção era criar menus distintos que fizesse esse tipo de separação.
 
 ------------------------
 ¹ Modelo voltado para armazenamento das matrículas ou SIAPES e define que tipo de vínculo essa pessoa possui com a
