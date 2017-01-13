@@ -470,6 +470,29 @@ class Employee(osv.osv):
         ("ud_rg_uniq", "unique(rg)", u'Já existe RG com esse número cadastrado.'),
     ]
 
+    def name_get(self, cr, uid, ids, context=None):
+        context = context or {}
+        return [
+            (pessoa.id, pessoa.name + context.get("complemento", {}).get(pessoa.id, ""))
+            for pessoa in self.browse(cr, uid, ids, context)
+        ]
+
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        context = context or {}
+        context["complemento"] = {}
+        ids = []
+        perfil_model = self.pool.get("ud.perfil")
+        for perfil in perfil_model.search(cr, uid, [("matricula", "=", name)]):
+            pessoa_id = perfil_model.browse(cr, uid, perfil, context).ud_papel_id.id
+            context["complemento"][pessoa_id] = u" (Matrícula/SIAPE: %s)" % name
+            ids.append(pessoa_id)
+        res = set(super(Employee, self).name_search(cr, uid, name, args, operator, context, limit))
+        if ids:
+            res = res.union(self.name_get(cr, uid, ids, context))
+        if limit:
+            return list(res)[:limit]
+        return list(res)
+
     def unlink(self, cr, uid, ids, context=None):
         """
         Remove o usuário da pessoa excluida.
