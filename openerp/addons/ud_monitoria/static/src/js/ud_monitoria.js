@@ -6,5 +6,8 @@ openerp.ud_monitoria = function (openerp) {
             this._super(view, code);
         }
     });
-    $(".semestre :input").mask("0000.0", {clearIfNotMatch: true});
+    try {
+        $(".semestre :input").mask("0000.0", {clearIfNotMatch: true});
+        $(".data :input").mask("00/00/0000");
+    } catch (e) {}
 };

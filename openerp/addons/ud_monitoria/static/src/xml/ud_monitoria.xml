@@ -5,7 +5,9 @@
         <span t-att-class="'oe_form_field '+widget.widget_class" t-att-style="widget.node.attrs.style">
             <t t-if="!widget.get('effective_readonly')">
                 <script>
-                    $("input[type='time']").mask("00:00", {clearIfNotMatch: true})
+                    try {
+                        $("input[type='time']").mask("00:00", {clearIfNotMatch: true})
+                    } catch (e) {}
                 </script>
                 <input type="time"
                        placeholder="00:00"
