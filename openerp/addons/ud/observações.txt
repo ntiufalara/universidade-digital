@@ -24,7 +24,11 @@ Novas Alterações:
     - Correção dos erros que ocorria ao tentar alterar a senha usando a interface de pessoa no núcleo;
     - Alteração do campo de digitação da nova senha para tipo "password";
     - Adição de um método de validação da Carga Horária de disciplinas;
-    - Restringir dados bancários de modo que impessa registros duplicados.
+    - Restringir dados bancários de modo que impessa registros duplicados;
+    - Alteração da view de curso para que informações como "Projetos" e link para visualização de perfil de
+      coordenadores fossem visualizados somente pelo administrador do núcleo;
+    - Pesquisa em campos que referenciem "ud.employee" agora permite busca pelo número de matrícula;
+    - Reorganização do arquivo .csv e acesso de leitura dos modelos para o grupo de usuário UD.
 
 =========
 Sugestões
