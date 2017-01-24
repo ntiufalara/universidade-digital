@@ -15,13 +15,33 @@ class Pessoa(osv.AbstractModel):
 
     _TIPOS = [('p', u'Docente'), ('a', u'Discente')]
 
+    def get_pessoa(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        perfil_model = self.pool.get("ud.perfil")
+        for pessoa in self.read(cr, uid, ids, ["matricula", "tipo"], load="_classic_write", context=context):
+            p = self.busca_pessoa(cr, perfil_model, pessoa["matricula"], pessoa["tipo"], context=context)
+            res[pessoa["id"]] = p
+        return res
+
+    def search_pessoa(self, cr, uid, modelo, campo, args, context=None):
+        if not len(args):
+            return []
+        if not args[0][2]:
+            return []
+        args = [("ud_papel_id", arg[1], arg[2]) for arg in args]
+        perfil_model = self.pool.get("ud.perfil")
+        res = [("tipo", "in", []), ("matricula", "in", [])]
+        for perfil in perfil_model.browse(cr, SUPER_UID, perfil_model.search(cr, SUPER_UID, args, context=context), context):
+            res[0][2].append(perfil.tipo)
+            res[1][2].append(perfil.matricula)
+        return [("id", "in", self.search(cr, uid, res, context=context))]
+
     _columns = {
         "id": fields.integer("ID", readonly=True, invisible=True),
         "matricula": fields.char(u"Matrícula", required=True),
         "tipo": fields.selection(_TIPOS, u"Tipo", required=True),
-        "pessoa_id": fields.function(
-            lambda self, *args, **kwargs: self.get_pessoa(*args, **kwargs), type="many2one", relation="ud.employee",
-            fnct_search=lambda cls, *args, **kwargs: cls.search_pessoa(*args, **kwargs), string=u"Pessoa"
+        "pessoa_id": fields.function(get_pessoa, type="many2one", relation="ud.employee", fnct_search=search_pessoa,
+                                     string=u"Pessoa"
         ),
         "email": fields.related("pessoa_id", "work_email", type="char", string=u"E-mail", readonly=True),
     }
@@ -31,13 +51,9 @@ class Pessoa(osv.AbstractModel):
          u"Não foi encontrada nenhuma pessoa com os dados informados", ["Pessoa"]),
     ]
 
-    _sql_constraints = [
-        ("pessoa_monitoria_unica", "unique(matricula,tipo)", u"Já existe um registro para essa Pessoa."),
-    ]
-
     def name_get(self, cr, uid, ids, context=None):
         return [
-            (pessoa["id"], u"%s - %s" % (pessoa["matricula"], pessoa["pessoa_id"][1]))
+            (pessoa["id"], pessoa["pessoa_id"][1])
             for pessoa in self.read(cr, uid, ids, ["matricula", "pessoa_id"], context=context)
             ]
 
@@ -86,38 +102,6 @@ class Pessoa(osv.AbstractModel):
             return perfil.ud_papel_id.id
         return False
 
-    def get_pessoa(self, cr, uid, ids, campo, args, context=None):
-        res = {}
-        perfil_model = self.pool.get("ud.perfil")
-        for pessoa in self.read(cr, uid, ids, ["matricula", "tipo"], load="_classic_write", context=context):
-            p = self.busca_pessoa(cr, perfil_model, pessoa["matricula"], pessoa["tipo"], context=context)
-            res[pessoa["id"]] = p
-        return res
-
-    def search_pessoa(self, cr, uid, modelo, campo, args, context=None):
-        if not len(args):
-            return []
-        if not args[0][2]:
-            return []
-        sql = """
-        SELECT
-          d.id
-        FROM
-          ud_monitoria_discente d, ud_perfil p
-        WHERE
-          d.matricula = p.matricula AND d.tipo = p.tipo AND p.ud_papel_id %(operador)s %(dados)s
-        """
-        dados = args[0][2]
-        if isinstance(dados, (list, tuple)):
-            dados = "(%s)" % str(dados).strip("\[|\]|\(|\)|,")
-        cr.execute(sql % {
-            "operador": args[0][1],
-            "dados": dados,
-        })
-        res = [l[0] for l in cr.fetchall()]
-        return [("id", "in", res)]
-        return []
-
     def update_pessoa(self, cr, uid, ids, context=None):
         res = []
         perfil_model = self.pool.get("ud.perfil")
@@ -150,6 +134,10 @@ class Discente(osv.Model):
                                           readonly=True),
     }
 
+    _sql_constraints = [
+        ("discente_unico", "unique(matricula,tipo)", u"Já existe um registro para essa Pessoa."),
+    ]
+
     _defaults = {
         "tipo": "a",
     }
@@ -176,6 +164,14 @@ class Orientador(osv.Model):
     _name = "ud.monitoria.orientador"
     _description = u"Modelo para dados de Orientador (UD)."
     _inherit = "ud.monitoria.pessoa"
+
+    _columns = {
+        "documentos_ids": fields.one2many("ud.monitoria.documentos.orientador", "orientador_id", u"Documentos")
+    }
+
+    _sql_constraints = [
+        ("orientador_unico", "unique(matricula,tipo)", u"Já existe um registro para essa Pessoa."),
+    ]
 
     _defaults = {
         "tipo": "p",
