@@ -10,10 +10,22 @@
             <field name="inherit_id" ref="ud.view_curso_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='coordenador']" position="after">
-                    <field name="coord_monitoria_id" colspan="2"/>
+                    <field name="coord_monitoria_id" colspan="2" options="{'no_open': true}"/>
                     <field name="turno" colspan="2"/>
                     <field name="modalidade" colspan="2"/>
                 </xpath>
+            </field>
+        </record>
+
+        <record id="ud_curso_form_view_admin" model="ir.ui.view">
+            <field name="name">ud.curso.form</field>
+            <field name="model">ud.curso</field>
+            <field name="inherit_id" ref="ud_curso_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.admin_ud')])]"/>
+            <field name="arch" type="xml">
+                <field name="coord_monitoria_id" position="attributes">
+                    <attribute name="options"></attribute>
+                </field>
             </field>
         </record>
 
@@ -73,8 +85,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Oferta de Disciplinas" editable="bottom">
-                    <field name="curso_id"/>
-                    <field name="disciplina_id"/>
+                    <field name="curso_id" options="{'create_edit': false, 'create': false}"/>
+                    <field name="disciplina_id" options="{'create_edit': false, 'create': false}"/>
                     <field name="em_oferta"/>
                     <field name="bolsas_disponiveis"/>
                 </tree>
@@ -96,8 +108,8 @@
                         sistema.
                     </div>
                     <group col="4">
-                        <field name="curso_id" colspan="2" on_change="onchange_curso()"/>
-                        <field name="disciplina_id" colspan="2"/>
+                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}" on_change="onchange_curso()"/>
+                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}"/>
                         <field name="em_oferta" colspan="2"/>
                         <field name="bolsas_disponiveis" colspan="2"/>
                     </group>
@@ -138,22 +150,41 @@
             <field name="arch" type="xml">
                 <form string="Disciplina" version="7.0" create="false" edit="false">
                     <group col="4">
-                        <field name="curso_id" colspan="2" on_change="onchange_curso(curso_id)" readonly="1"/>
+                        <field name="curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" domain="[('id', 'in', [])]" readonly="1"/>
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
-                        <field name="orientador_id" colspan="2" readonly="1"
-                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
-                        <field name="data_inicial" colspan="2" readonly="1"/>
-                        <field name="data_final" colspan="2" readonly="1"/>
+                        <field name="orientador_monitoria_id" colspan="2"/>
+                        <field name="data_inicial" colspan="2" readonly="1" class="data"/>
+                        <field name="data_final" colspan="2" readonly="1" class="data"/>
+                        <field name="monitor_s_bolsa" colspan="2" readonly="1"/>
+                        <field name="tutor_s_bolsa" colspan="2" readonly="1"/>
                     </group>
-                    <group string="Discentes Bolsistas">
-                        <field name="bolsista_ids" nolabel="1"/>
+                    <group string="Discentes Bolsistas" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])])]}">
+                        <field name="bolsista_ids" nolabel="1">
+                            <tree>
+                                <field name="discente_id"/>
+                                <field name="tutor"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
                     </group>
-                    <group string="Discentes não Bolsistas">
-                        <field name="n_bolsista_ids" nolabel="1"/>
+                    <group string="Discentes não Bolsistas" attrs="{'invisible': [('n_bolsista_ids', '=', [(6, False, [])])]}">
+                        <field name="n_bolsista_ids" nolabel="1">
+                            <tree>
+                                <field name="discente_id"/>
+                                <field name="tutor"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
                     </group>
-                    <group string="Discentes no Cadastro de Reserva">
-                        <field name="reserva_ids" nolabel="1"/>
+                    <group string="Discentes no Cadastro de Reserva" attrs="{'invisible': [('reserva_ids', '=', [(6, False, [])])]}">
+                        <field name="reserva_ids" nolabel="1">
+                            <tree>
+                                <field name="discente_id"/>
+                                <field name="tutor"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
                     </group>
                 </form>
             </field>

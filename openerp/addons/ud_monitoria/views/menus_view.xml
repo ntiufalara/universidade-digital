@@ -3,17 +3,20 @@
 <openerp>
     <data>
         <!--  MENU LATERAL -->
-        <menuitem id="ud_monitoria_lateral" name="Monitoria" parent="ud.menu_point_root"/>
+        <menuitem id="ud_monitoria_lateral" name="Monitoria" parent="ud.menu_point_root" groups="base.usuario_ud"/>
 
         <!--  MENU LATERAL: Menus Internos -->
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_processo_seletivo_menu"
                   action="action_ud_monitoria_processo_seletivo_tree_view" sequence="0"/>
-        <!--<menuitem parent="ud_monitoria_lateral" id="ud_monitoria_inscricao_menu"-->
-                  <!--action="action_ud_monitoria_inscricao_wizard_form_view" sequence="1"/>-->
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="2"/>
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_curso_menu" name="Curso" sequence="3"/>
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discentes_menu" name="Discente" sequence="4"/>
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horarios_discente_menu" name="Horários"
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_solicitacao_menu"
+                  groups="group_ud_monitoria_coord_disciplina,group_ud_monitoria_administrador"
+                  action="action_ud_monitoria_solicitacao_tree_view" sequence="1"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="2"
+                  groups="group_ud_monitoria_coordenador,group_ud_monitoria_administrador"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_orientadores_menu" name="Orientador" sequence="3"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discentes_menu" name="Discente" sequence="4"
+                  groups="group_ud_monitoria_monitor,group_ud_monitoria_administrador"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horarios_discente_menu" name="Monitores/Tutores"
                   action="ud_monitoria_horarios_discente_action" sequence="5"/>
 
 
@@ -31,18 +34,16 @@
         <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_disciplina_menu" name="Disciplinas"
                   action="ud_monitoria_disciplina_action" sequence="5"/>
 
-        <!-- Menu Interno Curso -->
-        <menuitem parent="ud_monitoria_curso_menu" id="ud_monitoria_solicitacao_menu"
-                  action="action_ud_monitoria_solicitacao_tree_view" sequence="0"/>
-
         <!-- Menu Interno Discente -->
-        <menuitem parent="ud_monitoria_discentes_menu" id="ud_monitoria_minhas_inscricoes_menu" name="Minhas Inscrições"
-                  action="action_ud_monitoria_minhas_inscricoes_tree_view" sequence="1"/>
         <menuitem parent="ud_monitoria_discentes_menu" id="ud_monitoria_documentos_discente_menu" name="Documentos"
-                  action="ud_monitoria_documentos_discente_action" sequence="2"/>
+                  action="ud_monitoria_documentos_discente_action" sequence="1"/>
+
+        <!-- Menu Interno Orientador -->
+        <menuitem parent="ud_monitoria_orientadores_menu" id="ud_monitoria_documentos_orientador_menu" name="Documentos"
+                  action="ud_monitoria_documentos_orientador_action" sequence="1"/>
 
 
         <!-- MENUS TEMPORÁRIOS: Excluir/Comentar ao finalizar -->
-         <!--<menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horario_menu" name="Horário" action="ud_monitoria_horario_action" sequence="10"/>-->
+        <!--<menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horario_menu" name="Horário" action="ud_monitoria_horario_action" sequence="10"/>-->
     </data>
 </openerp>

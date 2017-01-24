@@ -2,7 +2,7 @@
 
 <openerp>
     <data>
-        <!-- DOCUMENTO DISCENTE -->
+        <!-- DOCUMENTOS DISCENTE -->
         <record id="ud_monitoria_documentos_discente_action" model="ir.actions.act_window">
             <field name="name">Documentos</field>
             <field name="type">ir.actions.act_window</field>
@@ -43,6 +43,8 @@
             <field name="arch" type="xml">
                 <tree string="Horários" create="false" edit="false" delete="false">
                     <field name="disciplina_id"/>
+                    <field name="orientador_id"/>
+                    <field name="discente_id"/>
                     <field name="tutor"/>
                 </tree>
             </field>
@@ -56,12 +58,15 @@
             <field name="arch" type="xml">
                 <form string="Documentos" create="false" edit="false" version="7.0">
                     <header>
+                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard_form_view)d'
+                                type='action' string='Vincular Bolsa' attrs="{'invisible': [('state', '=', 'bolsista')]}"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
 						<field name="state" widget="statusbar"/>
                     </header>
                     <field name="declaracao_nome" invisible="1"/>
                     <field name="certificado_nome" invisible="1"/>
                     <field name="relatorios_ok" invisible="1"/>
-                    <field name="frequencia_controle" invisible="0"/>
+                    <field name="frequencia_controle" invisible="1"/>
                     <group col="4">
                         <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="tutor" colspan="2" readonly="context.get('filtrar_discente', False)"/>
