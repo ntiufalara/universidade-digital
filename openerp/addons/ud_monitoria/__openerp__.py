@@ -22,17 +22,23 @@
 
 {
     "name": "Monitoria (UD)",
-    "version": "0.1",
+    "version": "1.0",
     "category": u"Gerência de Monitores",
     "description": u"""Módulo de Monitoria
 ===================
-Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.""",
+Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.
+
+Recomendação:
+-------------
+É altamente recomendável a instalação do módulo **web_m2x_options** para permitir que algumas funções não sejam acessadas de maneira indevida.
+Ele pode ser encontrado para a versão do OpenERP 7 no link: <https://apps.openerp.com/apps/modules/7.0/web_m2x_options/>
+""",
     "author": u"Cloves Oliveira",
     "data": [
         # Dados Iniciais
         "data/cron.xml",
         "security/ud_monitoria_security.xml",
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
         # Wizards
         "wizards/alteracao_bolsas_wizard_view.xml",
         "wizards/anexos_wizard_view.xml",
@@ -43,6 +49,7 @@ Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, su
         "views/processo_seletivo_view.xml",
         "views/pessoa_view.xml",
         "views/documentos_discente_view.xml",
+        "views/documentos_orientador_view.xml",
         "views/menus_view.xml",
     ],
     "depends": ["base", "ud", "ud_documentos"],
