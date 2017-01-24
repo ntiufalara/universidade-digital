@@ -1,16 +1,16 @@
 #coding: utf-8
-
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 from re import compile
 
 
 def localise(data, tz):
     return timezone(tz).localize(data, is_dst=False)
+
 
 def datetime_to_utc(data, tz):
     try:
@@ -92,7 +92,7 @@ class Registro(osv.Model):
         for oferta in oferta_model.read(cr, uid, ofertas_ids, ["bolsas_disponiveis"], context=context):
             vagas += oferta.get("bolsas_disponiveis")
         return vagas
-    
+
     def _num_bolsas(self, cr, uid, ids, campo, args, context=None):
         return {}.fromkeys(ids, self.calcular_bolsas(cr, uid, context))
     
@@ -122,7 +122,7 @@ class Registro(osv.Model):
                                            required=True, store={
                                                "ud.monitoria.registro": (_update_bolsas, ["is_active"], 10),
                                                 "ud.monitoria.oferta.disciplina": (_update_bolsas, ["em_oferta", "bolsas_disponiveis"], 10)
-                                           }, help=u"Informa a quantidade de bolsas atualmente disponívels"),
+                                           }, help=u"Informa a quantidade total de bolsas das disciplinas em oferta"),
         "data_i_frequencia": fields.date(u"Envio de Frequência", required=True,
                                          help=u"Próxima data para submissão da frequências"),
         "intervalo_frequencia": fields.integer(u"Período (Dias)", required=True, help=u"Intervalo de submissão de frequências"),
@@ -134,9 +134,7 @@ class Registro(osv.Model):
                                                    help=u"Status de entrega de documentos e frequências dos discentes"),
         "demanda_ids": fields.one2many("ud.monitoria.solicitacao", "semestre_id", u"Demanda de disciplinas", readonly=True,
                                        help=u"Demanda de disciplinas para o semestre do registro"),
-        "desligamentos_ids": fields.one2many("ud.monitoria.desligamento", "registro_id", u"Solicitações de Desligamento", readonly=True,
-                                             help=u"Permite gerenciar as solicitações de desligamento"),
-        "outros_eventos_ids": fields.one2many("ud.monitoria.evento", "registro_id", u"Eventos Ocorridos",
+        "eventos_ids": fields.one2many("ud.monitoria.evento", "registro_id", u"Eventos Ocorridos",
                                               help=u"Registro de eventos em Geral ocorridos durante o semestre"),
         "is_active": fields.boolean(u"Ativo", readonly=True),
         "media_minima": fields.float(u"Nota Minima", required=True, help=u"Média mínima para aprovação de discentes."),
@@ -166,6 +164,7 @@ class Registro(osv.Model):
         "vagas_bolsistas": calcular_bolsas,
         "media_minima": 7.0,
         "tipo_media": "p",
+        "data_i_frequencia": (datetime.utcnow() + timedelta(30)).strftime("%Y-%m-%d"),
     }
     
     def unlink(self, cr, uid, ids, context=None):
@@ -209,12 +208,19 @@ class Evento(osv.Model):
     _order = "state asc,create_date asc"
     
     def responsavel(self, cr, uid, context=None):
-        ud_usuario_id = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
-        ud_usuario_id = ud_usuario_id or []
-        if len(ud_usuario_id) == 1:
-            return ud_usuario_id[0]
-        return False
-    
+        responsavel = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
+        if not responsavel:
+            raise osv.except_osv(
+                u"Registro Inexistente",
+                u"Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo"
+            )
+        if len(responsavel) > 1:
+            raise osv.except_osv(
+                u"Multiplos vínculos",
+                u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
+            )
+        return responsavel[0]
+
     def valida_registro(self, cr, uid, ids, context=None):
         for registro in self.browse(cr, uid, ids, context=context):
             if not registro.registro_id.is_active:
@@ -227,10 +233,12 @@ class Evento(osv.Model):
     ]
     
     _columns = {
-        "responsavel_id": fields.many2one("ud.employee", u"Responsável", required=True, readonly=True, ondelete="restrict", help=u"Pessoa que foi principal responsável pelo evento"),
+        "responsavel_id": fields.many2one("ud.employee", u"Responsável", required=True, readonly=True,
+                                          ondelete="restrict", help=u"Pessoa que ocasionou o evento"),
         "create_date": fields.datetime(u"Data do evento", readonly=True),
         "name": fields.char(u"Nome", required=True),
-        "envolvidos_ids": fields.many2many("ud.employee", "ud_monitoria_envolvidos_evento", "evento_id", "pessoa_id", u"Envolvidos", ondelete="restrict"),
+        "envolvidos_ids": fields.many2many("ud.employee", "ud_monitoria_envolvidos_evento", "evento_id", "pessoa_id",
+                                           u"Envolvidos", ondelete="restrict"),
         "descricao": fields.text(u"Descrição"),
         "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", required=True, ondelete="cascade"),
         "state": fields.selection(_STATES, u"Status", readonly=True),
@@ -286,6 +294,8 @@ class RelatorioFinalDisc(osv.Model):
 
     _columns = {
         "doc_discente_id": fields.many2one("ud.monitoria.documentos.discente", u"Documentos do Discente", required=True, ondelete="cascade"),
+        "disciplina_id": fields.related("doc_discente_id", "disciplina_id", type="many2one", readonly=True,
+                                         relation="ud.monitoria.disciplina", string=u"Disciplina"),
         "discente_id": fields.related("doc_discente_id", "discente_id", string=u"Discente", readonly=True,
                                       type="many2one", relation="ud.monitoria.discente"),
         "relatorio": fields.function(relatorio, type="boolean", multi="_relatorio", string=u"Entrega do relatório",
@@ -293,8 +303,6 @@ class RelatorioFinalDisc(osv.Model):
                                      store={"ud.monitoria.relatorio": (update_relatorio, ["state"], 10)}),
         "is_active": fields.function(relatorio, type="boolean", multi="_relatorio", string=u"Ativo?",
                                      store={"ud.monitoria.rfd.mes": (update_is_active, ["regular"], 10)}),
-        # "relatorio": fields.boolean(u"Entrega do relatório", help=u"Informa se o discente entregou o relatório corretamente"),
-        # "is_active": fields.boolean(u"Ativo"),
         "meses_frequencia_ids": fields.one2many("ud.monitoria.rfd.mes", "relatorio_id", u"Entrega das frequências",
                                                 help=u"Informa quais meses o discente precisa(ou) anexar sua frequência e qual é seu status"),
         "write_date": fields.datetime(u"Última atualização", readonly=True),
@@ -385,7 +393,6 @@ class RelatorioFimDiscMes(osv.Model):
         "regular": fields.function(frequencia_regular, type="boolean", string=u"Regular?",
                                     help=u"Infora se a frequência do mês específico está regular.",
                                    store={"ud.monitoria.frequencia": (update_regular, ["state"], 10)}),
-        # "regular": fields.boolean(u"Regular?", help=u"Infora se a frequência do mês específico está regular."),
         "relatorio_id": fields.many2one("ud.monitoria.relatorio.final.disc", u"Relatório Final", ondelete="cascade",
                                         invisible=True),
     }
@@ -395,61 +402,10 @@ class RelatorioFimDiscMes(osv.Model):
     ]
 
 
-class Desligamento(osv.Model):
-    _name = "ud.monitoria.desligamento"
-    _description = u"Info: desligamento de discentes (UD)"
-    _order = "state desc"
-    
-    def valida_registro(self, cr, uid, ids, context=None):
-        for registro in self.browse(cr, uid, ids, context=context):
-            if not registro.registro_id.is_active:
-                return False
-        return True
-    
-    _STATES = [
-        ("novo", u"Novo"),
-        ("confirmado", u"Confirmado"),
-    ]
-    
-    _columns = {
-        # "orientador_solicitante_id": fields.many2one("ud.monitoria.orientador", u"Orientador", required=True, ondelete="restrict"),
-        # "discente_id": fields.many2one("ud.monitoria.discente", u"Discente", required=True, ondelete="restrict"),
-        "disciplina_id": fields.many2one("ud.disciplina", u"Disciplina", required=True, ondelete="restrict"),
-        "justificativa": fields.text(u"Justificativa", required=True),
-        "info_adicionais": fields.text(u"Informações adicionais"),
-        "state": fields.selection(_STATES, u"Status", readonly=True),
-        "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", required=True, invisible=False, ondelete="cascade"),
-    }
-    
-    _constraints = [
-        (valida_registro, u"O Registro não está mais ativo!", [u"Registro"])
-    ]
-    
-    def create(self, cr, user, vals, context=None):
-        vals["state"] = "novo"
-        vals["info_adicionais"] = vals.get("info_adicionais", u"Nenhuma informação adicional") or u"Nenhuma informação adicional"
-        return osv.osv.create(self, cr, user, vals, context=context)
-    
-    def botao_confirmar(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {"state": "confirmado"}, context=context)
-
-
 class SolicitacaoDisciplina(osv.Model):
     _name = "ud.monitoria.solicitacao.disciplina"
     _description = u"Disciplina de solicitação para monitoria (UD)"
     _inherit = "ud.monitoria.info.disciplina"
-    
-    def bolsas_disponiveis(self, cr, uid, ids, campo, args, context=None):
-        oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-        res = {}
-        for disc in self.read(cr, uid, ids, ["curso_id", "disciplina_id"], context=context, load="_classic_write"):
-            ofertas_ids = oferta_model.search(cr, uid, [
-                ("curso_id", "=", disc["curso_id"]), ("disciplina_id", "=", disc["disciplina_id"])
-            ], context=context)
-            if ofertas_ids:
-                res[disc["id"]] = oferta_model.read(cr, uid, ofertas_ids[0], ["bolsas_disponiveis"], context=context,
-                                                    load="_classic_write")["bolsas_disponiveis"]
-        return res
     
     def valida_vagas(self, cr, uid, ids, context=None):
         for disc in self.read(cr, uid, ids, ["monitor_s_bolsa", "tutor_s_bolsa"], context=context, load="_classic_write"):
@@ -466,7 +422,6 @@ class SolicitacaoDisciplina(osv.Model):
     _columns = {
         "monitor_s_bolsa": fields.integer(u"Vagas sem bolsa (Monitor)", required=True),
         "tutor_s_bolsa": fields.integer(u"Vagas sem bolsa (Tutor)", required=True),
-        "num_bolsas": fields.function(bolsas_disponiveis, type="integer", string=u"Bolsas disponíveis"),
         "solicitacao_id": fields.many2one("ud.monitoria.solicitacao", u"Solicitação", ondelete="cascade", required=True, invisible=True),
     }
     
