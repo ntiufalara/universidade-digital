@@ -34,22 +34,7 @@ class ProcessoSeletivoDisciplina(osv.Model):
     _name = "ud.monitoria.ps.disciplina"
     _description = u"Disciplina do Processo Seletivo (UD)"
     _inherit = "ud.monitoria.info.disciplina"
-    
-    def bolsas_disponiveis(self, cr, uid, ids, campo, args, context=None):
-        oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-        res = {}
-        for disciplina in self.read(cr, uid, ids, ["curso_id", "disciplina_id"], context=context, load="_classic_write"):
-            ofertas_ids = oferta_model.search(cr, uid, [
-                ("curso_id", "=", disciplina["curso_id"]),
-                ("disciplina_id", "=", disciplina["disciplina_id"])
-            ], context=context)
-            if ofertas_ids:
-                res[disciplina["id"]] = oferta_model.read(cr, uid, ofertas_ids[0], ["bolsas_disponiveis"],
-                                                          context=context, load="_classic_write")["bolsas_disponiveis"]
-            else:
-                res[disciplina["id"]] = 0
-        return res
-    
+
     def valida_disciplina_ps(self, cr, uid, ids, context=None):
         for disc in self.browse(cr, uid, ids, context=context):
             if self.search(cr, uid, [("curso_id", "=", disc.curso_id.id), ("disciplina_id", "=", disc.disciplina_id.id),
@@ -60,7 +45,6 @@ class ProcessoSeletivoDisciplina(osv.Model):
     _columns = {
         "monitor_s_bolsa": fields.integer(u"Vagas sem bolsa (Monitor)", required=True),
         "tutor_s_bolsa": fields.integer(u"Vagas sem bolsa (Tutor)", required=True),
-        "num_bolsas": fields.function(bolsas_disponiveis, type="integer", string=u"Bolsas disponíveis"),
         "processo_seletivo_id": fields.many2one("ud.monitoria.processo.seletivo", u"Processo Seletivo", ondelete="cascade"),
     }
     
@@ -152,8 +136,14 @@ class CriterioAvaliativo(osv.Model):
 
 class Pontuacao(osv.Model):
     _name = "ud.monitoria.pontuacao"
-    _descricao = u"Pontuação dada por critério (UD)"
-    
+    _description = u"Pontuação de cada critério (UD)"
+
+    def valida_pontuacao(self, cr, uid, ids, context=None):
+        for pontuacao in self.browse(cr, uid, ids, context):
+            if pontuacao.pontuacao < 0 and pontuacao.pontuacao > 10:
+                return False
+        return True
+
     _columns = {
         "criterio_avaliativo_id": fields.many2one("ud.monitoria.criterio.avaliativo", u"Critério Avaliativo", readonly=True, ondelete="restrict"),
         "pontuacao": fields.float(u"Pontuação", required=True),
@@ -164,6 +154,10 @@ class Pontuacao(osv.Model):
     _defaults = {
         "pontuacao": 0.,
     }
+
+    _constraints = [
+        (valida_pontuacao, u"Toda pontuação deve está entre 0 e 10.", [u"Pontuação"])
+    ]
     
     _rec_name = "criterio_avaliativo_id"
     
@@ -233,7 +227,7 @@ class PontuacoesDisciplina(osv.Model):
         "media_aritmetica": 0.,
         "media_ponderada": 0.,
     }
-    
+
     _rec_name = "disciplina_id"
     
     def create(self, cr, uid, vals, context=None):
@@ -284,10 +278,10 @@ class PontuacoesDisciplina(osv.Model):
             media_minima = pont.inscricao_id.processo_seletivo_id.semestre_id.media_minima
             if tipo_media == "a" and pont.media_aritmetica < media_minima:
                 raise osv.except_osv(u"Média Baixa",
-                                     u"O valor da média aritmética é abaixo de %.2f pontos" % media_minima)
+                                     u"O valor da média aritmética é abaixo de %.2f" % media_minima)
             elif tipo_media == "p" and pont.media_ponderada < media_minima:
                 raise osv.except_osv(u"Média Baixa",
-                                     u"O valor da média ponderada é abaixo de %.2f pontos" % media_minima)
+                                     u"O valor da média ponderada é abaixo de %.2f" % media_minima)
 
             res_id = res_id or pont.inscricao_id.id
             state = "n_bolsista"
@@ -305,8 +299,6 @@ class PontuacoesDisciplina(osv.Model):
                         )
                     )
                 else:
-                    self.tem_bolsa_disponivel(cr, uid, pont.disciplina_id,
-                                              pont.inscricao_id.processo_seletivo_id.semestre_id, context)
                     # FIXME: O campo do valor da bolsa no núcleo é um CHAR, se possível, mudar para um FLOAT
                     perfil_model.write(cr, SUPERUSER_ID, pont.inscricao_id.perfil_id.id, {
                         "is_bolsista": True, "tipo_bolsa": "m",
@@ -316,9 +308,6 @@ class PontuacoesDisciplina(osv.Model):
                         "ud_conta_id": pont.inscricao_id.discente_id.id
                     }, context=context)
                     state = "bolsista"
-            if state == "n_bolsista":
-                self.tem_vaga_sem_bolsa(cr, uid, pont.disciplina_id, pont.inscricao_id.processo_seletivo_id.semestre_id,
-                                        pont.inscricao_id.modalidade == "tutor", context)
             self._get_create_doc_discente(cr, uid, pont, state, context)
         self.write(cr, uid, ids, {"state": "aprovado"}, context=context)
         return self.conf_view(cr, uid, res_id)
@@ -411,6 +400,7 @@ class PontuacoesDisciplina(osv.Model):
             ("semestre_id", "=", browse_self.inscricao_id.processo_seletivo_id.semestre_id.id)
         ])
         if disc:
+            disc_model.atualiza_orientador(cr, uid, disc, context)
             return disc[0]
         dados = {
             "curso_id": browse_self.disciplina_id.curso_id.id,
@@ -426,40 +416,11 @@ class PontuacoesDisciplina(osv.Model):
     def _get_create_doc_discente(self, cr, uid, browse_self, state, context=None):
         doc_discente_model = self.pool.get("ud.monitoria.documentos.discente")
         dados = {
-            "disciplina_id": self._get_create_disciplina_monitoria(cr, uid, browse_self, context),
-            "discente_id": self._get_create_discente(cr, uid, browse_self, context),
-            "bolsista": browse_self.bolsista,
-            "tutor": browse_self.inscricao_id.modalidade == "tutor",
-            "state": state,
+            "inscricao_id": browse_self.inscricao_id.id, "tutor": browse_self.inscricao_id.modalidade == "tutor",
+            "disciplina_id": self._get_create_disciplina_monitoria(cr, uid, browse_self, context), "state": state,
+            "discente_id": self._get_create_discente(cr, uid, browse_self, context), "bolsista": browse_self.bolsista,
         }
         return doc_discente_model.create(cr, uid, dados, context)
-
-    def tem_bolsa_disponivel(self, cr, uid, disciplina_ps, browse_semestre, context=None):
-        disc_model = self.pool.get("ud.monitoria.disciplina")
-        disc = disc_model.search(cr, uid, [
-            ("semestre_id", "=", browse_semestre.id), ("orientador_id", "=", disciplina_ps.orientador_id.id),
-            ("disciplina_id", "=", disciplina_ps.disciplina_id.id), ("is_active", "=", True),
-        ], context=context)
-        qtd = 0
-        for d in disc_model.read(cr, uid, disc, ["bolsista_ids"], load="_classic_write", context=context):
-            qtd += len(d["bolsista_ids"])
-        if disciplina_ps.num_bolsas <= qtd:
-            raise osv.except_osv(u"Vaga Indisponível", u"Vagas insuficientes para novos bolsistas.")
-        return True
-
-    def tem_vaga_sem_bolsa(self, cr, uid, disciplina_ps, browse_semestre, is_tutor, context=None):
-        disc_model = self.pool.get("ud.monitoria.disciplina")
-        disc = disc_model.search(cr, uid, [
-            ("semestre_id", "=", browse_semestre.id), ("orientador_id", "=", disciplina_ps.orientador_id.id),
-            ("disciplina_id", "=", disciplina_ps.disciplina_id.id), ("is_active", "=", True),
-        ], context=context)
-        n_bolsistas = 0
-        for d in disc_model.read(cr, uid, disc, ["n_bolsista_ids"], load="_classic_write", context=context):
-            n_bolsistas += len(d["n_bolsista_ids"])
-        if n_bolsistas >= disciplina_ps.tutor_s_bolsa:
-            if is_tutor:
-                raise osv.except_osv(u"Vaga Indisponível", u"Vagas insuficientes para novos tutores NÃO bolsistas.")
-            raise osv.except_osv(u"Vaga Indisponível", u"Vagas insuficientes para novos monitores NÃO bolsistas.")
 
 
 class Anexo(osv.Model):
@@ -744,7 +705,8 @@ class Inscricao(osv.Model):
         "matricula": fields.char(u"Matrícula", size=15, required=True),
         "perfil_id": fields.function(_get_perfil, type="many2one", relation="ud.perfil", string=u"Perfil", method=True, invisible=True,
                                      store={"ud.monitoria.inscricao": (lambda self, cr, uid, ids, context=None: ids, ["matricula"], 10)}),
-        "curso_id": fields.related("perfil_id", "ud_cursos", type="many2one", relation="ud.curso", string=u"Curso", readonly=True),
+        "curso_id": fields.related("perfil_id", "ud_cursos", type="many2one", relation="ud.curso", string=u"Curso",
+                                   readonly=True, help="Curso que o discente possui vínculo"),
         "discente_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                       string=u"Discente", readonly=True),
         
@@ -754,9 +716,6 @@ class Inscricao(osv.Model):
         "identidade_nome": fields.char(u"Arquivo RG", required=True),
         "hist_analitico": fields.binary(u"Hist. Analítico", required=True),
         "hist_analitico_nome": fields.char(u"Arquivo Hist. Analítico", required=True),
-        # "cpf_id": fields.many2one("ud.monitoria.anexo", u"CPF", required=True, ondelete="restrict"),
-        # "identidade_id": fields.many2one("ud.monitoria.anexo", u"RG", required=True, ondelete="restrict"),
-        # "hist_analitico_id": fields.many2one("ud.monitoria.anexo", u"Hist. Analítico", required=True, ondelete="restrict"),
         "processo_seletivo_id": fields.many2one("ud.monitoria.processo.seletivo", u"Processo Seletivo", required=True, ondelete="restrict"),
         "modalidade": fields.selection(_MODALIDADE, u"Modalidade", required=True),
         "turno": fields.selection(_TURNO, u"Turno", required=True),
@@ -778,17 +737,7 @@ class Inscricao(osv.Model):
         (valida_registro, u"Não é possível realizar as ações desejadas enquanto o processo seletivo estiver vinculado a um registro inativo", [u"Processo Seletivo"]),
         (_valida_matricula, u"Matrícula Inexistente", [u"Matrícula"]),
     ]
-    
-    # def unlink(self, cr, uid, ids, context=None):
-    #     anexos = []
-    #     for insc in self.read(cr, uid, ids, ["cpf_id", "identidade_id", "hist_analitico_id"], context=context, load="_classic_write"):
-    #         anexos.append(insc["cpf_id"])
-    #         anexos.append(insc["identidade_id"])
-    #         anexos.append(insc["hist_analitico_id"])
-    #     res = super(Inscricao, self).unlink(cr, uid, ids, context=context)
-    #     self.pool.get("ud.monitoria.anexo").unlink(cr, uid, anexos, context)
-    #     return res
-    
+
     def name_get(self, cr, uid, ids, context=None):
         return [(insc.id, insc.discente_id.name) for insc in self.browse(cr, uid, ids, context=context)]
     
@@ -808,7 +757,8 @@ class Inscricao(osv.Model):
             if employee:
                 args += [("perfil_id", "in",
                           self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", employee)]))]
-
+            else:
+                return []
         return super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def onchange_matricula(self, cr, uid, ids, matricula, bolsista, context=None):
