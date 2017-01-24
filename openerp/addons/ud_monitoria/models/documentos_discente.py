@@ -37,7 +37,7 @@ class DocumentosDiscente(osv.Model):
 
     def frequencia_controle(self, cr, uid, ids, campo, args, context=None):
         res = {}
-        for doc in self.browse(cr, uid, ids, context):
+        for doc in self.browse(cr, SUPERUSER_ID, ids, context):
             data = datetime.strptime(doc.disciplina_id.semestre_id.data_i_frequencia, DEFAULT_SERVER_DATE_FORMAT).date()
             intervalo_fim = data.fromordinal(data.toordinal() + doc.disciplina_id.semestre_id.intervalo_frequencia)
             hoje = datetime.strptime(fields.date.context_today(self, cr, uid, context), DEFAULT_SERVER_DATE_FORMAT).date()
@@ -49,7 +49,38 @@ class DocumentosDiscente(osv.Model):
             h.documento_id.id for h in self.browse(cr, uid, ids, context)
             ]
 
+    def valida_vagas_bolsista(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and doc.state == "bolsista":
+                for disc in doc.inscricao_id.disciplinas_ids:
+                    if disc.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
+                        if len(doc.disciplina_id.bolsista_ids) > disc.num_bolsas:
+                            return False
+                        break
+        return True
+
+    def valida_vagas_n_bolsista(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and doc.state == "n_bolsista":
+                    for disc in doc.inscricao_id.disciplinas_ids:
+                        if disc.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
+                            if doc.inscricao_id.modalidade == "tutor":
+                                a = doc.disciplina_id.n_bolsista_ids
+                                a = len(doc.disciplina_id.n_bolsista_ids)
+                                b = disc.tutor_s_bolsa
+                                if len(doc.disciplina_id.n_bolsista_ids) > disc.tutor_s_bolsa:
+                                    return False
+                            else:
+                                a = doc.disciplina_id.n_bolsista_ids
+                                a = len(doc.disciplina_id.n_bolsista_ids)
+                                b = disc.tutor_s_bolsa
+                                if len(doc.disciplina_id.n_bolsista_ids) > disc.monitor_s_bolsa:
+                                    return False
+                            break
+        return True
+
     _columns = {
+        "inscricao_id": fields.many2one("ud.monitoria.inscricao", u"Inscrição", required=True, ondelete="restrict"),
         "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True, ondelete="restrict"),
         "discente_id": fields.many2one("ud.monitoria.discente", u"Discente", required=True, ondelete="cascade"),
         "orientador_id": fields.related("disciplina_id", "orientador_id", type="many2one", relation="ud.employee", string=u"Orientador"),
@@ -88,6 +119,11 @@ class DocumentosDiscente(osv.Model):
     _sql_constraints = [
         ("disciplina_discente_unico", "unique(disciplina_id,discente_id)",
          u"Não é permitido vincular a mesma disciplina de um semestre para o mesmo discente.")
+    ]
+
+    _constraints = [
+        (valida_vagas_bolsista, u"Não há vagas para adicionar o discente como bolsista.", [u"Disciplina"]),
+        (valida_vagas_n_bolsista, u"Não há vagas disponíveis para adicionar o discente como NÃO bolsista.", [u"Disciplina"])
     ]
 
     def name_get(self, cr, uid, ids, context=None):
@@ -154,7 +190,6 @@ class DocumentosDiscente(osv.Model):
         if rel_id:
             return rel_id[0]
         return rel_model.create(cr, uid, {"doc_discente_id": id_doc}, context)
-
 
     def calcula_ch(self, cr, uid, ids, campo, args, context=None):
         def converte(dt):
