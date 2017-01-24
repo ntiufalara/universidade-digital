@@ -11,7 +11,7 @@ from openerp.osv import osv, fields
 
 class InscricaoWizard(osv.TransientModel):
     _name = "ud.monitoria.inscricao.wizard"
-    _description = u"Wizard para inscricao de Processos Seletivos"
+    _description = u"Wizard para inscrição de Processos Seletivos"
     
     _MODALIDADE = [("monitor", u"Monitoria"), ("tutor", u"Tutoria")]
     
@@ -59,7 +59,7 @@ class InscricaoWizard(osv.TransientModel):
         res = super(InscricaoWizard, self).default_get(cr, uid, fields_list, context=context)
         context = context or {}
         if context.get("active_model", False) == "ud.monitoria.processo.seletivo" and context.get("active_id", False):
-            if self.pool.get("ud.monitoria.processo.seletivo").browse(cr, SUPERUSER_ID, context.get("active_id", False)).state == "andamento":
+            if self.pool.get("ud.monitoria.processo.seletivo").browse(cr, uid, context.get("active_id", False)).state == "andamento":
                 res["processo_seletivo_id"] = context.get("active_id")
         return res
     
@@ -67,16 +67,16 @@ class InscricaoWizard(osv.TransientModel):
         res = {}
         if matricula:
             perfil_model = self.pool.get("ud.perfil")
-            papel_id = perfil_model.search(cr, SUPERUSER_ID, [("matricula", "=", matricula),
+            papel_id = perfil_model.search(cr, uid, [("matricula", "=", matricula),
                                                               ("tipo", "=", "a")], context=context)
             if papel_id:
                 perfil = perfil_model.browse(cr, uid, papel_id[0], context=context)
                 res = {"value": {"perfil_id": papel_id[0], "discente_id": perfil.ud_papel_id.id,
                                  "celular": perfil.ud_papel_id.mobile_phone, "email": perfil.ud_papel_id.work_email,
                                  "controle": ""}}
-                if perfil.ud_papel_id.mobile_phone:
+                if not perfil.ud_papel_id.mobile_phone:
                     res["value"]["controle"] += "c"
-                if perfil.ud_papel_id.work_email:
+                if not perfil.ud_papel_id.work_email:
                     res["value"]["controle"] += "e"
                 if bolsista:
                     if perfil.is_bolsista:
@@ -95,10 +95,10 @@ class InscricaoWizard(osv.TransientModel):
     def onchange_bolsista(self, cr, uid, ids, matricula, discente_id, bolsista, context=None):
         if matricula and discente_id and bolsista:
             perfil_model = self.pool.get("ud.perfil")
-            perfil_id = perfil_model.search(cr, SUPERUSER_ID, [("matricula", "=", matricula), ("tipo", "=", "a"),
+            perfil_id = perfil_model.search(cr, uid, [("matricula", "=", matricula), ("tipo", "=", "a"),
                                                                ("ud_papel_id", "=", discente_id)], context=context)
             if perfil_id:
-                if perfil_model.read(cr, SUPERUSER_ID, perfil_id[0], ["is_bolsista"], context=context, load="_classic_write")["is_bolsista"]:
+                if perfil_model.read(cr, uid, perfil_id[0], ["is_bolsista"], context=context, load="_classic_write")["is_bolsista"]:
                     return {"value": {"bolsista": False},
                             "warning": {"title": u"Discente bolsista",
                                         "message": u"Não é permitido fazer inscrição de discentes bolsistas como bolsista."}}
@@ -167,15 +167,15 @@ class InscricaoWizard(osv.TransientModel):
         for inscricao in self.browse(cr, uid, ids, context=context):
             dados_bancarios_id = False
             pessoa_dados = {}
-            if inscricao.celular and inscricao.controle not in ["c", "ce"]:
+            if inscricao.celular and inscricao.controle in ["c", "ce"]:
                 pessoa_dados["mobile_phone"] = inscricao.celular
-            if inscricao.email and inscricao.controle not in ["e", "ce"]:
+            if inscricao.email and inscricao.controle in ["e", "ce"]:
                 pessoa_dados["work_email"] = inscricao.email
             if pessoa_dados:
-                papel_id = perfil_model.search(cr, SUPERUSER_ID, [("matricula", "=", inscricao.matricula),
+                papel_id = perfil_model.search(cr, uid, [("matricula", "=", inscricao.matricula),
                                                               ("tipo", "=", "a")], context=context)
                 pessoa_id = perfil_model.read(cr, uid, papel_id[0], ["ud_papel_id"], context=context, load="_classic_write")["ud_papel_id"]
-                pessoa_model.write(cr, uid, pessoa_id, pessoa_dados, context=context)
+                pessoa_model.write(cr, SUPERUSER_ID, pessoa_id, pessoa_dados, context=context)
             if inscricao.banco_id:
                 dados_bancarios_id = self._get_banco(cr, inscricao, context)
             pontuacoes = [(0, 0, {"disciplina_id": disc.id,
@@ -191,7 +191,7 @@ class InscricaoWizard(osv.TransientModel):
                      "disciplinas_ids": [(6, 0, [disc.id for disc in inscricao.disciplinas_ids])],
                      "dados_bancarios_id": dados_bancarios_id, "state": "analise",
                      "pontuacoes_ids": pontuacoes}
-            res_id = inscricao_model.create(cr, uid, dados, context=context)
+            res_id = inscricao_model.create(cr, SUPERUSER_ID, dados, context=context)
         obj_model = self.pool.get('ir.model.data')
         form_id = obj_model.get_object_reference(cr, uid, "ud_monitoria", "ud_monitoria_inscricao_form_view")[1]
         return {
@@ -209,13 +209,3 @@ class InscricaoWizard(osv.TransientModel):
     
     def onchange_processo_seletivo(self, cr, uid, ids, processo_seletivo_id, context=None):
         return {"value": {"disciplinas_ids": []}}
-
-
-# class AvaliacaoInscricaoWizard(osv.TransientModel):
-#     _name = "ud.monitoria.avaliacao.inscricao.wizard"
-#     _inherit = "ud.monitoria.pontuacoes.disciplina"
-#
-#     def default_get(self, cr, uid, fields_list, context=None):
-#         res = super(AvaliacaoInscricaoWizard, self).default_get(cr, uid, fields_list, context)
-#         if context.get("active_model", False) == "ud.monitoria.inscricao" and context.get("active_id", False):
-#             ponts = self.pool.get("ud.monitoria.inscricao").browse(cr, SUPERUSER_ID, context.get("active_id", False)).pontuacoes_ids
