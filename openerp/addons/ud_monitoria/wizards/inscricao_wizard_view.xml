@@ -95,7 +95,19 @@
                             Número máximo de disciplinas por modalidade:
                             <ul>
                                 <li>Monitoria: 1 disciplina;</li>
-                                <li>Tutoria: 3 disciplinas.</li>
+                                <li>
+                                    Tutoria:
+                                    <ul>
+                                        <li>Até 3 disciplinas;</li>
+                                        <li>
+                                            O tutoror só poderá exercer atividades de tutoria em disciplinas que sejam
+                                            ofertadas no 1º e/ou 2º períodos da graduação;
+                                        </li>
+                                        <li>
+                                            Cada disciplina será assistida pelo tutor por no máximo 10 alunos.
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </group>
