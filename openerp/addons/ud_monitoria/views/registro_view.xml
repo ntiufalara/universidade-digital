@@ -296,8 +296,8 @@
                         <field name="siape" colspan="2" on_change="onchange_siape(siape)"/>
                         <field name="orientador_id" colspan="2"
                                context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
-                        <field name="data_inicial" colspan="2" class="data"/>
-                        <field name="data_final" colspan="2" class="data"/>
+                        <field name="data_inicial" colspan="2"/>
+                        <field name="data_final" colspan="2"/>
                         <field name="monitor_s_bolsa" colspan="2"/>
                         <field name="tutor_s_bolsa" colspan="2"/>
                         <field name="num_bolsas" colspan="2"/>

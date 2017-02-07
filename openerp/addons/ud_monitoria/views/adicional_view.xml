@@ -154,8 +154,8 @@
                         <field name="disciplina_id" colspan="2" domain="[('id', 'in', [])]" readonly="1"/>
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="orientador_monitoria_id" colspan="2"/>
-                        <field name="data_inicial" colspan="2" readonly="1" class="data"/>
-                        <field name="data_final" colspan="2" readonly="1" class="data"/>
+                        <field name="data_inicial" colspan="2" readonly="1"/>
+                        <field name="data_final" colspan="2" readonly="1"/>
                         <field name="monitor_s_bolsa" colspan="2" readonly="1"/>
                         <field name="tutor_s_bolsa" colspan="2" readonly="1"/>
                     </group>
