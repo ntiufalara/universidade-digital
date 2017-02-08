@@ -5,6 +5,8 @@ from openerp.modules.module import get_module_resource
 from openerp.osv import osv, fields
 import openerp.tools as tools
 
+from usuario.usuario import ConfiguracaoUsuarioUD
+
 # Tupla que guarda a lista dos principais bancos.
 _BANCOS = [
     ('218', u'218 - Banco Bonsucesso S.A.'), ('036', u'036 - Banco Bradesco BBI S.A'),
@@ -422,7 +424,7 @@ class Employee(osv.osv):
                                         store={'ud.employee': (lambda self, cr, uid, ids, c=None: ids, ['image'], 10)}),
         'image_small': fields.function(_get_image, fnct_inv=_set_image, string=u"Smal-sized photo", type="binary",
                                        multi="_get_image",
-                                       store={'hr.employee': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10)},
+                                       store={'hr.employee': (lambda self, cr, uid, ids, c=None: ids, ['image'], 10)},
                                        help=(u"Small-sized photo of the employee. It is automatically "
                                              u"resized as a 64x64px image, with aspect ratio preserved. "
                                              u"Use this field anywhere a small image is required.")),
@@ -444,11 +446,12 @@ class Employee(osv.osv):
         'papel_setor': fields.related('papel_ids', 'tipo', store=True, type="char"),
         'matricula': fields.related('papel_ids', 'matricula', store=True, type="char"),
         'dados': fields.one2many('ud.dados.bancarios', 'ud_conta_id', u'Dados Bancários'),
-        'nacionalidade': fields.selection(_NACIONALIDADES, u'Nacionalidade', required=False),
+        'nacionalidade': fields.selection(_NACIONALIDADES, u'Nacionalidade'),
         'rua': fields.char(u'Rua', size=120),
+        "numero": fields.char(u"Número", size=8),
         'bairro': fields.char(u'Bairro', size=32),
         'cidade': fields.char(u'Cidade', size=120),
-        'estado': fields.selection(_ESTADOS, u'Estado', required=True),
+        'estado': fields.selection(_ESTADOS, u'Estado'),
         'resource_id': fields.many2one('resource.resource', ondelete='set null')
     }
 
@@ -493,18 +496,45 @@ class Employee(osv.osv):
             return list(res)[:limit]
         return list(res)
 
-    def unlink(self, cr, uid, ids, context=None):
-        """
-        Remove o usuário da pessoa excluida.
-        """
-        res_users_ids = []
-        for employee in self.browse(cr, uid, ids, context=context):
-            res_users_ids.append(employee.user_id.id)
+    def create(self, cr, uid, vals, context=None):
+        res = super(Employee, self).create(cr, uid, vals, context)
+        self.criar_usuarios(cr, uid, res, context)
+        return res
 
-        if res_users_ids[0] == False or res_users_ids[0] == SUPERUSER_ID:
-            return super(Employee, self).unlink(cr, uid, ids, context=context)
-        else:
-            return self.pool.get('res.users').unlink(cr, uid, res_users_ids, context=context)
+    def write(self, cr, uid, ids, vals, context=None):
+        super(Employee, self).write(cr, uid, ids, vals, context)
+        self.criar_usuarios(cr, uid, ids, context)
+        return True
+
+    def unlink(self, cr, uid, ids, context=None):
+        if ConfiguracaoUsuarioUD.get_exclusao_unica(self, cr, uid, context):
+            usuarios = [
+                pessoa.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.user_id.id != SUPERUSER_ID
+            ]
+            self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
+        return super(Employee, self).unlink(cr, uid, ids, context=context)
+
+    def criar_usuarios(self, cr, uid, ids, context):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        user_model = self.pool.get("res.users")
+        for pessoa in self.browse(cr, uid, ids, context):
+            if not pessoa.user_id and pessoa.cpf:
+                login = pessoa.cpf.replace(".", "").replace("-", "")
+                usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context)
+                if usuario:
+                    if self.search(cr, uid, [("user_id", "=", usuario[0])], context=context):
+                        raise osv.except_osv(u"Multiplos vínculos", u"Há outra pessoa vinculada a esse login: '%s'." % login)
+                    usuario = usuario[0]
+                else:
+                    dados = {
+                        "name": pessoa.name, "tz": "America/Maceio",
+                        "login": login,
+                        "new_password": pessoa.cpf.replace(".", "").replace("-", "")[:6]
+                    }
+                    usuario = user_model.create(cr, SUPERUSER_ID, dados, context)
+                pessoa.write({"user_id": usuario})
+        return True
 
     def _get_default_image(self, cr, uid, context=None):
         """
