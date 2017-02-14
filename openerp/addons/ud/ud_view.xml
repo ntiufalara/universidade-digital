@@ -631,7 +631,7 @@
                                     <field name="cpf" class="cpf"/>
                                     <field name="rg"/>
                                     <field name="orgaoexpedidor"/>
-                                    <field name="birthday" class="birthday"/>
+                                    <field name="birthday"/>
                                 </group>
                                 <group colspan="2">
                                     <field name="gender"/>
@@ -714,25 +714,5 @@
                 </search>
             </field>
         </record>
-
-
-        <!-- MENUS -->
-        <menuitem name="Universidade Digital" id="menu_point_root" sequence="0" icon="terp-partner"
-                  web_icon="imagens/unidig.jpg"/>
-        <menuitem name="Núcleo" id="menu_nucleo" parent="menu_point_root" sequence="1" icon="terp-partner"
-                  groups="base.admin_ud"/>
-        <menuitem name="Núcleo" id="menu_nucleo_gerente_espaco" parent="menu_point_root" sequence="1"
-                  icon="terp-partner" groups="base.gerente_espaco_ud"/>
-        <menuitem action="ud_campus_action" id="menu_campus" parent="menu_nucleo" sequence="2"/>
-        <menuitem action="ud_polo_action" id="menu_polo" parent="menu_nucleo" sequence="3"/>
-        <menuitem action="ud_curso_action" id="menu_curso" parent="menu_nucleo" sequence="4"/>
-        <menuitem action="ud_setor_action" id="menu_setor" parent="menu_nucleo" sequence="5"/>
-        <menuitem action="ud_projeto_action" id="menu_projeto" parent="menu_nucleo" sequence="6"/>
-        <menuitem action="ud_espaco_action" id="menu_espaco_admin" parent="menu_nucleo" sequence="7"/>
-        <menuitem action="ud_espaco_action" id="menu_espaco_gerente" parent="menu_nucleo_gerente_espaco"
-                  sequence="7"/>
-        <menuitem action="ud_pessoa_action" id="menu_users" parent="menu_nucleo" sequence="8"/>
-        <menuitem action="action_ud_banco_tree_view" id="menu_bancos" parent="menu_nucleo" sequence="9"/>
-
     </data>
 </openerp>

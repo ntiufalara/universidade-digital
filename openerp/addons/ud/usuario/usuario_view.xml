@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<openerp>
+    <data>
+        <!-- USUÁRIO -->
+        <record id="base.action_res_users" model="ir.actions.act_window">
+            <field name="name">Usuárioss</field>
+            <field name="context">{'usuario_ud': True}</field>
+        </record>
+
+        <record id="ud_res_users_form_view" model="ir.ui.view">
+            <field name="name">user.form.login</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <field name="login" position="attributes">
+                    <attribute name="class">cpf</attribute>
+                    <attribute name="string">CPF</attribute>
+                </field>
+                <xpath expr="//label[@for='login']" position="attributes">
+                    <attribute name="string">CPF</attribute>
+                </xpath>
+                <xpath expr="//label[@for='name']" position="attributes">
+                    <attribute name="string">Nome Completo</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- CONFIGURAÇÃO -->
+        <record id="ud_configuracao" model="ir.ui.view">
+            <field name="name">base.config.settings.delecao</field>
+            <field name="model">base.config.settings</field>
+            <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@string='Email']/.." position="after">
+                    <group>
+                        <label for="id" string="Configuração UD"/>
+                        <div>
+                            <field name="exclusao_unica" class="oe_inline"/>
+                            <label for="exclusao_unica"/>
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
