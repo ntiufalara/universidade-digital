@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import re
 from openerp import SUPERUSER_ID
 from openerp.modules.module import get_module_resource
@@ -193,10 +194,12 @@ class Espaco(osv.osv):
         'capacidade': fields.integer(u'Capacidade', required=True, help=u"Número de pessoas."),
         # depois trocar para inteiro
         'permite_reserva': fields.boolean(u'Permitir Reserva'),
+        'campus_id': fields.many2one('ud.campus', 'Campus', required=True),
         'local_polo': fields.many2one('ud.polo', u'Polo', required=True, ondelete='cascade'),
         'local_bloco_polo': fields.many2one('ud.bloco', u'Bloco', required=True, ondelete='cascade',
                                             domain="[('ud_bloco_ids','=',local_polo)]"),
         'informacoes_adicionais': fields.text(u'Descrição'),
+        'responsavel_ids': fields.many2many('ud.employee', 'ud_espaco_responsavel', 'eid', 'pid', 'Responsável')
     }
 
     def limpa_bloco(self, cr, uid, ids):

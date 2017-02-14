@@ -385,16 +385,28 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Espaço" version="7.0">
-                    <group>
-                        <field name="name"/>
-                        <field name="capacidade"/>
-                        <field name="local_polo" on_change="limpa_bloco()"/>
-                        <field name="local_bloco_polo"/>
-                        <field name="permite_reserva"/>
-                    </group>
-                    <group string="Outras Informações" colspan="4">
-                        <field name="informacoes_adicionais" nolabel="1"/>
-                    </group>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="capacidade"/>
+                                <field name="permite_reserva"/>
+                            </group>
+                            <group>
+                                <field name="campus_id"/>
+                                <field name="local_polo" on_change="limpa_bloco()"
+                                       domain="[('campus_id', '=', campus_id)]"/>
+                                <field name="local_bloco_polo" domain="[('ud_bloco_ids', '=', local_polo)]" />
+                            </group>
+                        </group>
+                        <group string="Responsáveis">
+                            <field name="responsavel_ids" nolabel="1" />
+                        </group>
+
+                        <group string="Outras Informações" colspan="4">
+                            <field name="informacoes_adicionais" nolabel="1"/>
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -565,8 +577,10 @@
                                    attrs="{'invisible':[('tipo','!=','p')],'required':[('tipo','=', 'p')]}"/>
                         </group>
                         <group>
-                            <field name="ud_setores" attrs="{'required': ['|', ('ud_cursos', '=', False), ('ud_setores', '!=', False)]}"/>
-                            <field name="ud_cursos" attrs="{'required': ['|', ('ud_setores', '=', False), ('ud_cursos', '!=', False)]}"/>
+                            <field name="ud_setores"
+                                   attrs="{'required': ['|', ('ud_cursos', '=', False), ('ud_setores', '!=', False)]}"/>
+                            <field name="ud_cursos"
+                                   attrs="{'required': ['|', ('ud_setores', '=', False), ('ud_cursos', '!=', False)]}"/>
                             <field name="is_bolsista" attrs="{'invisible':[('tipo','!=','a')]}"/>
                             <field name="tipo_bolsa"
                                    attrs="{'invisible':[('is_bolsista','=',False)],'required':[('is_bolsista','=',True)]}"/>
