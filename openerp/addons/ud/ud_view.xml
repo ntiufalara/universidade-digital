@@ -309,6 +309,8 @@
                         <field name="name" colspan="2"/>
                         <field name="polo_id" colspan="2"/>
                         <field name="coordenador" colspan="2" options="{'no_open': true}"/>
+                        <field name="turno" colspan="2"/>
+                        <field name="modalidade" colspan="2"/>
                         <field name="is_active" colspan="2"/>
                     </group>
                     <notebook colspan="6">
@@ -341,7 +343,7 @@
                     </page>
                 </xpath>
                 <field name="coordenador" position="attributes">
-                    <attribute name="options"></attribute>
+                    <attribute name="options"/>
                 </field>
             </field>
         </record>
@@ -354,7 +356,8 @@
                 <tree string="Curso">
                     <field name="name"/>
                     <field name="coordenador"/>
-                    <field name="description"/>
+                    <field name="modalidade"/>
+                    <field name="turno"/>
                     <field name="is_active"/>
                 </tree>
             </field>
@@ -565,14 +568,18 @@
                                    attrs="{'invisible':[('tipo','!=','p')],'required':[('tipo','=', 'p')]}"/>
                         </group>
                         <group>
-                            <field name="ud_setores" attrs="{'required': ['|', ('ud_cursos', '=', False), ('ud_setores', '!=', False)]}"/>
-                            <field name="ud_cursos" attrs="{'required': ['|', ('ud_setores', '=', False), ('ud_cursos', '!=', False)]}"/>
-                            <field name="is_bolsista" attrs="{'invisible':[('tipo','!=','a')]}"/>
-                            <field name="tipo_bolsa"
-                                   attrs="{'invisible':[('is_bolsista','=',False)],'required':[('is_bolsista','=',True)]}"/>
-                            <field name="valor_bolsa" class="valor_bolsa"
-                                   attrs="{'invisible':[('is_bolsista','=',False)],'required':[('is_bolsista','=',True)]}"/>
+                            <field name="ud_setores"
+                                   attrs="{'required': ['|', ('ud_cursos', '=', False), ('ud_setores', '!=', False)]}"/>
+                            <field name="ud_cursos"
+                                   attrs="{'required': ['|', ('ud_setores', '=', False), ('ud_cursos', '!=', False)]}"/>
                         </group>
+                    </group>
+                    <group col="6">
+                        <field name="is_bolsista" attrs="{'invisible':[('tipo','!=','a')]}" colspan="2"/>
+                        <field name="tipo_bolsa" colspan="2"
+                               attrs="{'invisible':['|', ('is_bolsista','=',False), ('tipo','!=','a')],'required':[('is_bolsista','=',True)]}"/>
+                        <field name="valor_bolsa" class="valor" colspan="2"
+                               attrs="{'invisible':['|', ('is_bolsista','=',False), ('tipo','!=','a')],'required':[('is_bolsista','=',True)]}"/>
                     </group>
                     <p attrs="{'invisible': ['|', ('ud_setores', '!=', False), ('ud_cursos', '!=', False)]}">
                         Selecione um "Curso" e/ou um "Setor".
