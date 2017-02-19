@@ -287,14 +287,20 @@ class Curso(osv.osv):
     _name = 'ud.curso'
     _description = u'Curso'
 
+    _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
+              ("v", u"Vespertino"), ("n", u"Noturno"), ]
+    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado")]
+
     _columns = {
         'name': fields.char(u'Nome', size=40, help=u"Ex.: Ciência da Computação", required=True),
         'polo_id': fields.many2one('ud.polo', u'Polo', ondelete='cascade', required=True),
         'coordenador': fields.many2one('ud.employee', u'Coordenador', ondelete='cascade'),
         'is_active': fields.boolean(u'Ativo?'),
         'description': fields.text(u'Descrição'),
-        'disciplina_ids': fields.one2many('ud.disciplina', 'ud_disc_id', u'Disciplina'),
+        'disciplina_ids': fields.one2many('ud.disciplina', 'ud_disc_id', u'Disciplinas'),
         'projeto_ids': fields.one2many('ud.projeto', 'curso_id', u'Projetos'),
+        "turno": fields.selection(_TURNO, u"Turno", required=True),
+        "modalidade": fields.selection(_MODALIDADE, u"Modalidade", required=True),
     }
 
 
@@ -362,6 +368,9 @@ class Perfil(osv.osv):  # Classe papel
         (lambda self, *args, **kwargs: self._setor_ou_curso(*args, **kwargs), u'Preencha pelo menos um dos campos.',
          ['Setor', 'Curso'])
     ]
+
+    def name_search(self, cr, uid, name='', args=None, operator='=', context=None, limit=100):
+        return super(Perfil, self).name_search(cr, uid, name, args, operator, context, limit)
 
     def _setor_ou_curso(self, cr, uid, ids, context=None):
         """
