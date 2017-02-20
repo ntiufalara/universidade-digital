@@ -369,8 +369,13 @@ class Perfil(osv.osv):  # Classe papel
          ['Setor', 'Curso'])
     ]
 
-    def name_search(self, cr, uid, name='', args=None, operator='=', context=None, limit=100):
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        operator = "="
         return super(Perfil, self).name_search(cr, uid, name, args, operator, context, limit)
+
+    def view_init(self, cr, uid, fields_list, context=None):
+        if not (context or {}).get("ud_employee"):
+            raise osv.except_osv(u"Acesso Negado", u"Você não pode acessar perfil a partir desse local")
 
     def _setor_ou_curso(self, cr, uid, ids, context=None):
         """
@@ -423,6 +428,7 @@ class Employee(osv.osv):
     ]
 
     _columns = {
+        "id": fields.integer("ID", readonly=True, invisible=True),
         'curriculo_lattes_link': fields.char('Link do Currículo Lattes', size=120),
         'image': fields.binary(u"Foto",
                                help=u"This field holds the image used as photo for the employee, limited to 1024x1024px."),
@@ -507,12 +513,12 @@ class Employee(osv.osv):
 
     def create(self, cr, uid, vals, context=None):
         res = super(Employee, self).create(cr, uid, vals, context)
-        self.criar_usuarios(cr, uid, res, context)
+        self.criar_usuarios(cr, uid, res, vals, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         super(Employee, self).write(cr, uid, ids, vals, context)
-        self.criar_usuarios(cr, uid, ids, context)
+        self.criar_usuarios(cr, uid, ids, vals, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
@@ -523,14 +529,15 @@ class Employee(osv.osv):
             self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
-    def criar_usuarios(self, cr, uid, ids, context):
+    def criar_usuarios(self, cr, uid, ids, vals=None, context=None):
         if isinstance(ids, (int, long)):
             ids = [ids]
+        vals = vals or {}
         user_model = self.pool.get("res.users")
         for pessoa in self.browse(cr, uid, ids, context):
             if not pessoa.user_id and pessoa.cpf:
                 login = pessoa.cpf.replace(".", "").replace("-", "")
-                usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context)
+                usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context=context)
                 if usuario:
                     if self.search(cr, uid, [("user_id", "=", usuario[0])], context=context):
                         raise osv.except_osv(u"Multiplos vínculos", u"Há outra pessoa vinculada a esse login: '%s'." % login)
@@ -543,6 +550,8 @@ class Employee(osv.osv):
                     }
                     usuario = user_model.create(cr, SUPERUSER_ID, dados, context)
                 pessoa.write({"user_id": usuario})
+            elif pessoa.user_id and vals.get("name", None):
+                user_model.write(cr, SUPERUSER_ID, pessoa.user_id.id, {"name": vals["name"]}, context)
         return True
 
     def _get_default_image(self, cr, uid, context=None):

@@ -610,6 +610,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Employee" version="7.0">
+                    <field name="id"/>
                     <group col="8">
                         <group colspan="6">
                             <field name="name" string="Nome"/>
@@ -648,7 +649,7 @@
                             </group>
                         </page>
                         <page string="Papéis">
-                            <field name="papel_ids" nolabel="1"/>
+                            <field name="papel_ids" nolabel="1" context="{'ud_employee': id}"/>
                         </page>
                         <page string="Notas">
                             <field name="notes" nolabel="1"/>
