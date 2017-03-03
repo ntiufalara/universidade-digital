@@ -35,9 +35,6 @@ class ud_reserva(osv.osv):
         'state': "nova",
     }
 
-    def create(self, cr, uid, vals, **kwargs):
-        super(ud_reserva, self).create(cr, uid, vals)
-
     def read(self, cr, user, ids, fields=None, context=None, load='_classic_read'):
         employee_id = self.pool.get('ud.employee').search(cr, user, [('resource_id.user_id.id', '=', user)])
         if not len(employee_id) or user == SUPERUSER_ID:
