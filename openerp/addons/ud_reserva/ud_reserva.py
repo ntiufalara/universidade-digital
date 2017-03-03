@@ -120,10 +120,10 @@ class ud_reserva(osv.osv):
                 saida = self.new_datetime_diario(cr, uid, h_saida, i, context)
                 novos_valores["hora_entrada"] = entrada
                 novos_valores["hora_saida"] = saida
-                grupo_reserva = [(0,0, novos_valores)]
+                grupo_reserva = [(0, 0, novos_valores)]
                 # Cria e adiciona a rserva ao grupo
                 grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
-                #result = self.create(cr, uid, novos_valores, context)
+                # result = self.create(cr, uid, novos_valores, context)
 
         def replicar_semanal(n, h_entrada, h_saida):
             for i in range(1, n + 1):
@@ -132,11 +132,11 @@ class ud_reserva(osv.osv):
                 saida = self.new_datetime_semanal(cr, uid, h_saida, i, context)
                 novos_valores["hora_entrada"] = entrada
                 novos_valores["hora_saida"] = saida
-                grupo_reserva = [(0,0, novos_valores)]
+                grupo_reserva = [(0, 0, novos_valores)]
                 # Cria e adiciona a rserva ao grupo
                 grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
-                #result = self.create(cr, uid, novos_valores, context)
-               # print result
+                # result = self.create(cr, uid, novos_valores, context)
+                # print result
 
         def replicar_mes(n, h_entrada, h_saida):
             for i in range(1, n + 1):
@@ -146,12 +146,11 @@ class ud_reserva(osv.osv):
                 if saida <= values["periodo_final"]:
                     novos_valores["hora_entrada"] = entrada
                     novos_valores["hora_saida"] = saida
-                    grupo_reserva = [(0,0, novos_valores)]
+                    grupo_reserva = [(0, 0, novos_valores)]
                     # Cria e adiciona a rserva ao grupo
                     grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
-                    #result = self.create(cr, uid, novos_valores, context)
-                    #print result
-
+                    # result = self.create(cr, uid, novos_valores, context)
+                    # print result
 
         values = {
             "name": self.pool.get('ud.reserva').browse(cr, uid, ids)[0].name,
@@ -207,13 +206,13 @@ class ud_reserva(osv.osv):
         return True
 
     def total_dias(self, cr, uid, data_final, data_inicial, context):
-        #print "hora de saida"
+        # print "hora de saida"
         va = self.obter_datetime(cr, uid, data_inicial, context)
         try:
-            #print "hora de fim de frequencia"
+            # print "hora de fim de frequencia"
             vb = self.obter_datetime(cr, uid, data_final, context)
         except:
-            #print "hora de saida"
+            # print "hora de saida"
             vb = self.obter_datetime(cr, uid, data_inicial, context)
         return (vb - va).days
 
@@ -249,43 +248,45 @@ class ud_reserva(osv.osv):
         return True
 
     def _checar_reserva(self, cr, uid, ids, context=None):
-        # noinspection SqlNoDataSourceInspection
-        cr.execute('''SELECT
-                      hora_entrada, hora_saida, espaco_id, state, teste
-                      FROM ud_reserva
-                      ;''')
-        reserva_lista = cr.fetchall()
-        obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)[0]
-        entrada_usuario = datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S")
-        saida_usuario = datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S")
-        espaco_usuario = int(obj_data_reserva2.espaco_id)
-        teste_usuario = obj_data_reserva2.teste
-
-        for reserva in reserva_lista:
-            entrada_banco = datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S")
-            saida_banco = datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S")
-            espaco_banco = int(reserva[2])
-            estado_banco = reserva[3]
-            teste_banco = reserva[4]
-
-            #print("entrada_usuario", entrada_usuario, "entrada_banco", entrada_banco)
-
-            if (espaco_usuario == espaco_banco and teste_usuario != teste_banco):
-                if (entrada_usuario == entrada_banco or saida_usuario == saida_banco):
-                    return False
-
-                elif (entrada_usuario < entrada_banco and saida_usuario > entrada_banco):
-                    return False
-
-                elif (entrada_usuario > entrada_banco and entrada_usuario < saida_banco):
-                    return False
-
-        return True
+        obj = self.browse(cr, uid, ids)[0]
+        search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_saida', '<=', obj.hora_saida),
+                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id)])
+        return len(search) <= 1
+        # cr.execute('''SELECT
+        #               hora_entrada, hora_saida, espaco_id, state, teste
+        #               FROM ud_reserva
+        #               ;''')
+        # reserva_lista = cr.fetchall()
+        # obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)[0]
+        # entrada_usuario = datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S")
+        # saida_usuario = datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S")
+        # espaco_usuario = int(obj_data_reserva2.espaco_id)
+        # teste_usuario = obj_data_reserva2.teste
+        #
+        # for reserva in reserva_lista:
+        #     entrada_banco = datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S")
+        #     saida_banco = datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S")
+        #     espaco_banco = int(reserva[2])
+        #     estado_banco = reserva[3]
+        #     teste_banco = reserva[4]
+        #
+        #     #print("entrada_usuario", entrada_usuario, "entrada_banco", entrada_banco)
+        #
+        #     if (espaco_usuario == espaco_banco and teste_usuario != teste_banco):
+        #         if (entrada_usuario == entrada_banco or saida_usuario == saida_banco):
+        #             return False
+        #
+        #         elif (entrada_usuario < entrada_banco and saida_usuario > entrada_banco):
+        #             return False
+        #
+        #         elif (entrada_usuario > entrada_banco and entrada_usuario < saida_banco):
+        #             return False
+        # return True
 
     def _checar_dia_reserva(self, cr, uid, ids, context=None):
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)
         for obj in obj_data_reserva2:
-            #print "checando o dia da reserva"
+            # print "checando o dia da reserva"
             data_e = self.obter_datetime(cr, uid, obj.hora_entrada, context)
             data_s = self.obter_datetime(cr, uid, obj.hora_saida, context)
             if data_e.date() != data_s.date():
