@@ -1,272 +1,279 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-	<data>
-		<!-- ======================
-		CLASS ALMOXARIFADO PRODUTOS
-		=========================== -->
-		<record model="ir.actions.act_window" id="action_ud_almoxarifado_produto_tree_view">
-			<field name="name">Produtos</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">ud.almoxarifado.produto</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_produto_tree_view">
-			<field name="name">ud.almoxarifado.produto.tree</field>
-			<field name="model">ud.almoxarifado.produto</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="Produtos">
-					<field name="produto"/>
-					<field name="categoria_id"/>
-				</tree>
-			</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_produto_form_view">
-			<field name="name">ud.almoxarifado.produto.form</field>
-			<field name="model">ud.almoxarifado.produto</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Produtos" version="7.0">
-					<group col="4">
-						<field name="produto" colspan="2"/>
-						<field name="categoria_id" colspan="2"/>
-					</group>
-					<separator string="Observações"/>
-					<field name="observacao"/>
-				</form>
-			</field>
-		</record>
-		
-		<!-- ============================
-		CLASS ALMOXARIFADO PRODUTOS / QTD
-		============================= -->
-		<record model="ir.ui.view" id="ud_almoxarifado_produto_qtd_tree_view">
-			<field name="name">ud.almoxarifado.produto.qtd.tree</field>
-			<field name="model">ud.almoxarifado.produto.qtd</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="Produtos qtd">
-					<field name="produto_id"/>
-					<field name="categoria_id"/>
-					<field name="quantidade"/>
-					<field name="estoque"/>
-				</tree>
-			</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_produto_qtd_form_view">
-			<field name="name">ud.almoxarifado.produto.qtd.form</field>
-			<field name="model">ud.almoxarifado.produto.qtd</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Produtos qtd" version="7.0">
-					<group col="4">
-						<field name="categoria_id" colspan="2"/>
-						<field name="produto_id" colspan="2" on_change="onchange_produto(produto_id)"/>
-						<field name="quantidade" colspan="2"/>
-						<field name="estoque" colspan="2"/>
-					</group>
-				</form>
-			</field>
-		</record>
-		
-		<!-- ==================================
-		CLASS ALMOXARIFADO PRODUTOS SOLICITANTE
-		=================================== -->
-		<record model="ir.actions.act_window" id="action_ud_almoxarifado_solicitacao_tree_view">
-			<field name="name">Solicitação</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">ud.almoxarifado.solicitacao</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_produto_solicitacao_tree_view">
-			<field name="name">ud.almoxarifado.solicitacao.tree</field>
-			<field name="model">ud.almoxarifado.solicitacao</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="Solicitação" colors="red:state=='cancelada'">
-					<field name="solicitante_id"/>
-					<field name="setor_id"/>
-					<field name="state"/>
-				</tree>
-			</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_solicitacao_form_view">
-			<field name="name">ud.almoxarifado.solicitacao.form</field>
-			<field name="model">ud.almoxarifado.solicitacao</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Solicitação" version="7.0">
-					<header>
-						<button name="botao_entregue" states="aguardando" string="Entregue" type="object" class="oe_highlight" groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
-						<button name="botao_cancelar" states="aguardando" string="Cancelar" type="object" groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
-						<field name="state" widget="statusbar"/>
-					</header>
-					<group col="4">
-						<field name="solicitante_id" colspan="2"/>
-						<field name="setor_id" colspan="2"/>
-					</group>
-					<separator string="Produtos"/>
-					<field name="produtos_ids"/>
-				</form>
-			</field>
-		</record>
-		
-		<!-- ==========================
-		CLASS ALMOXARIFADO FORNECEDOR
-		=========================== -->
-		<record model="ir.actions.act_window" id="action_ud_almoxarifado_fornecedor_tree_view">
-			<field name="name">Fornecedor</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">ud.almoxarifado.fornecedor</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_fornecedor_tree_view">
-			<field name="name">ud.almoxarifado.fornecedor.tree</field>
-			<field name="model">ud.almoxarifado.fornecedor</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="Fornecedor">
-					<field name="name"/>
-					<field name="cpf"/>
-					<field name="cnpj"/>
-					<field name="email"/>
-					<field name="celular"/>					
-					<field name="fixo"/>
-					<field name="estado"/>
-					<field name="cidade"/>
-					<field name="bairro"/>
-					<field name="numero"/>
-				</tree>
-			</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_fornecedor_form_view">
-			<field name="name">ud.almoxarifado.fornecedor.form</field>
-			<field name="model">ud.almoxarifado.fornecedor</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Fornecedor" version="7.0">
-					<group col="4">
-						<field name="name" colspan="2"/>
-						<field name="cpf" class="cpf" colspan="2" attrs="{'required':[('cnpj', '=', False)] }" />
-						<field name="cnpj" colspan="2" attrs="{'required':[('cpf', '=', False)] }" />
-						<field name="email" colspan="2"/>
-						<field name="celular" colspan="2"/>
-						<field name="fixo" colspan="2"/>					
-						<field name="estado" colspan="2"/>
-						<field name="cidade" colspan="2"/>
-						<field name="bairro" colspan="2"/>
-						<field name="numero" colspan="2"/>
-					</group>
-				</form>
-			</field>
-		</record>
-		<!-- ======================
-		CLASS ALMOXARIFADO ESTOQUE
-		=========================== -->
-		<record model="ir.actions.act_window" id="action_ud_almoxarifado_estoque_tree_view">
-			<field name="name">Estoque</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">ud.almoxarifado.estoque</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_estoque_tree_view">
-			<field name="produto_id">ud.almoxarifado.estoque.tree</field>
-			<field name="model">ud.almoxarifado.estoque</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="Produtos" colors="red:quantidade &lt;= estoque_min">
-					<field name="produto_id"/>
-					<field name="categoria_id"/>
-					<field name="quantidade"/>
-					<field name="estoque_min"/>
-					<field name="fornecedor_id"/>
-					<field name="entrada_ids"/>
-					<field name="saida_ids"/>
-				</tree>
-			</field>
-		</record>
-		
-		<record model="ir.ui.view" id="ud_almoxarifado_estoque_form_view">
-			<field name="name">ud.almoxarifado.estoque.form</field>
-			<field name="model">ud.almoxarifado.estoque</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Produtos" version="7.0">
-					<group col="4">
-						<field name="produto_id" colspan="2" options="{'no_open':True}"/>
-						<field name="categoria_id" colspan="2" options="{'no_open':True}"/>
-						<field name="quantidade" colspan="2" readonly="1"/>
-						<field name="estoque_min" colspan="2"/>
-						<field name="fornecedor_id" colspan="2"/>
-					</group>
-					<separator string="Observações"/>
-					<field name="observacao" />
-					<group col="4">
-						<group string="Entrada" colspan="2">
-							<field name="entrada_ids" nolabel="1">
-								<tree>
-									<field name="data_entrada" />
-									<field name="fornecedor_id" />
-									<field name="quantidade" />
-									<field name="tipo" />
-								</tree>
-							</field>
-						</group>
-						<group string="Saída" colspan="2">
-							<field name="saida_ids" nolabel="1">
-								<tree>
-									<field name="data_saida" />
-									<field name="quantidade" />
-								</tree>
-							</field>
-						</group>
-					</group>
-					
-				</form>
-			</field>
-		</record>
-		
-		<!-- =====================
-		CLASS ALMOXARIFADO ENTRADA
-		========================== -->
-		<record model="ir.ui.view" id="ud_almoxarifado_entrada_form_view">
-			<field name="name">ud.almoxarifado.entrada.form</field>
-			<field name="model">ud.almoxarifado.entrada</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="Entrada">
-					<group>
-						<field name="data_entrada" />
-						<field name="quantidade" />
-						<field name="fornecedor_id" />
-					</group>
-				</form>
-			</field>
-		</record>
-		
-		<menuitem id="ud_almoxarifado_lateral" name="Almoxarifado" parent="ud.menu_point_root"/>
-		
-		<menuitem id="ud_almoxarifado_fornecedor_menu" parent="ud_almoxarifado_lateral" action="action_ud_almoxarifado_fornecedor_tree_view"
-				  sequence="1" name="Fornecedor"/>
-		<menuitem id="ud_almoxarifado_solicitacao_menu" parent="ud_almoxarifado_lateral" action="action_ud_almoxarifado_solicitacao_tree_view"
-				  sequence="2" name="Solicitações"/>
-		<menuitem id="ud_almoxarifado_estoque_menu" parent="ud_almoxarifado_lateral" action="action_ud_almoxarifado_estoque_tree_view"
-				  sequence="3" name="Estoque"/>
-		<menuitem id="ud_almoxarifado_produto_menu" parent="ud_almoxarifado_lateral" action="action_ud_almoxarifado_produto_tree_view"
-				  sequence="0" name="Produtos"/>
-		
-	</data>
+    <data>
+        <!-- ======================
+        CLASS ALMOXARIFADO PRODUTOS
+        =========================== -->
+        <record model="ir.actions.act_window" id="action_ud_almoxarifado_produto_tree_view">
+            <field name="name">Produtos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.almoxarifado.produto</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_tree_view">
+            <field name="name">ud.almoxarifado.produto.tree</field>
+            <field name="model">ud.almoxarifado.produto</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Produtos">
+                    <field name="produto"/>
+                    <field name="categoria_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_form_view">
+            <field name="name">ud.almoxarifado.produto.form</field>
+            <field name="model">ud.almoxarifado.produto</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Produtos" version="7.0">
+                    <group col="4">
+                        <field name="produto" colspan="2"/>
+                        <field name="categoria_id" colspan="2"/>
+                    </group>
+                    <separator string="Observações"/>
+                    <field name="observacao"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================
+        CLASS ALMOXARIFADO PRODUTOS / QTD
+        ============================= -->
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_qtd_tree_view">
+            <field name="name">ud.almoxarifado.produto.qtd.tree</field>
+            <field name="model">ud.almoxarifado.produto.qtd</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Produtos qtd">
+                    <field name="produto_id"/>
+                    <field name="categoria_id"/>
+                    <field name="quantidade"/>
+                    <field name="estoque"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_qtd_form_view">
+            <field name="name">ud.almoxarifado.produto.qtd.form</field>
+            <field name="model">ud.almoxarifado.produto.qtd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Produtos qtd" version="7.0">
+                    <group col="4">
+                        <field name="categoria_id" colspan="2"/>
+                        <field name="produto_id" colspan="2" on_change="onchange_produto(produto_id)"/>
+                        <field name="quantidade" colspan="2"/>
+                        <field name="estoque" colspan="2"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- ==================================
+        CLASS ALMOXARIFADO PRODUTOS SOLICITANTE
+        =================================== -->
+        <record model="ir.actions.act_window" id="action_ud_almoxarifado_solicitacao_tree_view">
+            <field name="name">Solicitação</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.almoxarifado.solicitacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_solicitacao_tree_view">
+            <field name="name">ud.almoxarifado.solicitacao.tree</field>
+            <field name="model">ud.almoxarifado.solicitacao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Solicitação" colors="red:state=='cancelada'">
+                    <field name="solicitante_id"/>
+                    <field name="setor_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_solicitacao_form_view">
+            <field name="name">ud.almoxarifado.solicitacao.form</field>
+            <field name="model">ud.almoxarifado.solicitacao</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Solicitação" version="7.0">
+                    <header>
+                        <button name="botao_entregue" states="aguardando" string="Entregue" type="object"
+                                class="oe_highlight" groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
+                        <button name="botao_cancelar" states="aguardando" string="Cancelar" type="object"
+                                groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="solicitante_id" colspan="2"/>
+                            <field name="setor_id" colspan="2"/>
+                            <field name="data_hora" colspan="2"/>
+                        </group>
+                        <separator string="Produtos"/>
+                        <field name="produtos_ids"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ==========================
+        CLASS ALMOXARIFADO FORNECEDOR
+        =========================== -->
+        <record model="ir.actions.act_window" id="action_ud_almoxarifado_fornecedor_tree_view">
+            <field name="name">Fornecedor</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.almoxarifado.fornecedor</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_fornecedor_tree_view">
+            <field name="name">ud.almoxarifado.fornecedor.tree</field>
+            <field name="model">ud.almoxarifado.fornecedor</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Fornecedor">
+                    <field name="name"/>
+                    <field name="cpf_cnpj"/>
+                    <field name="email"/>
+                    <field name="celular"/>
+                    <field name="fixo"/>
+                    <field name="estado"/>
+                    <field name="cidade"/>
+                    <field name="bairro"/>
+                    <field name="numero"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_fornecedor_form_view">
+            <field name="name">ud.almoxarifado.fornecedor.form</field>
+            <field name="model">ud.almoxarifado.fornecedor</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Fornecedor" version="7.0">
+                    <group col="4">
+                        <field name="name" colspan="2"/>
+                        <field name="cpf_cnpj" colspan="2" required="1" />
+                        <field name="email" colspan="2"/>
+                        <field name="celular" colspan="2"/>
+                        <field name="fixo" colspan="2"/>
+                        <field name="estado" colspan="2"/>
+                        <field name="cidade" colspan="2"/>
+                        <field name="bairro" colspan="2"/>
+                        <field name="numero" colspan="2"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <!-- ======================
+        CLASS ALMOXARIFADO ESTOQUE
+        =========================== -->
+        <record model="ir.actions.act_window" id="action_ud_almoxarifado_estoque_tree_view">
+            <field name="name">Estoque</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.almoxarifado.estoque</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_estoque_tree_view">
+            <field name="produto_id">ud.almoxarifado.estoque.tree</field>
+            <field name="model">ud.almoxarifado.estoque</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Produtos" colors="red:quantidade &lt;= estoque_min" create="false">
+                    <field name="produto_id"/>
+                    <field name="categoria_id"/>
+                    <field name="quantidade"/>
+                    <field name="estoque_min"/>
+                    <field name="fornecedor_id"/>
+                    <field name="entrada_ids"/>
+                    <field name="saida_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_estoque_form_view">
+            <field name="name">ud.almoxarifado.estoque.form</field>
+            <field name="model">ud.almoxarifado.estoque</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Produtos" version="7.0">
+                    <group col="4">
+                        <field name="produto_id" colspan="2" options="{'no_open':True}"/>
+                        <field name="categoria_id" colspan="2" options="{'no_open':True}"/>
+                        <field name="quantidade" colspan="2" readonly="1"/>
+                        <field name="estoque_min" colspan="2"/>
+                        <field name="fornecedor_id" colspan="2"/>
+                    </group>
+                    <separator string="Observações"/>
+                    <field name="observacao"/>
+                    <group col="4">
+                        <group string="Entrada" colspan="2">
+                            <field name="entrada_ids" nolabel="1">
+                                <tree>
+                                    <field name="data_entrada"/>
+                                    <field name="fornecedor_id"/>
+                                    <field name="quantidade"/>
+                                    <field name="tipo"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Saída" colspan="2">
+                            <field name="saida_ids" nolabel="1">
+                                <tree>
+                                    <field name="data_saida"/>
+                                    <field name="quantidade"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+        <!-- =====================
+        CLASS ALMOXARIFADO ENTRADA
+        ========================== -->
+        <record model="ir.ui.view" id="ud_almoxarifado_entrada_form_view">
+            <field name="name">ud.almoxarifado.entrada.form</field>
+            <field name="model">ud.almoxarifado.entrada</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Entrada">
+                    <group>
+                        <field name="data_entrada"/>
+                        <field name="quantidade"/>
+                        <field name="fornecedor_id"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="ud_almoxarifado_lateral" name="Almoxarifado" parent="ud.menu_point_root"/>
+
+        <menuitem id="ud_almoxarifado_fornecedor_menu" parent="ud_almoxarifado_lateral"
+                  action="action_ud_almoxarifado_fornecedor_tree_view"
+                  sequence="1" name="Fornecedor"/>
+        <menuitem id="ud_almoxarifado_solicitacao_menu" parent="ud_almoxarifado_lateral"
+                  action="action_ud_almoxarifado_solicitacao_tree_view"
+                  sequence="2" name="Solicitações"/>
+        <menuitem id="ud_almoxarifado_estoque_menu" parent="ud_almoxarifado_lateral"
+                  action="action_ud_almoxarifado_estoque_tree_view"
+                  sequence="3" name="Estoque"/>
+        <menuitem id="ud_almoxarifado_produto_menu" parent="ud_almoxarifado_lateral"
+                  action="action_ud_almoxarifado_produto_tree_view"
+                  sequence="0" name="Produtos"/>
+
+    </data>
 </openerp>

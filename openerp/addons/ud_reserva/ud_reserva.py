@@ -249,39 +249,9 @@ class ud_reserva(osv.osv):
 
     def _checar_reserva(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids)[0]
-        search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_saida', '<=', obj.hora_saida),
-                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id)])
-        return len(search) <= 1
-        # cr.execute('''SELECT
-        #               hora_entrada, hora_saida, espaco_id, state, teste
-        #               FROM ud_reserva
-        #               ;''')
-        # reserva_lista = cr.fetchall()
-        # obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)[0]
-        # entrada_usuario = datetime.strptime(obj_data_reserva2.hora_entrada, "%Y-%m-%d %H:%M:%S")
-        # saida_usuario = datetime.strptime(obj_data_reserva2.hora_saida, "%Y-%m-%d %H:%M:%S")
-        # espaco_usuario = int(obj_data_reserva2.espaco_id)
-        # teste_usuario = obj_data_reserva2.teste
-        #
-        # for reserva in reserva_lista:
-        #     entrada_banco = datetime.strptime(reserva[0], "%Y-%m-%d %H:%M:%S")
-        #     saida_banco = datetime.strptime(reserva[1], "%Y-%m-%d %H:%M:%S")
-        #     espaco_banco = int(reserva[2])
-        #     estado_banco = reserva[3]
-        #     teste_banco = reserva[4]
-        #
-        #     #print("entrada_usuario", entrada_usuario, "entrada_banco", entrada_banco)
-        #
-        #     if (espaco_usuario == espaco_banco and teste_usuario != teste_banco):
-        #         if (entrada_usuario == entrada_banco or saida_usuario == saida_banco):
-        #             return False
-        #
-        #         elif (entrada_usuario < entrada_banco and saida_usuario > entrada_banco):
-        #             return False
-        #
-        #         elif (entrada_usuario > entrada_banco and entrada_usuario < saida_banco):
-        #             return False
-        # return True
+        search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_entrada', '<=', obj.hora_saida),
+                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id), ('id', '!=', obj.id)])
+        return True if not search else False
 
     def _checar_dia_reserva(self, cr, uid, ids, context=None):
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)
