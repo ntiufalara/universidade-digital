@@ -620,6 +620,7 @@
             <field name="name">ud.employee.form</field>
             <field name="model">ud.employee</field>
             <field name="type">form</field>
+            <field name="context">{'ud_employee': True}</field>
             <field name="arch" type="xml">
                 <form string="Employee" version="7.0">
                     <field name="id"/>
