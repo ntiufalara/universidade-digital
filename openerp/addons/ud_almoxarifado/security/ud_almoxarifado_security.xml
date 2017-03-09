@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+	<data noupdate="0">
+		<record model="ir.module.category" id="module_category_ud_almoxarifado">
+			<field name="name">Almoxarifado (UD)</field>
+		</record>
+		
+		<record id="group_ud_almoxarifado_usuario" model="res.groups">
+			<field name="name">Usuário</field>
+			<field name="category_id" ref="module_category_ud_almoxarifado"/>
+        	<field name="comment">Grupo de controle de politicas para usuários comuns</field>
+		</record>
+		
+		<record id="group_ud_almoxarifado_gerente" model="res.groups">
+			<field name="name">Gerente de almoxarifado</field>
+			<field name="category_id" ref="module_category_ud_almoxarifado"/>
+        	<field name="implied_ids" eval="[(4, ref('group_ud_almoxarifado_usuario'))]"/>
+        	<field name="comment">Grupo de controle de politicas para Gerente</field>
+		</record>
+		
+		<record id="group_ud_almoxarifado_administrador" model="res.groups">
+			<field name="name">Administrador de almoxarifado</field>
+        	<field name="users" eval="[(4, ref('base.user_root'))]"/>
+			<field name="category_id" ref="module_category_ud_almoxarifado"/>
+        	<field name="implied_ids" eval="[(4, ref('group_ud_almoxarifado_gerente'))]"/>
+        	<field name="comment">Grupo de controle de politicas para Administrador</field>
+		</record>
+	</data>
+</openerp>
