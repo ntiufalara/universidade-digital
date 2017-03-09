@@ -633,27 +633,27 @@
                     </group>
                     <notebook>
                         <page string="Informações pessoais">
-                            <group col="4" string="Identificações Sociais">
-                                <group colspan="2">
+                            <group string="Identificações Sociais">
+                                <group>
                                     <field name="cpf" class="cpf"/>
                                     <field name="rg"/>
                                     <field name="orgaoexpedidor"/>
                                     <field name="birthday"/>
                                 </group>
-                                <group colspan="2">
+                                <group>
                                     <field name="gender"/>
                                     <field name="nacionalidade"/>
                                     <field name="marital"/>
                                 </group>
                             </group>
-                            <group col="4" string="Outras informações">
-                                <group colspan="2">
+                            <group string="Outras informações">
+                                <group>
                                     <field name="rua"/>
                                     <field name="cidade"/>
                                     <field name="bairro"/>
                                     <field name="estado"/>
                                 </group>
-                                <group colspan="2">
+                                <group>
                                     <field name="work_phone" class="work_phone"/>
                                     <field name="mobile_phone" class="telefone" required="1"/>
                                     <field name="work_email" widget="email" required="1"/>
@@ -662,7 +662,7 @@
                             </group>
                         </page>
                         <page string="Papéis">
-                            <field name="papel_ids" nolabel="1" context="{'ud_employee': id}"/>
+                            <field name="papel_ids" nolabel="1" context="{'ud_employee': True}"/>
                         </page>
                         <page string="Notas">
                             <field name="notes" nolabel="1"/>
