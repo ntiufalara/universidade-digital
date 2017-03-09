@@ -28,17 +28,20 @@ Novas Alterações:
     - Alteração da view de curso para que informações como "Projetos" e link para visualização de perfil de
       coordenadores fossem visualizados somente pelo administrador do núcleo;
     - Pesquisa em campos que referenciem "ud.employee" agora permite busca pelo número de matrícula;
-    - Reorganização do arquivo .csv e acesso de leitura dos modelos para o grupo de usuário UD.
+    - Reorganização do arquivo .csv e acesso de leitura dos modelos para o grupo de usuário UD;
+    - Perfil somente pode ser criado usando a interface de "Pessoa" (employee), se for pela interface web, se for a
+      nível de programação, basta colocar no context uma chave com valor "ud_employee" para um valor verdadeiro.
 
 =========
 Sugestões
 =========
     - Alterar o tipo do campo "Carga horária" em disciplina de "char" para "integer";
+    - Falta o campo para número do endereço;
     - Inpedir que mais de uma pessoa tenha vínculo com o mesmo usuário;
     - Se o objetivo do campo "papel_setor" em Employee é filtrar por tipo de usuário, então ele não funcionará de
       maneira correta. Isso porque uma pessoa pode possuir mais de um tipo de vínculo. O melhor a ser feito era
       sobrescrever o método search e usar os valores do context para filtrar de acordo com a necessidade. Outra boa
-      opção era criar menus distintos que fizesse esse tipo de separação.
+      opção era criar menus distintos que fizesse esse tipo de separação. Isso também ocorre com o campo "matricula".
 
 ------------------------
 ¹ Modelo voltado para armazenamento das matrículas ou SIAPES e define que tipo de vínculo essa pessoa possui com a
