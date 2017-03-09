@@ -8,7 +8,6 @@ import openerp.tools as tools
 
 from usuario.usuario import ConfiguracaoUsuarioUD
 
-# Tupla que guarda a lista dos principais bancos.
 _BANCOS = [
     ('218', u'218 - Banco Bonsucesso S.A.'), ('036', u'036 - Banco Bradesco BBI S.A'),
     ('204', u'204 - Banco Bradesco Cartões S.A.'), ('237', u'237 - Banco Bradesco S.A.'),
@@ -26,6 +25,23 @@ _BANCOS = [
     ('652', u'652 - Itaú Unibanco Holding S.A.'), ('341', u'341 - Itaú Unibanco S.A.'),
     ('409', u'409 - UNIBANCO – União de Bancos Brasileiros S.A.'),
 ]
+_NACIONALIDADES = [
+    ('al', u'Alemã'), ('es', u'Espanhola'), ('fr', u'Francesa'), ('gr', u'Grega'), ('hu', u'Húngaro'),
+    ('ir', u'Irlandesa'), ('it', u'Italiana'), ('ho', u'Holandesa'), ('pt', u'Portuguesa'), ('in', u'Inglesa'),
+    ('rs', u'Russa'), ('ar', u'Argentina'), ('br', u'Brasileira'), ('ch', u'Chilena'), ('eu', u'Norte-Americana'),
+    ('mx', u'Mexicana'), ('chi', u'Chinesa'), ('jp', u'Japonesa'), ('sf', u'Sul-Africana'), ('as', u'Australiana')
+]
+_ESTADOS = [
+    ('ac', u'AC'), ('al', u'AL'), ('ap', u'AP'), ('am', u'AM'), ('ba', u'BA'), ('ce', u'CE'), ('df', u'DF'),
+    ('es', u'ES'), ('go', u'GO'), ('ma', u'MA'), ('mg', u'MG'), ('ms', u'MS'), ('mt', u'MT'), ('pa', u'PA'),
+    ('pe', u'PE'), ('pi', u'PI'), ('pr', u'PR'), ('rj', u'RJ'), ('rn', u'RN'), ('ro', u'RO'), ('rr', u'RR'),
+    ('rs', u'RS'), ('sc', u'SC'), ('se', u'SE'), ('sp', u'SP'), ('to', u'TO')
+]
+_TIPOS_PERFIL = [('p', u'Docente'), ('t', u'Técnico'), ('a', u'Discente'), ('x', u'Terceirizado'), ('o', u'Outra')]
+_TIPOS_BOLSA = [('per', u'Permanência'), ('pai', u'Painter'), ('pibic', u'PIBIC-CNPq'), ('pibip', u'PIBIB-Ação'),
+                ('pibit', u'PIBIT-CNPq'), ('aux', u'Auxílio Alimentação'), ('aux_t', u'Auxílio Transporte'),
+                ('bdi', u'BDI'), ('bdai', u'BDAI'), ('pibid', u'PIBID'), ('m', u'Monitoria')]
+_TIPOS_DOCENTE = [('pa', u'Professor Assistente'), ('pad', u'Professor Adjunto'), ('pt', u'Professor Titular')]
 
 
 class Banco(osv.osv):
@@ -341,17 +357,11 @@ class Perfil(osv.osv):  # Classe papel
     _name = 'ud.perfil'
     _description = 'Papel'
 
-    _TIPOS_PERFIL = [('p', u'Docente'), ('t', u'Técnico'), ('a', u'Discente'), ('x', u'Terceirizado'), ('o', u'Outra')]
-    _TIPOS_BOLSA = [('per', u'Permanência'), ('pai', u'Painter'), ('pibic', u'PIBIC-CNPq'), ('pibip', u'PIBIB-Ação'),
-                     ('pibit', u'PIBIT-CNPq'), ('aux', u'Auxílio Alimentação'), ('aux_t', u'Auxílio Transporte'),
-                     ('bdi', u'BDI'), ('bdai', u'BDAI'), ('pibid', u'PIBID'), ('m', u'Monitoria')]
-    _TIPOS_DOCENTE = [('pa', u'Professor Assistente'), ('pad', u'Professor Adjunto'), ('pt', u'Professor Titular')]
-
     _columns = {
         'tipo': fields.selection(_TIPOS_PERFIL, u'Tipo'),
         'is_bolsista': fields.boolean(u'Bolsista'),
         'tipo_bolsa': fields.selection(_TIPOS_BOLSA, u'Tipo de Bolsa'),
-        'valor_bolsa': fields.char(u"Valor da Bolsa (R$)", size=7), # FIXME: Esse campo poderia ser "float"
+        'valor_bolsa': fields.char(u"Valor da Bolsa (R$)", size=7),  # FIXME: Esse campo poderia ser "float"
         'tipo_docente': fields.selection(_TIPOS_DOCENTE, u'Tipo de Docente'),
         'matricula': fields.char(u'Matricula', size=15, help=u"Ex.: 123456789", required=True),
         'data_validade': fields.date(u'Data de Validade'),
@@ -415,20 +425,6 @@ class Employee(osv.osv):
          Seta a imagem.
         """
         return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
-
-    _NACIONALIDADES = [
-        ('al', u'Alemã'), ('es', u'Espanhola'), ('fr', u'Francesa'), ('gr', u'Grega'), ('hu', u'Húngaro'),
-        ('ir', u'Irlandesa'), ('it', u'Italiana'), ('ho', u'Holandesa'), ('pt', u'Portuguesa'), ('in', u'Inglesa'),
-        ('rs', u'Russa'), ('ar', u'Argentina'), ('br', u'Brasileira'), ('ch', u'Chilena'), ('eu', u'Norte-Americana'),
-        ('mx', u'Mexicana'), ('chi', u'Chinesa'), ('jp', u'Japonesa'), ('sf', u'Sul-Africana'), ('as', u'Australiana')
-    ]
-
-    _ESTADOS = [
-        ('ac', u'AC'), ('al', u'AL'), ('ap', u'AP'), ('am', u'AM'), ('ba', u'BA'), ('ce', u'CE'), ('df', u'DF'),
-        ('es', u'ES'), ('go', u'GO'), ('ma', u'MA'), ('mg', u'MG'), ('ms', u'MS'), ('mt', u'MT'), ('pa', u'PA'),
-        ('pe', u'PE'), ('pi', u'PI'), ('pr', u'PR'), ('rj', u'RJ'), ('rn', u'RN'), ('ro', u'RO'), ('rr', u'RR'),
-        ('rs', u'RS'), ('sc', u'SC'), ('se', u'SE'), ('sp', u'SP'), ('to', u'TO')
-    ]
 
     _columns = {
         "id": fields.integer("ID", readonly=True, invisible=True),
@@ -515,11 +511,15 @@ class Employee(osv.osv):
         return list(res)
 
     def create(self, cr, uid, vals, context=None):
+        context = context or {}
+        context["ud_employee"] = context.get("ud_employee", True)
         res = super(Employee, self).create(cr, uid, vals, context)
         self.criar_usuarios(cr, uid, res, vals, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        context = context or {}
+        context["ud_employee"] = context.get("ud_employee", True)
         super(Employee, self).write(cr, uid, ids, vals, context)
         self.criar_usuarios(cr, uid, ids, vals, context)
         return True
