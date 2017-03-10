@@ -65,14 +65,29 @@
                             <field name="is_active"/>
                         </group>
                         <group>
-                            <field name="diretor"/>
-                            <field name="diretor_acad"/>
+                            <field name="diretor" options="{'no_open': true}"/>
+                            <field name="diretor_acad" options="{'no_open': true}"/>
                         </group>
                     </group>
                     <group string="Outras informações">
                         <field name="description" nolabel="1"/>
                     </group>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_campus_form_admin" model="ir.ui.view">
+            <field name="name">ud.campus.form.admin</field>
+            <field name="model">ud.campus</field>
+            <field name="inherit_id" ref="view_campus_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.admin_ud')])]"/>
+            <field name="arch" type="xml">
+                <field name="diretor" position="attributes">
+                    <attribute name="options"/>
+                </field>
+                <field name="diretor_acad" position="attributes">
+                    <attribute name="options"/>
+                </field>
             </field>
         </record>
 

@@ -3,21 +3,25 @@
 <openerp>
     <data>
         <!-- MENUS -->
-        <menuitem name="Universidade Digital" id="menu_point_root" sequence="0" icon="terp-partner"
+        <menuitem id="menu_point_root" name="Universidade Digital" sequence="0" icon="terp-partner"
                   web_icon="imagens/unidig.jpg"/>
-        <menuitem name="Núcleo" id="menu_nucleo" parent="menu_point_root" sequence="1" icon="terp-partner"
+        <menuitem id="menu_nucleo" parent="menu_point_root" name="Núcleo" sequence="1" icon="terp-partner"
+                  groups="base.usuario_ud"/>
+        <menuitem id="menu_campus" parent="menu_nucleo" action="ud_campus_action" sequence="2"/>
+        <menuitem id="menu_polo" parent="menu_nucleo" action="ud_polo_action" sequence="3"/>
+        <menuitem id="menu_curso" parent="menu_nucleo" action="ud_curso_action" sequence="4"/>
+        <menuitem id="menu_setor" parent="menu_nucleo" action="ud_setor_action" sequence="5" groups="base.admin_ud"/>
+        <menuitem id="menu_projeto" parent="menu_nucleo" action="ud_projeto_action" sequence="6" groups="base.admin_ud"/>
+        <menuitem id="menu_espaco" parent="menu_nucleo" action="ud_espaco_action" sequence="7"
+                  groups="base.gerente_espaco_ud,base.admin_ud"/>
+
+        <!--<menuitem id="menu_nucleo_gerente_espaco" parent="menu_point_root" name="Núcleo" sequence="1"-->
+                  <!--icon="terp-partner" groups="base.gerente_espaco_ud"/>-->
+        <!--<menuitem id="menu_espaco_gerente" parent="menu_nucleo_gerente_espaco" action="ud_espaco_action"-->
+                  <!--sequence="7"/>-->
+
+        <menuitem id="menu_users" parent="menu_nucleo" action="ud_pessoa_action" sequence="8" groups="base.admin_ud"/>
+        <menuitem id="menu_bancos" parent="menu_nucleo" action="action_ud_banco_tree_view" sequence="9"
                   groups="base.admin_ud"/>
-        <menuitem name="Núcleo" id="menu_nucleo_gerente_espaco" parent="menu_point_root" sequence="1"
-                  icon="terp-partner" groups="base.gerente_espaco_ud"/>
-        <menuitem action="ud_campus_action" id="menu_campus" parent="menu_nucleo" sequence="2"/>
-        <menuitem action="ud_polo_action" id="menu_polo" parent="menu_nucleo" sequence="3"/>
-        <menuitem action="ud_curso_action" id="menu_curso" parent="menu_nucleo" sequence="4"/>
-        <menuitem action="ud_setor_action" id="menu_setor" parent="menu_nucleo" sequence="5"/>
-        <menuitem action="ud_projeto_action" id="menu_projeto" parent="menu_nucleo" sequence="6"/>
-        <menuitem action="ud_espaco_action" id="menu_espaco_admin" parent="menu_nucleo" sequence="7"/>
-        <menuitem action="ud_espaco_action" id="menu_espaco_gerente" parent="menu_nucleo_gerente_espaco"
-                  sequence="7"/>
-        <menuitem action="ud_pessoa_action" id="menu_users" parent="menu_nucleo" sequence="8"/>
-        <menuitem action="action_ud_banco_tree_view" id="menu_bancos" parent="menu_nucleo" sequence="9"/>
     </data>
 </openerp>
