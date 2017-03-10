@@ -553,6 +553,10 @@ class Employee(osv.osv):
                     }
                     usuario = user_model.create(cr, SUPERUSER_ID, dados, context)
                 pessoa.write({"user_id": usuario})
+                group = self.pool.get("ir.model.data").get_object(
+                    cr, SUPERUSER_ID, "base", "usuario_ud", context
+                )
+                group.write({"users": [(4, usuario)]})
             elif pessoa.user_id and vals.get("name", None):
                 user_model.write(cr, SUPERUSER_ID, pessoa.user_id.id, {"name": vals["name"]}, context)
         return True
