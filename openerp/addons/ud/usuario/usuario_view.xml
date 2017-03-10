@@ -33,7 +33,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//label[@string='Email']/.." position="after">
                     <group>
-                        <label for="id" string="Configuração UD"/>
+                        <label for="id" string="Universidade Digital"/>
                         <div>
                             <field name="exclusao_unica" class="oe_inline"/>
                             <label for="exclusao_unica"/>
