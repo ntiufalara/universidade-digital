@@ -15,6 +15,11 @@ class Curso(osv.Model):
         "coord_monitoria_id": fields.many2one("ud.employee", u"Coordenador de Monitoria"),
     }
 
+    _sql_constraints = [
+        ("coord_monitoria_unico", "unique(coord_monitoria_id)",
+         u"Uma pessoa pode ser coordenador de monitoria de apenas 1 curso."),
+    ]
+
     def create(self, cr, uid, vals, context=None):
         res = super(Curso, self).create(cr, uid, vals, context)
         if vals.get("coord_monitoria_id", False):
@@ -112,7 +117,8 @@ class Disciplina(osv.Model):
                                     domain=[('is_active','=',True)]),
         "disciplina_id": fields.many2one("ud.disciplina", u"Disciplinas", required=True, ondelete="restrict",
                                          domain="[('ud_disc_id','=',curso_id)]"),
-        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, domain=[("tipo", "=", "p")], ondelete="restrict",
+        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, ondelete="restrict",
+                                     domain="[('tipo', '=', 'p'), ('ud_cursos', '=', curso_id)]",
                                      help=u"SIAPE do professor Orientador"),
         "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         string=u"Orientador", readonly=True),
@@ -162,11 +168,30 @@ class Disciplina(osv.Model):
         ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
+    def default_get(self, cr, uid, fields_list, context=None):
+        context = context or {}
+        res = super(Disciplina, self).default_get(cr, uid, fields_list, context)
+        if context.get("filtro_coord_disciplina", False):
+            if not context.get("semestre_id", False):
+                return res
+            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
+            if pessoas:
+                cs = self.pool.get("ud.curso").search(cr, uid, [("coord_monitoria_id", "in", pessoas)], context=context)
+                if not cs:
+                    return res
+                cs = cs[0]
+                registro = self.pool.get("ud.monitoria.registro").browse(cr, uid, context["semestre_id"], context)
+                for dist in registro.distribuicao_bolsas_ids:
+                    if dist.curso_id.id == cs:
+                        res["curso_id"] = cs
+                        break
+        return res
+
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         context = context or {}
         res = super(Disciplina, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
         domain_temp = res["fields"]["curso_id"].get("domain", [])
-        if isinstance(domain_temp , str):
+        if isinstance(domain_temp, str):
             domain_temp = list(eval(domain_temp))
         domain = []
         for d in domain_temp:
@@ -174,15 +199,19 @@ class Disciplina(osv.Model):
                 domain.append(d)
         del domain_temp
         cursos = []
-        semestre = context.get("semestre_id", None)
-        if semestre:
-            for dist in self.pool.get("ud.monitoria.registro").browse(cr, SUPERUSER_ID, semestre, context).distribuicao_bolsas_ids:
+        if context.get("semestre_id", None):
+            bolsas_distribuidas = self.pool.get("ud.monitoria.registro").browse(
+                cr, SUPERUSER_ID, context.get("semestre_id", None), context
+            ).distribuicao_bolsas_ids
+            for dist in bolsas_distribuidas:
                 cursos.append(dist.curso_id.id)
-        if context.get("filtro_coord_disciplina", False):
-            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
-            if pessoas:
-                cursos = self.pool.get("ud.curso").search(cr, uid, [("coord_monitoria_id", "in", pessoas)],
-                                                           context=context)
+            if context.get("filtro_coord_disciplina", False):
+                pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)],
+                                                              context=context)
+                if pessoas:
+                    cursos = self.pool.get("ud.curso").search(
+                        cr, uid, [("id", "=", cursos), ("coord_monitoria_id", "in", pessoas)], context=context
+                    )
         domain += [("id", "in", cursos)]
         res["fields"]["curso_id"]["domain"] = domain
         return res
