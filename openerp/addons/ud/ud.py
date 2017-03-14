@@ -357,6 +357,12 @@ class Perfil(osv.osv):  # Classe papel
     _name = 'ud.perfil'
     _description = 'Papel'
 
+    def valida_professor_curso(self, cr, uid, ids, context=None):
+        for perfil in self.browse(cr, uid, ids, context):
+            if perfil.tipo == "p" and not perfil.ud_cursos:
+                return False
+        return True
+
     _columns = {
         'tipo': fields.selection(_TIPOS_PERFIL, u'Tipo'),
         'is_bolsista': fields.boolean(u'Bolsista'),
@@ -379,15 +385,16 @@ class Perfil(osv.osv):  # Classe papel
 
     _constraints = [
         (lambda self, *args, **kwargs: self._setor_ou_curso(*args, **kwargs), u'Preencha pelo menos um dos campos.',
-         ['Setor', 'Curso'])
+         ['Setor', 'Curso']),
+        (valida_professor_curso, "Perfis de professores necessitam de um curso.", ["Curso"]),
     ]
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-        operator = "="
+        operator = (context or {}).get("operator", operator)
         return super(Perfil, self).name_search(cr, uid, name, args, operator, context, limit)
 
     def view_init(self, cr, uid, fields_list, context=None):
-        if not (context or {}).get("ud_employee"):
+        if not (context or {}).get("ud_employee", False):
             raise osv.except_osv(u"Acesso Negado", u"Você não pode acessar perfil a partir desse local")
 
     def _setor_ou_curso(self, cr, uid, ids, context=None):
