@@ -2,62 +2,6 @@
 
 <openerp>
     <data>
-        <!-- DISCIPLINA: PROCESSO SELETIVO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_ps_disciplina_tree_view">
-            <field name="name">Processo Seletivo: Disciplinas</field>
-            <field name="res_model">ud.monitoria.ps.disciplina</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_ps_disciplina_tree_view">
-            <field name="name">ud.monitoria.ps.disciplina.tree</field>
-            <field name="model">ud.monitoria.ps.disciplina</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Disciplinas">
-                    <field name="disciplina_id"/>
-                    <field name="curso_id"/>
-                    <field name="orientador_id"/>
-                    <field name="data_inicial"/>
-                    <field name="data_final"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_ps_disciplina_form_view">
-            <field name="name">ud.monitoria.ps.disciplina.form</field>
-            <field name="model">ud.monitoria.ps.disciplina</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Disciplina" version="7.0">
-                    <div attrs="{'invisible': [('curso_id', '!=', False)]}">
-                        <b>Obs.:</b>
-                        Se o curso desejado não estiver na lista, provavelmente ele não tenha sido ofertado, não esteja
-                        ativo,
-                        não foi registrado ou o campo "Modalidade" não foi devidamente preenchido. Para resolver esse
-                        problema,
-                        entre em contato com o administrador do sistema.
-                    </div>
-                    <group col="4">
-                        <field name="curso_id" colspan="2" on_change="onchange_curso(curso_id)"
-                               options="{'create_edit': false, 'create': false}" placeholder="Seleção de Curso"/>
-                        <field name="disciplina_id" colspan="2" domain="[('id', 'in', [])]"
-                               placeholder="Seleção de Disciplina" options="{'create_edit': false, 'create': false}"
-                               on_change="onchange_disciplina(curso_id, disciplina_id)"/>
-                        <field name="siape" colspan="2" on_change="onchange_siape(siape)"
-                               placeholder="Número do SIAPE"/>
-                        <field name="orientador_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="data_inicial" colspan="2"/>
-                        <field name="data_final" colspan="2"/>
-                        <field name="monitor_s_bolsa" colspan="2"/>
-                        <field name="tutor_s_bolsa" colspan="2"/>
-                        <field name="num_bolsas" colspan="2"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-
         <!-- CRITÉRIO AVALIATIVO -->
         <record model="ir.actions.act_window" id="action_ud_monitoria_criterio_avaliativo_tree_view">
             <field name="name">Critério Avaliativo</field>
@@ -74,6 +18,7 @@
             <field name="arch" type="xml">
                 <tree string="Critérios Avaliativos">
                     <field name="name"/>
+                    <field name="peso"/>
                 </tree>
             </field>
         </record>
@@ -152,8 +97,7 @@
             <field name="arch" type="xml">
                 <tree string="Pontuações de disciplinas" create="false" delete="false">
                     <field name="disciplina_id"/>
-                    <field name="media_aritmetica"/>
-                    <field name="media_ponderada"/>
+                    <field name="media"/>
                     <field name="pontuacoes_ids"/>
                     <field name="state"/>
                     <field name="bolsista" invisible="1"/>
@@ -165,7 +109,7 @@
             <field name="name">ud.monitoria.pontuacoes.disciplina.tree</field>
             <field name="model">ud.monitoria.pontuacoes.disciplina</field>
             <field name="inherit_id" ref="ud_monitoria_pontuacoes_disciplina_tree_view"/>
-            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')]), (6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="inside">
                     <button name="aprovar" states="analise" string="Aprovar" type="object" icon="gtk-apply"
@@ -188,17 +132,18 @@
             <field name="arch" type="xml">
                 <form string="Pontuações de disciplina" version="7.0">
                     <group invisible="1">
-                        <field name="state"/>
-                        <field name="bolsista"/>
-                        <field name="state"/>
+                        <field name="state" readonly="1"/>
+                        <field name="bolsista" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                        <field name="inscricao_id" readonly="1"/>
                     </group>
-                    <group col="4">
+                    <group col="6">
                         <field name="disciplina_id" colspan="4" readonly="1"/>
-                        <field name="media_aritmetica" colspan="2"/>
-                        <field name="media_ponderada" colspan="2"/>
+                        <field name="media" colspan="2"/>
                     </group>
                     <group string="Pontuações">
-                        <field name="pontuacoes_ids" nolabel="1" on_change="onchange_pontuacoes(pontuacoes_ids)"/>
+                        <field name="pontuacoes_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'analise')]}"
+                               on_change="onchange_pontuacoes(inscricao_id,pontuacoes_ids)"/>
                     </group>
                 </form>
             </field>
@@ -218,7 +163,7 @@
             <field name="model">ud.monitoria.anexo</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Anexos">
+                <tree string="Anexos" delete="false">
                     <field name="name" invisible="1"/>
                     <field name="arquivo" filename="name"/>
                 </tree>
@@ -239,103 +184,6 @@
             </field>
         </record>
 
-        <!-- PROCESSO SELETIVO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_processo_seletivo_tree_view">
-            <field name="name">Processos Seletivos</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.processo.seletivo</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_tree_view">
-            <field name="name">ud.monitoria.processo.seletivo.tree</field>
-            <field name="model">ud.monitoria.processo.seletivo</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Processos Seletivos" colors="blue:state=='andamento';red:state=='invalido'">
-                    <field name="name"/>
-                    <field name="data_inicio"/>
-                    <field name="data_fim"/>
-                    <field name="semestre_id"/>
-                    <field name="state"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_form_view">
-            <field name="name">ud.monitoria.processo.seletivo.form</field>
-            <field name="model">ud.monitoria.processo.seletivo</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Processo Seletivo" version="7.0">
-                    <header>
-                        <button name="%(action_ud_monitoria_inscricao_wizard_form_view)d" type="action"
-                                string="Inscrever" states="andamento" class="oe_highlight"/>
-                        <button name="%(ud_monitoria.action_ud_monitoria_minhas_inscricoes_tree_view)d" type="action"
-                                string="Minhas Inscrições" states="novo,andamento,encerrado"/>
-                        <field name="state" widget="statusbar" states="novo,andamento,encerrado"/>
-                    </header>
-                    <div attrs="{'invisible': [('state', '!=', 'invalido')]}"
-                         groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                        <h3>O processo seletivo torna-se inválido quando:</h3>
-                        <ol>
-                            <li>O registro do semestre do processo seletivo tenha sido marcado como inativo enquanto sua
-                                data final não passou da atual;
-                            </li>
-                            <li>Não possui anexos ou disciplinas.</li>
-                        </ol>
-                    </div>
-                    <group col="4">
-                        <field name="name" colspan="4" placeholder="Nome do Processo Seletivo"
-                               attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                        <field name="data_inicio" colspan="2" attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                        <field name="data_fim" colspan="2"/>
-                        <field name="semestre_id" colspan="2" options="{'no_open': 1}"
-                               on_change="onchange_semestre(semestre_id,disciplinas_ids)"
-                               attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                        <field name="valor_bolsa" colspan="2" attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                    </group>
-                    <group col="4"
-                           attrs="{'invisible': ['|', ('name', '=', False), '|', ('data_inicio', '=', False), '|', ('data_fim', '=', False), ('semestre_id', '=', False)]}">
-                        <group string="Disciplinas" colspan="4">
-                            <field name="disciplinas_ids" nolabel="1"
-                                   attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                        </group>
-                        <group string="Anexos" col="4" colspan="4">
-                            <field name="anexos_ids" nolabel="1"/>
-                        </group>
-                        <group string="Critérios Avaliativos" colspan="4">
-                            <field name="criterios_avaliativos_ids" nolabel="1" attrs="{'readonly': [('inscricoes_ids', '!=', [])]}"/>
-                        </group>
-                        <group string="Inscrições" colspan="4" invisible="1">
-                            <field name="inscricoes_ids" nolabel="1">
-                                <tree>
-                                    <field name="matricula"/>
-                                    <field name="discente_id"/>
-                                    <field name="modalidade"/>
-                                    <field name="bolsista"/>
-                                    <field name="state"/>
-                                </tree>
-                            </field>
-                        </group>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_coordenador_form_view">
-            <field name="name">ud.monitoria.processo.seletivo.coordenandor.form</field>
-            <field name="model">ud.monitoria.processo.seletivo</field>
-            <field name="inherit_id" ref="ud_monitoria_processo_seletivo_form_view"/>
-            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')]), (6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
-            <field name="arch" type="xml">
-                <field name="state" position="attributes">
-                    <attribute name="states">invalido,novo,andamento,encerrado</attribute>
-                </field>
-            </field>
-        </record>
-
         <!-- PROCESSO SELETIVO: INSCRIÇÃO -->
         <record model="ir.actions.act_window" id="action_ud_monitoria_inscricao_tree_view">
             <field name="name">Inscritos</field>
@@ -345,13 +193,39 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_ud_monitoria_minhas_inscricoes_tree_view">
+            <field name="name">Minhas Inscrições</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.inscricao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'filtrar_discente': True}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_ud_monitoria_inscricao_gerencia_orientador_tree_view">
+            <field name="name">Gerenciar Inscrições</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.inscricao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'filtrar_orientador': True}</field>
+            <field name="help" type="html">
+                <div>
+                    <p>
+                        Inscrições não avaliadas que possuem seu usuário como Orientador de alguma disciplina serão
+                        mostradas aqui.
+                    </p>
+                </div>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="ud_monitoria_inscricao_tree_view">
             <field name="name">ud.monitoria.inscricao.tree</field>
             <field name="model">ud.monitoria.inscricao</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Inscrições" create="false" colors="blue:state=='analise'">
-                    <field name="matricula"/>
+                    <field name="perfil_id"/>
                     <field name="discente_id"/>
                     <field name="processo_seletivo_id"/>
                     <field name="modalidade"/>
@@ -374,33 +248,249 @@
                         <field name="state" widget="statusbar" states="analise,concluido"/>
                     </header>
                     <group string="Dados Pessoais" col="4">
-                        <field name="matricula" on_change="onchange_matricula(matricula,bolsista)" readonly="1"
-                               colspan="2"/>
-                        <field name="curso_id" colspan="2"/>
-                        <field name="discente_id" readonly="1" colspan="2"
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id,bolsista)" readonly="1" colspan="2"/>
+                        <field name="discente_id" colspan="2"
                                context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
+                        <field name="curso_id" colspan="2"/>
+                        <field name="hist_analitico" readonly="1" colspan="2" filename="hist_analitico_nome"/>
                         <field name="cpf" readonly="1" colspan="2" filename="cpf_nome"/>
                         <field name="identidade" readonly="1" colspan="2" filename="identidade_nome"/>
-                        <field name="hist_analitico" readonly="1" colspan="2" filename="hist_analitico_nome"/>
                     </group>
                     <group string="Dados da Inscrição" col="4">
                         <field name="processo_seletivo_id" readonly="1"/>
                         <field name="modalidade" readonly="1"/>
                         <field name="turno" readonly="1"/>
                         <field name="bolsista" readonly="1"/>
-                        <field name="disciplinas_ids" readonly="1" widget="many2many_tags"/>
                         <field name="dados_bancarios_id" readonly="1"
                                attrs="{'invisible': [('bolsista', '=', False)],'required': [('bolsista', '=', True)]}"/>
                     </group>
                     <group string="Pontuações">
-                        <field name="pontuacoes_ids" nolabel="1" on_change="onchange_pontuacoes(pontuacoes_ids, context)"
-                               options="{'reload_on_button': true}"/>
+                        <field name="pontuacoes_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'analise')]}"/>
                     </group>
                     <group string="Informações Adicionais" attrs="{'invisible': [('info', '=', False)]}">
                         <field name="info" nolabel="1" placeholder="Informações complementares"/>
                     </group>
                 </form>
             </field>
+        </record>
+
+        <!-- PROCESSO SELETIVO -->
+        <record model="ir.actions.act_window" id="action_ud_monitoria_processo_seletivo_tree_view">
+            <field name="name">Processos Seletivos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.processo.seletivo</field>
+            <field name="context">{'filtro_coordenador': True}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_tree_view">
+            <field name="name">ud.monitoria.processo.seletivo.tree</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="priority" eval="10"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Processos Seletivos" colors="blue:state=='andamento';red:state=='invalido'">
+                    <field name="name"/>
+                    <field name="data_inicio"/>
+                    <field name="data_fim"/>
+                    <field name="semestre_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_coord_disc_tree_view">
+            <field name="name">ud.monitoria.processo.seletivo.tree</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="priority" eval="20"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Processos Seletivos" create="false" delete="false">
+                    <field name="name" string="Processo Seletivo"/>
+                    <field name="prazo_demanda"/>
+                    <field name="semestre_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_coordenador_tree_view">
+            <field name="name">ud.monitoria.processo.seletivo.tree</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="inherit_id" ref="ud_monitoria_processo_seletivo_tree_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="prazo_demanda"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_form_view">
+            <field name="name">ud.monitoria.processo.seletivo.form</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="priority" eval="10"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Processo Seletivo" version="7.0" edit="false">
+                    <header>
+                        <button name="%(action_ud_monitoria_inscricao_wizard_form_view)d" type="action"
+                                string="Inscrever" states="andamento" class="oe_highlight"/>
+                        <button name="%(action_ud_monitoria_minhas_inscricoes_tree_view)d" type="action"
+                                string="Minhas Inscrições" states="novo,andamento,encerrado"/>
+                        <button name="%(action_ud_monitoria_inscricao_gerencia_orientador_tree_view)d" type="action"
+                                string="Gerenciar Inscrições" states="novo,andamento,encerrado"
+                                groups="ud_monitoria.group_ud_monitoria_orientador"/>
+                        <field name="state" widget="statusbar" states="novo,andamento,encerrado" statusbar_visible="novo,andamento,encerrado"/>
+                    </header>
+                    <field name="id"/>
+                    <div attrs="{'invisible': [('state', '!=', 'invalido')]}"
+                         groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <h3>O processo seletivo torna-se inválido quando:</h3>
+                        <ol>
+                            <li>
+                                O registro do semestre do processo seletivo tenha sido marcado como inativo enquanto sua
+                                data final não passou da atual;
+                            </li>
+                            <li>Não possui anexos ou disciplinas.</li>
+                        </ol>
+                    </div>
+                    <group col="4">
+                        <field name="name" colspan="4" placeholder="Nome do Processo Seletivo"
+                               attrs="{'readonly': [('state', 'in', ['andamento', 'finalizado'])]}"/>
+                        <field name="data_inicio" colspan="2" attrs="{'readonly': [('id', '!=', False), ('state', 'not in', ['demanda', 'invalido', 'novo'])]}"/>
+                        <field name="data_fim" colspan="2"/>
+                        <field name="semestre_id" colspan="2" options="{'no_open': 1}"
+                               invisible="context.get('registro_id', False)"
+                               attrs="{'readonly': ['|', ('id', '!=', False), ('state', 'in', ['andamento', 'finalizado'])]}"/>
+                        <field name="valor_bolsa" colspan="2" attrs="{'readonly': [('state', 'in', ['andamento', 'finalizado'])]}"/>
+                    </group>
+                    <notebook attrs="{'invisible': ['|', ('name', '=', False), '|', ('data_inicio', '=', False), '|', ('data_fim', '=', False), ('semestre_id', '=', False)]}">
+                        <page string="Anexos">
+                            <field name="anexos_ids" nolabel="1"/>
+                        </page>
+                        <page string="Disciplinas" attrs="{'invisible': [('state', '=', False)]}">
+                            <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'processo_seletivo': True}"
+                                   attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
+                        </page>
+                        <page string="Critérios Avaliativos">
+                            <group col="4">
+                                <field name="tipo_media" colspan="2"/>
+                                <field name="media_minima" colspan="2"/>
+                            </group>
+                            <field name="criterios_avaliativos_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_coord_disc_form_view">
+            <field name="name">ud.monitoria.processo.seletivo.coordenandor.form</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="inherit_id" ref="ud_monitoria_processo_seletivo_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coord_disciplina'), ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="states">demanda,novo,andamento,encerrado</attribute>
+                    <attribute name="statusbar_visible">demanda,novo,andamento,encerrado</attribute>
+                </field>
+                <field name="name" position="attributes">
+                    <attribute name="colspan">2</attribute>
+                </field>
+                <field name="name" position="after">
+                    <field name="prazo_demanda" colspan="2" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_coordenador_form_view">
+            <field name="name">ud.monitoria.processo.seletivo.coordenandor.form</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="inherit_id" ref="ud_monitoria_processo_seletivo_coord_disc_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="edit"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Inscrições">
+                        <field name="inscricoes_ids" nolabel="1">
+                            <tree create="false" delete="false">
+                                <field name="perfil_id"/>
+                                <field name="discente_id"/>
+                                <field name="modalidade"/>
+                                <field name="bolsista"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                <field name="state" position="attributes">
+                    <attribute name="states">demanda,invalido,novo,andamento,encerrado</attribute>
+                    <attribute name="statusbar_visible">demanda,invalido,novo,andamento,encerrado</attribute>
+                </field>
+                <field name="name" position="attributes">
+                    <attribute name="colspan">2</attribute>
+                </field>
+                <field name="prazo_demanda" position="attributes">
+                    <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': ['|', ('inscricoes_ids', '!=', []), '&amp;', ('id', '!=', False), ('state', 'not in', ['demanda', 'invalido', 'novo'])]}</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_processo_seletivo_solicitacao_disciplina_form_view">
+            <field name="name">ud.monitoria.processo.seletivo.form</field>
+            <field name="model">ud.monitoria.processo.seletivo</field>
+            <field name="priority" eval="15"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Demanda de Disciplinas" version="7.0" create="false" delete="false">
+                    <group col="4">
+                        <field name="name" string="Processo Seletivo" readonly="1" colspan="2"/>
+                        <field name="semestre_id" readonly="1" colspan="2"/>
+                    </group>
+                    <group string="Disciplinas">
+                        <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'filtro_coord_disciplina': True}"/>
+                    </group>
+                    <div>
+                        Para verificar o número de bolsas distribuídas para cada curso, acesse o link no campo semestre.
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_ud_monitoria_solicitacao_disciplina_tree_view">
+            <field name="name">Solicitação de Disciplinas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.processo.seletivo</field>
+            <field name="context">{'filtro_coord_disciplina': True}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'demanda')]</field>
+            <field name="help" type="html">
+                <div>
+                    <p>
+                        Solicitação de disciplinas estará disponíveis apenas quando novos processos seletivos forem
+                        disponiblizados pela Coordenação de Monitoria.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_ud_monitoria_solicitacao_disciplina_view_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_id" ref="ud_monitoria_processo_seletivo_coord_disc_tree_view"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_ud_monitoria_solicitacao_disciplina_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_ud_monitoria_solicitacao_disciplina_view_form">
+            <field name="sequence" eval="2"/>
+            <field name="view_id" ref="ud_monitoria_processo_seletivo_solicitacao_disciplina_form_view"/>
+            <field name="view_mode">form</field>
+            <field name="act_window_id" ref="action_ud_monitoria_solicitacao_disciplina_tree_view"/>
         </record>
     </data>
 </openerp>

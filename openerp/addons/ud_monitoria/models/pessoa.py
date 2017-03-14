@@ -7,6 +7,7 @@ Created on 29 de abr de 2016
 
 from openerp import SUPERUSER_ID as SUPER_UID
 from openerp.osv import osv, fields
+from psycopg2 import ProgrammingError
 
 
 class Pessoa(osv.AbstractModel):
@@ -67,10 +68,14 @@ class Pessoa(osv.AbstractModel):
         res = super(Pessoa, self).create(cr, uid, vals, context)
         if context.get("res_group", False):
             try:
+                pessoa = self.browse(cr, uid, res, context)
                 group = self.pool.get("ir.model.data").get_object(
                     cr, SUPER_UID, "ud_monitoria", context["res_group"], context
                 )
-                group.write({"users": [(4, self.browse(cr, uid, res, context).pessoa_id.user_id.id)]})
+                group.write({"users": [(4, pessoa.pessoa_id.user_id.id)]})
+            except ProgrammingError:
+                raise osv.except_osv(u"Usuário não encontrado",
+                                     u"O registro de \"%s\" no núcleo não está vinculado a um usuário (login)." % pessoa.pessoa_id.name)
             except ValueError:
                 pass
         return res
@@ -130,8 +135,7 @@ class Discente(osv.Model):
     _inherit = "ud.monitoria.pessoa"
 
     _columns = {
-        "documentos_ids": fields.one2many("ud.monitoria.documentos.discente", "discente_id", u"Documentos",
-                                          readonly=True),
+        "documentos_ids": fields.one2many("ud.monitoria.documentos.discente", "discente_id", u"Documentos"),
     }
 
     _sql_constraints = [

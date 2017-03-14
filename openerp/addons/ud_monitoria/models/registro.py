@@ -1,23 +1,9 @@
-#coding: utf-8
-from openerp import SUPERUSER_ID
-from openerp.osv import fields, osv
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-
+# coding: utf-8
 from datetime import datetime, timedelta
-from pytz import timezone
 from re import compile
 
-
-def localise(data, tz):
-    return timezone(tz).localize(data, is_dst=False)
-
-
-def datetime_to_utc(data, tz):
-    try:
-        data = datetime.strptime(data, DEFAULT_SERVER_DATETIME_FORMAT)
-    except ValueError:
-        data = datetime.strptime(data, DEFAULT_SERVER_DATE_FORMAT)
-    return localise(data, tz).astimezone(timezone("UTC"))
+from openerp import SUPERUSER_ID
+from openerp.osv import fields, osv
 
 
 class Registro(osv.Model):
@@ -50,28 +36,12 @@ class Registro(osv.Model):
         (0, False, {"name": "meses_frequencia", "descricao": u"Dicionário que informa se as frequências mensais dos meses estão todas em ordem.\nObs.: {'num_mes': booleano}"}),
     ]
     
-    def valida_data_frequencia(self, cr, uid, ids, context=None):
-        tz = (context or {}).get("tz", "America/Maceio")
-        hoje = localise(datetime.utcnow(), "UTC").date()
-        for registro in self.browse(cr, uid, ids, context=context):
-            create_date = datetime_to_utc(registro.create_date, tz).date()
-            data_freq = datetime_to_utc(registro.data_i_frequencia, tz).date()
-            if data_freq <= create_date and hoje >= data_freq:
-                return False
-        return True
-    
     def valida_intervalo_frequencia(self, cr, uid, ids, context=None):
         for registro in self.browse(cr, uid, ids, context=context):
             if (registro.intervalo_frequencia < 1):
                 return False
         return True
-    
-    def valida_vagas(self, cr, uid, ids, context=None):
-        for registro in self.browse(cr, uid, ids, context=context):
-            if registro.vagas_bolsistas < 0:
-                return False
-        return True
-    
+
     def valida_semestre(self, cr, uid, ids, context=None):
         padrao = compile("\d{4}\.[12]")
         for registro in self.browse(cr, uid, ids, context=context):
@@ -79,26 +49,15 @@ class Registro(osv.Model):
                 return False
         return True
 
-    def valida_media_minima(self, cr, uid, ids, context=None):
-        for registro in self.browse(cr, uid, ids, context=context):
-            if registro.media_minima <= 0:
+    def valida_bolsas(self, cr, uid, ids, context=None):
+        for reg in self.browse(cr, uid, ids, context):
+            bolsas = 0
+            for dist in reg.distribuicao_bolsas_ids:
+                bolsas += dist.bolsas
+            if bolsas > reg.max_bolsas:
                 return False
         return True
 
-    def calcular_bolsas(self, cr, uid, context=None):
-        oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-        ofertas_ids = oferta_model.search(cr, uid, [("em_oferta", "=", True)], context=context)
-        vagas = 0
-        for oferta in oferta_model.read(cr, uid, ofertas_ids, ["bolsas_disponiveis"], context=context):
-            vagas += oferta.get("bolsas_disponiveis")
-        return vagas
-
-    def _num_bolsas(self, cr, uid, ids, campo, args, context=None):
-        return {}.fromkeys(ids, self.calcular_bolsas(cr, uid, context))
-    
-    def _update_bolsas(self, cr, uid, ids, context=None):
-        return self.pool.get("ud.monitoria.registro").search(cr, uid, [("is_active", "=", True)], context=context)
-    
     def __get_create(self, cr, nome, campos, template=u"Template não definido pelo administrador.", context=None):
         tipo_doc_model = self.pool.get("ud.documento.tipo")
         tipos_doc = tipo_doc_model.search(cr, SUPERUSER_ID, [("name", "=", nome)], context=context)
@@ -113,43 +72,45 @@ class Registro(osv.Model):
     
     def __modelo_relatorio_final(self, cr, uid, context=None):
         return self.__get_create(cr, u"RELATÓRIO FINAL (UD MONITORIA)", self._campos_relatorio, context=context)
-    
+
+    def getl_bolsas_distribuidas(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        for registro in self.browse(cr, uid, ids, context):
+            res[registro.id] = 0
+            for dist in registro.distribuicao_bolsas_ids:
+                res[registro.id] = dist.bolsas
+
+        return res
+
     _columns = {
         "id": fields.integer(u"ID", readonly=True, invisible=True),
-        "create_date": fields.datetime(u"Data de Criação", readonly=True, invisible=True),
         "semestre": fields.char(u"Semestre", size=6, required=True, help=u"Semestre no formato '2016.1'"),
-        "vagas_bolsistas": fields.function(_num_bolsas, type="integer", method=True, string=u"Bolsas Disponíveis",
-                                           required=True, store={
-                                               "ud.monitoria.registro": (_update_bolsas, ["is_active"], 10),
-                                                "ud.monitoria.oferta.disciplina": (_update_bolsas, ["em_oferta", "bolsas_disponiveis"], 10)
-                                           }, help=u"Informa a quantidade total de bolsas das disciplinas em oferta"),
+        "max_bolsas": fields.integer(u"Máximo de Bolsas", required=True,
+                                     help=u"Número máximo de bolsas disponíveis para o semestre"),
+        "bolsas_distribuidas": fields.function(getl_bolsas_distribuidas, type="integer", string=u"Bolsas Distribuidas", help=u"Número total de bolsas distribuidas entre os cursos"),
+        "distribuicao_bolsas_ids": fields.one2many("ud.monitoria.distribuicao.bolsas", "registro_id", u"Distribuição de Bolsas",
+                                                   help=u"Permite distribuir bolsas entre cursos ativos"),
         "data_i_frequencia": fields.date(u"Envio de Frequência", required=True,
                                          help=u"Próxima data para submissão da frequências"),
         "intervalo_frequencia": fields.integer(u"Período (Dias)", required=True, help=u"Intervalo de submissão de frequências"),
+        "processos_seletivos_ids": fields.one2many("ud.monitoria.processo.seletivo", "semestre_id", u"Processos Seletivos"),
         "modelo_certificado_id": fields.many2one("ud.documento.tipo", u"Modelo de Certificado", required=True,
                                                  readonly=True, ondelete="restrict", help=u"Modelo de certificado"),
         "modelo_relatorio_id": fields.many2one("ud.documento.tipo", u"Modelo de relatório", required=True, readonly=True,
                                                ondelete="restrict", help=u"Modelo do relatório final individual dos discentes"),
         "relatorio_discentes_ids": fields.one2many("ud.monitoria.relatorio.final.disc", "registro_id", u"Relatórios Finais", readonly=True,
                                                    help=u"Status de entrega de documentos e frequências dos discentes"),
-        "demanda_ids": fields.one2many("ud.monitoria.solicitacao", "semestre_id", u"Demanda de disciplinas", readonly=True,
-                                       help=u"Demanda de disciplinas para o semestre do registro"),
         "eventos_ids": fields.one2many("ud.monitoria.evento", "registro_id", u"Eventos Ocorridos",
                                               help=u"Registro de eventos em Geral ocorridos durante o semestre"),
         "is_active": fields.boolean(u"Ativo", readonly=True),
-        "media_minima": fields.float(u"Nota Minima", required=True, help=u"Média mínima para aprovação de discentes."),
-        "tipo_media": fields.selection([("a", u"Aritmética"), ("p", u"Ponderada")], u"Tipo de Média", required=True,
-                                       help=u"Tipo de média a ser utilizada na aprovação."),
     }
-    
+
     _rec_name = "semestre"
-    
+
     _constraints = [
-        (valida_data_frequencia, u"A data da frequência deve ocorrer após a data atual", [u"Data da Frequência"]),
         (valida_intervalo_frequencia, u"O intervalo da frequência deve ser maior que 0.", [u"Período da frequência"]),
-        (valida_vagas, u"O número de vagas para bolsistas não pode ser negativo", [u"Vagas de Bolsistas"]),
-        (valida_semestre, u"Semestre inválido", [u"Semestre"]),
-        (valida_media_minima, u"Não é permitido nota menor ou igual a 0.", [u"Nota Mínima"])
+        (valida_semestre, u"Semestre inválido.", [u"Semestre"]),
+        (valida_bolsas, u"Número máximo de Bolsas excedido.", [u"Distribuição de Bolsas"]),
     ]
     
     _sql_constraints = [
@@ -161,29 +122,48 @@ class Registro(osv.Model):
         "is_active": True,
         "modelo_certificado_id": __modelo_certificado,
         "modelo_relatorio_id": __modelo_relatorio_final,
-        "vagas_bolsistas": calcular_bolsas,
-        "media_minima": 7.0,
-        "tipo_media": "p",
-        "data_i_frequencia": (datetime.utcnow() + timedelta(30)).strftime("%Y-%m-%d"),
+        "data_i_frequencia": (datetime.now() + timedelta(30)).strftime("%Y-%m-%d"),
     }
-    
-    def unlink(self, cr, uid, ids, context=None):
-        solic_ids = []
-        for reg in self.read(cr, uid, ids, ["demanda_ids"], context=context):
-            solic_ids += reg["demanda_ids"]
-        self.pool.get("ud.monitoria.solicitacao").unlink(cr, uid, solic_ids, context=context)
-        return super(Registro, self).unlink(cr, uid, ids, context=context)
-    
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        def proximo_semestre(s):
+            if s:
+                ano, s = map(int, s.split("."))
+                if s == 1:
+                    s += 1
+                else:
+                    ano += 1
+                    s = 1
+                if self.search_count(cr, uid, [("semestre", "=", "%d.%d" % (ano, s))], context=context) > 0:
+                    return proximo_semestre("%d.%d" % (ano, s))
+                return "%d.%d" % (ano, s)
+            return s
+
+        semestre = default.get("semestre", False)
+        if not semestre:
+            hoje = datetime.today()
+            semestre = "%d.%d" % (hoje.year, 1 if hoje.month <= 6 else 2)
+        default.update({
+            "semestre": proximo_semestre(semestre),
+            "data_i_frequencia": (datetime.now() + timedelta(30)).strftime("%Y-%m-%d"),
+            "processos_seletivos_ids": [],
+            "relatorio_discentes_ids": [],
+            "evento_ids": [],
+            "is_active": True
+        })
+        return super(Registro, self).copy(cr, uid, id, default, context)
+
     def atualizar_datas_frequencia(self, cr, uid, context=None):
         return []
     
-    def botao_ativar_registro(self, cr, uid, ids, context=None):
+    def ativar_registro(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {"is_active": True}, context=context)
     
-    def botao_desativar_registro(self, cr, uid, ids, context=None):
+    def desativar_registro(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {"is_active": False}, context=context)
     
-    def botao_resetar_modelos(self, cr, uid, ids, context=None):
+    def resetar_modelos(self, cr, uid, ids, context=None):
         """
         Restaura os campos e as informações adicionais padrão dos modelos de certificado e relatório final.
         """
@@ -200,6 +180,45 @@ class Registro(osv.Model):
                                                                                    u"com alterações nos campos, pois esses "\
                                                                                    u"são usados internamente pelo módulo de monitoria."}, context=context)
         return True
+
+
+class DistribuicaoBolsas(osv.Model):
+    _name = "ud.monitoria.distribuicao.bolsas"
+    _description = u"Distribuição de bolsas de cursos (UD)"
+
+    def get_bolsas_distribuidas(self, cr, uid, ids, campo, args, context=None):
+        res = {}.fromkeys(ids, 0)
+        processo_seletivo_model = self.pool.get("ud.monitoria.processo.seletivo")
+        disciplina_model = self.pool.get("ud.monitoria.disciplina")
+        for distribuicao in self.browse(cr, uid, ids, context):
+            processos_seletivos = processo_seletivo_model.search(cr, uid, [("semestre_id", "=", distribuicao.registro_id.id)], context=context)
+            disciplinas = disciplina_model.search(cr, uid, [("curso_id", "=", distribuicao.curso_id.id), ("processo_seletivo_id", "in", processos_seletivos)], context=context)
+            for disciplina in disciplina_model.browse(cr, uid, disciplinas, context):
+                res[distribuicao.id] += disciplina.bolsas
+        return res
+
+    def update_bolsas_distribuidas(self, cr, uid, ids, context=None):
+        res = []
+        for disciplina in self.browse(cr, uid, ids, context):
+            res.extend([dist.id for dist in disciplina.processo_seletivo_id.semestre_id.distribuicao_bolsas_ids])
+        return res
+
+    _columns = {
+        "curso_id": fields.many2one("ud.curso", u"Curso", required=True, ondelete="restrict",
+                                    domain=[("is_active", "=", True)]),
+        "is_active": fields.related("curso_id", "is_active", type="boolean", string=u"Curso Ativo?", readonly=True,
+                                    help=u"Identifica se atualmente o curso está ativo ou não"),
+        "bolsas": fields.integer(u"Bolsas", required=True, help=u"Número de bolsas disponibilizadas para o curso"),
+        "bolsas_distribuidas": fields.function(get_bolsas_distribuidas, type="integer", string=u"Bolsas Distribuídas",
+                                               store={"ud.monitoria.disciplina": (update_bolsas_distribuidas, ["bolsas"], 10)},
+                                               help=u"Número de bolsas distribuídas entre as disciplinas ativas e não ativas do curso"),
+        "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", ondelete="cascade"),
+    }
+
+    _sql_constraints = [
+        ("distribuicao_d_registro_uniques", "unique(curso_id,registro_id)",
+         u"Não é permitido distribuir bolsas de cursos repetidos em um mesmo registro semestral."),
+    ]
 
 
 class Evento(osv.Model):
@@ -260,7 +279,7 @@ class Evento(osv.Model):
 class RelatorioFinalDisc(osv.Model):
     _name = "ud.monitoria.relatorio.final.disc"
     _description = u"Relatório de status final dos discentes (UD)"
-    _order = "is_active"
+    _order = "doc_discente_id"
     
     def valida_registro(self, cr, uid, ids, context=None):
         for registro in self.browse(cr, uid, ids, context=context):
@@ -271,50 +290,47 @@ class RelatorioFinalDisc(osv.Model):
     def relatorio(self, cr, uid, ids, campos, args, context=None):
         res = {}
         for rel_f in self.browse(cr, uid, ids, context):
-            res[rel_f.id] = {}
-            if "relatorio" in campos:
-                res[rel_f.id]["relatorio"] = rel_f.doc_discente_id.relatorios_ok
-            if "is_active" in campos:
-                res[rel_f.id]["is_active"] = not all(
-                    [rel_f.doc_discente_id.relatorios_ok] +
-                    [mf.regular for mf in rel_f.meses_frequencia_ids]
-                )
+            res[rel_f.id] = rel_f.doc_discente_id.relatorios_ok
         return res
 
     def update_relatorio(self, cr, uid, ids, context=None):
         rel_model, self = self, self.pool.get("ud.monitoria.relatorio.final.disc")
-        rels = rel_model.search(cr, SUPERUSER_ID, [("state", "=", "aceito"), ("id", "in", ids)], context=context)
         doc_disc = []
-        for rel in rel_model.browse(cr, SUPERUSER_ID, rels, context):
-            doc_disc.append(rel.documentos_id.id)
-        return self.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", doc_disc)], context=context)
+        if self._name == "ud.monitoria.relatorio":
+            for rel in rel_model.browse(cr, SUPERUSER_ID, ids, context):
+                doc_disc.append(rel.documentos_id.id)
+        elif self._name == "ud.monitoria.documentos.discente":
+            doc_disc = ids
+        return self.search(cr, uid, [("doc_discente_id", "in", doc_disc)], context=context)
 
-    def update_is_active(self, cr, uid, ids, context=None):
-        return [fm.relatorio_id.id for fm in self.browse(cr, SUPERUSER_ID, ids, context)]
+    _STATES = [
+        ("reserva", u"Cadastro de Reserva"),
+        ("n_bolsista", u"Não Bolsista"),
+        ("bolsista", u"Bolsista"),
+        ("desligado", u"Desligado(a)"),
+    ]
 
     _columns = {
-        "doc_discente_id": fields.many2one("ud.monitoria.documentos.discente", u"Documentos do Discente", required=True, ondelete="cascade"),
-        "disciplina_id": fields.related("doc_discente_id", "disciplina_id", type="many2one", readonly=True,
-                                         relation="ud.monitoria.disciplina", string=u"Disciplina"),
-        "discente_id": fields.related("doc_discente_id", "discente_id", string=u"Discente", readonly=True,
-                                      type="many2one", relation="ud.monitoria.discente"),
-        "relatorio": fields.function(relatorio, type="boolean", multi="_relatorio", string=u"Entrega do relatório",
-                                     help=u"Informa se o discente entregou o relatório corretamente",
-                                     store={"ud.monitoria.relatorio": (update_relatorio, ["state"], 10)}),
-        "is_active": fields.function(relatorio, type="boolean", multi="_relatorio", string=u"Ativo?",
-                                     store={"ud.monitoria.rfd.mes": (update_is_active, ["regular"], 10)}),
-        "meses_frequencia_ids": fields.one2many("ud.monitoria.rfd.mes", "relatorio_id", u"Entrega das frequências",
-                                                help=u"Informa quais meses o discente precisa(ou) anexar sua frequência e qual é seu status"),
         "write_date": fields.datetime(u"Última atualização", readonly=True),
+        "doc_discente_id": fields.many2one("ud.monitoria.documentos.discente", u"Discente", required=True, ondelete="cascade"),
+        "disciplina_id": fields.related("doc_discente_id", "disciplina_id", type="many2one", readonly=True,
+                                         relation="ud.monitoria.disciplina", string=u"Disciplinas"),
+        "state": fields.related("doc_discente_id", "state", type="selection", readonly=True, selection=_STATES,
+                                string=u"Status"),
+        "is_active": fields.related("doc_discente_id", "is_active", type="boolean", string=u"Ativo?", readonly=True),
+        "relatorio": fields.function(relatorio, type="boolean", string=u"Relatório?",
+                                     help=u"Informa se o discente entregou o relatório corretamente",
+                                     store={
+                                         "ud.monitoria.relatorio": (update_relatorio, ["state"], 10),
+                                         "ud.monitoria.documentos.discente": (update_relatorio, ["relatorio_ids"], 10),
+                                     }),
+        "meses_frequencia_ids": fields.one2many("ud.monitoria.rfd.mes", "relatorio_id", u"Frequências?",
+                                                help=u"Informa quais meses o discente precisa(ou) anexar sua frequência e qual é seu status"),
         "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", required=True, ondelete="cascade", invisible=True),
     }
     
-    _defaults = {
-        "is_active": True,
-    }
-    
     _constraints = [
-        (valida_registro, u"O Registro não está mais ativo!", [u"Registro"])
+        (valida_registro, u"O registro semestral não está mais ativo!", [u"Registro/Semestre"])
     ]
 
     _sql_constraints = [
@@ -323,7 +339,7 @@ class RelatorioFinalDisc(osv.Model):
     ]
 
     def create(self, cr, uid, vals, context=None):
-        if "doc_discente_id" in vals:
+        if vals.get("doc_discente_id", False):
             doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, vals["doc_discente_id"], context)
             if "registro_id" not in vals:
                 vals["registro_id"] = doc.disciplina_id.semestre_id.id
@@ -335,23 +351,23 @@ class RelatorioFinalDisc(osv.Model):
                     meses.append(freq.mes)
         return super(RelatorioFinalDisc, self).create(cr, uid, vals, context)
 
-    def add_meses(self, cr, uid, ids, meses, context=None):
-        meses = set(meses)
-        for rel in self.browse(cr, uid, ids, context):
-            exist = set()
-            for fm in rel.meses_frequencia_ids:
-                exist.add(fm.mes)
-            add = []
-            for mes in meses.difference(exist):
-                add.append((0, 0, {"mes": mes}))
-            if add:
-                rel.write({"meses_frequencia_ids": add})
+    # def add_meses(self, cr, uid, ids, meses, context=None):
+    #     meses = set(meses)
+    #     for rel in self.browse(cr, uid, ids, context):
+    #         exist = set()
+    #         for fm in rel.meses_frequencia_ids:
+    #             exist.add(fm.mes)
+    #         add = []
+    #         for mes in meses.difference(exist):
+    #             add.append((0, 0, {"mes": mes}))
+    #         if add:
+    #             rel.write({"meses_frequencia_ids": add})
 
 
 class RelatorioFimDiscMes(osv.Model):
     _name = "ud.monitoria.rfd.mes"
     _description = u"Controle da frequência mensal dos discentes (UD)"
-    _order = "regular asc,mes asc"
+    _order = "mes asc"
     
     def get_mes(self, cr, uid, ids, campo, arg, context=None):
         res = {}
@@ -361,38 +377,34 @@ class RelatorioFimDiscMes(osv.Model):
             res[mes.get("id")] = meses.get(mes.get("seq"))
         return res
 
-    def frequencia_regular(self, cr, uid, ids, campo, arg, context=None):
-        res = {}.fromkeys(ids, False)
+    def get_status(self, cr, uid, ids, campo, arg, context=None):
+        res = {}
         for mes in self.browse(cr, uid, ids, context):
+            res[mes.id] = "s_registro"
             for freq in mes.relatorio_id.doc_discente_id.frequencia_ids:
-                if freq.state == "aceito":
-                    res[mes.id] = True
-                    break
-        return res
-
-    def update_regular(self, cr, uid, ids, context=None):
-        freq_model, rel_fim_model = self, self.pool.get("ud.monitoria.relatorio.final.disc")
-        doc_disc = []
-        meses = set()
-        for freq in freq_model.browse(cr, SUPERUSER_ID, ids, context):
-            doc_disc.append(freq.documentos_id.id)
-            meses.add(freq.mes)
-        rel_fim = rel_fim_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", doc_disc)], context=context)
-        res = []
-        for rel_fim in rel_fim_model.browse(cr, SUPERUSER_ID, rel_fim, context):
-            res += [mf.id for mf in rel_fim.meses_frequencia_ids if mf.mes in meses]
+                if freq.mes == mes.mes:
+                    if freq.state == "aceito":
+                        res[mes.id] = "regular"
+                        break
+                    elif freq.state == "analise":
+                        res[mes.id] = "analise"
+                    elif res[mes.id] == "s_registro" and freq.state == "rejeitado":
+                        res[mes.id] = "rejeitado"
         return res
 
     _MESES = [('01', u"Janeiro"), ('02', u"Fevereiro"), ('03', u"Março"), ('04', u"Abril"), ('05', u"Maio"),
               ('06', u"Junho"), ('07', u"Julho"), ('08', u"Agosto"), ('09', u"Setembro"), ('10', u"Outubro"),
               ('11', u"Novembro"), ('12', u"Dezembro")]
-    
+
+    _STATES = [("s_registro", u"Sem Registro"), ("rejeitado", u"Rejeitado"), ("analise", u"Análise"), ("regular", u"Regular")]
+
     _columns = {
         "name": fields.function(get_mes, type="char", store=False, method=True, string=u"Nome do Mês"),
         "mes": fields.selection(_MESES, u"Mês", required=True),
-        "regular": fields.function(frequencia_regular, type="boolean", string=u"Regular?",
-                                    help=u"Infora se a frequência do mês específico está regular.",
-                                   store={"ud.monitoria.frequencia": (update_regular, ["state"], 10)}),
+        "state": fields.function(get_status, type="selection", selection=_STATES, string=u"Status",
+                                 help=u"Seguindo a ordem de prioridade, se houver ao menos uma frequência em análise, "
+                                      u"o status será \"Análise\", se houver alguma aceita, o status passa a ser "
+                                      u"\"Regular\""),
         "relatorio_id": fields.many2one("ud.monitoria.relatorio.final.disc", u"Relatório Final", ondelete="cascade",
                                         invisible=True),
     }
@@ -400,177 +412,3 @@ class RelatorioFimDiscMes(osv.Model):
     _sql_constraints = [
         ("mes_relatorio_unique", "unique(mes, relatorio_id)", u"Não é permitido repetir o mês para o mesmo relatório!"),
     ]
-
-
-class SolicitacaoDisciplina(osv.Model):
-    _name = "ud.monitoria.solicitacao.disciplina"
-    _description = u"Disciplina de solicitação para monitoria (UD)"
-    _inherit = "ud.monitoria.info.disciplina"
-    
-    def valida_vagas(self, cr, uid, ids, context=None):
-        for disc in self.read(cr, uid, ids, ["monitor_s_bolsa", "tutor_s_bolsa"], context=context, load="_classic_write"):
-            if disc["monitor_s_bolsa"] == 0 and disc["tutor_s_bolsa"] == 0 or (disc["monitor_s_bolsa"] < 0 or disc["tutor_s_bolsa"] < 0):
-                return False
-        return True
-    
-    def valida_datas(self, cr, uid, ids, context=None):
-        for disc in self.browse(cr, uid, ids, context=context):
-            if datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT) > datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT):
-                return False
-        return True
-    
-    _columns = {
-        "monitor_s_bolsa": fields.integer(u"Vagas sem bolsa (Monitor)", required=True),
-        "tutor_s_bolsa": fields.integer(u"Vagas sem bolsa (Tutor)", required=True),
-        "solicitacao_id": fields.many2one("ud.monitoria.solicitacao", u"Solicitação", ondelete="cascade", required=True, invisible=True),
-    }
-    
-    _constraints = [
-        (valida_vagas, u"O número de vagas não podem ser negativos ou com os 2 campos igual a 0.", [u"Vagas para monitor e tutor"]),
-        (valida_datas, u"A data inicial não pode ocorrer depois da final", [u"Datas Inicial e Final"]),
-    ]
-    
-    def name_get(self, cr, uid, ids, context=None):
-        return [(disc.id, disc.disciplina_id.name) for disc in self.browse(cr, uid, ids, context=context)]
-    
-    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-        if not isinstance(args, (list, tuple)):
-            args = []
-        if not (name == '' and operator == 'ilike'):
-            disciplinas_ids = self.pool.get("ud.disciplina").search(cr, uid, [("name", operator, name)], context=context)
-            args += [("disciplina_id", "in", disciplinas_ids)]
-        ids = self.search(cr, uid, args, limit=limit, context=context)
-        return self.name_get(cr, uid, ids, context)
-    
-    def ativar(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {"is_active": True})
-    
-    def desativar(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {"is_active": False})
-    
-    def onchange_siape(self, cr, uid, ids, siape, context=None):
-        if siape:
-            perfil_model = self.pool.get("ud.perfil")
-            papel_id = perfil_model.search(cr, SUPERUSER_ID, [("matricula", "=", siape),
-                                                              ("tipo", "=", "p")], context=context)
-            if papel_id:
-                return {"value": {"orientador_id": perfil_model.read(cr, SUPERUSER_ID, papel_id[0], ["ud_papel_id"], context=context).get("ud_papel_id")}}
-        return {"value": {"orientador_id": False, "siape": False},
-                "warning": {"title": u"Alerta", "message": u"SIAPE informado inexistente."}}
-    
-    def onchange_curso(self, cr, uid, ids, curso_id, context=None):
-        if curso_id:
-            oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-            ofertas_ids = oferta_model.search(cr, uid, [("curso_id", "=", curso_id), ("em_oferta", "=", True)], context=context)
-            if ofertas_ids:
-                disc_ids = [oferta["disciplina_id"] for oferta in oferta_model.read(cr, uid, ofertas_ids, ["disciplina_id"], context=context, load="_classic_write")]
-                return {"value": {"disciplina_id": False},
-                        "domain": {"disciplina_id": [('id', 'in', disc_ids)]}}
-        return {"value": {"disciplina_id": False},
-                "domain": {"disciplina_id": [('id', '=', [])]}}
-    
-    def onchange_disciplina(self, cr, uid, ids, curso_id, disciplina_id, context=None):
-        if curso_id and disciplina_id:
-            oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-            ofertas_ids = oferta_model.search(cr, uid, [("curso_id", "=", curso_id), ("disciplina_id", "=", disciplina_id)], context=context)
-            if ofertas_ids:
-                return {"value": {"num_bolsas": oferta_model.read(cr, uid, ofertas_ids[0], ["bolsas_disponiveis"], context=context, load="_classic_write")["bolsas_disponiveis"]}}
-        return {"value": {"num_bolsas": 0}}
-
-
-class Solicitacao(osv.Model):
-    _name = "ud.monitoria.solicitacao"
-    _description = u"Solicitação de disciplinas para monitoria (UD)"
-    _order = "is_active desc,semestre_id desc"
-    
-    def get_ativo(self, cr, uid, ids, campo, args, context=None):
-        res = {}
-        for solicitacao in self.browse(cr, uid, ids, context=context):
-            ativo = False
-            for disc in solicitacao.disciplinas_ids:
-                ativo = ativo or disc.is_active
-            res[solicitacao.id] = ativo
-        return res
-    
-    def atualiza_ativo(self, cr, uid, ids, context=None):
-        return [disc.solicitacao_id.id for disc in self.browse(cr, uid, ids, context=context)]
-    
-    def solicitante(self, cr, uid, context=None):
-        """
-        Busca qual pessoa no núcleo está vinculada ao usuário atualmente logado.
-        
-        :param cr: Cursor do Banco de dados
-        :param uid: ID do Usuário logado
-        :type uid: Inteiro
-         
-        :return: Retorna o id de um registro de ud_employee ou False
-        """
-        ud_usuario_id = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
-        ud_usuario_id = ud_usuario_id or []
-        if len(ud_usuario_id) == 1:
-            return ud_usuario_id[0]
-        return False
-    
-    def valida_registro(self, cr, uid, ids, context=None):
-        for solicitacao in self.browse(cr, uid, ids, context=context):
-            if not solicitacao.semestre_id.is_active:
-                return False
-        return True
-    
-    def valida_disciplinas(self, cr, uid, ids, context=None):
-        discs = []
-        for solicitacao in self.browse(cr, uid, ids, context=context):
-            for disc in solicitacao.disciplinas_ids:
-                if disc.disciplina_id.id in discs:
-                    return False
-                else:
-                    discs.append(disc.disciplina_id.id)
-        return True
-    
-    _columns = {
-        "solicitante_id": fields.many2one("ud.employee", u"Solicitante", required=True, readonly=True, ondelete="restrict"),
-        "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, ondelete="cascade",
-                                       domain=[("is_active", "=", True)], help=u"Semestre ativos configurados no registro"),
-        "disciplinas_ids": fields.one2many("ud.monitoria.solicitacao.disciplina", "solicitacao_id", u"Disciplinas"),
-        "is_active": fields.function(get_ativo, type="boolean", string=u"Ativo", method=True,
-                                     store={"ud.monitoria.solicitacao.disciplina": (atualiza_ativo, ["is_active"], 10)}),
-    }
-    
-    _defaults = {
-        "solicitante_id": solicitante,
-        "is_active": True,
-    }
-    
-    _constraints = [
-        (valida_registro, u"O registro para semestre selecionado não está ativo!", [u"Semestre"]),
-        (valida_disciplinas, u"Não é permitido duplicar disciplinas em uma mesma Solicitação", [u"Disciplinas"]),
-    ]
-    
-    _rec_name = "semestre_id"
-    
-    def create(self, cr, user, vals, context=None):
-        if not vals.get("disciplinas_ids", False):
-            raise osv.except_osv(u"Disciplinas em falta", u"Não é permitido fazer solicitações sem informar ao menos uma disciplina")
-        return super(Solicitacao, self).create(cr, user, vals, context=context)
-    
-    def write(self, cr, user, ids, vals, context=None):
-        if "disciplinas_ids" in vals and not vals.get("disciplinas_ids", False):
-            raise osv.except_osv(u"Disciplinas em falta", u"Não é permitido fazer solicitações sem informar ao menos uma disciplina")
-        return super(Solicitacao, self).write(cr, user, ids, vals, context=context)
-    
-    def name_get(self, cr, uid, ids, context=None):
-        return [(solic.id, solic.semestre_id.semestre) for solic in self.browse(cr, uid, ids, context=context)]
-    
-    def ativar(self, cr, uid, ids, context=None):
-        disc_ids = []
-        for solic in self.read(cr, uid, ids, ["disciplinas_ids"], context=context, load="_classic_write"):
-            disc_ids += solic["disciplinas_ids"]
-        self.pool.get("ud.monitoria.solicitacao.disciplina").write(cr, uid, disc_ids, {"is_active": True})
-        return True
-    
-    def desativar(self, cr, uid, ids, context=None):
-        disc_ids = []
-        for solic in self.read(cr, uid, ids, ["disciplinas_ids"], context=context, load="_classic_write"):
-            disc_ids += solic["disciplinas_ids"]
-        self.pool.get("ud.monitoria.solicitacao.disciplina").write(cr, uid, disc_ids, {"is_active": False})
-        return True

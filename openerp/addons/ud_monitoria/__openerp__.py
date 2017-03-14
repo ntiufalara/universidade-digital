@@ -26,13 +26,7 @@
     "category": u"Gerência de Monitores",
     "description": u"""Módulo de Monitoria
 ===================
-Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.
-
-Recomendação:
--------------
-É altamente recomendável a instalação do módulo **web_m2x_options** para permitir que algumas funções não sejam acessadas de maneira indevida.
-Ele pode ser encontrado para a versão do OpenERP 7 no link: <https://apps.openerp.com/apps/modules/7.0/web_m2x_options/>
-""",
+Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.""",
     "author": u"Cloves Oliveira",
     "data": [
         # Dados Iniciais
@@ -41,18 +35,18 @@ Ele pode ser encontrado para a versão do OpenERP 7 no link: <https://apps.opene
         "security/ir.model.access.csv",
         # Wizards
         "wizards/alteracao_bolsas_wizard_view.xml",
-        "wizards/anexos_wizard_view.xml",
         "wizards/inscricao_wizard_view.xml",
+        "wizards/desligamento_wizard_view.xml",
+        "wizards/relatorio_wizard_view.xml",
         # Views
         "views/adicional_view.xml",
         "views/registro_view.xml",
         "views/processo_seletivo_view.xml",
-        "views/pessoa_view.xml",
         "views/documentos_discente_view.xml",
         "views/documentos_orientador_view.xml",
         "views/menus_view.xml",
     ],
-    "depends": ["base", "ud", "ud_documentos"],
+    "depends": ["base", "web_m2x_options", "ud", "ud_documentos"],
 
     "js": [
         "static/src/js/ud_monitoria.js",
@@ -63,11 +57,7 @@ Ele pode ser encontrado para a versão do OpenERP 7 no link: <https://apps.opene
     "installable": True,
     "auto_install": False,
     "application": True,
-    "update_xml": [
-        # "security/ud_monitoria_security.xml",
-        # "ud_monitoria_adicional_view.xml",
-        # "ud_monitoria_processo_seletivo_view.xml",
-    ],
+    "update_xml": [],
     "test": [
         "test/ud_monitoria_test.yml",
     ],

@@ -1,6 +1,9 @@
 # coding: utf-8
 from openerp import SUPERUSER_ID
 from openerp.osv import osv, fields
+from openerp.addons.ud.ud import _TIPOS_BOLSA
+
+TIPOS_BOLSA = dict(_TIPOS_BOLSA)
 
 
 def get_banco(cls, cr, browse_record, usuario_id, context=None):
@@ -54,7 +57,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
     _columns = {
         "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, readonly=True),
         "curso_id": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
-        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
+        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
                                          domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id), "
                                                 "('is_active', '=', True)]"),
         "bolsas": fields.function(_bolsas, type="integer", string=u"Bolsas disponíveis",
@@ -139,11 +142,6 @@ class AdicionarBolsaWizard(osv.TransientModel):
                           "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}}
 
     def botao_adicionar(self, cr, uid, ids, context=None):
-        tipos_bolsas = {
-            "per": u"Permanência", "pai": u"Painter", "pibic": u"PIBIC-CNPq",
-            "pibip": u"PIBIB-Ação", "pibit": u"PIBIT-CNPq", "aux": u"Auxílio Alimentação",
-            "aux_t": u"Auxílio Transporte", "bdi": u"BDI",
-            "bdai": u"BDAI", "pibid": u"PIBID", "m": u"Monitoria"}
         perfil_model = self.pool.get("ud.perfil")
         for add in self.browse(cr, uid, ids, context):
             if add.bolsas == 0:
@@ -158,7 +156,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
                         raise osv.except_osv(
                             u"Discente bolsista",
                             u"O discente \"{}\" sob matrícula \"{}\" possui bolsa do tipo: \"{}\"".format(
-                                add.doc_discente_id.discente_id.pessoa_id.name, matricula, tipos_bolsas[perfil.tipo_bolsa]
+                                add.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
                             )
                         )
                     break
@@ -181,7 +179,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
             perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
                 "is_bolsista": True, "tipo_bolsa": "m", "valor_bolsa": ("%.2f" % add.valor_bolsa).replace(".", ",")
             })
-            add.doc_discente_id.write({"state": "bolsista"})
+            add.doc_discente_id.write({"state": "bolsista", "is_active": True})
             get_banco(self, cr, add, add.doc_discente_id.discente_id.pessoa_id.id, context)
             evento = {
                 "responsavel_id": responsavel[0],
@@ -209,7 +207,7 @@ class TransferirBolsaWizard(osv.TransientModel):
         "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, readonly=True),
 
         "curso_id_de": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
-        "disciplina_id_de": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
+        "disciplina_id_de": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
                                          domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_de), "
                                                 "('is_active', '=', True)]"),
         "tutor_de": fields.boolean(u"Tutor?"),
@@ -218,7 +216,7 @@ class TransferirBolsaWizard(osv.TransientModel):
                                                      "('disciplina_id', '=', disciplina_id_de), ('tutor', '=', tutor_de)]"),
 
         "curso_id_para": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
-        "disciplina_id_para": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
+        "disciplina_id_para": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
                                          domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_para), "
                                                 "('is_active', '=', True)]"),
         "tutor_para": fields.boolean(u"Tutor?"),
@@ -294,11 +292,6 @@ class TransferirBolsaWizard(osv.TransientModel):
                           "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}}
 
     def botao_transferir(self, cr, uid, ids, context=None):
-        tipos_bolsas = {
-            "per": u"Permanência", "pai": u"Painter", "pibic": u"PIBIC-CNPq",
-            "pibip": u"PIBIB-Ação", "pibit": u"PIBIT-CNPq", "aux": u"Auxílio Alimentação",
-            "aux_t": u"Auxílio Transporte", "bdi": u"BDI",
-            "bdai": u"BDAI", "pibid": u"PIBID", "m": u"Monitoria"}
         perfil_model = self.pool.get("ud.perfil")
         for transf in self.browse(cr, uid, ids, context):
             matricula = transf.doc_discente_id_para.discente_id.matricula
@@ -309,7 +302,7 @@ class TransferirBolsaWizard(osv.TransientModel):
                             u"Discente bolsista",
                             u"O discente \"{}\" sob matrícula \"{}\" possui bolsa do tipo: \"{}\"".format(
                                 transf.doc_discente_id_para.discente_id.pessoa_id.name, matricula,
-                                tipos_bolsas[perfil.tipo_bolsa]
+                                TIPOS_BOLSA[perfil.tipo_bolsa]
                             )
                         )
                     break
@@ -341,7 +334,7 @@ class TransferirBolsaWizard(osv.TransientModel):
                 "is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False
             })
             transf.doc_discente_id_de.write({"state": "n_bolsista"})
-            transf.doc_discente_id_para.write({"state": "bolsista"})
+            transf.doc_discente_id_para.write({"state": "bolsista", "is_active": True})
             get_banco(self, cr, transf, transf.doc_discente_id_para.discente_id.pessoa_id.id, context)
             evento = {
                 "responsavel_id": responsavel[0],
@@ -368,7 +361,7 @@ class RemoverBolsaWizard(osv.TransientModel):
     _columns = {
         "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, readonly=True),
         "curso_id": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
-        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
+        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
                                          domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id), "
                                                 "('is_active', '=', True)]"),
         "tutor": fields.boolean(u"Tutor?"),
@@ -416,11 +409,6 @@ class RemoverBolsaWizard(osv.TransientModel):
         return {"value": {"doc_discente_id": False}}
 
     def botao_remover(self, cr, uid, ids, context=None):
-        tipos_bolsas = {
-            "per": u"Permanência", "pai": u"Painter", "pibic": u"PIBIC-CNPq",
-            "pibip": u"PIBIB-Ação", "pibit": u"PIBIT-CNPq", "aux": u"Auxílio Alimentação",
-            "aux_t": u"Auxílio Transporte", "bdi": u"BDI",
-            "bdai": u"BDAI", "pibid": u"PIBID", "m": u"Monitoria"}
         perfil_model = self.pool.get("ud.perfil")
         pessoa_model = self.pool.get("ud.employee")
         for rem in self.browse(cr, uid, ids, context):
@@ -432,7 +420,7 @@ class RemoverBolsaWizard(osv.TransientModel):
                             u"Categoria de bolsa",
                             u"A categoria de bolsa do discente \"{}\" sob matrícula \"{}\" não é pertencente à "
                             u"monitoria: \"{}\"".format(
-                                rem.doc_discente_id.discente_id.pessoa_id.name, matricula, tipos_bolsas[perfil.tipo_bolsa]
+                                rem.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
                             )
                         )
                     break

@@ -72,9 +72,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Orientador" version="7.0">
+                    <field name="id" invisible="1"/>
                     <field name="tipo" invisible="1"/>
                     <group col="4">
-                        <field name="matricula" colspan="2" on_change="onchange_matricula_tipo(matricula,'p')"/>
+                        <field name="matricula" colspan="2" on_change="onchange_matricula_tipo(matricula,'p')"
+                               attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="pessoa_id" colspan="2" string="Orientador"
                                context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
                         <field name="email" colspan="4" attrs="{'invisible': [('email', '=', False)]}"/>

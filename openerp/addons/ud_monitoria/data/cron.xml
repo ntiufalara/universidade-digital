@@ -15,7 +15,6 @@
             <field name="function">atualiza_status_cron</field>
         </record>
 
-
         <record id="ud_monitoria_disciplina_validade_cron" model="ir.cron">
             <field name="name">Atualiza o status das disciplinas de monitoria (UD)</field>
             <field name="interval_number">1</field>

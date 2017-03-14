@@ -1,5 +1,5 @@
 # coding: utf-8
-from datetime import datetime
+from datetime import datetime, timedelta
 from re import compile, IGNORECASE
 from openerp import SUPERUSER_ID
 from openerp.osv import osv, fields, orm
@@ -19,177 +19,10 @@ regex_espacos = compile("\s+")
 class DocumentosDiscente(osv.Model):
     _name = "ud.monitoria.documentos.discente"
     _description = u"Documentos de monitoria do discente (UD)"
-    _order = "is_active desc, state, tutor"
+    _order = "is_active desc, disciplina_id, state, tutor"  # TODO: Verificar essa ordenação
 
-    _STATES = [
-        ("bolsista", u"Bolsista"),
-        ("n_bolsista", u"Não Bolsista"),
-        ("reserva", u"Cadastro de Reserva"),
-    ]
-
-    def status_relatorios(self, cr, uid, ids, campo, args, context=None):
-        res = {}.fromkeys(ids, False)
-        for doc in self.browse(cr, uid, ids, context):
-            for rel in doc.relatorio_ids:
-                if rel.state == "aceito":
-                    res[doc.id] = True
-        return res
-
-    def frequencia_controle(self, cr, uid, ids, campo, args, context=None):
-        res = {}
-        for doc in self.browse(cr, SUPERUSER_ID, ids, context):
-            data = datetime.strptime(doc.disciplina_id.semestre_id.data_i_frequencia, DEFAULT_SERVER_DATE_FORMAT).date()
-            intervalo_fim = data.fromordinal(data.toordinal() + doc.disciplina_id.semestre_id.intervalo_frequencia)
-            hoje = datetime.strptime(fields.date.context_today(self, cr, uid, context), DEFAULT_SERVER_DATE_FORMAT).date()
-            res[doc.id] = data <= hoje <= intervalo_fim
-        return res
-
-    def horas_alteradas(self, cr, uid, ids, context=None):
-        return [
-            h.documento_id.id for h in self.browse(cr, uid, ids, context)
-            ]
-
-    def valida_vagas_bolsista(self, cr, uid, ids, context=None):
-        for doc in self.browse(cr, uid, ids, context):
-            if doc.is_active and doc.state == "bolsista":
-                for disc in doc.inscricao_id.disciplinas_ids:
-                    if disc.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
-                        if len(doc.disciplina_id.bolsista_ids) > disc.num_bolsas:
-                            return False
-                        break
-        return True
-
-    def valida_vagas_n_bolsista(self, cr, uid, ids, context=None):
-        for doc in self.browse(cr, uid, ids, context):
-            if doc.is_active and doc.state == "n_bolsista":
-                    for disc in doc.inscricao_id.disciplinas_ids:
-                        if disc.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
-                            if doc.inscricao_id.modalidade == "tutor":
-                                a = doc.disciplina_id.n_bolsista_ids
-                                a = len(doc.disciplina_id.n_bolsista_ids)
-                                b = disc.tutor_s_bolsa
-                                if len(doc.disciplina_id.n_bolsista_ids) > disc.tutor_s_bolsa:
-                                    return False
-                            else:
-                                a = doc.disciplina_id.n_bolsista_ids
-                                a = len(doc.disciplina_id.n_bolsista_ids)
-                                b = disc.tutor_s_bolsa
-                                if len(doc.disciplina_id.n_bolsista_ids) > disc.monitor_s_bolsa:
-                                    return False
-                            break
-        return True
-
-    _columns = {
-        "inscricao_id": fields.many2one("ud.monitoria.inscricao", u"Inscrição", required=True, ondelete="restrict"),
-        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True, ondelete="restrict"),
-        "discente_id": fields.many2one("ud.monitoria.discente", u"Discente", required=True, ondelete="cascade"),
-        "orientador_id": fields.related("disciplina_id", "orientador_id", type="many2one", relation="ud.employee", string=u"Orientador"),
-        "tutor": fields.boolean(u"Tutor?", help=u"Indica se o discente é um tutor, caso contrário, ele é um monitor"),
-        "frequencia_ids": fields.one2many("ud.monitoria.frequencia", "documentos_id", u"Frequências"),
-        "frequencia_controle": fields.function(frequencia_controle, type="boolean", string=u"Controle"),
-        "declaracao_nome": fields.char(u"Nome Declaração"),
-        "declaracao": fields.binary(u"Declaração"),
-        "certificado_nome": fields.char(u"Nome Certificado"),
-        "certificado": fields.binary(u"Certificado"),
-        "relatorio_ids": fields.one2many("ud.monitoria.relatorio", "documentos_id", u"Relatórios"),
-        "relatorios_ok": fields.function(status_relatorios, type="boolean", string=u"Status dos Relatórios",
-                                         # store=False),
-                                         store={"ud.monitoria.documentos.discente": (lambda *args, **kwargs: args[3],
-                                                                                     ["relatorio_ids"], 10)}),
-        "horario_ids": fields.one2many("ud.monitoria.horario", "documento_id", u"Horários"),
-        "state": fields.selection(_STATES, u"Status", required=True),
-        "is_active": fields.boolean("Ativo?"),
-        "ch": fields.function(
-            lambda cls, *args, **kwargs: cls.calcula_ch(*args, **kwargs), type="char", string=u"Carga horária",
-            help=u"Carga horária total", store={
-                "ud.monitoria.horario": (
-                    horas_alteradas, ["hora_i", "hora_f"], 10
-                ),
-                "ud.monitoria.documentos.discente": (
-                    lambda cls, cr, uid, ids, context=None: ids, ["hora_i", "hora_f"], 10
-                ),
-
-            }),
-    }
-
-    _defaults = {
-        "is_active": True,
-    }
-
-    _sql_constraints = [
-        ("disciplina_discente_unico", "unique(disciplina_id,discente_id)",
-         u"Não é permitido vincular a mesma disciplina de um semestre para o mesmo discente.")
-    ]
-
-    _constraints = [
-        (valida_vagas_bolsista, u"Não há vagas para adicionar o discente como bolsista.", [u"Disciplina"]),
-        (valida_vagas_n_bolsista, u"Não há vagas disponíveis para adicionar o discente como NÃO bolsista.", [u"Disciplina"])
-    ]
-
-    def name_get(self, cr, uid, ids, context=None):
-        return [
-            (doc["id"], doc["discente_id"][1])
-            for doc in self.read(cr, uid, ids, ["discente_id"], context=context)
-            ]
-
-    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-        pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("name", operator, name)], context=context)
-        discentes = self.pool.get("ud.monitoria.discente").search(
-            cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("pessoa_id", "in", pessoas)], context=context
-        )
-        args = [("discente_id", "in", discentes)] + (args or [])
-        ids = self.search(cr, uid, args, limit=limit, context=context)
-        return self.name_get(cr, uid, ids, context)
-
-    def create(self, cr, uid, vals, context=None):
-        res = super(DocumentosDiscente, self).create(cr, uid, vals, context)
-        self.get_create_relatorio_fim(cr, SUPERUSER_ID, res, context)
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        if "frequencia_ids" in vals:
-            meses = set()
-            for freq in vals["frequencia_ids"]:
-                if freq[0] == 0:
-                    meses.add(freq[2].get("mes", None))
-            try:
-                meses.remove(None)
-            except KeyError: pass
-            if meses:
-                relatorio_fim_model = self.pool.get("ud.monitoria.relatorio.final.disc")
-                relatorio_fim = relatorio_fim_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", ids)])
-                relatorio_fim_model.add_meses(cr, SUPERUSER_ID, relatorio_fim, meses, context)
-        return super(DocumentosDiscente, self).write(cr, uid, ids, vals, context)
-
-    def unlink(self, cr, uid, ids, context=None):
-        perfil_model = self.pool.get("ud.perfil")
-        for doc in self.browse(cr, uid, ids, context):
-            if doc.state == "bolsista" and doc.is_active:
-                args = [("matricula", "=", doc.discente_id.matricula), ("tipo", "=", doc.discente_id.tipo),
-                        ("is_bolsista", "=", True), ("tipo_bolsa", "=", "m")]
-                perfis = perfil_model.search(cr, SUPERUSER_ID, args, context=context)
-                if perfis:
-                    perfil_model.write(cr, SUPERUSER_ID, perfis, {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False}, context)
-        return super(DocumentosDiscente, self).unlink(cr, uid, ids, context)
-
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        context = context or {}
-        if context.get("filtrar_discente", False):
-            employee = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
-            if not employee:
-                return []
-            discentes = self.pool.get("ud.monitoria.discente").search(cr, SUPERUSER_ID, [("pessoa_id", "in", employee)])
-            if not discentes:
-                return []
-            args = (args or []) + [("discente_id", "=", discentes[0])]
-        return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
-
-    def get_create_relatorio_fim(self, cr, uid, id_doc, context):
-        rel_model = self.pool.get("ud.monitoria.relatorio.final.disc")
-        rel_id = rel_model.search(cr, uid, [("doc_discente_id", "=", id_doc)], context=context)
-        if rel_id:
-            return rel_id[0]
-        return rel_model.create(cr, uid, {"doc_discente_id": id_doc}, context)
+    _STATES = [("reserva", u"Cadastro de Reserva"), ("n_bolsista", u"Não Bolsista"),
+               ("bolsista", u"Bolsista"), ("desligado", u"Desligado(a)")]
 
     def calcula_ch(self, cr, uid, ids, campo, args, context=None):
         def converte(dt):
@@ -213,6 +46,220 @@ class DocumentosDiscente(osv.Model):
                 tempo[1] and "%i minuto%s" % (tempo[1], "s" if tempo[1] > 1 else "") or "",
             )
         return res
+
+    def status_relatorios(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        for doc in self.browse(cr, uid, ids, context):
+            for rel in doc.relatorio_ids:
+                if rel.state == "aceito":
+                    res[doc.id] = True
+                    break
+        return res
+
+    def frequencia_controle(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        hoje = datetime.utcnow().date()
+        for doc in self.browse(cr, SUPERUSER_ID, ids, context):
+            data = datetime.strptime(doc.disciplina_id.semestre_id.data_i_frequencia, DEFAULT_SERVER_DATE_FORMAT).date()
+            res[doc.id] = data <= hoje <= (data + timedelta(doc.disciplina_id.semestre_id.intervalo_frequencia))
+        return res
+
+    def horas_alteradas(self, cr, uid, ids, context=None):
+        return [
+            h.documento_id.id for h in self.browse(cr, uid, ids, context)
+            ]
+
+    def valida_vagas_bolsista(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and doc.state == "bolsista":
+                args = [("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True), ("state", "=", "bolsista")]
+                discentes = self.search_count(cr, uid, args, context=context)
+                for pont in doc.inscricao_id.pontuacoes_ids:
+                    if pont.disciplina_id.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
+                        if discentes > pont.disciplina_id.bolsas:
+                            return False
+                        break
+        return True
+
+    def valida_vagas_n_bolsista(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and doc.state == "n_bolsista":
+                args = [("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True), ("state", "=", "n_bolsista")]
+                monitores = self.search_count(cr, uid, args + [("tutor", "=", False)], context=context)
+                tutores = self.search_count(cr, uid, args + [("tutor", "=", True)], context=context)
+                for pont in doc.inscricao_id.pontuacoes_ids:
+                    if pont.disciplina_id.disciplina_id.id == doc.disciplina_id.disciplina_id.id:
+                        if doc.tutor and tutores > pont.disciplina_id.tutor_s_bolsa or monitores > pont.disciplina_id.monitor_s_bolsa:
+                            return False
+                        break
+        return True
+
+    _columns = {
+        "inscricao_id": fields.many2one("ud.monitoria.inscricao", u"Inscrição", required=True, ondelete="restrict"),
+        "discente_id": fields.related("inscricao_id", "discente_id", type="many2one", relation="ud.employee", readonly=True, string=u"Discente"),
+        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True, ondelete="restrict"),
+        "orientador_id": fields.related("disciplina_id", "orientador_id", type="many2one", relation="ud.employee", string=u"Orientador"),
+        "tutor": fields.boolean(u"Tutor?", help=u"Indica se o discente é um tutor, caso contrário, ele é um monitor"),
+        "frequencia_ids": fields.one2many("ud.monitoria.frequencia", "documentos_id", u"Frequências"),
+        "declaracao": fields.binary(u"Declaração"),
+        "certificado": fields.binary(u"Certificado"),
+        "relatorio_ids": fields.one2many("ud.monitoria.relatorio", "documentos_id", u"Relatórios"),
+        "horario_ids": fields.one2many("ud.monitoria.horario", "documento_id", u"Horários"),
+        "state": fields.selection(_STATES, u"Status", required=True),
+        "is_active": fields.boolean("Ativo?"),
+        "ch": fields.function(calcula_ch, type="char", string=u"Carga horária", help=u"Carga horária total", store={
+            "ud.monitoria.horario": (horas_alteradas, ["hora_i", "hora_f"], 10),
+            "ud.monitoria.documentos.discente": (lambda *args, **kwargs: args[3], ["hora_i", "hora_f"], 10),
+        }),
+        # Campos de Controle
+        "frequencia_controle": fields.function(frequencia_controle, type="boolean", string=u"Controle"),
+        "certificado_nome": fields.char(u"Nome Certificado"),
+        "declaracao_nome": fields.char(u"Nome Declaração"),
+        "relatorios_ok": fields.function(status_relatorios, type="boolean", string=u"Status dos Relatórios"),
+    }
+
+    _defaults = {
+        "is_active": True,
+    }
+
+    _sql_constraints = [
+        ("disciplina_discente_unico", "unique(disciplina_id,discente_id)",
+         u"Não é permitido vincular a mesma disciplina de um semestre para o mesmo discente.")
+    ]
+
+    _constraints = [
+        (valida_vagas_bolsista, u"Não há vagas para adicionar o discente como bolsista.", [u"Disciplinas"]),
+        (valida_vagas_n_bolsista, u"Não há vagas disponíveis para adicionar o discente como NÃO bolsista.", [u"Disciplinas"])
+    ]
+
+    def name_get(self, cr, uid, ids, context=None):
+        return [
+            (doc["id"], doc["discente_id"][1])
+            for doc in self.read(cr, uid, ids, ["discente_id"], context=context)
+            ]
+
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("name", operator, name)], context=context)
+        discentes = self.pool.get("ud.monitoria.discente").search(
+            cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("pessoa_id", "in", pessoas)], context=context
+        )
+        args = [("discente_id", "in", discentes)] + (args or [])
+        ids = self.search(cr, uid, args, limit=limit, context=context)
+        return self.name_get(cr, uid, ids, context)
+
+    def create(self, cr, uid, vals, context=None):
+        res = super(DocumentosDiscente, self).create(cr, uid, vals, context)
+        self.get_create_relatorio_fim(cr, SUPERUSER_ID, res, context)
+        self.add_grupo_monitor(cr, uid, res, context)
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if "frequencia_ids" in vals:
+            meses = set()
+            for freq in vals["frequencia_ids"]:
+                if freq[0] == 0:
+                    meses.add(freq[2].get("mes", None))
+            try:
+                meses.remove(None)
+            except KeyError: pass
+            if meses:
+                relatorio_fim_model = self.pool.get("ud.monitoria.relatorio.final.disc")
+                relatorio_fim = relatorio_fim_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", ids)])
+                relatorio_fim_model.add_meses(cr, SUPERUSER_ID, relatorio_fim, meses, context)
+        super(DocumentosDiscente, self).write(cr, uid, ids, vals, context)
+        self.add_grupo_monitor(cr, uid, ids, vals, context)
+        return True
+
+    def unlink(self, cr, uid, ids, context=None):
+        perfil_model = self.pool.get("ud.perfil")
+        perfis = []
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.state == "bolsista" and doc.is_active and doc.inscricao_id.perfil_id.tipo_bolsa == "m":
+                perfis.append(doc.inscricao_id.perfil_id.id)
+        self.remove_grupo_monitor(cr, uid, ids, context)
+        super(DocumentosDiscente, self).unlink(cr, uid, ids, context)
+        if perfis:
+            perfil_model.write(cr, SUPERUSER_ID, perfis,
+                               {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False}, context)
+        return True
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if (context or {}).get("filtrar_discente", False):
+            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
+            if not pessoas:
+                return []
+            perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "in", pessoas)], context=context)
+            inscricoes = self.pool.get("ud.monitoria.inscricao").search(cr, uid, [("perfil_id", "in", perfis)], context=context)
+            args = (args or []) + [("inscricao_id", "in", inscricoes)]
+        return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
+
+    def add_grupo_monitor(self, cr, uid, ids, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        group = self.pool.get("ir.model.data").get_object(
+            cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_monitor", context
+        )
+        for doc in self.browse(cr, uid, ids, context):
+            if not doc.orientador_id.user_id:
+                raise osv.except_osv(
+                    "Usuário não encontrado",
+                    "O registro no núcleo do atual discente não possui login de usuário.")
+            group.write({"users": [(4, doc.orientador_id.user_id.id)]})
+
+    def remove_grupo_monitor(self, cr, uid, ids, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        group = self.pool.get("ir.model.data").get_object(
+            cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_monitor", context
+        )
+        disciplina_model = self.pool.get("ud.monitoria.disciplina")
+        continua = []
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.orientador_id.id not in continua:
+                perfis = [p.id for p in doc.orientador_id.papel_ids]
+                if disciplina_model.search_count(cr, uid, [("perfil_id", "in", perfis)], context) > 1:
+                    continua.append(doc.orientador_id.id)
+                else:
+                    if not doc.orientador_id.user_id:
+                        raise osv.except_osv(
+                            "Usuário não encontrado",
+                            "O registro no núcleo do atual discente não possui login de usuário.")
+                    group.write({"users": [(3, doc.orientador_id.user_id.id)]})
+
+    def get_create_relatorio_fim(self, cr, uid, id_doc, context):
+        rel_model = self.pool.get("ud.monitoria.relatorio.final.disc")
+        rel_id = rel_model.search(cr, uid, [("doc_discente_id", "=", id_doc)], context=context)
+        if rel_id:
+            return rel_id[0]
+        return rel_model.create(cr, uid, {"doc_discente_id": id_doc}, context)
+
+    def finalizar(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.disciplina_id.is_active:
+                raise osv.except_osv(u"Ação Indisponível",
+                                     u"O documento não pode ser finalizando enquanto a data da disciplina estiver em vigor")
+            if doc.is_active:
+                freqs = {}
+                if len(doc.frequencia_ids) == 0:
+                    raise osv.except_osv(
+                        u"Ação Indisponível",
+                        u"Não é possível finalizar o documento enquanto não houver ao menos uma frequência."
+                    )
+                if len(doc.relatorio_ids) == 0:
+                    raise osv.except_osv(
+                        u"Ação Indisponível",
+                        u"Não é possível finalizar o documento enquanto não houver ao menos um relatório."
+                    )
+                for freq in doc.frequencia_ids:
+                    if freq.state == "analise":
+                        raise osv.except_osv(u"Ação Indisponível", u"Você não pode finalizar documentos enquanto houver"
+                                                                   u" frequências em análise.")
+                    freqs[freq.mes] = freqs[freq.mes] or freq.state == "aceito"
+                if not all(freqs.values()):
+                    raise osv.except_osv(u"Ação Indisponível", u"Você não pode finalizar documentos enquanto não houver"
+                                                               u" ao menos uma frequência aceita para cada mês")
+        self.write(cr, uid, ids, {"is_active": False})
+        return True
 
 
 class Horario(osv.Model):
@@ -335,7 +382,7 @@ class Relatorio(osv.Model):
         "parecer_nome": fields.char(u"Nome Parecer", help=u"Parecer do Professor Orientador"),
         "parecer": fields.binary(u"Parecer", help=u"Parecer do Professor Orientador"),
         "state": fields.selection(_STATES, u"Status"),
-        "info": fields.html(u"Informações", help=u"Informações Adicionais"),
+        "info": fields.text(u"Informações", help=u"Informações Adicionais"),
         "create_date": fields.datetime(u"Data de Criação", readonly=True),
         "write_date": fields.datetime(u"Data de Atualização", readonly=True),
         "documentos_id": fields.many2one("ud.monitoria.documentos.discente", u"Documentos", ondelete="cascade",
@@ -410,8 +457,25 @@ class Frequencia(osv.Model):
         "frequencia": fields.binary(u"Frequência", required=True),
         "frequencia_nome": fields.char(u"Nome da Frequência"),
         "documentos_id": fields.many2one("ud.monitoria.documentos.discente", u"Documentos", ondelete="cascade",
-                                        help=u"Documentos de um Discente", invisible=True),
+                                         help=u"Documentos de um Discente", invisible=True),
     }
+
+    def valida_fequencia(self, cr, uid, ids, context=None):
+        for freq in self.browse(cr, uid, ids, context):
+            analise, aceita = 0, 0
+            for f in freq.documentos_id.frequencia_ids:
+                if freq.mes == f.mes:
+                    if f.state == "analise":
+                        analise += 1
+                    elif f.state == "aceito":
+                        aceita += 1
+            if analise and aceita or analise > 1 or aceita > 1:
+                return False
+        return True
+
+    _constraints = [
+        (valida_fequencia, u"Não é possível criar novas frequências para meses que já possua outros registros em análise ou aceitos.", [u"Mês"]),
+    ]
 
     def create(self, cr, uid, vals, context=None):
         vals["state"] = "analise"
@@ -422,4 +486,3 @@ class Frequencia(osv.Model):
 
     def botao_rejeitar(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {"state": "rejeitado"}, context)
-

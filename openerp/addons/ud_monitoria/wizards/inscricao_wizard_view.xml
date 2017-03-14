@@ -3,15 +3,6 @@
 <openerp>
     <data>
         <!-- INSCRIÇÃO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_minhas_inscricoes_tree_view">
-            <field name="name">Minhas Inscrições</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.inscricao</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'filtrar_discente': True}</field>
-        </record>
-
         <record model="ir.actions.act_window" id="action_ud_monitoria_inscricao_wizard_form_view">
             <field name="name">Inscrição</field>
             <field name="type">ir.actions.act_window</field>
@@ -32,11 +23,11 @@
                         <field name="nome_cpf"/>
                         <field name="nome_identidade"/>
                         <field name="nome_hist_analitico"/>
-                        <field name="perfil_id"/>
                         <field name="controle"/>
                     </group>
                     <group string="Dados Pessoais" col="4">
-                        <field name="matricula" on_change="onchange_matricula(matricula,bolsista)" colspan="2"/>
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id,bolsista)" colspan="2"
+                                options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
                         <field name="discente_id" colspan="2" options="{'no_open': true}"/>
                         <field name="celular" colspan="2" class="telefone" required="1"
                                attrs="{'invisible': [('controle', 'not in', ['c', 'ce'])], 'required': [('celular', '=', False)]}"/>
@@ -49,11 +40,11 @@
                         <field name="hist_analitico" filename="nome_hist_analitico" colspan="4"/>
                     </group>
                     <group string="Inscrição" col="4">
-                        <field name="processo_seletivo_id" on_change="onchange_processo_seletivo(processo_seletivo_id)" options="{'no_open': true}"
+                        <field name="processo_seletivo_id" on_change="onchange_processo_seletivo()" options="{'no_open': true}"
                                readonly="context.get('active_model', False) == 'ud.monitoria.processo.seletivo' and context.get('active_id', False)"/>
                         <field name="modalidade" on_change="onchange_mod_disc(modalidade,disciplinas_ids)"/>
                         <field name="turno"/>
-                        <field name="bolsista" on_change="onchange_bolsista(matricula,discente_id,bolsista)"/>
+                        <field name="bolsista" on_change="onchange_bolsista(perfil_id,discente_id,bolsista)"/>
                     </group>
                     <group string="Dados Bancários" attrs="{'invisible': [('bolsista', '=', False)]}" col="4">
                         <field name="banco_id" on_change="onchange_banco(banco_id)" options="{'no_open': true}"
@@ -87,7 +78,7 @@
                             <field name="operacao_v"/>
                         </group>
                     </group>
-                    <group string="Disciplina(s)" attrs="{'invisible': [('processo_seletivo_id', '=', False)]}" col="4">
+                    <group string="Disciplinas(s)" attrs="{'invisible': [('processo_seletivo_id', '=', False)]}" col="4">
                         <field name="disciplinas_ids" nolabel="1"  widget="many2many_tags"
                                on_change="onchange_mod_disc(modalidade,disciplinas_ids)"
                                options="{'create_edit': false, 'create': false}" colspan="4"/>

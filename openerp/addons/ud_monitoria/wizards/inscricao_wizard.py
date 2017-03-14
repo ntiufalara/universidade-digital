@@ -18,8 +18,8 @@ class InscricaoWizard(osv.TransientModel):
     _TURNO = [("m", u"Matutino"), ("v", u"Vespertino"), ("n", u"Noturno")]
     
     _columns = {
-        "matricula": fields.char(u"Matrícula", size=15, required=True),
-        "perfil_id": fields.many2one("ud.perfil", u"Perfil", ondelete="cascade", domain=[("id", "=", False)]),
+        "matricula": fields.char(u"Matrícula", size=15),
+        "perfil_id": fields.many2one("ud.perfil", u"Perfil", ondelete="cascade", domain=[("tipo", "=", "a")], required=True),
         "discente_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                       string=u"Discente", readonly=True),
         "celular": fields.char(u"Celular", size=32),
@@ -37,7 +37,7 @@ class InscricaoWizard(osv.TransientModel):
         "modalidade": fields.selection(_MODALIDADE, u"Modalidade", required=True),
         "turno": fields.selection(_TURNO, u"Turno", required=True),
         "bolsista": fields.boolean(u"Bolsista"),
-        "disciplinas_ids": fields.many2many("ud.monitoria.ps.disciplina", "ud_monitoria_disc_inscricao_wizard_rel",
+        "disciplinas_ids": fields.many2many("ud.monitoria.disciplina", "ud_monitoria_disciplina_inscricao_wizard_rel",
                                             "inscricao_id", "disciplina_id", string=u"Disciplinas", required=True,
                                             domain="[('processo_seletivo_id', '=', processo_seletivo_id)]"),
         # DADOS BANCÁRIOS
@@ -63,45 +63,33 @@ class InscricaoWizard(osv.TransientModel):
                 res["processo_seletivo_id"] = context.get("active_id")
         return res
     
-    def onchange_matricula(self, cr, uid, ids, matricula, bolsista, context=None):
+    def onchange_perfil(self, cr, uid, ids, perfil_id, bolsista, context=None):
         res = {}
-        if matricula:
+        if perfil_id:
             perfil_model = self.pool.get("ud.perfil")
-            papel_id = perfil_model.search(cr, uid, [("matricula", "=", matricula),
-                                                              ("tipo", "=", "a")], context=context)
-            if papel_id:
-                perfil = perfil_model.browse(cr, uid, papel_id[0], context=context)
-                res = {"value": {"perfil_id": papel_id[0], "discente_id": perfil.ud_papel_id.id,
-                                 "celular": perfil.ud_papel_id.mobile_phone, "email": perfil.ud_papel_id.work_email,
-                                 "controle": ""}}
-                if not perfil.ud_papel_id.mobile_phone:
-                    res["value"]["controle"] += "c"
-                if not perfil.ud_papel_id.work_email:
-                    res["value"]["controle"] += "e"
-                if bolsista:
-                    if perfil.is_bolsista:
+            perfil = perfil_model.browse(cr, uid, perfil_id, context=context)
+            res = {"value": {"discente_id": perfil.ud_papel_id.id, "celular": perfil.ud_papel_id.mobile_phone,
+                             "email": perfil.ud_papel_id.work_email, "controle": ""}}
+            if not perfil.ud_papel_id.mobile_phone:
+                res["value"]["controle"] += "c"
+            if not perfil.ud_papel_id.work_email:
+                res["value"]["controle"] += "e"
+            if bolsista:
+                if perfil.is_bolsista:
                         res["value"]["bolsista"] = False
                         res["warning"] = {
                             "title": u"Discente bolsista",
                             "message": u"Não é permitido fazer inscrição de discentes registrados como bolsista."
                         }
-            else:
-                res = {"value": {"matricula": False, "perfil_id": False, "discente_id": False,
-                                 "celular": False, "email": False, "controle": ""},
-                       "warning": {"title": u"Alerta",
-                                   "message": u"Matrícula inexistente."}}
         return res
     
-    def onchange_bolsista(self, cr, uid, ids, matricula, discente_id, bolsista, context=None):
-        if matricula and discente_id and bolsista:
+    def onchange_bolsista(self, cr, uid, ids, perfil_id, discente_id, bolsista, context=None):
+        if perfil_id and discente_id and bolsista:
             perfil_model = self.pool.get("ud.perfil")
-            perfil_id = perfil_model.search(cr, uid, [("matricula", "=", matricula), ("tipo", "=", "a"),
-                                                               ("ud_papel_id", "=", discente_id)], context=context)
-            if perfil_id:
-                if perfil_model.read(cr, uid, perfil_id[0], ["is_bolsista"], context=context, load="_classic_write")["is_bolsista"]:
-                    return {"value": {"bolsista": False},
-                            "warning": {"title": u"Discente bolsista",
-                                        "message": u"Não é permitido fazer inscrição de discentes bolsistas como bolsista."}}
+            if perfil_model.read(cr, uid, perfil_id, ["is_bolsista"], context=context, load="_classic_write")["is_bolsista"]:
+                return {"value": {"bolsista": False},
+                        "warning": {"title": u"Discente bolsista",
+                                    "message": u"Não é permitido fazer inscrição de discentes bolsistas como bolsista."}}
         elif not bolsista:
             return {"value": {"banco_id": False}}
         return {}
@@ -132,6 +120,9 @@ class InscricaoWizard(osv.TransientModel):
 #                         "warning": {"title": u"Modalidade",
 #                                     "message": u"Modalidade não selecionada"}}
         return {}
+    
+    def onchange_processo_seletivo(self, cr, uid, ids, context=None):
+        return {"value": {"disciplinas_ids": []}}
 
     def _get_banco(self, cr, inscricao, context=None):
         dados_bancarios_model = self.pool.get("ud.dados.bancarios")
@@ -172,9 +163,7 @@ class InscricaoWizard(osv.TransientModel):
             if inscricao.email and inscricao.controle in ["e", "ce"]:
                 pessoa_dados["work_email"] = inscricao.email
             if pessoa_dados:
-                papel_id = perfil_model.search(cr, uid, [("matricula", "=", inscricao.matricula),
-                                                              ("tipo", "=", "a")], context=context)
-                pessoa_id = perfil_model.read(cr, uid, papel_id[0], ["ud_papel_id"], context=context, load="_classic_write")["ud_papel_id"]
+                pessoa_id = perfil_model.read(cr, uid, inscricao.perfil_id.id, ["ud_papel_id"], context=context, load="_classic_write")["ud_papel_id"]
                 pessoa_model.write(cr, SUPERUSER_ID, pessoa_id, pessoa_dados, context=context)
             if inscricao.banco_id:
                 dados_bancarios_id = self._get_banco(cr, inscricao, context)
@@ -182,7 +171,7 @@ class InscricaoWizard(osv.TransientModel):
                                   "pontuacoes_ids": [(0, 0, {"criterio_avaliativo_id": crit.id})
                                                      for crit in inscricao.processo_seletivo_id.criterios_avaliativos_ids]})
                            for disc in inscricao.disciplinas_ids]
-            dados = {"matricula": inscricao.matricula,
+            dados = {"perfil_id": inscricao.perfil_id.id,
                      "cpf_nome": inscricao.nome_cpf, "cpf": inscricao.cpf,
                      "identidade_nome": inscricao.nome_identidade, "identidade": inscricao.identidade,
                      "hist_analitico_nome": inscricao.nome_hist_analitico, "hist_analitico": inscricao.hist_analitico,
@@ -206,6 +195,3 @@ class InscricaoWizard(osv.TransientModel):
             "res_id": res_id or False,
             "target": "current",
         }
-    
-    def onchange_processo_seletivo(self, cr, uid, ids, processo_seletivo_id, context=None):
-        return {"value": {"disciplinas_ids": []}}

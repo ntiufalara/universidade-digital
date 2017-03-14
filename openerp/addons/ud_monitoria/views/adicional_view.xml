@@ -6,34 +6,31 @@
         <record model="ir.ui.view" id="ud_curso_form_view">
             <field name="name">ud.curso.form</field>
             <field name="model">ud.curso</field>
-            <field name="type">form</field>
             <field name="inherit_id" ref="ud.view_curso_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='coordenador']" position="after">
                     <field name="coord_monitoria_id" colspan="2" options="{'no_open': true}"/>
-                    <field name="turno" colspan="2"/>
-                    <field name="modalidade" colspan="2"/>
                 </xpath>
             </field>
         </record>
 
-        <record id="ud_curso_form_view_admin" model="ir.ui.view">
+        <record id="ud_monitoria_curso_form_admin_view" model="ir.ui.view">
             <field name="name">ud.curso.form</field>
             <field name="model">ud.curso</field>
             <field name="inherit_id" ref="ud_curso_form_view"/>
             <field name="groups_id" eval="[(6, 0, [ref('base.admin_ud')])]"/>
             <field name="arch" type="xml">
                 <field name="coord_monitoria_id" position="attributes">
-                    <attribute name="options"></attribute>
+                    <attribute name="options"/>
                 </field>
             </field>
         </record>
 
         <!-- PESSOA: NÚCLEO -->
-        <record model="ir.ui.view" id="ud_employee_info_basicas_form_view">
+        <record id="ud_employee_info_basicas_form_view" model="ir.ui.view">
             <field name="name">ud.employee.form</field>
             <field name="model">ud.employee</field>
-            <field eval="17" name="priority"/>
+            <field name="priority" eval="17"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Pessoa" create="false" edit="false" delete="false" version="7.0">
@@ -70,53 +67,6 @@
             </field>
         </record>
 
-        <!-- DISCIPLINA: OFERTA -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_oferta_disciplina_tree_view">
-            <field name="name">Oferta de disciplinas</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.oferta.disciplina</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_oferta_disciplina_tree_view">
-            <field name="name">ud.monitoria.oferta.disciplina.tree</field>
-            <field name="model">ud.monitoria.oferta.disciplina</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Oferta de Disciplinas" editable="bottom">
-                    <field name="curso_id" options="{'create_edit': false, 'create': false}"/>
-                    <field name="disciplina_id" options="{'create_edit': false, 'create': false}"/>
-                    <field name="em_oferta"/>
-                    <field name="bolsas_disponiveis"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_oferta_disciplina_form_view">
-            <field name="name">ud.monitoria.oferta.disciplina.form</field>
-            <field name="model">ud.monitoria.oferta.disciplina</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Oferta de Disciplina" version="7.0">
-                    <div attrs="{'invisible': [('curso_id', '!=', False)]}">
-                        <b>Obs.:</b>
-                        Se o curso desejado não estiver na lista, provavelmente ele não esteja ativo, não foi registrado
-                        ou
-                        o campo "Modalidade" não foi devidamente preenchido. Para resolver esse problema, entre em
-                        contato com o administrador do
-                        sistema.
-                    </div>
-                    <group col="4">
-                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}" on_change="onchange_curso()"/>
-                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}"/>
-                        <field name="em_oferta" colspan="2"/>
-                        <field name="bolsas_disponiveis" colspan="2"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-
         <!-- DISCIPLINA -->
         <record id="ud_monitoria_disciplina_action" model="ir.actions.act_window">
             <field name="name">Disciplinas</field>
@@ -131,10 +81,9 @@
             <field name="model">ud.monitoria.disciplina</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Disciplinas" create="false" edit="false" colors="blue:is_active==True">
+                <tree string="Disciplinas" colors="blue:is_active==True">
                     <field name="disciplina_id"/>
                     <field name="curso_id"/>
-                    <field name="semestre_id"/>
                     <field name="orientador_id"/>
                     <field name="data_inicial"/>
                     <field name="data_final"/>
@@ -148,17 +97,38 @@
             <field name="model">ud.monitoria.disciplina</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Disciplina" version="7.0" create="false" edit="false">
-                    <group col="4">
-                        <field name="curso_id" colspan="2" readonly="1"/>
-                        <field name="disciplina_id" colspan="2" domain="[('id', 'in', [])]" readonly="1"/>
-                        <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
-                        <field name="orientador_monitoria_id" colspan="2"/>
-                        <field name="data_inicial" colspan="2" readonly="1"/>
-                        <field name="data_final" colspan="2" readonly="1"/>
-                        <field name="monitor_s_bolsa" colspan="2" readonly="1"/>
-                        <field name="tutor_s_bolsa" colspan="2" readonly="1"/>
+                <form string="Disciplinas" version="7.0">
+                    <field name="id"/>
+                    <field name="processo_seletivo_id" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" tabindex="1"/>
+                            <field name="perfil_id" on_change="onchange_perfil(perfil_id)" tabindex="3"
+                                   options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                            <field name="data_inicial" colspan="2"  tabindex="4"/>
+                            <field name="monitor_s_bolsa" tabindex="6"/>
+                            <field name="bolsas" tabindex="8"/>
+                        </group>
+                        <group>
+                            <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" tabindex="2"/>
+                            <field name="orientador_id" options="{'no_open': true, 'create_edit': false, 'create': false}"
+                                   tabindex="-1"/>
+                            <field name="data_final" colspan="2" tabindex="5"/>
+                            <field name="tutor_s_bolsa" tabindex="7"/>
+                        </group>
                     </group>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_disciplina_orientador_form_view" model="ir.ui.view">
+            <field name="name">ud.monitoria.disciplina.coordenador.form</field>
+            <field name="model">ud.monitoria.disciplina</field>
+            <field name="inherit_id" ref="ud_monitoria_disciplina_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
                     <group string="Discentes Bolsistas" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])])]}">
                         <field name="bolsista_ids" nolabel="1">
                             <tree>
@@ -186,7 +156,33 @@
                             </tree>
                         </field>
                     </group>
-                </form>
+                    <group string="Discentes Desligados" attrs="{'invisible': [('desligado_ids', '=', [(6, False, [])])]}">
+                        <field name="desligado_ids" nolabel="1">
+                            <tree>
+                                <field name="discente_id"/>
+                                <field name="tutor"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_disciplina_orientador_form_view2" model="ir.ui.view">
+            <field name="name">ud.monitoria.disciplina.orientador.form</field>
+            <field name="model">ud.monitoria.disciplina</field>
+            <field name="inherit_id" ref="ud_monitoria_disciplina_orientador_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bolsista_ids']/tree" position="inside">
+                    <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
+                            string="Desligar" icon="STOCK_CANCEL"/>
+                </xpath>
+                <xpath expr="//field[@name='n_bolsista_ids']/tree" position="inside">
+                    <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
+                            string="Desligar" icon="STOCK_CANCEL"/>
+                </xpath>
             </field>
         </record>
     </data>

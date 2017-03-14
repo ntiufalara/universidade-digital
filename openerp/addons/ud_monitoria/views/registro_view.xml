@@ -18,11 +18,10 @@
             <field name="arch" type="xml">
                 <tree string="Registros" colors="blue:is_active == True">
                     <field name="semestre"/>
-                    <field name="vagas_bolsistas"/>
+                    <field name="max_bolsas"/>
+                    <field name="bolsas_distribuidas"/>
                     <field name="data_i_frequencia"/>
                     <field name="intervalo_frequencia"/>
-                    <!--<field name="relatorio_discentes_ids"/> -->
-                    <!--<field name="eventos_ids"/> -->
                     <field name="is_active"/>
                 </tree>
             </field>
@@ -34,77 +33,93 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Registro" version="7.0">
-                    <header>
-                        <button name="botao_desativar_registro" string="Desativar" type="object"
-                                confirm="Realmente deseja inativar o atual registro?"
+                    <header groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <button name="desativar_registro" string="Finalizar" type="object"
+                                confirm="Realmente deseja finalizar registro atual?"
                                 attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}"/>
                     </header>
                     <group string="Informações Básicas" col="4">
                         <field name="semestre" colspan="2" class="semestre" attrs="{'readonly': [('id', '!=', False)]}"
                                placeholder="Ex.: 2016.1"/>
-                        <field name="vagas_bolsistas" colspan="2"/>
-                        <field name="data_i_frequencia" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="intervalo_frequencia" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="tipo_media" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
-                        <field name="media_minima" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
                         <field name="is_active" colspan="2"/>
+                        <field name="max_bolsas" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
+                        <field name="bolsas_distribuidas" colspan="2"/>
+                        <field name="data_i_frequencia"/>
+                        <field name="intervalo_frequencia" colspan="2"/>
                     </group>
-                    <notebook attrs="{'invisible': [('id', '=', False)]}">
-                        <page string="Solicitações de Disciplinas (Demanda)">
-                            <field name="demanda_ids"/>
-                            <p>
-                                Ao criar um novo Processo Seletivo, as disciplinas das solicitações ativas serão
-                                automaticamente inseridas.
-                            </p>
+                    <notebook>
+                        <page string="Processos Seletivos" attrs="{'invisible': ['|', ('id', '=', False), ('distribuicao_bolsas_ids', '=', [])]}">
+                            <field name="processos_seletivos_ids"  context="{'registro_id': id}"/>
                         </page>
-                        <page string="Relatórios Finais">
-                            <field name="relatorio_discentes_ids" context="{'group_by': 'disciplina_id'}"/>
-                            <p>
-                                Essa tabela mostra o status atual dos discentes ativos informando se possuem, ou não,
-                                alguma pendência, tal como submissão de frequência e relatório final.
-                            </p>
-                        </page>
-                        <page string="Eventos">
-                            <field name="eventos_ids" nolabel="1"
-                                   attrs="{'readonly': [('is_active', '=', False)]}">
-                                <tree edit="false" delete="false" colors="red:state=='novo';blue:state=='visto'">
-                                    <field name="create_date"/>
-                                    <field name="name"/>
-                                    <field name="responsavel_id"/>
-                                    <field name="envolvidos_ids"/>
-                                    <field name="state"/>
-                                    <button name="botao_visualizar" states="novo" string="Visualizado" type="object"
-                                            icon="gtk-apply"/>
+                        <page string="Distribuição de Bolsas">
+                            <field name="distribuicao_bolsas_ids">
+                                <tree editable="bottom" delete="false">
+                                    <field name="curso_id" options="{'no_open': true, 'create_edit': false, 'create': false}"/>
+                                    <field name="bolsas"/>
+                                    <field name="bolsas_distribuidas"/>
+                                    <field name="is_active"/>
                                 </tree>
                             </field>
-                            <p>
-                                Mostra os eventos gerais ocorridos no semestre, tal como alterações de bolsa dos
-                                discentes.
-                            </p>
-                        </page>
-                        <page string="Alteração de Bolsas">
-                              <!--attrs="{'invisible': [('relatorio_discentes_ids', '=', [])]}">-->
-                            <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard_form_view)d'
-                                    type='action' string='Vincular Bolsa'/>
-                            <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
-                                    type='action' string='Remover Bolsa'/>
-                            <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d'
-                                    type='action' string='Transferir Bolsa'/>
                         </page>
                     </notebook>
-                    <field name="id" context="{'reg_id': id}"/>
+                    <field name="id"/>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_registro_coordenador_view">
+            <field name="name">ud.monitoria.registro.coordenador.form</field>
+            <field name="model">ud.monitoria.registro</field>
+            <field name="inherit_id" ref="ud_monitoria_registro_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Relatórios Finais">
+                        <field name="relatorio_discentes_ids"/>
+                        <p>
+                            Essa tabela mostra o status atual dos discentes ativos informando se possuem, ou não,
+                            alguma pendência, tal como submissão de frequência e relatório final.
+                        </p>
+                    </page>
+                    <page string="Eventos" attrs="{'invisible': [('id', '=', False)]}">
+                        <field name="eventos_ids" nolabel="1"
+                               attrs="{'readonly': [('is_active', '=', False)]}">
+                            <tree edit="false" delete="false" colors="red:state=='novo';blue:state=='visto'">
+                                <field name="create_date"/>
+                                <field name="name"/>
+                                <field name="responsavel_id"/>
+                                <field name="envolvidos_ids"/>
+                                <field name="state"/>
+                                <button name="botao_visualizar" states="novo" string="Visualizado" type="object"
+                                        icon="gtk-apply"/>
+                            </tree>
+                        </field>
+                        <p>
+                            Mostra os eventos gerais ocorridos no semestre, tal como alterações de bolsa dos
+                            discentes.
+                        </p>
+                    </page>
+                    <page string="Alteração de Bolsas"
+                          attrs="{'invisible': [('relatorio_discentes_ids', '=', [])]}">
+                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard_form_view)d'
+                                type='action' string='Vincular Bolsa'/>
+                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
+                                type='action' string='Remover Bolsa'/>
+                        <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d'
+                                type='action' string='Transferir Bolsa'/>
+                    </page>
+                </xpath>
             </field>
         </record>
 
         <record model="ir.ui.view" id="ud_monitoria_registro_administrador_view">
             <field name="name">ud.monitoria.registro.administrador.form</field>
             <field name="model">ud.monitoria.registro</field>
-            <field name="inherit_id" ref="ud_monitoria_registro_form_view"/>
+            <field name="inherit_id" ref="ud_monitoria_registro_coordenador_view"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
-                    <button name="botao_ativar_registro" string="Reativar" type="object"
+                    <button name="ativar_registro" string="Reativar" type="object"
                             attrs="{'invisible': ['|', ('is_active', '=', True), ('id', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
@@ -112,7 +127,7 @@
                         <group col="10">
                             <field name="modelo_certificado_id" colspan="4"/>
                             <field name="modelo_relatorio_id" colspan="4"/>
-                            <button name="botao_resetar_modelos" string="Resetar Modelos" type="object" colspan="2"
+                            <button name="resetar_modelos" string="Resetar Modelos" type="object" colspan="2"
                                     confirm="Realmente deseja restaurar os campos originais dos modelos?"/>
                         </group>
                     </page>
@@ -121,14 +136,6 @@
         </record>
 
         <!-- EVENTO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_evento_tree_view">
-            <field name="name">Eventos Ocorridos</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.evento</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
         <record model="ir.ui.view" id="ud_monitoria_evento_tree_view">
             <field name="name">ud.monitoria.evento.tree</field>
             <field name="model">ud.monitoria.evento</field>
@@ -173,25 +180,18 @@
         </record>
 
         <!-- RELATÓRIO FINAL DOS DISCENTES -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_relatorio_final_disc_tree_view">
-            <field name="name">Relatórios de Status (Discentes)</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.relatorio.final.disc</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
         <record model="ir.ui.view" id="ud_monitoria_relatorio_final_disc_tree_view">
             <field name="name">ud.monitoria.relatorio.final.disc.tree</field>
             <field name="model">ud.monitoria.relatorio.final.disc</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Relatório Final" colors="red:is_active==True;blue:is_active==False">
-                    <field name="discente_id"/>
+                    <field name="doc_discente_id"/>
                     <field name="disciplina_id"/>
                     <field name="relatorio"/>
                     <field name="meses_frequencia_ids"/>
                     <field name="write_date"/>
+                    <field name="state"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -203,11 +203,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Relatórios finais" version="7.0">
+                    <header>
+						<field name="state" widget="statusbar"/>
+                    </header>
                     <group col="4">
-                        <field name="discente_id" colspan="2"/>
+                        <field name="doc_discente_id" colspan="2"/>
                         <field name="disciplina_id" colspan="2"/>
-                        <field name="write_date" colspan="2"/>
                         <field name="relatorio" colspan="2"/>
+                        <field name="write_date" colspan="2"/>
                     </group>
                     <group string="Entrega das frequências">
                         <field name="meses_frequencia_ids" nolabel="1"/>
@@ -230,9 +233,9 @@
             <field name="model">ud.monitoria.rfd.mes</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Mêses" colors="red:regular==False;blue:regular==True">
+                <tree string="Mêses" colors="red:state=='rejeitado';blue:state=='analise'">
                     <field name="mes"/>
-                    <field name="regular"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -246,115 +249,8 @@
                     <field name="name" invisible="1"/>
                     <group col="4">
                         <field name="mes" colspan="2" attrs="{'readonly': [('name', '!=', False)]}"/>
-                        <field name="regular" colspan="2"/>
+                        <field name="state" colspan="2"/>
                     </group>
-                </form>
-            </field>
-        </record>
-
-        <!-- DISCIPLINA: SOLICITAÇÃO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_solicitacao_disciplina_tree_view">
-            <field name="name">Disciplinas de Solicitação</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.solicitacao.disciplina</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_solicitacao_disciplina_tree_view">
-            <field name="name">ud.monitoria.solicitacao.disciplina.tree</field>
-            <field name="model">ud.monitoria.solicitacao.disciplina</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Disciplinas" colors="blue:is_active==True">
-                    <field name="disciplina_id"/>
-                    <field name="curso_id"/>
-                    <field name="orientador_id"/>
-                    <field name="monitor_s_bolsa"/>
-                    <field name="tutor_s_bolsa"/>
-                    <field name="is_active"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_solicitacao_disciplina_form_view">
-            <field name="name">ud.monitoria.solicitacao.disciplina.form</field>
-            <field name="model">ud.monitoria.solicitacao.disciplina</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Disciplina" version="7.0">
-                    <div attrs="{'invisible': [('curso_id', '!=', False)]}">
-                        <b>Obs.:</b>
-                        Se o curso desejado não estiver na lista, provavelmente ele não tenha sido ofertado, não esteja
-                        ativo, não foi registrado ou o campo "Modalidade" não foi devidamente preenchido. Para resolver
-                        esse problema, entre em contato com o administrador do sistema.
-                    </div>
-                    <group col="4">
-                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}" on_change="onchange_curso(curso_id)"/>
-                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}" domain="[('id', 'in', [])]"
-                               on_change="onchange_disciplina(curso_id, disciplina_id)"/>
-                        <field name="siape" colspan="2" on_change="onchange_siape(siape)"/>
-                        <field name="orientador_id" colspan="2"
-                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
-                        <field name="data_inicial" colspan="2"/>
-                        <field name="data_final" colspan="2"/>
-                        <field name="monitor_s_bolsa" colspan="2"/>
-                        <field name="tutor_s_bolsa" colspan="2"/>
-                        <field name="num_bolsas" colspan="2"/>
-                        <field name="is_active" colspan="2"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <!-- SOLICITAÇÃO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_solicitacao_tree_view">
-            <field name="name">Solicitar Disciplina</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.solicitacao</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_solicitacao_tree_view">
-            <field name="name">ud.monitoria.solicitacao.tree</field>
-            <field name="model">ud.monitoria.solicitacao</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Solicitações" colors="blue:is_active == True">
-                    <field name="solicitante_id"/>
-                    <field name="semestre_id"/>
-                    <field name="disciplinas_ids"/>
-                    <field name="is_active"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="ud_monitoria_solicitacao_form_view">
-            <field name="name">ud.monitoria.solicitacao.form</field>
-            <field name="model">ud.monitoria.solicitacao</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Solicitação" edit="false" version="7.0">
-                    <header>
-                        <button name="desativar" string="Concluir Solicitação" type="object"
-                                attrs="{'invisible': [('is_active', '=', False)]}"
-                                groups="ud_monitoria.group_ud_monitoria_coordenador"
-                                confirm="Esta ação impedirá que as disciplinas dessa solicitação sejam incluídas automaticamente adicionadas em novos processos seletivos para seu semestre. Deseja continuar?"/>
-                    </header>
-                    <field name="is_active" invisible="1"/>
-                    <group col="4" attrs="{'invisible': [('solicitante_id', '=', False)]}">
-                        <field name="semestre_id" colspan="2" widget="selection"/>
-                        <field name="solicitante_id" colspan="2"
-                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
-                    </group>
-                    <group string="Disciplinas" attrs="{'invisible': [('solicitante_id', '=', False)]}">
-                        <field name="disciplinas_ids" nolabel="1"/>
-                    </group>
-                    <p attrs="{'invisible': [('solicitante_id', '!=', False)]}">
-                        <strong>Atenção:</strong> No momento não será possível fazer a solicitação. Possivelmente seu login
-                        não esteja vinculado a uma pessoa no núcleo ou possui vínculo com mais de uma.
-                    </p>
                 </form>
             </field>
         </record>
