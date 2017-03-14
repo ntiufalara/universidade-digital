@@ -44,17 +44,20 @@
                         <field name="is_active" colspan="2"/>
                         <field name="max_bolsas" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
                         <field name="bolsas_distribuidas" colspan="2"/>
-                        <field name="data_i_frequencia"/>
-                        <field name="intervalo_frequencia" colspan="2"/>
+                        <field name="data_i_frequencia" attrs="{'readonly': [('is_active', '=', False)]}"/>
+                        <field name="intervalo_frequencia" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
                     </group>
                     <notebook>
                         <page string="Processos Seletivos" attrs="{'invisible': ['|', ('id', '=', False), ('distribuicao_bolsas_ids', '=', [])]}">
-                            <field name="processos_seletivos_ids"  context="{'registro_id': id}"/>
+                            <field name="processos_seletivos_ids" attrs="{'readonly': [('is_active', '=', False)]}"
+                                   context="{'registro_id': id}"/>
                         </page>
                         <page string="Distribuição de Bolsas">
-                            <field name="distribuicao_bolsas_ids">
+                            <field name="distribuicao_bolsas_ids" attrs="{'readonly': [('is_active', '=', False)]}">
                                 <tree editable="bottom" delete="false">
-                                    <field name="curso_id" options="{'no_open': true, 'create_edit': false, 'create': false}"/>
+                                    <field name="id" invisible="1"/>
+                                    <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}"
+                                           options="{'no_open': true, 'create_edit': false, 'create': false}"/>
                                     <field name="bolsas"/>
                                     <field name="bolsas_distribuidas"/>
                                     <field name="is_active"/>

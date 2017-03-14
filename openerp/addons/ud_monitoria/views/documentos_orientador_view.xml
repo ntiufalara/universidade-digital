@@ -49,7 +49,8 @@
                         <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"/>
                     </group>
                     <div>
-                        <strong>Obs.:</strong> Clique na disciplina para ver mais detalhes
+                        <strong>Importante:</strong> Para gerenciar a disciplina e seus monitores e tutores clique no
+                        link disponível em disciplina e, se for o caso, edite-a.
                     </div>
                 </form>
             </field>

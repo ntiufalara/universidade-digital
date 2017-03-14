@@ -100,24 +100,19 @@
                 <form string="Disciplinas" version="7.0">
                     <field name="id"/>
                     <field name="processo_seletivo_id" invisible="1"/>
-                    <group>
-                        <group>
-                            <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" tabindex="1"/>
-                            <field name="perfil_id" on_change="onchange_perfil(perfil_id)" tabindex="3"
-                                   options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
-                            <field name="data_inicial" colspan="2"  tabindex="4"/>
-                            <field name="monitor_s_bolsa" tabindex="6"/>
-                            <field name="bolsas" tabindex="8"/>
-                        </group>
-                        <group>
-                            <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" tabindex="2"/>
-                            <field name="orientador_id" options="{'no_open': true, 'create_edit': false, 'create': false}"
-                                   tabindex="-1"/>
-                            <field name="data_final" colspan="2" tabindex="5"/>
-                            <field name="tutor_s_bolsa" tabindex="7"/>
-                        </group>
+                    <group col="4">
+                        <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
+                        <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id)" colspan="2"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                        <field name="orientador_id" options="{'no_open': true, 'create_edit': false, 'create': false}"
+                               colspan="2"/>
+                        <field name="data_inicial" colspan="2"/>
+                        <field name="data_final" colspan="2"/>
+                        <field name="monitor_s_bolsa" colspan="2"/>
+                        <field name="tutor_s_bolsa" colspan="2"/>
+                        <field name="bolsas" colspan="2"/>
                     </group>
-
                 </form>
             </field>
         </record>
