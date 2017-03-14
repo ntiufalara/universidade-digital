@@ -72,6 +72,8 @@ class UsuarioUD(osv.Model):
         return super(UsuarioUD, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         if (context or {}).get("usuario_ud", False):
             pessoa_model = self.pool.get("ud.employee")
             cpf = vals.get("login", False)
@@ -122,9 +124,6 @@ class UsuarioUD(osv.Model):
                         cr, SUPERUSER_ID, "base", "usuario_ud", context
                     )
                     group.write({"users": [(4, ids[0])]})
-            elif vals.get("name", False):
-                pessoa_atual = pessoa_model.search(cr, SUPERUSER_ID, [("user_id", "in", ids)], context=context)
-                pessoa_model.write(cr, SUPERUSER_ID, pessoa_atual, {"name": vals["name"]}, context)
         return super(UsuarioUD, self).write(cr, uid, ids, vals, context)
 
     def combinacao_cpf(self, cpf):
