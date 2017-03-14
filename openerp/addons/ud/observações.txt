@@ -30,7 +30,17 @@ Novas Alterações:
     - Pesquisa em campos que referenciem "ud.employee" agora permite busca pelo número de matrícula;
     - Reorganização do arquivo .csv e acesso de leitura dos modelos para o grupo de usuário UD;
     - Perfil somente pode ser criado usando a interface de "Pessoa" (employee), se for pela interface web, se for a
-      nível de programação, basta colocar no context uma chave com valor "ud_employee" para um valor verdadeiro.
+      nível de programação, basta colocar no context uma chave com valor "ud_employee" para um valor verdadeiro;
+    - Alteração de Usuários e Pessoas:
+        * Ao criar novas pessoas através do núcleo, um usuário correspondente com login e senha iguais ao CPF sem pontos
+          e traço será criado, além de ser incluído automaticamente do grupo de usuários básicos do UD;
+        * Se tentar criar uma pessoa e existir um usuário com CPF correspondente não vinculado a nenhum outro registro
+          de pessoa, esse usuário será vinculado a pessoa que está sendo criada;
+        * Ao criar usuários pela interface do OpenERP, se o login for um CPF válido, seja com pontos e traço ou não,
+          será criado uma pessoa no núcleo correspondente com nome e CPF iguais ao nome e login do usuário criado;
+        * Ao alterar o nome de uma pessoa através do núcleo, o nome de seu usuário também será alterado;
+        * Ao excluir uma pessoa, seu usuário será exclído junto desde que nas configurações gerais estiver com a opção
+          de deleção em cascata marcada.
 
 =========
 Sugestões
