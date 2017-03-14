@@ -167,7 +167,7 @@ class DocumentosDiscente(osv.Model):
                 relatorio_fim = relatorio_fim_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", ids)])
                 relatorio_fim_model.add_meses(cr, SUPERUSER_ID, relatorio_fim, meses, context)
         super(DocumentosDiscente, self).write(cr, uid, ids, vals, context)
-        self.add_grupo_monitor(cr, uid, ids, vals, context)
+        self.add_grupo_monitor(cr, uid, ids, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
@@ -200,11 +200,11 @@ class DocumentosDiscente(osv.Model):
             cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_monitor", context
         )
         for doc in self.browse(cr, uid, ids, context):
-            if not doc.orientador_id.user_id:
+            if not doc.discente_id.user_id:
                 raise osv.except_osv(
                     "Usuário não encontrado",
                     "O registro no núcleo do atual discente não possui login de usuário.")
-            group.write({"users": [(4, doc.orientador_id.user_id.id)]})
+            group.write({"users": [(4, doc.discente_id.user_id.id)]})
 
     def remove_grupo_monitor(self, cr, uid, ids, context=None):
         if isinstance(ids, (int, long)):
@@ -215,16 +215,12 @@ class DocumentosDiscente(osv.Model):
         disciplina_model = self.pool.get("ud.monitoria.disciplina")
         continua = []
         for doc in self.browse(cr, uid, ids, context):
-            if doc.orientador_id.id not in continua:
-                perfis = [p.id for p in doc.orientador_id.papel_ids]
+            if doc.discente_id.id not in continua:
+                perfis = [p.id for p in doc.discente_id.papel_ids]
                 if disciplina_model.search_count(cr, uid, [("perfil_id", "in", perfis)], context) > 1:
-                    continua.append(doc.orientador_id.id)
-                else:
-                    if not doc.orientador_id.user_id:
-                        raise osv.except_osv(
-                            "Usuário não encontrado",
-                            "O registro no núcleo do atual discente não possui login de usuário.")
-                    group.write({"users": [(3, doc.orientador_id.user_id.id)]})
+                    continua.append(doc.discente_id.id)
+                elif doc.discente_id.user_id:
+                    group.write({"users": [(3, doc.discente_id.user_id.id)]})
 
     def get_create_relatorio_fim(self, cr, uid, id_doc, context):
         rel_model = self.pool.get("ud.monitoria.relatorio.final.disc")
