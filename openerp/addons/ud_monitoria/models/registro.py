@@ -204,6 +204,7 @@ class DistribuicaoBolsas(osv.Model):
         return res
 
     _columns = {
+        "id": fields.integer("ID", readonly=True, invisible=True),
         "curso_id": fields.many2one("ud.curso", u"Curso", required=True, ondelete="restrict",
                                     domain=[("is_active", "=", True)]),
         "is_active": fields.related("curso_id", "is_active", type="boolean", string=u"Curso Ativo?", readonly=True,
