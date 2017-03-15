@@ -19,7 +19,7 @@ class InscricaoWizard(osv.TransientModel):
     
     _columns = {
         "matricula": fields.char(u"Matrícula", size=15),
-        "perfil_id": fields.many2one("ud.perfil", u"Perfil", ondelete="cascade", domain=[("tipo", "=", "a")], required=True),
+        "perfil_id": fields.many2one("ud.perfil", u"Matrícula", ondelete="cascade", domain=[("tipo", "=", "a")], required=True),
         "discente_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                       string=u"Discente", readonly=True),
         "celular": fields.char(u"Celular", size=32),
@@ -62,7 +62,7 @@ class InscricaoWizard(osv.TransientModel):
             if self.pool.get("ud.monitoria.processo.seletivo").browse(cr, uid, context.get("active_id", False)).state == "andamento":
                 res["processo_seletivo_id"] = context.get("active_id")
         return res
-    
+
     def onchange_perfil(self, cr, uid, ids, perfil_id, bolsista, context=None):
         res = {}
         if perfil_id:
