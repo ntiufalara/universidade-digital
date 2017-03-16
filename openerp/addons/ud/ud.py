@@ -521,52 +521,62 @@ class Employee(osv.osv):
         context = context or {}
         context["ud_employee"] = context.get("ud_employee", True)
         res = super(Employee, self).create(cr, uid, vals, context)
-        self.criar_usuarios(cr, uid, res, vals, context)
+        self._criar_usuario(cr, uid, res, vals, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or {}
         context["ud_employee"] = context.get("ud_employee", True)
         super(Employee, self).write(cr, uid, ids, vals, context)
-        self.criar_usuarios(cr, uid, ids, vals, context)
+        self._criar_usuario(cr, uid, ids, vals, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
-        if ConfiguracaoUsuarioUD.get_exclusao_unica(self, cr, uid, context):
+        if ConfiguracaoUsuarioUD.get_exclusao_cascata(self, cr, uid, context):
             usuarios = [
                 pessoa.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.user_id.id != SUPERUSER_ID
             ]
             self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
-    def criar_usuarios(self, cr, uid, ids, vals=None, context=None):
+    def _criar_usuario(self, cr, uid, ids, vals=None, context=None):
+        context = context or {}
+        if context.get("nao_criar_usuario", False):
+            return
         if isinstance(ids, (int, long)):
             ids = [ids]
         vals = vals or {}
         user_model = self.pool.get("res.users")
         for pessoa in self.browse(cr, uid, ids, context):
-            if not pessoa.user_id and pessoa.cpf:
-                login = pessoa.cpf.replace(".", "").replace("-", "")
-                usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context=context)
-                if usuario:
-                    if self.search(cr, uid, [("user_id", "=", usuario[0])], context=context):
-                        raise osv.except_osv(u"Multiplos vínculos", u"Há outra pessoa vinculada a esse login: '%s'." % login)
-                    usuario = usuario[0]
-                else:
-                    dados = {
-                        "name": pessoa.name, "tz": "America/Maceio",
-                        "login": login,
-                        "new_password": pessoa.cpf.replace(".", "").replace("-", "")[:6]
-                    }
-                    usuario = user_model.create(cr, SUPERUSER_ID, dados, context)
-                pessoa.write({"user_id": usuario})
-                group = self.pool.get("ir.model.data").get_object(
-                    cr, SUPERUSER_ID, "base", "usuario_ud", context
-                )
-                group.write({"users": [(4, usuario)]})
-            elif pessoa.user_id and vals.get("name", None):
-                user_model.write(cr, SUPERUSER_ID, pessoa.user_id.id, {"name": vals["name"]}, context)
-        return True
+            criado = False
+            usuario = False
+            if not pessoa.user_id:
+                if pessoa.cpf and ConfiguracaoUsuarioUD.get_criar_login_cpf(self, cr, uid, context):
+                    login = pessoa.cpf.replace(".", "").replace("-", "")
+                    usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context=context)
+                    if not usuario:
+                        dados = {"name": pessoa.name, "login": login, "new_password": login}
+                        usuario = user_model.create(cr, SUPERUSER_ID, dados, context)
+                        group = self.pool.get("ir.model.data").get_object(
+                            cr, SUPERUSER_ID, "base", "usuario_ud", context
+                        )
+                        group.write({"users": [(4, usuario)]})
+                        criado = True
+                    elif self.search(cr, uid, [("user_id", "=", usuario[0])], context=context):
+                        raise osv.except_osv(u"Conflito",
+                                             u"Há outra pessoa vinculada a esse login: '%s'." % login)
+                    else:
+                        usuario = usuario[0]
+                    pessoa.write({"user_id": usuario})
+            if not criado:
+                dados = {}
+                if vals.get("name", False) and ConfiguracaoUsuarioUD.get_atualizar_pessoa_usuario_name(self, cr, uid, context):
+                    dados["name"] = vals["name"]
+                if vals.get("cpf", False) and ConfiguracaoUsuarioUD.get_atualizar_login_cpf(self, cr, uid, context):
+                    dados["login"] = pessoa.cpf.replace(".", "").replace("-", "")
+                usuario = usuario or pessoa.user_id.id
+                if usuario and dados:
+                    user_model.write(cr, SUPERUSER_ID, usuario, dados, context)
 
     def _get_default_image(self, cr, uid, context=None):
         """
