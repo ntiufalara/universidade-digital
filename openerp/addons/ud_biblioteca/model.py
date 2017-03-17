@@ -49,8 +49,12 @@ class ud_biblioteca_publicacao(osv.osv):
     def busca_campus (self, cr,uid,context):
         user_id = copy.copy(uid)
         uid = 1
-        employee = self.pool.get('ud.employee').browse(cr, uid,
-                                    self.pool.get('ud.employee').search(cr, uid, [('resource_id.user_id', '=', user_id)]))[0]
+        try:
+            employee = self.pool.get('ud.employee').browse(cr, uid,
+                                                           self.pool.get('ud.employee').search(cr, uid, [
+                                                               ('resource_id.user_id', '=', user_id)]))[0]
+        except:
+            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.")
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -60,9 +64,12 @@ class ud_biblioteca_publicacao(osv.osv):
     def busca_polo(self, cr, uid, context):
         user_id = copy.copy(uid)
         uid = 1
-        employee = self.pool.get('ud.employee').browse(cr, uid,
-                                                       self.pool.get('ud.employee').search(cr, uid, [
-                                                           ('resource_id.user_id', '=', user_id)]))[0]
+        try:
+            employee = self.pool.get('ud.employee').browse(cr, uid,
+                                                           self.pool.get('ud.employee').search(cr, uid, [
+                                                               ('resource_id.user_id', '=', user_id)]))[0]
+        except:
+            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.")
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
