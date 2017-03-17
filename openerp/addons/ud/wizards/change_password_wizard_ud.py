@@ -1,26 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2011 OpenERP S.A (<http://www.openerp.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-
 from openerp.osv import fields, osv
-from openerp.osv.orm import except_orm
 
 
 class change_password_wizard(osv.TransientModel):
@@ -34,28 +13,18 @@ class change_password_wizard(osv.TransientModel):
         'user_ids': fields.one2many('change.password.user.ud', 'wizard_id', string='Users'),
     }
 
-    def default_get(self, cr, uid, fields, context=None):
-        if context == None:
-            context = {}
-        user_ids = context.get('active_ids', [])
-        wiz_id = context.get('active_id', None)
-        res = []
-        users = self.pool.get('ud.employee').browse(cr, uid, user_ids, context=context)
-        for user in users:
-            res.append((0, 0, {
-                'wizard_id': wiz_id,
-                'user_id': user.usuario_id,
-                'user_login': user.login_user,
-            }))
-            
-            
-        print "\n\n\n\n\n\n\n"
-        print res
-        if res[0][2]['user_login'] == False:
-            raise except_orm("Pessoa Sem Usuário Cadastrado".decode("UTF-8"), "Não há Conta de Usuário associada a essa Pessoa".decode("UTF-8"))
-        else:
-            return {'user_ids': res}
-
+    def default_get(self, cr, uid, fields_list, context=None):
+        context = context or {}
+        res = super(change_password_wizard, self).default_get(cr, uid, fields_list, context)
+        ids = context.get("active_ids", None)
+        if context.get("active_model", False) == "ud.employee" and ids:
+            users = []
+            for pessoa in self.pool.get("ud.employee").browse(cr, uid, ids, context):
+                if pessoa.user_id:
+                    users.append((0, 0, { "user_id": pessoa.user_id.id, "user_login": pessoa.user_id.login}))
+            if users:
+                res["user_ids"] = users
+        return res
 
     def change_password_button(self, cr, uid, id, context=None):
         wizard = self.browse(cr, uid, id, context=context)[0]
@@ -63,7 +32,6 @@ class change_password_wizard(osv.TransientModel):
         line_ids = [user.id for user in wizard.user_ids]
 
         self.pool.get('change.password.user.ud').change_password_button(cr, uid, line_ids, context=context)
-        # don't keep temporary password copies in the database longer than necessary
         self.pool.get('change.password.user.ud').write(cr, uid, line_ids, {'new_passwd': False}, context=context)
 
         if need_reload:
@@ -77,7 +45,7 @@ class change_password_wizard(osv.TransientModel):
 
 class change_password_user(osv.TransientModel):
     """
-        A model to configure users in the change password wizard
+    A model to configure users in the change password wizard
     """
 
     _name = 'change.password.user.ud'

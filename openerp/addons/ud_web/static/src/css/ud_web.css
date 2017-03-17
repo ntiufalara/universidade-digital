@@ -300,9 +300,13 @@ input:focus,
 	height: 40px !important;
 }
 .openerp .oe_form .oe_form_field_selection select,
-.openerp .oe_form .oe_form_field_datetime input {
+.openerp .oe_form .oe_form_field_datetime input,
+.openerp .oe_form .oe_form_fie {
 	position: relative;
 	top: -11px;
+}
+.oe_form_group_row {
+    max-height: 10px;
 }
 .openerp .oe_searchview .oe_searchview_facets .oe_searchview_facet{
 	top: 0 !important;

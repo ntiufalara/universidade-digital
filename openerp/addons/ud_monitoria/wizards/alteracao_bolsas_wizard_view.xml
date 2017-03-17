@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- WIZARD: ADICIONAR BOLSA -->
+        <record id="action_ud_monitoria_bolsa_adicionar_wizard_form_view" model="ir.actions.act_window">
+            <field name="name">Adicionar Bolsa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.bolsa.adicionar.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_bolsa_adicionar_wizard_form_view" model="ir.ui.view">
+            <field name="name">ud.monitoria.bolsa.adicionar.wizard.form</field>
+            <field name="model">ud.monitoria.bolsa.adicionar.wizard</field>
+            <field name="groups_id"
+                   eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')]), (6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Adição de bolsa" version="7.0">
+                    <group col="4">
+                        <field name="semestre_id" colspan="4" options="{'no_open': true}"/>
+                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}"
+                               on_change="onchange_curso(semestre_id,curso_id,disciplina_id)"/>
+                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}"
+                               on_change="onchange_disciplina(disciplina_id,doc_discente_id)"
+                               attrs="{'readonly': ['|', ('curso_id', '=', False), ('semestre_id', '=', False)]}"/>
+                        <field name="bolsas" colspan="2" readonly="1"/>
+                        <field name="valor_bolsa" colspan="2"/>
+                        <field name="tutor" colspan="2"/>
+                        <field name="status" colspan="2"/>
+                        <field name="doc_discente_id" colspan="4" options="{'create_edit': false, 'create': false}"
+                               attrs="{'readonly': ['|', '|', ('curso_id', '=', False), ('semestre_id', '=', False), ('disciplina_id', '=', False)]}"/>
+                    </group>
+                    <group string="Dados Bancários" col="4">
+                        <field name="banco_id" on_change="onchange_banco(banco_id)" options="{'no_open': true}"
+                               placeholder="Seleção do Banco" colspan="4"/>
+                        <group col="4" attrs="{'invisible': [('banco_id', '==', False)]}" colspan="4">
+                            <group col="8" colspan="2">
+                                <field name="agencia" colspan="6" placeholder="Nº da agência bancária"
+                                       attrs="{'required': [('agencia_v', '==', True)], 'invisible': [('agencia_v', '==', False)]}"/>
+                                <field name="dv_agencia" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                       attrs="{'required': [('dv_agencia_v', '==', True)], 'invisible': [('dv_agencia_v', '==', False)]}"/>
+                            </group>
+                            <group col="8" colspan="2">
+                                <field name="conta" colspan="6" placeholder="Nº da conta bancária"
+                                       attrs="{'required': [('conta_v', '==', True)], 'invisible': [('conta_v', '==', False)]}"/>
+                                <field name="dv_conta" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                       attrs="{'required': [('dv_conta_v', '==', True)], 'invisible': [('dv_conta_v', '==', False)]}"/>
+                            </group>
+                            <field name="operacao" colspan="2" placeholder="Nº da Operação"
+                                   attrs="{'required': [('operacao_v', '==', True)], 'invisible': [('operacao_v', '==', False)]}"/>
+                        </group>
+                        <group invisible="1">
+                            <field name="agencia_v"/>
+                            <field name="dv_agencia_v"/>
+                            <field name="conta_v"/>
+                            <field name="dv_conta_v"/>
+                            <field name="operacao_v"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="botao_adicionar" string="Adicionar" type="object" class="oe_highlight"
+                                confirm="Realmente deseja adicionar uma bolsa para o discente atual?"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- WIZARD: TRANSFERÊNCIA DE BOLSA -->
+        <record id="ud_monitoria_bolsa_transferir_wizard_action" model="ir.actions.act_window">
+            <field name="name">Transferência de Bolsa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.bolsa.transferir.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_bolsa_transferir_wizard_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.bolsa.transferir.wizard.form</field>
+            <field name="model">ud.monitoria.bolsa.transferir.wizard</field>
+            <field name="groups_id"
+                   eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')]), (6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Transferência de Bolsa" version="7.0">
+                    <group>
+                        <field name="semestre_id" options="{'no_open': true}"/>
+                    </group>
+                    <group>
+                        <group string="De">
+                            <field name="curso_id_de" options="{'create_edit': false, 'create': false}"
+                                   on_change="onchange_curso('de',semestre_id,curso_id_de,disciplina_id_de)"/>
+                            <field name="disciplina_id_de" options="{'create_edit': false, 'create': false}"
+                                   on_change="onchange_disciplina('de',disciplina_id_de,doc_discente_id_de)"
+                                   attrs="{'readonly': ['|', ('curso_id_de', '=', False), ('semestre_id', '=', False)]}"/>
+                            <field name="tutor_de"/>
+                            <field name="doc_discente_id_de" options="{'create_edit': false, 'create': false}"
+                                   attrs="{'readonly': ['|', '|', ('curso_id_de', '=', False), ('semestre_id', '=', False), ('disciplina_id_de', '=', False)]}"/>
+                        </group>
+                        <group string="Para">
+                            <field name="curso_id_para" options="{'create_edit': false, 'create': false}"
+                                   on_change="onchange_curso('para',semestre_id,curso_id_para,disciplina_id_para)"/>
+                            <field name="disciplina_id_para" options="{'create_edit': false, 'create': false}"
+                                   on_change="onchange_disciplina('para',disciplina_id_para,doc_discente_id_para)"
+                                   attrs="{'readonly': ['|', ('curso_id_para', '=', False), ('semestre_id', '=', False)]}"/>
+                            <field name="tutor_para"/>
+                            <field name="status_para"/>
+                            <field name="doc_discente_id_para" options="{'create_edit': false, 'create': false}"
+                                   attrs="{'readonly': ['|', '|', ('curso_id_para', '=', False), ('semestre_id', '=', False), ('disciplina_id_para', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group string="Dados Bancários" col="4">
+                        <field name="banco_id" on_change="onchange_banco(banco_id)" options="{'no_open': true}"
+                               placeholder="Seleção do Banco" colspan="4"/>
+                        <group col="4" attrs="{'invisible': [('banco_id', '==', False)]}" colspan="4">
+                            <group col="8" colspan="2">
+                                <field name="agencia" colspan="6" placeholder="Nº da agência bancária"
+                                       attrs="{'required': [('agencia_v', '==', True)], 'invisible': [('agencia_v', '==', False)]}"/>
+                                <field name="dv_agencia" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                       attrs="{'required': [('dv_agencia_v', '==', True)], 'invisible': [('dv_agencia_v', '==', False)]}"/>
+                            </group>
+                            <group col="8" colspan="2">
+                                <field name="conta" colspan="6" placeholder="Nº da conta bancária"
+                                       attrs="{'required': [('conta_v', '==', True)], 'invisible': [('conta_v', '==', False)]}"/>
+                                <field name="dv_conta" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                       attrs="{'required': [('dv_conta_v', '==', True)], 'invisible': [('dv_conta_v', '==', False)]}"/>
+                            </group>
+                            <field name="operacao" colspan="2" placeholder="Nº da Operação"
+                                   attrs="{'required': [('operacao_v', '==', True)], 'invisible': [('operacao_v', '==', False)]}"/>
+                        </group>
+                        <group invisible="1">
+                            <field name="agencia_v"/>
+                            <field name="dv_agencia_v"/>
+                            <field name="conta_v"/>
+                            <field name="dv_conta_v"/>
+                            <field name="operacao_v"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="botao_transferir" string="Transferir" type="object" class="oe_highlight"
+                                confirm="Realmente deseja a transferência de bolsas?"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- WIZARD: REMOVER BOLSA -->
+        <record id="action_ud_monitoria_bolsa_remover_wizard_form_view" model="ir.actions.act_window">
+            <field name="name">Remover Bolsa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.bolsa.remover.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_bolsa_remover_wizard_form_view" model="ir.ui.view">
+            <field name="name">ud.monitoria.bolsa.remover.wizard.form</field>
+            <field name="model">ud.monitoria.bolsa.remover.wizard</field>
+            <field name="groups_id"
+                   eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')]), (6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Remoção de bolsa" version="7.0">
+                    <group>
+                        <field name="semestre_id" options="{'no_open': true}"/>
+                    </group>
+                    <group col="4">
+                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}"
+                               on_change="onchange_curso(semestre_id,curso_id,disciplina_id)"/>
+                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}"
+                               on_change="onchange_disciplina(disciplina_id,doc_discente_id)"
+                               attrs="{'readonly': ['|', ('curso_id', '=', False), ('semestre_id', '=', False)]}"/>
+                        <field name="tutor" colspan="2"/>
+                    </group>
+                    <group>
+                        <field name="doc_discente_id" options="{'create_edit': false, 'create': false}"
+                               attrs="{'readonly': ['|', '|', ('curso_id', '=', False), ('semestre_id', '=', False), ('disciplina_id', '=', False)]}"/>
+                    </group>
+                    <footer>
+                        <button name="botao_remover" string="Remover" type="object" class="oe_highlight"
+                                confirm="Realmente deseja remover a bolsa do discente atual?"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

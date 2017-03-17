@@ -1,3 +1,5 @@
+# Pasta do Pycharm
+.idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -60,4 +62,3 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
->>>>>>> 9f3b6e0cb9a65df5da70b1ddcaa3befc0ec5e55b

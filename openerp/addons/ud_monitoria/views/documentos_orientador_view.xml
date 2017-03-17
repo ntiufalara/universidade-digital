@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- DOCUMENTOS ORIENTADOR -->
+        <record id="ud_monitoria_documentos_orientador_action" model="ir.actions.act_window">
+            <field name="name">Documentos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.documentos.orientador</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"filtrar_orientador": True}</field>
+        </record>
+
+        <record id="ud_monitoria_documentos_orientador_coordenacao_action" model="ir.actions.act_window">
+            <field name="name">Documentos/Orientadores</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.documentos.orientador</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_monitoria_documentos_orientador_tree" model="ir.ui.view">
+            <field name="name">ud.monitoria.documentos.orientador.form</field>
+            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Documentos" create="false">
+                    <field name="declaracao_nome" invisible="1"/>
+                    <field name="certificado_nome" invisible="1"/>
+                    <field name="disciplina_id"/>
+                    <field name="declaracao" filename="declaracao_nome"/>
+                    <field name="certificado" filename="certificado_nome"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_documentos_orientador_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.documentos.orientador.form</field>
+            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Documento" version="7.0" create="false" delete="false">
+                    <field name="declaracao_nome" invisible="1"/>
+                    <field name="certificado_nome" invisible="1"/>
+                    <group col="4">
+                        <field name="disciplina_id" colspan="4" readonly="1"/>
+                        <field name="declaracao" colspan="2" filename="declaracao_nome" readonly="1"/>
+                        <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"/>
+                    </group>
+                    <div>
+                        <strong>Importante:</strong> Para gerenciar a disciplina e seus monitores e tutores clique no
+                        link disponível em disciplina e, se for o caso, edite-a.
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_documentos_orientador_coordenador_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.documentos.orientador.coordenador.form</field>
+            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="inherit_id" ref="ud_monitoria_documentos_orientador_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="declaracao" position="attributes">
+                    <attribute name="readonly"></attribute>
+                </field>
+                <field name="certificado" position="attributes">
+                    <attribute name="readonly"></attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

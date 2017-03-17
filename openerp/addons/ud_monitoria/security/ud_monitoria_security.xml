@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="module_category_ud_monitoria">
+            <field name="name">Monitoria</field>
+        </record>
+
+        <record id="group_ud_monitoria_monitor" model="res.groups">
+            <field name="name">Monitor/Tutor</field>
+            <field name="category_id" ref="module_category_ud_monitoria"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+            <field name="comment">Usuários desse grupo podem acessar e alterar alguns de seus dados, tal como horários de trabalho, anexar relatórios e frequências, fazer downloads de certificados, etc.</field>
+        </record>
+
+        <record id="group_ud_monitoria_orientador" model="res.groups">
+            <field name="name">Orientador</field>
+            <field name="category_id" ref="module_category_ud_monitoria"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+            <field name="comment">Acesso aos seus dados assim como alteração e gerência dos dados de seus monitores.</field>
+        </record>
+
+        <record id="group_ud_monitoria_coord_disciplina" model="res.groups">
+            <field name="name">Coordenador de Disciplinas</field>
+            <field name="category_id" ref="module_category_ud_monitoria"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+            <field name="comment">Coordenador de Monitoria de algum curso.</field>
+        </record>
+
+        <record id="group_ud_monitoria_coordenador" model="res.groups">
+            <field name="name">Coordenador</field>
+            <field name="category_id" ref="module_category_ud_monitoria"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+            <field name="comment">Acesso as tarefas de gerenciamento do módulo.</field>
+        </record>
+
+        <record id="group_ud_monitoria_administrador" model="res.groups">
+            <field name="name">Administrador</field>
+            <field name="category_id" ref="module_category_ud_monitoria"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+            <field name="comment">Privilégios elevados sobre o módulo.</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+    </data>
+</openerp>

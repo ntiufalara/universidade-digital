@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data noupdate="0">
+		<record model="ir.module.category" id="module_category_ud_documentos">
+			<field name="name">Documentos (UD)</field>
+		</record>
+		
+		<record id="group_ud_documentos_regular" model="res.groups">
+			<field name="name">Acesso Regular</field>
+			<field name="category_id" ref="module_category_ud_documentos"/>
+			<field name="comment">Possui acesso a todas as funcionalidades, exceto os tipos de documentos.</field>
+		</record>
+		
+		<record id="group_ud_documentos_administrador" model="res.groups">
+			<field name="name">Adminstrador</field>
+			<field name="category_id" ref="module_category_ud_documentos"/>
+			<field name="users" eval="[(4, ref('base.user_root'))]"/>
+			<field name="implied_ids" eval="[(4, ref('group_ud_documentos_regular'))]"/>
+			<field name="comment">Possui total acesso às funcionalidades do módulo.</field>
+		</record>
+	</data>
+	
+</openerp>

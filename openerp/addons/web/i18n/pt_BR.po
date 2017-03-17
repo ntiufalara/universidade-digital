@@ -1390,7 +1390,7 @@ msgstr "Restaurar base de dados"
 #: code:addons/web/static/src/js/chrome.js:702
 #, python-format
 msgid "Login"
-msgstr "Autenticação"
+msgstr "Entrar"
 
 #. module: web
 #. openerp-web

@@ -25,7 +25,7 @@
     'version': '1.0',
     'category': 'college',
     'description': """
-Módulo de Gerenciamento de Patrimônio.  
+Módulo de Gerenciamento de Patrimônio.
     """,
     'author': 'LAPEC',
     'images': [],
