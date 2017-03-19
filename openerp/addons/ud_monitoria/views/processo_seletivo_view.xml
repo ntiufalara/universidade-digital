@@ -267,6 +267,12 @@
                     <group string="Pontuações">
                         <field name="pontuacoes_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'analise')]}"/>
                     </group>
+                    <div attrs="{'invisible': [('state', '=', 'concluido')]}"
+                         groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <strong>Obs.:</strong> Para alterar a pontuação da disciplina, no modo edição, clique na linha
+                        da pontuação da disciplina desejada. Quando alterar, é possível que a média mostrada na tabela
+                        seja atualizada somente após o salvamento.
+                    </div>
                     <group string="Informações Adicionais" attrs="{'invisible': [('info', '=', False)]}">
                         <field name="info" nolabel="1" placeholder="Informações complementares"/>
                     </group>
@@ -371,12 +377,21 @@
                         </page>
                         <page string="Disciplinas" attrs="{'invisible': [('state', '=', False)]}">
                             <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'processo_seletivo': True}"
-                                   attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
+                                   attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}">
+                                <tree string="Disciplinas" colors="blue:is_active==True">
+                                    <field name="disciplina_id"/>
+                                    <field name="curso_id"/>
+                                    <field name="orientador_id"/>
+                                    <field name="data_inicial"/>
+                                    <field name="data_final"/>
+                                    <field name="is_active" invisible="1"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Critérios Avaliativos">
                             <group col="4">
-                                <field name="tipo_media" colspan="2"/>
-                                <field name="media_minima" colspan="2"/>
+                                <field name="tipo_media" colspan="2" attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
+                                <field name="media_minima" colspan="2" attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
                             </group>
                             <field name="criterios_avaliativos_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['demanda', 'invalido'])]}"/>
                         </page>
@@ -452,7 +467,16 @@
                         <field name="semestre_id" readonly="1" colspan="2"/>
                     </group>
                     <group string="Disciplinas">
-                        <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'filtro_coord_disciplina': True}"/>
+                        <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'filtro_coord_disciplina': True}">
+                            <tree string="Disciplinas" colors="blue:is_active==True">
+                                <field name="disciplina_id"/>
+                                <field name="curso_id"/>
+                                <field name="orientador_id"/>
+                                <field name="data_inicial"/>
+                                <field name="data_final"/>
+                                <field name="is_active" invisible="1"/>
+                            </tree>
+                        </field>
                     </group>
                     <div>
                         Para verificar o número de bolsas distribuídas para cada curso, acesse o link no campo semestre.

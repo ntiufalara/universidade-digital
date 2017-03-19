@@ -77,7 +77,7 @@
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
-                    <page string="Relatórios Finais">
+                    <page string="Relatórios Finais" attrs="{'invisible': [('id', '=', False)]}">
                         <field name="relatorio_discentes_ids"/>
                         <p>
                             Essa tabela mostra o status atual dos discentes ativos informando se possuem, ou não,
