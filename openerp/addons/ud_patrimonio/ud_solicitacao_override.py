@@ -1,8 +1,6 @@
 # encoding: UTF-8
 from openerp.osv import osv, fields
-from openerp.addons.ud_documentos.pdf_util import Pdf
 
-import os
 
 class ud_solicitacao(osv.Model):
     _name = 'ud.solicitacao'

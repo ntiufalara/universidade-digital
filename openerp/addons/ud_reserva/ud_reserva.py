@@ -235,12 +235,11 @@ class ud_reserva(osv.osv):
 
     def _checar_data(self, cr, uid, ids, context=None):
         obj_data_reserva = self.pool.get('ud.reserva').browse(cr, uid, ids)
-
         for obj in obj_data_reserva:
             # depois colocar os dois 'if' em uma unica linha
             if datetime.strptime(obj.hora_entrada, "%Y-%m-%d %H:%M:%S") < datetime.now():
                 return False
-            if datetime.strptime(obj.hora_saida, "%Y-%m-%d %H:%M:%S") < datetime.now():
+            elif datetime.strptime(obj.hora_saida, "%Y-%m-%d %H:%M:%S") < datetime.now():
                 return False
         return True
 
@@ -253,7 +252,6 @@ class ud_reserva(osv.osv):
     def _checar_dia_reserva(self, cr, uid, ids, context=None):
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)
         for obj in obj_data_reserva2:
-            # print "checando o dia da reserva"
             data_e = self.obter_datetime(cr, uid, obj.hora_entrada, context)
             data_s = self.obter_datetime(cr, uid, obj.hora_saida, context)
             if data_e.date() != data_s.date():

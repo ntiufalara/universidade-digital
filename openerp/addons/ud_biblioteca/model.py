@@ -1,9 +1,11 @@
 # -*- encoding: UTF-8 -*-
+from __future__ import unicode_literals
 import copy
 
 from openerp.osv import osv, fields
 import re
 from openerp.osv.orm import except_orm
+
 
 class ud_biblioteca_publicacao(osv.osv):
     '''
@@ -12,45 +14,52 @@ class ud_biblioteca_publicacao(osv.osv):
     '''
     _name = "ud.biblioteca.publicacao"
 
-
     _columns = {
-                'name' : fields.char(u'Título', required=True),
-                'autor' : fields.char(u'Autor', required=True),
-                'ano_pub' : fields.char(u'Ano de publicação',required=True),
-                'ud_campus_id' : fields.many2one("ud.campus",u"Campus", required=True, change_default=True),
-                'curso' : fields.many2one('ud.curso',u'Curso', ondelete='set null'),
-                "curso_indefinido" : fields.boolean("Outro curso"),
-                "curso_indefinido_detalhes" : fields.char("Curso"),
-                'palavras-chave_ids':fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id', 'pc_id', u'Palavras-chave', required=True),
-                'polo_id' : fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
-                'orientador_ids':fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_orientador_rel', 'pub_id', 'orientador_id', string='Orientadores', required=True),
-                'coorientador_ids':fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_coorientador_rel', 'pub_id', 'coorientador_id', string='Coorientadores'),
-                'anexo_ids':fields.one2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF', required=True),
-                'tipo':fields.selection((
-                    ('tcc','TCC'),
-                    ('dissertacao',u'Dissertação '),
-                    ('monografia',u'Monografia'),
-                    ('artigo',u'Artigo'),
-                    ('tese',u'Tese'),
-                    ('institucional',u'Material Institucional'),
-                    ('fotografia',"Fotografia"),
-                    ('outros',u"Outros")
-                     ),    string=u'Tipo'),
-                "autorizar_publicacao" : fields.boolean(u"Autorizar publicação"),
-                }
+        'name': fields.char(u'Título', required=True),
+        'autor': fields.char(u'Autor', required=True),
+        'ano_pub': fields.char(u'Ano de publicação', required=True),
+        'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
+        'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
+        "curso_indefinido": fields.boolean("Outro curso"),
+        "curso_indefinido_detalhes": fields.char("Curso"),
+        'palavras-chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id', 'pc_id',
+                                               u'Palavras-chave', required=True),
+        'polo_id': fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
+        'orientador_ids': fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_orientador_rel',
+                                           'pub_id', 'orientador_id', string='Orientadores', required=True),
+        'coorientador_ids': fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_coorientador_rel',
+                                             'pub_id', 'coorientador_id', string='Coorientadores'),
+        'anexo_ids': fields.one2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF', required=True),
+        'tipo': fields.selection((
+            ('tcc', 'TCC'),
+            ('dissertacao', u'Dissertação '),
+            ('monografia', u'Monografia'),
+            ('artigo', u'Artigo'),
+            ('tese', u'Tese'),
+            ('institucional', u'Material Institucional'),
+            ('fotografia', "Fotografia"),
+            ('outros', u"Outros")
+        ), string=u'Tipo'),
+        "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
+    }
 
     _order = "ano_pub desc"
 
     _defaults = {
-        'ud_campus_id': lambda self,cr,uid,context: self.busca_campus(cr,uid,context),
-        'polo_id': lambda self, cr, uid, context: self.busca_polo(cr,uid,context)
-        }
+        'ud_campus_id': lambda self, cr, uid, context: self.busca_campus(cr, uid, context),
+        'polo_id': lambda self, cr, uid, context: self.busca_polo(cr, uid, context)
+    }
 
-    def busca_campus (self, cr,uid,context):
+    def busca_campus(self, cr, uid, context):
         user_id = copy.copy(uid)
         uid = 1
-        employee = self.pool.get('ud.employee').browse(cr, uid,
-                                    self.pool.get('ud.employee').search(cr, uid, [('resource_id.user_id', '=', user_id)]))[0]
+        try:
+            employee = self.pool.get('ud.employee').browse(cr, uid,
+                                                           self.pool.get('ud.employee').search(cr, uid, [
+                                                               ('resource_id.user_id', '=', user_id)]))[0]
+        except:
+            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             'Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -60,9 +69,13 @@ class ud_biblioteca_publicacao(osv.osv):
     def busca_polo(self, cr, uid, context):
         user_id = copy.copy(uid)
         uid = 1
-        employee = self.pool.get('ud.employee').browse(cr, uid,
-                                                       self.pool.get('ud.employee').search(cr, uid, [
-                                                           ('resource_id.user_id', '=', user_id)]))[0]
+        try:
+            employee = self.pool.get('ud.employee').browse(cr, uid,
+                                                           self.pool.get('ud.employee').search(cr, uid, [
+                                                               ('resource_id.user_id', '=', user_id)]))[0]
+        except:
+            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             'Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -72,17 +85,20 @@ class ud_biblioteca_publicacao(osv.osv):
             return obj.polo_id.id
 
 
-class ud_biblioteca_orientador (osv.osv):
+class ud_biblioteca_orientador(osv.osv):
     '''
     Nome: ud.biblioteca.orientador
     Deescrição: Relação many2many de publicação para orientador, permite adicionar mais de um orientador
     '''
     _name = 'ud.biblioteca.orientador'
     _columns = {
-            'name':fields.char('Nome', size=64, required=True),
-            'publicacao_orientador_id':fields.many2many('ud.biblioteca.publicacao','orientador_ids', string=u'Publicação'),
-            'publicacao_coorientador_id':fields.many2many('ud.biblioteca.publicacao','coorientador_ids', string=u'Publicação'),
+        'name': fields.char('Nome', size=64, required=True),
+        'publicacao_orientador_id': fields.many2many('ud.biblioteca.publicacao', 'orientador_ids',
+                                                     string=u'Publicação'),
+        'publicacao_coorientador_id': fields.many2many('ud.biblioteca.publicacao', 'coorientador_ids',
+                                                       string=u'Publicação'),
     }
+
 
 class ud_biblioteca_anexo(osv.osv):
     '''
@@ -91,9 +107,9 @@ class ud_biblioteca_anexo(osv.osv):
     '''
     _name = 'ud.biblioteca.anexo'
     _columns = {
-            "name" : fields.char("Anexo", required=True),
-            'arquivo':fields.binary('Arquivo PDF', filters="*.pdf"),
-            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', u'Publicação', required=False),
+        "name": fields.char("Anexo", required=True),
+        'arquivo': fields.binary('Arquivo PDF', filters="*.pdf"),
+        'publicacao_id': fields.many2one('ud.biblioteca.publicacao', u'Publicação', required=False),
     }
     _defaults = {
         'publicacao_id': lambda self, cr, uid, context: self.publicacao_ctx(cr, uid, context),
@@ -120,6 +136,7 @@ class ud_biblioteca_anexo(osv.osv):
 
         return super(ud_biblioteca_anexo, self).unlink(cr, uid, ids, context=context)
 
+
 class ud_biblioteca_pc(osv.osv):
     '''
     Nome: ud.biblioteca.pc
@@ -128,8 +145,8 @@ class ud_biblioteca_pc(osv.osv):
     _name = 'ud.biblioteca.pc'
 
     _columns = {
-            'name':fields.char('Palavra-chave', required=True),
-            'publicacao_id':fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
+        'name': fields.char('Palavra-chave', required=True),
+        'publicacao_id': fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
     }
 
 
@@ -146,7 +163,7 @@ class ud_biblioteca_bibliotecario(osv.osv):
         'polo_id': fields.many2one('ud.polo', u'Polo', required=False)
     }
 
-    def get_name(self, cr, uid, ids,  field, args, context):
+    def get_name(self, cr, uid, ids, field, args, context):
         res = {}
         for obj in self.browse(cr, uid, ids):
             polo_name = "--" if not obj.polo_id.name else obj.polo_id.name
