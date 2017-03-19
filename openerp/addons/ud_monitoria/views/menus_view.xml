@@ -18,10 +18,10 @@
                   groups="group_ud_monitoria_coordenador,group_ud_monitoria_administrador"/>
 
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_orientadores_menu" name="Orientador" sequence="3"
-                  groups="group_ud_monitoria_orientador,group_ud_monitoria_administrador"/>
+                  groups="group_ud_monitoria_orientador"/>
 
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discentes_menu" name="Discente" sequence="4"
-                  groups="group_ud_monitoria_monitor,group_ud_monitoria_administrador"/>
+                  groups="group_ud_monitoria_monitor"/>
 
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horarios_discente_menu" name="Monitores/Tutores"
                   action="ud_monitoria_horarios_discente_action" sequence="5"/>
