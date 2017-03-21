@@ -14,6 +14,11 @@ class ud_biblioteca_publicacao(osv.osv):
     '''
     _name = "ud.biblioteca.publicacao"
 
+    """
+    Atributo usado para salvar o Polo em caso de seleção manual (O sistema não envia valores de campos 'disabled')
+    """
+    __polo_id = 0
+
     _columns = {
         'name': fields.char(u'Título', required=True),
         'autor': fields.char(u'Autor', required=True),
@@ -50,6 +55,18 @@ class ud_biblioteca_publicacao(osv.osv):
         'polo_id': lambda self, cr, uid, context: self.busca_polo(cr, uid, context)
     }
 
+    def create(self, cr, user, vals, context=None):
+        if self.__polo_id != 0 and not vals.get('polo_id'):
+            vals['polo_id'] = self.__polo_id
+        return super(ud_biblioteca_publicacao, self).create(cr, user, vals, context)
+
+    def onchange_seleciona_polo(self, cr, uid, ids, polo_id):
+        self.__polo_id = polo_id
+        print self.__polo_id
+        return {"value": {
+            'polo_id': polo_id
+        }}
+
     def busca_campus(self, cr, uid, context):
         user_id = copy.copy(uid)
         uid = 1
@@ -81,7 +98,7 @@ class ud_biblioteca_publicacao(osv.osv):
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
         for obj in responsavel_objs:
             if obj.admin_campus:
-                return False
+                return None
             return obj.polo_id.id
 
 
