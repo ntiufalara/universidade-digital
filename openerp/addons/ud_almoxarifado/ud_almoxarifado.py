@@ -1,8 +1,9 @@
 # coding: utf-8
-
+from __future__ import unicode_literals
 from openerp.osv import fields, osv
 from datetime import datetime
 from openerp.addons.ud_almoxarifado import utils
+from openerp.osv.orm import except_orm
 
 
 class ud_almoxarifado_produto(osv.osv):
@@ -20,7 +21,9 @@ class ud_almoxarifado_produto(osv.osv):
         ('produto_unico', 'unique (produto,categoria_id)', u'Produto já cadastrado nessa categoria!'),
     ]
 
-    def create(self, cr, uid, vals, context={}):
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
         vals['produto'] = vals.get("produto").upper()
         res_id = super(ud_almoxarifado_produto, self).create(cr, uid, vals, context)
         self.pool.get('ud.almoxarifado.estoque').create(cr, uid, {'produto_id': res_id, 'estoque_min': 1})
@@ -57,9 +60,8 @@ class ud_almoxarifado_produto_qtd(osv.osv):
                                       domain="[('categoria_id','=', categoria_id)]", required=True, ondelete='cascade'),
         'quantidade': fields.integer(u'Quantidade', required=True),
         'categoria_id': fields.many2one('ud.almoxarifado.categoria', 'categoria', ondelete='restrict'),
-        'estoque': fields.function(_estoque, type='integer', string=u'Estoque', method=True),
-        'solicitacao_id': fields.many2one('ud.almoxarifado.solicitacao', 'solicitacao', invisible=True,
-                                          ondelete='cascade'),
+        'estoque': fields.function(_estoque, type=str('integer'), string=u'Estoque', method=True),
+        'solicitacao_id': fields.many2one('ud.almoxarifado.solicitacao', 'solicitacao', invisible=True),
     }
 
     _rec_name = 'produto_id'
@@ -81,7 +83,9 @@ class ud_almoxarifado_produto_qtd(osv.osv):
                                                        context=context),
         return {"value": {"estoque": quantidade[0].values()[0]}}
 
-    def create(self, cr, uid, vals, context={}):
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
         res_id = super(ud_almoxarifado_produto_qtd, self).create(cr, uid, vals, context)
         estoque_model = self.pool.get('ud.almoxarifado.estoque')
         estoque = estoque_model.search(cr, uid, [('produto_id', '=', vals['produto_id'])], context=context)
@@ -91,10 +95,10 @@ class ud_almoxarifado_produto_qtd(osv.osv):
         return res_id
 
     def unlink(self, cr, uid, ids, context=None):
-        solicitacao_ids = self.read(cr, uid, ids, ["solicitacao_id"], context=context, load="_classic_write")
+        # solicitacao_ids = self.read(cr, uid, ids, ["solicitacao_id"], context=context, load="_classic_write")
         res = super(ud_almoxarifado_produto_qtd, self).unlink(cr, uid, ids, context=context)
-        solicitacao_ids = [solicitacao.get("solicitacao_id") for solicitacao in solicitacao_ids]
-        self.pool.get("ud.almoxarifado.solicitacao").unlink(cr, uid, solicitacao_ids, context=context)
+        # solicitacao_ids = [solicitacao.get("solicitacao_id") for solicitacao in solicitacao_ids]
+        # self.pool.get("ud.almoxarifado.solicitacao").unlink(cr, uid, solicitacao_ids, context=context)
         return res
 
     def restaurar_produtos(self, cr, uid, ids, context=None):
@@ -131,7 +135,7 @@ class ud_almoxarifado_solicitacao(osv.osv):
               ("cancelada", "Cancelada")]
 
     _columns = {
-        'name': fields.function(_get_name, string=u'Nome', type='char'),
+        'name': fields.function(_get_name, string=u'Nome', type=str('char')),
         'produtos_ids': fields.one2many('ud.almoxarifado.produto.qtd', 'solicitacao_id', string=u'Produtos',
                                         required=True),
         "solicitante_id": fields.many2one('ud.employee', 'Solicitante', ondelete='restrict'),
@@ -141,20 +145,54 @@ class ud_almoxarifado_solicitacao(osv.osv):
     }
 
     _defaults = {
-        'data_hora': fields.datetime.now()
+        'data_hora': fields.datetime.now(),
+        'solicitante_id': lambda self, cr, uid, c: self.obter_solicitante(cr, uid, c),
+        'setor_id': lambda self, cr, uid, c: self.obter_setor(cr, uid, c),
     }
 
     _rec_name = 'name'
 
+    def obter_solicitante(self, cr, uid, c):
+        '''
+        Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
+        '''
+        pessoa = self.pool.get("ud.employee").browse(
+                cr, uid,
+                self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
+        )
+        if pessoa:
+            return pessoa[0].id
+        else:
+            raise except_orm("Pessoa não localizada".decode("UTF-8"),
+                             "Não há pessoa associada a esse usuário".decode("UTF-8"))
+
+    def obter_setor(self, cr, uid, c):
+        '''
+        Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
+        '''
+        pessoa = self.pool.get("ud.employee").browse(
+                cr, uid,
+                self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
+        )
+        if pessoa[0].papel_ids:
+            for papel in pessoa[0].papel_ids:
+                if papel.ud_setores:
+                    return papel.ud_setores.id
+        else:
+            raise except_orm("Perfil não localizado".decode("UTF-8"),
+                             "É preciso ter papel em algum setor".decode("UTF-8"))
+
     def get_name(self, cr, uid, ids, field, args, context):
         dados = self.browse(cr, uid, ids, context)[0]
-        data = datetime.strptime(dados.data_hora, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
+        data = datetime.now()
+        if dados.data_hora:
+            data = datetime.strptime(dados.data_hora, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
         return {
             dados.id: 'Solicitante {}; Setor:{}; Data: {}'.format(dados.solicitante_id.name, dados.setor_id.name, data)}
 
     def create(self, cr, uid, vals, context=None):
         vals['state'] = "aguardando"
-        res_id = super(ud_almoxarifado_solicitacao, self).create(cr, uid, vals, context)
+        res_id = super(ud_almoxarifado_solicitacao, self).create(cr, 1, vals, context)
 
         return res_id
 
@@ -164,7 +202,9 @@ class ud_almoxarifado_solicitacao(osv.osv):
             self.pool.get('ud.almoxarifado.produto.qtd').restaurar_produtos(cr, uid, ids_produto.get("produtos_ids"))
         return self.write(cr, uid, ids, {"state": "cancelada"}, context=context)
 
-    def botao_entregue(self, cr, uid, ids, context={}):
+    def botao_entregue(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
         return self.write(cr, uid, ids, {"state": "entregue"}, context=context)
 
 
@@ -184,7 +224,6 @@ class ud_almoxarifado_fornecedor(osv.osv):
     _columns = {
         'name': fields.char(u'Fornecedor', size=64, required=True, readonly=False),
         'cpf_cnpj': fields.char(u'CPF/CNPJ'),
-        'cnpj': fields.char(u'CNPJ'),
         'fixo': fields.char(u'Telefone'),
         'celular': fields.char(u'Celular'),
         'email': fields.char(u'E-mail'),
@@ -230,7 +269,9 @@ class ud_almoxarifado_categoria(osv.osv):
 
     _SQL_CONSTRAINTS = [('unique_name', 'unique(name)', u"Categoria já cadastrada!")]
 
-    def create(self, cr, uid, vals, context={}):
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
         vals['name'] = vals.get("name").upper()
         res_id = super(ud_almoxarifado_categoria, self).create(cr, uid, vals, context)
         return res_id
@@ -280,7 +321,7 @@ class ud_almoxarifado_estoque(osv.osv):
         'categoria_id': fields.related('produto_id', 'categoria_id', type='many2one',
                                        relation='ud.almoxarifado.categoria', string=u'Categoria', readonly=True),
         'estoque_min': fields.integer(u'Estoque Mínimo', required=True),
-        'quantidade': fields.function(_calcula_quantidade, type="integer", method=True, string=u'Quantidade',
+        'quantidade': fields.function(_calcula_quantidade, type=str("integer"), method=True, string=u'Quantidade',
                                       store=False),
         # atualiza o modelo "ud.almoxarifado.estoque' sempre que os campos dentro da lista forem atualizados ele retorna a lista de ids que precisam serem atualizados.
         'fornecedor_id': fields.many2one('ud.almoxarifado.fornecedor', u'Fornecedor', ondelete='restrict'),
@@ -296,30 +337,11 @@ class ud_almoxarifado_estoque(osv.osv):
 
     _constraints = [
         (
-        _valida_quantidade, u'A quantidade está incorreta, precisa ser maior que 0 e menor que a quantidade em Estoque',
-        ['\nQuantidade']),
+            _valida_quantidade,
+            u'A quantidade está incorreta, precisa ser maior que 0 e menor que a quantidade em Estoque',
+            ['\nQuantidade']),
         (_valida_estoque_min, u'A quantidade deve ser maior que 0', [u'\nEstoque Mínimo']),
-    ]  # validar os dados
-
-    #     def create(self, cr, uid, vals, context={}):
-    #         vals['name']=vals.get("name").upper()
-    #         res_id = super(ud_almoxarifado_estoque, self).create(cr, uid, vals, context)
-    #         return res_id
-    #
-    #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-    #         if not order:
-    #             order = "name asc"
-    #         if args:
-    #             res = super(ud_almoxarifado_estoque, self).search(cr, uid, args, offset, limit, order, context, count)
-    #         else:
-    #             cr.execute("""SELECT id
-    #                           FROM ud_almoxarifado_estoque
-    #                           WHERE quantidade <= estoque_min ORDER BY "produto_id";""")
-    #             res = map(lambda linha: linha[0], cr.fetchall())
-    #             if res:
-    #                 args = [("id", "not in", res)]
-    #             res = res + super(ud_almoxarifado_estoque, self).search(cr, uid, args, offset, limit, order, context, count)
-    #         return res
+    ]
 
     def unlink(self, cr, uid, ids, context=None):
         produto_ids = self.read(cr, uid, ids, ["produto_id"], context=context, load="_classic_write")

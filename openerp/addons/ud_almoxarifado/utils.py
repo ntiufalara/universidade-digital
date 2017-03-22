@@ -6,9 +6,9 @@ import re
 
 def validar_cpf_cnpj(cpf_cnpj):
     if len(cpf_cnpj) == 11:
-        return validar_cpf(cpf_cnpj) or True
+        return validar_cpf(cpf_cnpj)
     elif len(cpf_cnpj) == 14:
-        return validar_cnpj(cpf_cnpj) or True
+        return validar_cnpj(cpf_cnpj)
     else:
         return False
 
@@ -53,6 +53,7 @@ def validar_cpf(cpf):
             return False
     else:
         return False
+    return True
 
 
 def validar_cnpj(cnpj):
@@ -81,3 +82,4 @@ def validar_cnpj(cnpj):
     # Se o número gerado coincidir com o número original, é válido
     if novo != inteiros:
         return False
+    return True
