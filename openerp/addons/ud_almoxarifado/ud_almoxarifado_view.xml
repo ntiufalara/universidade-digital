@@ -85,6 +85,15 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_ud_almoxarifado_solicitacao_usuario_tree_view">
+            <field name="name">Solicitação</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.almoxarifado.solicitacao</field>
+            <field name="domain">[('create_uid', '=', uid)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record model="ir.ui.view" id="ud_almoxarifado_produto_solicitacao_tree_view">
             <field name="name">ud.almoxarifado.solicitacao.tree</field>
             <field name="model">ud.almoxarifado.solicitacao</field>
@@ -162,7 +171,7 @@
                 <form string="Fornecedor" version="7.0">
                     <group col="4">
                         <field name="name" colspan="2"/>
-                        <field name="cpf_cnpj" colspan="2" required="1" />
+                        <field name="cpf_cnpj" colspan="2" required="1"/>
                         <field name="email" colspan="2"/>
                         <field name="celular" colspan="2"/>
                         <field name="fixo" colspan="2"/>
@@ -265,9 +274,14 @@
         <menuitem id="ud_almoxarifado_fornecedor_menu" parent="ud_almoxarifado_lateral"
                   action="action_ud_almoxarifado_fornecedor_tree_view"
                   sequence="1" name="Fornecedor"/>
-        <menuitem id="ud_almoxarifado_solicitacao_menu" parent="ud_almoxarifado_lateral"
+        <menuitem id="ud_almoxarifado_solicitacao_ga_menu" parent="ud_almoxarifado_lateral"
                   action="action_ud_almoxarifado_solicitacao_tree_view"
-                  sequence="2" name="Solicitações"/>
+                  sequence="2" name="Gerenciar Solicitações"
+                  groups="group_ud_almoxarifado_gerente,group_ud_almoxarifado_administrador"/>
+        <menuitem id="ud_almoxarifado_solicitacao_usuario_menu" parent="ud_almoxarifado_lateral"
+                  action="action_ud_almoxarifado_solicitacao_usuario_tree_view"
+                  sequence="2" name="Solicitações"
+                  groups="group_ud_almoxarifado_usuario"/>
         <menuitem id="ud_almoxarifado_estoque_menu" parent="ud_almoxarifado_lateral"
                   action="action_ud_almoxarifado_estoque_tree_view"
                   sequence="3" name="Estoque"/>
