@@ -212,7 +212,6 @@ class ud_almoxarifado_solicitacao(osv.osv):
         :param context:
         :return:
         """
-        print vals
         if vals.get('produtos_ids'):
             for i in vals.get('produtos_ids'):
                 if i[0] in [2, 3]:
