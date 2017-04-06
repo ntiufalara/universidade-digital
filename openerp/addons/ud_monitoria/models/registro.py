@@ -5,6 +5,8 @@ from re import compile
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
 
+from documentos_discente import _MESES
+
 
 class Registro(osv.Model):
     _name = "ud.monitoria.registro"
@@ -281,7 +283,7 @@ class RelatorioFinalDisc(osv.Model):
     _name = "ud.monitoria.relatorio.final.disc"
     _description = u"Relatório de status final dos discentes (UD)"
     _order = "doc_discente_id"
-    
+
     def valida_registro(self, cr, uid, ids, context=None):
         for registro in self.browse(cr, uid, ids, context=context):
             if not registro.registro_id.is_active:
@@ -325,11 +327,11 @@ class RelatorioFinalDisc(osv.Model):
                                          "ud.monitoria.relatorio": (update_relatorio, ["state"], 10),
                                          "ud.monitoria.documentos.discente": (update_relatorio, ["relatorio_ids"], 10),
                                      }),
-        "meses_frequencia_ids": fields.one2many("ud.monitoria.rfd.mes", "relatorio_id", u"Frequências?",
+        "meses_frequencia_ids": fields.one2many("ud.monitoria.rfd.mes", "relatorio_id", u"Frequências",
                                                 help=u"Informa quais meses o discente precisa(ou) anexar sua frequência e qual é seu status"),
         "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", required=True, ondelete="cascade", invisible=True),
     }
-    
+
     _constraints = [
         (valida_registro, u"O registro semestral não está mais ativo!", [u"Registro/Semestre"])
     ]
@@ -352,24 +354,24 @@ class RelatorioFinalDisc(osv.Model):
                     meses.append(freq.mes)
         return super(RelatorioFinalDisc, self).create(cr, uid, vals, context)
 
-    # def add_meses(self, cr, uid, ids, meses, context=None):
-    #     meses = set(meses)
-    #     for rel in self.browse(cr, uid, ids, context):
-    #         exist = set()
-    #         for fm in rel.meses_frequencia_ids:
-    #             exist.add(fm.mes)
-    #         add = []
-    #         for mes in meses.difference(exist):
-    #             add.append((0, 0, {"mes": mes}))
-    #         if add:
-    #             rel.write({"meses_frequencia_ids": add})
+    def add_meses(self, cr, uid, ids, meses, context=None):
+        meses = set(meses)
+        for rel in self.browse(cr, uid, ids, context):
+            exist = set()
+            for fm in rel.meses_frequencia_ids:
+                exist.add(fm.mes)
+            add = []
+            for mes in meses.difference(exist):
+                add.append((0, 0, {"mes": mes}))
+            if add:
+                rel.write({"meses_frequencia_ids": add})
 
 
 class RelatorioFimDiscMes(osv.Model):
     _name = "ud.monitoria.rfd.mes"
     _description = u"Controle da frequência mensal dos discentes (UD)"
     _order = "mes asc"
-    
+
     def get_mes(self, cr, uid, ids, campo, arg, context=None):
         res = {}
         meses = {'01': u"Janeiro", '02': u"Fevereiro", '03': u"Março", '04': u"Abril", '05': u"Maio", '06': u"Junho",
@@ -393,10 +395,6 @@ class RelatorioFimDiscMes(osv.Model):
                         res[mes.id] = "rejeitado"
         return res
 
-    _MESES = [('01', u"Janeiro"), ('02', u"Fevereiro"), ('03', u"Março"), ('04', u"Abril"), ('05', u"Maio"),
-              ('06', u"Junho"), ('07', u"Julho"), ('08', u"Agosto"), ('09', u"Setembro"), ('10', u"Outubro"),
-              ('11', u"Novembro"), ('12', u"Dezembro")]
-
     _STATES = [("s_registro", u"Sem Registro"), ("rejeitado", u"Rejeitado"), ("analise", u"Análise"), ("regular", u"Regular")]
 
     _columns = {
@@ -409,7 +407,23 @@ class RelatorioFimDiscMes(osv.Model):
         "relatorio_id": fields.many2one("ud.monitoria.relatorio.final.disc", u"Relatório Final", ondelete="cascade",
                                         invisible=True),
     }
-    
+
     _sql_constraints = [
         ("mes_relatorio_unique", "unique(mes, relatorio_id)", u"Não é permitido repetir o mês para o mesmo relatório!"),
     ]
+
+    # def name_get(self, cr, uid, ids, context=None):
+    #     meses = dict(_MESES)
+    #     return [
+    #         (rel_mes.id, meses[rel_mes.mes]) for rel_mes in self.browse(cr, uid, ids, context)
+    #     ]
+    #
+    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+    #     mes = ""
+    #     for mes in _MESES:
+    #         if name.lower() in mes[1].lower():
+    #             mes = mes[1]
+    #             break
+    #     args = [("mes", "=", mes)] + (args or [])
+    #     ids = self.search(cr, uid, args, limit=limit, context=context)
+    #     return self.name_get(cr, uid, ids, context)
