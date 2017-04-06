@@ -140,13 +140,6 @@ class PontuacoesDisciplina(osv.Model):
                                  store={"ud.monitoria.pontuacao": (atualiza_media_pont, ["pontuacao"], 10),
                                         "ud.monitoria.criterio.avaliativo": (atualiza_media_peso, ["peso"], 10)},
                                  help=u"Cálculo da média de acordo com os critérios avaliativos do processo seletivo"),
-        # "media_aritmetica": fields.function(calcula_media, type="float", string=u"Média Aritmética", multi="_media",
-        #                                     help=u"∑(pontuaçao)/nº pontuaçoes",
-        #                                     store={"ud.monitoria.pontuacao": (atualiza_media_pont, ["pontuacao"], 10)}),
-        # "media_ponderada": fields.function(calcula_media, type="float", string=u"Média Ponderada", multi="_media",
-        #                                    help=u"∑(pontuaçao*peso)/∑(peso)",
-        #                                    store={"ud.monitoria.pontuacao": (atualiza_media_pont, ["pontuacao"], 10),
-        #                                           "ud.monitoria.criterio.avaliativo": (atualiza_media_peso, ["peso"], 10)}),
         "state": fields.selection(_STATES, u"Status"),
         "inscricao_id": fields.many2one("ud.monitoria.inscricao", u"Inscrição", invisible=True, ondelete="cascade"),
         "bolsista": fields.related("inscricao_id", "bolsista", type="boolean", string=u"Bolsista", readonly=True),
@@ -298,8 +291,8 @@ class PontuacoesDisciplina(osv.Model):
             if insc.info:
                 info = u"%s\n%s" % (insc.info, info)
             inscricao_model.write(cr, uid, insc.id, {"info": info})
-            self._create_doc_discente(cr, pont, "reserva", context, False)
-        self.write(cr, uid, ids, {"state": "reserva", "is_active": False}, context=context)
+            self._create_doc_discente(cr, pont, "reserva", context)
+        self.write(cr, uid, ids, {"state": "reserva"}, context=context)
         return self.conf_view(cr, uid, res_id, context)
     
     def reprovar(self, cr, uid, ids, context=None):
@@ -351,8 +344,9 @@ class ProcessoSeletivo(osv.Model):
             context = context or {}
             context["tz"] = "America/Maceio"
             dados = self.status(cr, uid, ps, None, None, context)
+            sql = "UPDATE %(tabela)s SET state='%(valor)s' WHERE id=%(id)i;"
             for ps_id in dados:
-                self.write(cr, SUPERUSER_ID, ps_id, {"state": dados[ps_id]})
+                cr.execute(sql % {"tabela": self._table, "valor": dados[ps_id], "id": ps_id})
         return True
     
     def status(self, cr, uid, ids, campo, args, context=None):
@@ -626,7 +620,7 @@ class Inscricao(osv.Model):
     }
     
     _sql_constraints = [
-        ("discente_ps_unique", "unique(matricula,perfil_id,processo_seletivo_id)", u"Não é permitido inscrever o mesmo discente multiplas vezes em um mesmo Processo Seletivo!"),
+        ("discente_ps_unique", "unique(perfil_id,processo_seletivo_id)", u"Não é permitido inscrever o mesmo discente multiplas vezes em um mesmo Processo Seletivo!"),
     ]
     
     _constraints = [
