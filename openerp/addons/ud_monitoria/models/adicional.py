@@ -75,6 +75,7 @@ class Curso(osv.Model):
 class Disciplina(osv.Model):
     _name = "ud.monitoria.disciplina"
     _description = u"Disciplinas de monitoria (UD)"
+    _order = "is_active Desc, curso_id, disciplina_id"
     
     def get_orientador(self, cr, uid, ids, campos, arg, context=None):
         perfil_model = self.pool.get("ud.perfil")
@@ -254,7 +255,7 @@ class Disciplina(osv.Model):
         disc = self.search(cr, uid, [("data_final", "<", datetime.utcnow().strftime("%Y-%m-%d")),
                                      ("is_active", "=", True)])
         if disc:
-            self.write(cr, SUPERUSER_ID, disc, context)
+            self.write(cr, SUPERUSER_ID, disc, {"is_active": False}, context)
         return True
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
