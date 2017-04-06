@@ -68,11 +68,13 @@
             <field name="arch" type="xml">
                 <form string="Documentos" create="false" edit="false" version="7.0">
                     <header>
-                        <button name="finalizar" string="Finalizar" type="object" attrs="{'invisible': [('is_active', '=', False)]}"
-                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                                confirm="Realmente deseja finalizar? O discente não será mais capaz de editar esse documento."/>
                         <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard_form_view)d'
-                                type='action' string='Vincular Bolsa' attrs="{'invisible': [('state', '=', 'bolsista')]}"
+                                type='action' string='Vincular Bolsa'
+                                attrs="{'invisible': ['|', ('is_active', '=', False), ('state', '=', 'bolsista')]}"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
+                                type='action' string='Remover Bolsa'
+                                attrs="{'invisible': ['|', ('is_active', '=', False), ('state', '!=', 'bolsista')]}"
                                 groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
 						<field name="state" widget="statusbar"/>
                     </header>
@@ -83,6 +85,7 @@
                     <group col="4">
                         <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="tutor" colspan="2" readonly="1"/>
+                        <field name="dados_bancarios_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <!--<field name="tutor" colspan="2" readonly="context.get('filtrar_discente', False)" attrs="{'readonly': [('is_active', '=', False)]}"/>-->
                         <field name="ch" colspan="2"/>
                         <field name="is_active" colspan="2" readonly="1"/>
@@ -106,15 +109,24 @@
             </field>
         </record>
 
-        <record id="ud_monitoria_documentos_discente_monitor_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.documentos.discente.form</field>
+        <record id="ud_monitoria_documentos_discente_monitor_coord_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.documentos.discente.monitori.coord.form</field>
             <field name="model">ud.monitoria.documentos.discente</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_discente_form"/>
-            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_monitor')])]"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_monitor'), ref('ud_monitoria.group_ud_monitoria_coordenador')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//form" position="attributes">
                     <attribute name="edit">true</attribute>
                 </xpath>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_documentos_discente_monitor_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.documentos.discente.monitor.form</field>
+            <field name="model">ud.monitoria.documentos.discente</field>
+            <field name="inherit_id" ref="ud_monitoria_documentos_discente_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_monitor')])]"/>
+            <field name="arch" type="xml">
                 <field name="frequencia_ids" position="attributes">
                     <attribute name="attrs">{'readonly': ['|', ('frequencia_controle', '=', False), ('is_active', '=', False)]}</attribute>
                     <attribute name="readonly"/>
@@ -131,7 +143,7 @@
         </record>
 
         <record id="ud_monitoria_documentos_discente_coordenador_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.documentos.discente.form</field>
+            <field name="name">ud.monitoria.documentos.coordenador.form</field>
             <field name="model">ud.monitoria.documentos.discente</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_discente_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador')])]"/>
@@ -326,6 +338,19 @@
                     <field name="frequencia" filename="frequencia_nome"/>
                     <field name="state"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_frequencia_admin_tree" model="ir.ui.view">
+            <field name="name">ud.monitoria.frequencia.form</field>
+            <field name="model">ud.monitoria.frequencia</field>
+            <field name="inherit_id" ref="ud_monitoria_frequencia_tree"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="unlink" string="Apagar" type="object" icon="gtk-delete"
+                            confirm="Você têm certeza que deseja excluir esse registro? Essa ação não poderá ser desfeita."/>
+                </field>
             </field>
         </record>
 
