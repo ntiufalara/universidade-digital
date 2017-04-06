@@ -103,22 +103,23 @@
                     <group col="4">
                         <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
                         <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
-                        <field name="perfil_id" on_change="onchange_perfil(perfil_id)" colspan="2"
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id)" colspan="2" readonly="context.get('no_edit', True)"
                                options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
                         <field name="orientador_id" options="{'no_open': true, 'create_edit': false, 'create': false}"
                                colspan="2"/>
-                        <field name="data_inicial" colspan="2"/>
-                        <field name="data_final" colspan="2"/>
-                        <field name="monitor_s_bolsa" colspan="2"/>
-                        <field name="tutor_s_bolsa" colspan="2"/>
-                        <field name="bolsas" colspan="2"/>
+                        <field name="data_inicial" colspan="2" readonly="context.get('no_edit', True)"/>
+                        <field name="data_final" colspan="2" readonly="context.get('no_edit', True)"/>
+                        <field name="monitor_s_bolsa" colspan="2" readonly="context.get('no_edit', True)"/>
+                        <field name="tutor_s_bolsa" colspan="2" readonly="context.get('no_edit', True)"/>
+                        <field name="bolsas" colspan="2" readonly="context.get('no_edit', True)"/>
+                        <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                     </group>
                 </form>
             </field>
         </record>
 
         <record id="ud_monitoria_disciplina_orientador_form_view" model="ir.ui.view">
-            <field name="name">ud.monitoria.disciplina.coordenador.form</field>
+            <field name="name">ud.monitoria.disciplina.orient.coord.form</field>
             <field name="model">ud.monitoria.disciplina</field>
             <field name="inherit_id" ref="ud_monitoria_disciplina_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
@@ -148,6 +149,12 @@
                                 <field name="discente_id"/>
                                 <field name="tutor"/>
                                 <field name="state"/>
+                                <button name="reserva_para_bolsista" type="object" string="Add Bolsista"
+                                        confirm="Realmente deseja adicionar esse discente como bolsista?"
+                                        groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                                <button name="reserva_para_n_bolsista" type="object" string="Add Não Bolsista"
+                                        confirm="Realmente deseja adicionar esse discente como não bolsista?"
+                                        groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                             </tree>
                         </field>
                     </group>
@@ -171,12 +178,14 @@
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='bolsista_ids']/tree" position="inside">
+                    <field name="is_active" invisible="1"/>
                     <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
-                            string="Desligar" icon="STOCK_CANCEL"/>
+                            string="Desligar" icon="STOCK_CANCEL" attrs="{'invisible': [('is_active', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//field[@name='n_bolsista_ids']/tree" position="inside">
+                    <field name="is_active" invisible="1"/>
                     <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
-                            string="Desligar" icon="STOCK_CANCEL"/>
+                            string="Desligar" icon="STOCK_CANCEL" attrs="{'invisible': [('is_active', '=', False)]}"/>
                 </xpath>
             </field>
         </record>
