@@ -131,21 +131,55 @@ class DadosBancarios(osv.osv):
         """
         :see: osv.osv.name_get
         """
+        res = []
         bancos = dict(_BANCOS)
-        return [(banco.id, bancos.get(banco.banco_id.banco)) for banco in self.browse(cr, uid, ids, context=context)]
+        for banco in self.browse(cr, uid, ids, context=context):
+            name = bancos.get(banco.banco_id.banco) + " (%s)"
+            dados = []
+            if banco.agencia_v and banco.agencia:
+                dados.append("Ag. " + banco.agencia)
+                if banco.dv_agencia_v and banco.dv_agencia:
+                    dados[-1] += "-" + banco.dv_agencia
+            if banco.conta_v and banco.conta:
+                dados.append("Ct. " + banco.conta)
+                if banco.dv_conta_v and banco.dv_conta:
+                    dados[-1] += "-" + banco.dv_conta
+            if banco.operacao:
+                dados.append("Op. " + banco.operacao)
+            res.append((banco.id, name % ", ".join(dados)))
+        return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         """
         :see: osv.osv.name_search
         """
         bancos = dict(_BANCOS)
+        bc = re.search(r"^[\w\s]+(?=\(|(?:Ag)|(?:Ct)|(?:Op)|$)", name, re.IGNORECASE)
+        cond = bc and [("banco", "ilike", bc.group())] or []
         res = []
         name = name.lower() if isinstance(name, (str, unicode)) else ""
         for banco in bancos:
             if name in bancos[banco].lower():
                 res.append(banco)
-        ids = self.pool.get("ud.banco").search(cr, uid, [("banco", "in", res)], context=context)
-        ids = self.search(cr, uid, [("id", "in", ids)], limit=limit, context=context)
+        cond = cond and ["|"] + cond + [("banco", "in", res)] or [("banco", "in", res)]
+        bancos_ids = self.pool.get("ud.banco").search(cr, uid, cond, context=context)
+        args = args or []
+        if bancos_ids:
+            args.append(("banco_id", "in", bancos_ids))
+        ag = re.search(r"Ag\.?\s+(?P<ag>\d{1,4})(?:-(?P<dv>[\da-z]{1,2}))?", name, re.IGNORECASE)
+        if ag:
+            args.append(("agencia", "=", ag.group("ag").strip(" ")))
+            if ag.group("dv"):
+                args.append(("dv_agencia", "=", ag.group("dv")))
+        ct = re.search(r"Ct\.?\s+(?P<ct>\d{1,10})(?:-(?P<dv>[\da-z]{1,4}))?", name, re.IGNORECASE)
+        if ct:
+            args.append(("conta", "=", ct.group("ct")))
+            if ct.group("dv"):
+                args.append(("dv_conta", "=", ct.group("dv")))
+        op = re.search(r"Op\.?\s+(?P<op>\d{1,3})", name, re.IGNORECASE)
+        if op:
+            args.append(("operacao", "=", op.group("op")))
+        ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
     def valida_dados(self, cr, uid, ids, context=None):
@@ -364,7 +398,7 @@ class Perfil(osv.osv):  # Classe papel
         return True
 
     _columns = {
-        'tipo': fields.selection(_TIPOS_PERFIL, u'Tipo'),
+        'tipo': fields.selection(_TIPOS_PERFIL, u'Tipo', required=True),
         'is_bolsista': fields.boolean(u'Bolsista'),
         'tipo_bolsa': fields.selection(_TIPOS_BOLSA, u'Tipo de Bolsa'),
         'valor_bolsa': fields.char(u"Valor da Bolsa (R$)", size=7),  # FIXME: Esse campo poderia ser "float"

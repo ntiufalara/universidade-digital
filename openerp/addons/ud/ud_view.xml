@@ -591,14 +591,11 @@
                             <field name="matricula"/>
                             <field name="data_validade" class="data_validade"/>
                             <field name="tipo"/>
-                            <field name="tipo_docente"
-                                   attrs="{'invisible':[('tipo','!=','p')],'required':[('tipo','=', 'p')]}"/>
+                            <field name="tipo_docente" attrs="{'invisible':[('tipo','!=','p')],'required':[('tipo','=', 'p')]}"/>
                         </group>
                         <group>
-                            <field name="ud_setores"
-                                   attrs="{'required': ['|', ('ud_cursos', '=', False), ('ud_setores', '!=', False)]}"/>
-                            <field name="ud_cursos"
-                                   attrs="{'required': ['|', ('ud_setores', '=', False), ('ud_cursos', '!=', False)]}"/>
+                            <field name="ud_setores" attrs="{'required': ['|', ('tipo', 'in', ['t', 'x']), '&amp;', '&amp;', ('tipo', 'in', ['o', False]), ('ud_cursos', '=', False), ('ud_setores', '=', False)]}"/>
+                            <field name="ud_cursos" attrs="{'required': ['|', ('tipo', 'in', ['a', 'p']), '&amp;', '&amp;', ('tipo', 'in', ['o', False]), ('ud_setores', '=', False), ('ud_cursos', '=', False)]}"/>
                         </group>
                     </group>
                     <group col="6">
