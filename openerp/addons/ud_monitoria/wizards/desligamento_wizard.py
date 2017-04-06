@@ -33,6 +33,9 @@ class DesligamentoWizard(osv.TransientModel):
     def desligar(self, cr, uid, ids, context=None):
         pessoa_model = self.pool.get("ud.employee")
         for desligamento in self.browse(cr, uid, ids, context):
+            if not desligamento.doc_discente_id.is_active:
+                raise osv.except_osv(u"Discente Inativo",
+                                     u"Discentes inativos não podem ser desligados")
             responsavel = pessoa_model.search(cr, uid, [("user_id", "=", uid)], limit=2)
             if not responsavel:
                 raise osv.except_osv(
@@ -52,7 +55,7 @@ class DesligamentoWizard(osv.TransientModel):
                 ])
                 if perfil:
                     perfil_model.write(cr, SUPERUSER_ID, perfil, {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False})
-            desligamento.doc_discente_id.write({"state": "desligado", "is_active": False})
+            desligamento.doc_discente_id.write({"state": "desligado"})
             evento = {
                 "responsavel_id": responsavel[0],
                 "name": u"Desligamento do discente \"%s\"" % desligamento.doc_discente_id.discente_id.pessoa_id.name,
