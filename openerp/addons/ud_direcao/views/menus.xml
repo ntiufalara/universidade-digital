@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<openerp>
+    <data>
+
+        <menuitem id="ud_direcao_menu_top" name="Direção" parent="ud.menu_point_root" />
+        <menuitem id="ud_direcao_menu_portaria" name="Portarias" parent="ud_direcao_menu_top" action="ud_direcao_portaria_action" />
+
+    </data>
+</openerp>

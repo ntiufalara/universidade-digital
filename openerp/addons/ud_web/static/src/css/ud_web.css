@@ -292,8 +292,7 @@ input:focus,
 	top: 11px;
 }
 .openerp .oe_form_readonly .oe_form .oe_form_field_date,
-.openerp .oe_form .oe_form_field_boolean,
-.openerp .oe_form .oe_form_field_date {
+.openerp .oe_form .oe_form_field_boolean{
 	padding-top: 11px !important;
 }
 .openerp .oe_form .oe_form_group_cell > .oe_tags textarea {
