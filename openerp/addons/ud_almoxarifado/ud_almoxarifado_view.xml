@@ -78,7 +78,7 @@
         CLASS ALMOXARIFADO PRODUTOS SOLICITANTE
         =================================== -->
         <record model="ir.actions.act_window" id="action_ud_almoxarifado_solicitacao_tree_view">
-            <field name="name">Solicitação</field>
+            <field name="name">Gerenciar solicitações</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud.almoxarifado.solicitacao</field>
             <field name="view_type">form</field>
@@ -86,7 +86,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="action_ud_almoxarifado_solicitacao_usuario_tree_view">
-            <field name="name">Solicitação</field>
+            <field name="name">Minhas solicitações</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud.almoxarifado.solicitacao</field>
             <field name="domain">[('create_uid', '=', uid)]</field>
@@ -280,7 +280,7 @@
                   groups="group_ud_almoxarifado_gerente,group_ud_almoxarifado_administrador"/>
         <menuitem id="ud_almoxarifado_solicitacao_usuario_menu" parent="ud_almoxarifado_lateral"
                   action="action_ud_almoxarifado_solicitacao_usuario_tree_view"
-                  sequence="2" name="Solicitações"
+                  sequence="2" name="Minhas Solicitações"
                   groups="group_ud_almoxarifado_usuario"/>
         <menuitem id="ud_almoxarifado_estoque_menu" parent="ud_almoxarifado_lateral"
                   action="action_ud_almoxarifado_estoque_tree_view"
