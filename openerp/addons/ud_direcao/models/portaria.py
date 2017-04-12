@@ -21,7 +21,7 @@ class Portaria(osv.Model):
         'polo_id': fields.many2one('ud.polo', 'Polo', required=True),
         'setor_id': fields.many2one('ud.setor', 'Emissor', required=True),
         'responsavel_id': fields.many2one('ud.employee', u'Responsável', required=True),
-        # 'tipo': fields.many2one('ud.direcao.portaria.tipo', 'Tipo', required=True),
+        'setor_destino_id': fields.many2one('ud.setor', "Destino", required=False),
     }
 
     _rec_name = 'nro_portaria'
@@ -29,7 +29,6 @@ class Portaria(osv.Model):
     def create_or_write(self, vals):
         if hasattr(self, 'responsavel_cache') and self.responsavel_cache:
             vals['responsavel_id'] = self.responsavel_cache
-            print vals['responsavel_id']
         return vals
 
     def create(self, cr, user, vals, context=None):
@@ -56,13 +55,3 @@ class Portaria(osv.Model):
             }
         }
 
-# noinspection PyAbstractClass
-# class ProtariaTipo(osv.Model):
-#     """
-#     Representa o tipo da Portaria
-#     """
-#     _name = 'ud.direcao.portaria.tipo'
-#
-#     _columns = {
-#         'name': fields.char('Tipo', required=True),
-#     }
