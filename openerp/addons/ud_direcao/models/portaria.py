@@ -13,6 +13,7 @@ class Portaria(osv.Model):
 
     _columns = {
         'nro_portaria': fields.char(u'Número', required=True),
+        'descricao': fields.text(u'Descrição', required=True),
         'data': fields.date('Data', required=True),
         'file_name': fields.char('Nome do arquivo', ),
         'anexo': fields.binary('Anexo', required=True),

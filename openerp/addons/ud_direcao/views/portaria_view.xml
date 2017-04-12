@@ -41,6 +41,7 @@
             <field name="arch" type="xml">
                 <search string="Busca">
                     <field name="nro_portaria"/>
+                    <field name="descricao"/>
                     <field name="data"/>
                     <field name="campus_id"/>
                     <field name="polo_id"/>
@@ -78,6 +79,9 @@
                                        on_change="onchange_setor_id(setor_id)"/>
                                 <field name="responsavel_id" readonly="1"/>
                             </group>
+                        </group>
+                        <group string="Descrição">
+                            <field name="descricao" nolabel="1" />
                         </group>
                     </sheet>
                 </form>
