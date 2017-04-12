@@ -26,8 +26,9 @@ class Portaria(osv.Model):
     _rec_name = 'nro_portaria'
 
     def create_or_write(self, vals):
-        if hasattr(self, 'responsavel_cache') and self.respomsavel_cache:
-            vals['responsavel_id'] = self.respomsavel_cache
+        if hasattr(self, 'responsavel_cache') and self.responsavel_cache:
+            vals['responsavel_id'] = self.responsavel_cache
+            print vals['responsavel_id']
         return vals
 
     def create(self, cr, user, vals, context=None):
@@ -47,7 +48,7 @@ class Portaria(osv.Model):
     def onchange_setor_id(self, cr, uid, ids, setor_id, context=None):
         setor_model = self.pool.get('ud.setor')
         setor_obj = setor_model.browse(cr, uid, setor_id)
-        self.respomsavel_cache = setor_obj.responsavel_id.id
+        self.responsavel_cache = setor_obj.responsavel_id.id
         return {
             'value': {
                 'responsavel_id': setor_obj.responsavel_id.id
