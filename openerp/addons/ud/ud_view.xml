@@ -436,7 +436,7 @@
             <field name="arch" type="xml">
                 <search string="Setor">
                     <field name="name"/>
-                    <field name="local_polo"/>
+
                     <field name="local_bloco_polo"/>
                     <field name="capacidade"/>
                     <field name="permite_reserva"/>
