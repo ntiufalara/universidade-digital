@@ -181,6 +181,7 @@ class ud_reserva(osv.osv):
                 replicar_mes(n, h_entrada, h_saida)
 
     def aprovar(self, cr, uid, ids, context=None):
+        # TODO: Adicionar verificação de responsável
         slc = self.browse(cr, uid, ids, context)[0]
         if slc.state == "enviada":
             self.replicar(cr, uid, ids, context)

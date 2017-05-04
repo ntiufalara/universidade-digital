@@ -669,7 +669,7 @@
                                     <field name="estado"/>
                                 </group>
                                 <group>
-                                    <field name="work_phone" class="work_phone"/>
+                                    <field name="work_phone" class="telefone"/>
                                     <field name="mobile_phone" class="telefone" required="1"/>
                                     <field name="work_email" widget="email" required="1"/>
                                     <field name="curriculo_lattes_link" widget="url"/>
