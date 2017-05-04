@@ -275,9 +275,6 @@ class ud_reserva(osv.osv):
                     (envia_solicitacao, "Solicitação Enviada", ["Enviar"]), ]
 
 
-ud_reserva()
-
-
 class ud_reserva_responsavel(osv.Model):
     _name = 'ud.reserva.responsavel'
 

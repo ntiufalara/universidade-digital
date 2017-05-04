@@ -291,6 +291,9 @@ input:focus,
 	position: relative;
 	top: 11px;
 }
+.anexo-field {
+	padding: 13px 0;
+}
 .openerp .oe_form_readonly .oe_form .oe_form_field_date,
 .openerp .oe_form .oe_form_field_boolean{
 	padding-top: 11px !important;

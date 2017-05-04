@@ -69,10 +69,8 @@
                                 <field name="nro_portaria"/>
                                 <field name="data"/>
                                 <field name="file_name" invisible="1" />
-                                <field name="anexo" filename="file_name"/>
-                                <field name="setor_destino_id"
-                                       domain="[('polo_id', '=', polo_id)]"
-                                       on_change="onchange_setor_id(setor_id)"/>
+                                <field name="responsavel_id" readonly="1"/>
+                                <field name="anexo" filename="file_name" class="anexo-field"/>
                             </group>
                             <group>
                                 <field name="campus_id"/>
@@ -80,7 +78,9 @@
                                 <field name="setor_id"
                                        domain="[('polo_id', '=', polo_id), ('emite_portaria', '=', True)]"
                                        on_change="onchange_setor_id(setor_id)"/>
-                                <field name="responsavel_id" readonly="1"/>
+                                <field name="setor_destino_id"
+                                       domain="[('polo_id', '=', polo_id)]"
+                                       on_change="onchange_setor_id(setor_id)"/>
                             </group>
                         </group>
                         <group string="Descrição">
