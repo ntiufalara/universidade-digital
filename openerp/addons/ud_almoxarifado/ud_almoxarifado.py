@@ -15,6 +15,7 @@ class ud_almoxarifado_produto(osv.osv):
         'produto': fields.char(u'Produto', size=64, required=True),
         'observacao': fields.text(u'Observação'),
         'categoria_id': fields.many2one('ud.almoxarifado.categoria', u'Categoria', required=True, ondelete='restrict'),
+        'fabricante_id': fields.many2one('ud.almoxarifado.fabricante', u'Fabricante', required=True),
     }
 
     _sql_constraints = [
@@ -414,4 +415,12 @@ class ud_almoxarifado_saida(osv.Model):
         'observacao': fields.text(u'Observação'),
         'estoque_id': fields.many2one('ud.almoxarifado.estoque', u'Estoque', invisible=True, ondelete='cascade'),
 
+    }
+
+
+class ud_almoxarifado_fabricante(osv.Model):
+    _name = 'ud.almoxarifado.fabricante'
+
+    _columns = {
+        'name': fields.char(u'Nome', required=True),
     }

@@ -21,6 +21,7 @@
                 <tree string="Produtos">
                     <field name="produto"/>
                     <field name="categoria_id"/>
+                    <field name="fabricante_id"/>
                 </tree>
             </field>
         </record>
@@ -34,6 +35,7 @@
                     <group col="4">
                         <field name="produto" colspan="2"/>
                         <field name="categoria_id" colspan="2"/>
+                        <field name="fabricante_id" colspan="2"/>
                     </group>
                     <separator string="Observações"/>
                     <field name="observacao"/>
