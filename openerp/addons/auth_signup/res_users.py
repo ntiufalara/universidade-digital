@@ -71,7 +71,7 @@ class res_partner(osv.Model):
                 fragment['token'] = partner.signup_token
             elif partner.user_ids:
                 fragment['db'] = cr.dbname
-                fragment['login'] = partner.user_ids[0].login
+                fragment['login'] = partner.user_ids[0].login.encode('UTF-8')
             else:
                 continue        # no signup token, no user, thus no signup url!
 

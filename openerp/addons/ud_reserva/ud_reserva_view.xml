@@ -23,7 +23,7 @@
                          <field name="state" widget="statusbar" statusbar_visible="nova,enviada,aprovada,cancelada" readonly="1"/>
                     </header>
                     <group string="">
-						<field name="solicitante_id" attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>
+						<field name="solicitante_id" required="1" attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>
                 	</group>
                     <newline/>
                     <group string="Reserva">

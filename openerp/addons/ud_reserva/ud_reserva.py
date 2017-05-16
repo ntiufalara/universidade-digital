@@ -16,7 +16,7 @@ class ud_reserva(osv.osv):
     _columns = {
         'name': fields.char('Nome', size=50, required=True),
         'state': fields.selection(status, 'Status'),
-        'solicitante_id': fields.many2one('ud.employee', 'Solicitante', required=True),
+        'solicitante_id': fields.many2one('ud.employee', 'Solicitante', ondelete="SET NULL"),
         'data_solicitacao_reserva': fields.char('Data da Solicitação', required=True, readonly=True),
         'descricao_evento': fields.text('Descrição'),
         'motivo': fields.text("Motivo ", ),
