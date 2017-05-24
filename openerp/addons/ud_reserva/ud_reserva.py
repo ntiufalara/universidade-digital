@@ -16,17 +16,17 @@ class ud_reserva(osv.osv):
     _columns = {
         'name': fields.char('Nome', size=50, required=True),
         'state': fields.selection(status, 'Status'),
-        'solicitante_id': fields.many2one('ud.employee', 'Solicitante', ondelete="SET NULL"),
-        'data_solicitacao_reserva': fields.char('Data da Solicitação', required=True, readonly=True),
-        'descricao_evento': fields.text('Descrição'),
+        'solicitante_id': fields.many2one('ud.employee', 'Solicitante'),
+        'data_solicitacao_reserva': fields.char(u'Data da Solicitação', required=True, readonly=True),
+        'descricao_evento': fields.text(u'Descrição'),
         'motivo': fields.text("Motivo ", ),
         "data_cancelamento": fields.date("Data de cancelamento"),
-        'espaco_id': fields.many2one('ud.espaco', 'Espaço', required=True),
+        'espaco_id': fields.many2one('ud.espaco', u'Espaço', required=True),
         'hora_entrada': fields.datetime('Entrada', required=True),
-        'hora_saida': fields.datetime('Saída', required=True),
+        'hora_saida': fields.datetime(u'Saída', required=True),
         'periodo_final': fields.datetime('Fim'),
-        'frequencia': fields.selection(freq, 'Período'),
-        'teste': fields.char('Data da Solicitação', required=True, readonly=True),
+        'frequencia': fields.selection(freq, u'Período'),
+        'teste': fields.char(u'Data da Solicitação', required=True, readonly=True),
         'grupo_id': fields.many2one('ud.reserva.grupo', 'Grupo de reservas', ondelete='cascade')
     }
     _defaults = {
@@ -247,8 +247,12 @@ class ud_reserva(osv.osv):
     def _checar_reserva(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids)[0]
         search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_entrada', '<=', obj.hora_saida),
-                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id), ('id', '!=', obj.id)])
-        return True if not search else False
+                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                       ('id', '!=', obj.id)])
+        search2 = self.search(cr, uid, [('hora_saida', '>=', obj.hora_entrada), ('hora_saida', '<=', obj.hora_saida),
+                                        ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                        ('id', '!=', obj.id)])
+        return True if not (search or search2) else False
 
     def _checar_dia_reserva(self, cr, uid, ids, context=None):
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)

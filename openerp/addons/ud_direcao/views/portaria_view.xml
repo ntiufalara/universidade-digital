@@ -26,6 +26,7 @@
                 <tree string="Portarias">
                     <field name="nro_portaria"/>
                     <field name="data"/>
+                    <field name="descricao"/>
                     <field name="campus_id"/>
                     <field name="polo_id"/>
                     <field name="setor_id"/>

@@ -1,0 +1,2 @@
+﻿ALTER TABLE public.ud_reserva DROP CONSTRAINT ud_reserva_ud_reserva_hora_entrada_uniq;
+ALTER TABLE public.ud_reserva DROP CONSTRAINT ud_reserva_ud_reserva_hora_saida_uniq;
