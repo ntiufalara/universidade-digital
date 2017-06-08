@@ -1,5 +1,0 @@
-import adicional
-import processo_seletivo
-import registro
-import documentos_discente
-import documentos_orientador
