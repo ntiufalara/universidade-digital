@@ -31,10 +31,16 @@
                         <field name="valor_bolsa" colspan="2"/>
                         <field name="tutor" colspan="2"/>
                         <field name="status" colspan="2"/>
-                        <field name="doc_discente_id" colspan="4" options="{'create_edit': false, 'create': false}"
+                        <field name="doc_discente_id" colspan="2" options="{'create_edit': false, 'create': false}"
+                               on_change="onchange_doc_discente(doc_discente_id, dados_bancarios_id)"
                                attrs="{'readonly': ['|', '|', ('curso_id', '=', False), ('semestre_id', '=', False), ('disciplina_id', '=', False)]}"/>
+                        <field name="dados_bancarios_id" colspan="2"/>
                     </group>
-                    <group string="Dados Bancários" col="4">
+                    <group string="Dados Bancários" col="4" attrs="{'invisible': [('dados_bancarios_id', '!=', False)]}">
+                        <div colspan="4">
+                            Caso o discente não tenha os dados bancários desejados no campo reservado anteriormente, é
+                            possível inserir novos dados.
+                        </div>
                         <field name="banco_id" on_change="onchange_banco(banco_id)" options="{'no_open': true}"
                                placeholder="Seleção do Banco" colspan="4"/>
                         <group col="4" attrs="{'invisible': [('banco_id', '==', False)]}" colspan="4">
