@@ -6,23 +6,41 @@ from openerp import SUPERUSER_ID
 class DocumentosOrientador(osv.Model):
     _name = "ud.monitoria.documentos.orientador"
     _description = u"Documentos de monitoria do orientador (UD)"
+    _order = "is_active desc"
+
+    def valida_disciplina(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and doc.disciplina_id.perfil_id != doc.perfil_id:
+                return False
+        return True
+
+    def valida_disciplina_ativa(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.is_active and self.search_count(cr, uid, [("disciplina_id", "=", doc.disciplina_id.id)]) > 1:
+                return False
+        return True
 
     _columns = {
         "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True, ondelete="restrict"),
-        "orientador_id": fields.related("disciplina_id", "perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
+        "perfil_id": fields.many2one("ud.perfil", u"Perfil", required=True, ondelete="restrict"),
+        "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         readonly=True, string=u"Orientador"),
         "semestre_id": fields.related("disciplina_id", "processo_seletivo_id", "semestre_id", type="many2one", relation="ud.monitoria.registro",
                                       readonly=True, string=u"Semestre"),
         "declaracao_nome": fields.char(u"Declaração (Nome)"),
-        "declaracao": fields.binary(u"Declaração"),
+        "declaracao": fields.binary(u"Declaração", help=u"Declaração de Participação de Banca"),
         "certificado_nome": fields.char(u"Certificado (Nome)"),
-        "certificado": fields.binary(u"Certificado"),
+        "certificado": fields.binary(u"Certificado", help=u"Certidão de Participação de Orientação"),
+        "is_active": fields.boolean(u"Ativo?", readonly=True),
     }
 
-    _sql_constraints = [
-        ("disciplina_unica", "unique(disciplina_id)",
-         u"Documentos de orientador não podem conter disciplinas repetidas para o mesmo semestre.")
+    _constraints = [
+        (valida_disciplina, u"O orientador da disciplina deve ser o mesmo que o proprietário documento enquanto este estiver ativo.", [u"Ativo"])
     ]
+
+    _defaults = {
+        "is_active": True,
+    }
 
     def name_get(self, cr, uid, ids, context=None):
         return [(doc["id"], doc["orientador_id"][1])
@@ -37,6 +55,8 @@ class DocumentosOrientador(osv.Model):
         return self.name_get(cr, uid, ids, context)
 
     def create(self, cr, uid, vals, context=None):
+        if "perfil_id" not in vals and vals.get("disciplina_id", None):
+            vals["perfil_id"] = self.pool.get("ud.monitoria.disciplina").browse(cr, uid, vals.get("disciplina_id")).perfil_id.id
         res = super(DocumentosOrientador, self).create(cr, uid, vals, context)
         self.add_grupo_orientador(cr, uid, res, context)
         return res
@@ -57,11 +77,7 @@ class DocumentosOrientador(osv.Model):
             if not employee:
                 return []
             perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", employee[0])], context=context)
-            discipinas = self.pool.get("ud.monitoria.disciplina").search(cr, uid, [("perfil_id", "=", perfis)],
-                                                                         context=context)
-            if not discipinas:
-                return []
-            args = (args or []) + [("disciplina_id", "in", discipinas)]
+            args = (args or []) + [("perfil_id", "in", perfis)]
         return super(DocumentosOrientador, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def add_grupo_orientador(self, cr, uid, ids, context=None):

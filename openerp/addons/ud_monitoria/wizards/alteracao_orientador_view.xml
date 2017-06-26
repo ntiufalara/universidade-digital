@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="ud_monitoria_alterar_orientador_wizard_action" model="ir.actions.act_window">
+            <field name="name">Alterar Orientador</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.monitoria.alterar.orientador.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_alterar_orientador_wizard_form" model="ir.ui.view">
+            <field name="name">ud.monitoria.alterar.orientador.wizard.form</field>
+            <field name="model">ud.monitoria.alterar.orientador.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Alterarção" version="7.0">
+                    <group>
+                        <field name="disciplina_id" readonly="1" options="{'no_open': true}"/>
+                    </group>
+                    <group string="Orientação para...">
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id)"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                        <field name="orientador_id" options="{'no_open': true}"/>
+                    </group>
+                    <footer>
+                        <button name="botao_alterar" string="Modificar" type="object" class="oe_highlight" confirm="Confirmar alteração?"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>
