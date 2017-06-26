@@ -21,32 +21,30 @@
 
 
 {
-    'name': 'Universidade Digital',
-    'version': '1.0',
-    'category': 'college',
-    'description': """
-Núcleo da aplicação Universidade Digital.   
-    """,
-    'author': 'LAMP e LAPEC',
-    'images': [],
-    'depends': ['base', "base_setup", 'hr', 'web'],
-    'init_xml': [],
+    "name": u"Universidade Digital",
+    "version": "1.0",
+    "category": u"Universidade Digital",
+    "description": u"""Núcleo da aplicação Universidade Digital.""",
+    "author": "LAMP e LAPEC",
+    "images": [],
+    "depends": ["base", "base_setup", "hr", "web"],
+    "init_xml": [],
 
-    'data': [
+    "data": [
         "usuario/usuario_view.xml",
-        'ud_view.xml',
+        "ud_view.xml",
         "menus.xml",
-        'wizards/change_password_wizard_ud_view.xml',
+        "wizards/change_password_wizard_ud_view.xml",
         "security/ir.model.access.csv",
     ],
     "js": [
         "static/src/js/ud.js",
     ],
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
     # Web client
-    'update_xml': [
-        'security/ud_nucleo_security.xml'
+    "update_xml": [
+        "security/ud_nucleo_security.xml"
     ],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
