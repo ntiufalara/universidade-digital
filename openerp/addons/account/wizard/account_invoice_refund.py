@@ -157,8 +157,7 @@ class account_invoice_refund(osv.osv_memory):
 
                 refund_id = inv_obj.refund(cr, uid, [inv.id], date, period, description, journal_id, context=context)
                 refund = inv_obj.browse(cr, uid, refund_id[0], context=context)
-                inv_obj.write(cr, uid, [refund.id], {'date_due': date,
-                                                'check_total': inv.check_total})
+                inv_obj.write(cr, uid)
                 inv_obj.button_compute(cr, uid, refund_id)
 
                 created_inv.append(refund_id[0])
@@ -213,7 +212,7 @@ class account_invoice_refund(osv.osv_memory):
                         if inv.payment_term.id:
                             data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv.payment_term.id, date)
                             if 'value' in data and data['value']:
-                                inv_obj.write(cr, uid, [inv_id], data['value'])
+                                inv_obj.write(cr, uid)
                         created_inv.append(inv_id)
             xml_id = (inv.type == 'out_refund') and 'action_invoice_tree1' or \
                      (inv.type == 'in_refund') and 'action_invoice_tree2' or \

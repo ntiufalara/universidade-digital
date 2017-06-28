@@ -25,4 +25,4 @@ class concluir_viagem (osv.osv_memory):
     def salvar(self, cr, uid, ids, ctx=None):
         lt = self.read(cr, uid, ids)[0]
         valores = {'ocorrencia':lt["ocorrencia"],"state":"concluida", 'notas':lt['notas'], 'km_rodado':lt['km_rodado'], 'preco_combustivel':lt['preco_combustivel'], 'abastecimento':lt['abastecimento'], 'custo':lt['custo'], 'km_inicial':lt['km_inicial'], 'km_final':lt['km_final']}
-        self.pool.get("ud.transporte.viagem").write(cr, uid, ctx["active_ids"], valores)
+        self.pool.get("ud.transporte.viagem").write(cr, uid)

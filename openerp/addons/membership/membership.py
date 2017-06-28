@@ -432,14 +432,14 @@ class Partner(osv.osv):
                 }, context=context)
             line_value['invoice_id'] = invoice_id
             invoice_line_id = invoice_line_obj.create(cr, uid, line_value, context=context)
-            invoice_obj.write(cr, uid, invoice_id, {'invoice_line': [(6, 0, [invoice_line_id])]}, context=context)
+            invoice_obj.write(cr, uid, context=context)
             invoice_list.append(invoice_id)
             if line_value['invoice_line_tax_id']:
                 tax_value = invoice_tax_obj.compute(cr, uid, invoice_id).values()
                 for tax in tax_value:
                        invoice_tax_obj.create(cr, uid, tax, context=context)
         #recompute the membership_state of those partners
-        self.pool.get('res.partner').write(cr, uid, ids, {})
+        self.pool.get('res.partner').write(cr, uid)
         return invoice_list
 
 Partner()
@@ -491,7 +491,7 @@ class Invoice(osv.osv):
             mlines = member_line_obj.search(cr, uid,
                     [('account_invoice_line', 'in',
                         [l.id for l in invoice.invoice_line])])
-            member_line_obj.write(cr, uid, mlines, {'date_cancel': today})
+            member_line_obj.write(cr, uid)
         return super(Invoice, self).action_cancel(cr, uid, ids, context=context)
 
 Invoice()

@@ -146,7 +146,7 @@ class project_work(osv.osv):
                     prod_id, amount, False, unit, vals_line['journal_id'], context=context)
                 if amount_unit and 'amount' in amount_unit.get('value',{}):
                     updv = { 'amount': amount_unit['value']['amount'] }
-                    timesheet_obj.write(cr, uid, [timeline_id], updv, context=context)
+                    timesheet_obj.write(cr, uid, context=context)
                 vals['hr_analytic_timesheet_id'] = timeline_id
         return super(project_work,self).create(cr, uid, vals, *args, **kwargs)
 
@@ -200,7 +200,7 @@ class project_work(osv.osv):
                 if amount_unit and 'amount' in amount_unit.get('value',{}):
                     vals_line['amount'] = amount_unit['value']['amount']
 
-            self.pool.get('hr.analytic.timesheet').write(cr, uid, [line_id.id], vals_line, context=context)
+            self.pool.get('hr.analytic.timesheet').write(cr, uid, context=context)
 
         return super(project_work,self).write(cr, uid, ids, vals, context)
 
@@ -252,7 +252,7 @@ class task(osv.osv):
                             vals_line['account_id'] = acc_id
                         if vals.get('name',False):
                             vals_line['name'] = '%s: %s' % (tools.ustr(vals['name']), tools.ustr(task_work.name) or '/')
-                        hr_anlytic_timesheet.write(cr, uid, [line_id], vals_line, {})
+                        hr_anlytic_timesheet.write(cr, uid)
         return super(task,self).write(cr, uid, ids, vals, context)
 
 task()

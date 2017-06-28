@@ -484,7 +484,7 @@ class many2one(_column):
                     id_new = obj.create(cr, act[2])
                     cr.execute('update '+obj_src._table+' set '+field+'=%s where id=%s', (id_new, id))
                 elif act[0] == 1:
-                    obj.write(cr, [act[1]], act[2], context=context)
+                    obj.write(cr, [act[1]], context=context)
                 elif act[0] == 2:
                     cr.execute('delete from '+self._table+' where id=%s', (act[1],))
                 elif act[0] == 3 or act[0] == 5:
@@ -559,7 +559,7 @@ class one2many(_column):
                 id_new = obj.create(cr, user, act[2], context=context)
                 result += obj._store_get_values(cr, user, [id_new], act[2].keys(), context)
             elif act[0] == 1:
-                obj.write(cr, user, [act[1]], act[2], context=context)
+                obj.write(cr, user, context=context)
             elif act[0] == 2:
                 obj.unlink(cr, user, [act[1]], context=context)
             elif act[0] == 3:
@@ -577,7 +577,7 @@ class one2many(_column):
                 cr.execute("select 1 from {0} where id=%s and {1}=%s".format(field_table, self._fields_id), (act[1], id))
                 if not cr.fetchone():
                     # Must use write() to recompute parent_store structure if needed and check access rules
-                    obj.write(cr, user, [act[1]], {self._fields_id:id}, context=context or {})
+                    obj.write(cr, user, context=context or {})
             elif act[0] == 5:
                 reverse_rel = obj._all_columns.get(self._fields_id)
                 assert reverse_rel, 'Trying to unlink the content of a o2m but the pointed model does not have a m2o'
@@ -590,14 +590,14 @@ class one2many(_column):
                 if reverse_rel.column.ondelete == "cascade":
                     obj.unlink(cr, user, ids_to_unlink, context=context)
                 else:
-                    obj.write(cr, user, ids_to_unlink, {self._fields_id: False}, context=context)
+                    obj.write(cr, user, context=context)
             elif act[0] == 6:
                 # Must use write() to recompute parent_store structure if needed
-                obj.write(cr, user, act[2], {self._fields_id:id}, context=context or {})
+                obj.write(cr, user, context=context or {})
                 ids2 = act[2] or [0]
                 cr.execute('select id from '+_table+' where '+self._fields_id+'=%s and id <> ALL (%s)', (id,ids2))
                 ids3 = map(lambda x:x[0], cr.fetchall())
-                obj.write(cr, user, ids3, {self._fields_id:False}, context=context or {})
+                obj.write(cr, user, context=context or {})
         return result
 
     def search(self, cr, obj, args, name, value, offset=0, limit=None, uid=None, operator='like', context=None):
@@ -764,7 +764,7 @@ class many2many(_column):
                 idnew = obj.create(cr, user, act[2], context=context)
                 cr.execute('insert into '+rel+' ('+id1+','+id2+') values (%s,%s)', (id, idnew))
             elif act[0] == 1:
-                obj.write(cr, user, [act[1]], act[2], context=context)
+                obj.write(cr, user, context=context)
             elif act[0] == 2:
                 obj.unlink(cr, user, [act[1]], context=context)
             elif act[0] == 3:
@@ -1278,7 +1278,7 @@ class sparse(function):
                 if vals[0] == 0:
                     read_value.append(relation_obj.create(cr, uid, vals[2], context=context))
                 elif vals[0] == 1:
-                    relation_obj.write(cr, uid, vals[1], vals[2], context=context)
+                    relation_obj.write(cr, uid, context=context)
                 elif vals[0] == 2:
                     relation_obj.unlink(cr, uid, vals[1], context=context)
                     read_value.remove(vals[1])
@@ -1298,7 +1298,7 @@ class sparse(function):
                 serialized.pop(field_name, None)
             else: 
                 serialized[field_name] = self.convert_value(obj, cr, uid, record, value, serialized.get(field_name), context=context)
-            obj.write(cr, uid, ids, {self.serialization_field: serialized}, context=context)
+            obj.write(cr, uid, context=context)
         return True
 
     def _fnct_read(self, obj, cr, uid, ids, field_names, args, context=None):

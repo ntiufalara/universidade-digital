@@ -253,7 +253,7 @@ class account_fiscalyear_close(osv.osv_memory):
         if ids:
             reconcile_id = _reconcile_fy_closing(cr, uid, ids, context=context)
             #set the creation date of the reconcilation at the first day of the new fiscalyear, in order to have good figures in the aged trial balance
-            self.pool.get('account.move.reconcile').write(cr, uid, [reconcile_id], {'create_date': new_fyear.date_start}, context=context)
+            self.pool.get('account.move.reconcile').write(cr, uid, context=context)
 
         #create the journal.period object and link it to the old fiscalyear
         new_period = data[0].period_id.id

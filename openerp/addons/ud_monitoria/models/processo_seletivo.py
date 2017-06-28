@@ -266,13 +266,8 @@ class PontuacoesDisciplina(osv.Model):
                     )
                 else:
                     # FIXME: O campo do valor da bolsa no núcleo é um CHAR, se possível, mudar para um FLOAT
-                    perfil_model.write(cr, SUPERUSER_ID, pont.inscricao_id.perfil_id.id, {
-                        "is_bolsista": True, "tipo_bolsa": "m",
-                        "valor_bolsa": ("%.2f" % pont.inscricao_id.processo_seletivo_id.valor_bolsa).replace(".", ",")
-                    })
-                    dados_bancarios_model.write(cr, SUPERUSER_ID, pont.inscricao_id.dados_bancarios_id.id, {
-                        "ud_conta_id": pont.inscricao_id.discente_id.id
-                    }, context=context)
+                    perfil_model.write(cr, SUPERUSER_ID)
+                    dados_bancarios_model.write(cr, SUPERUSER_ID, context=context)
                     state = "bolsista"
             self._create_doc_discente(cr, pont, state, context)
             self.pool.get("ud.monitoria.documentos.orientador").create(
@@ -297,7 +292,7 @@ class PontuacoesDisciplina(osv.Model):
                     datetime.strftime(hoje, "%d-%m-%Y"), pont.disciplina_id.disciplina_id.name, pont.disciplina_id.curso_id.name)
             if insc.info:
                 info = u"%s\n%s" % (insc.info, info)
-            inscricao_model.write(cr, uid, insc.id, {"info": info})
+            inscricao_model.write(cr, uid)
             self._create_doc_discente(cr, pont, "reserva", context, False)
         self.write(cr, uid, ids, {"state": "reserva", "is_active": False}, context=context)
         return self.conf_view(cr, uid, res_id, context)

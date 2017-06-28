@@ -47,7 +47,7 @@ class ud_solicitacao_responsavel (osv.osv):
             print user
         novo_grupo = grupo.users
         novo_grupo.append(grupo)
-        self.pool.get("res.groups").write(cr, uid, [group_id], {"users":novo_grupo})
+        self.pool.get("res.groups").write(cr, uid)
 
     _constraints = [(nome, "Criado", ["Salvar"])]
     

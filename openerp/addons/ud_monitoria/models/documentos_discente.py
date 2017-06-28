@@ -179,8 +179,7 @@ class DocumentosDiscente(osv.Model):
         self.remove_grupo_monitor(cr, uid, ids, context)
         super(DocumentosDiscente, self).unlink(cr, uid, ids, context)
         if perfis:
-            perfil_model.write(cr, SUPERUSER_ID, perfis,
-                               {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False}, context)
+            perfil_model.write(cr, SUPERUSER_ID)
         return True
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):

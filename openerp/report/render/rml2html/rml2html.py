@@ -412,7 +412,7 @@ class _rml_doc(object):
             <input type="button" value="prev" onclick="prevData();">
 
         </body></html>'''%(list_story,tag,list_story[0])
-        out.write( self.result)
+        out.write(self.result)
 
 def parseString(data,localcontext = {}, fout=None):
     r = _rml_doc(data, localcontext)

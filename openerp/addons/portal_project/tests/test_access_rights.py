@@ -131,7 +131,7 @@ class TestPortalProject(common.TransactionCase):
         # Test: all project tasks readable
         self.project_task.read(cr, self.user_alfred_id, task_ids, ['name'])
         # Test: all project tasks writable
-        self.project_task.write(cr, self.user_alfred_id, task_ids, {'description': 'TestDescription'})
+        self.project_task.write(cr, self.user_alfred_id)
 
         # Do: Bert reads project -> crash, no group
         self.assertRaises(except_orm, self.project_project.read,
@@ -173,7 +173,7 @@ class TestPortalProject(common.TransactionCase):
         # ----------------------------------------
         # CASE2: portal project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'portal'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ok (employee ok public)
         self.project_project.read(cr, self.user_alfred_id, pigs_id, ['name'])
@@ -213,7 +213,7 @@ class TestPortalProject(common.TransactionCase):
         # ----------------------------------------
         # CASE3: employee project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'employees'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ok (employee ok employee)
         self.project_project.read(cr, self.user_alfred_id, pigs_id, ['name'])
@@ -244,7 +244,7 @@ class TestPortalProject(common.TransactionCase):
         # ----------------------------------------
         # CASE4: followers project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'followers'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ko (employee ko followers)
         self.assertRaises(except_orm, self.project_project.read,

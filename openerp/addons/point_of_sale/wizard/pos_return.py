@@ -80,7 +80,7 @@ class pos_return(osv.osv_memory):
             for record in current_rec.pos_moves_ids:
                 if pos_line.id == record.line_id:
                     less_qty = record.quantity
-                    line_obj.write(cr, uid, pos_line.id, {'qty':pos_line.qty - less_qty}, context=context)
+                    line_obj.write(cr, uid, context=context)
         return {
             'name': _('Add Product'),
             'view_type': 'form',
@@ -156,7 +156,7 @@ class pos_return(osv.osv_memory):
                                                              and order_id.partner_id.property_account_payable.id or account_def.id,
                                                 'amount': -amount,
                                                 })
-                order_obj.write(cr,uid, [active_id,new_order], {'state': 'done'})
+                order_obj.write(cr, uid)
                 wf_service.trg_validate(uid, 'stock.picking', new_picking, 'button_confirm', cr)
                 picking_obj.force_assign(cr, uid, [new_picking], context)
             act = {
@@ -234,7 +234,7 @@ class add_product(osv.osv_memory):
 
                 wf_service.trg_validate(uid, 'stock.picking', new_picking, 'button_confirm', cr)
                 picking_obj.force_assign(cr, uid, [new_picking], context)
-                order_obj.write(cr,uid,active_id,{'picking_id':new_picking})
+                order_obj.write(cr, uid)
 
         return {
             'name': _('Add Product'),
@@ -290,9 +290,7 @@ class add_product(osv.osv_memory):
                 if line.id:
                     if data.has_key(key):
                         qty = data[key]
-                        lines_obj.write(cr,uid,[line.id], {
-                                'qty':line.qty-(data[key] or 0.0)
-                        })
+                        lines_obj.write(cr, uid)
                     else:
                         qty = line.qty
                     stock_move_obj.create(cr, uid, {

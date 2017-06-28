@@ -541,7 +541,7 @@ class purchase_order(osv.osv):
                 inv_line_id = inv_line_obj.create(cr, uid, inv_line_data, context=context)
                 inv_lines.append(inv_line_id)
 
-                po_line.write({'invoice_lines': [(4, inv_line_id)]}, context=context)
+                po_line.write({'invoice_lines': [(4, inv_line_id)]}, user=context)
 
             # get invoice data and create invoice
             inv_data = {
@@ -564,7 +564,7 @@ class purchase_order(osv.osv):
             inv_obj.button_compute(cr, uid, [inv_id], context=context, set_total=True)
 
             # Link this new invoice to related purchase order
-            order.write({'invoice_ids': [(4, inv_id)]}, context=context)
+            order.write({'invoice_ids': [(4, inv_id)]}, user=context)
             res = inv_id
         return res
 
@@ -1294,7 +1294,7 @@ class account_invoice(osv.Model):
                 if any(line.invoice_id.state not in ['draft', 'cancel'] for line in po_line.invoice_lines):
                     invoiced.append(po_line.id)
             if invoiced:
-                self.pool['purchase.order.line'].write(cr, uid, invoiced, {'invoiced': True})
+                self.pool['purchase.order.line'].write(cr, uid)
             wf_service.trg_write(uid, 'purchase.order', order.id, cr)
         return res
 

@@ -265,7 +265,7 @@ class hr_expense_expense(osv.osv):
             # post the journal entry if 'Skip 'Draft' State for Manual Entries' is checked
             if journal_id.entry_posted:
                 move_obj.button_validate(cr, uid, [move_id], context)
-            move_obj.write(cr, uid, [move_id], {'line_id': lines}, context=context)
+            move_obj.write(cr, uid, context=context)
             self.write(cr, uid, ids, {'account_move_id': move_id, 'state': 'done'}, context=context)
         return True
 
@@ -477,7 +477,7 @@ class account_move_line(osv.osv):
                         if aml.account_id.type == 'payable' and not currency_obj.is_zero(cr, uid, expense.company_id.currency_id, aml.amount_residual):
                             new_status_is_paid = False
                     if new_status_is_paid:
-                        expense_obj.write(cr, uid, [expense.id], {'state': 'paid'}, context=context)
+                        expense_obj.write(cr, uid, context=context)
         return res
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

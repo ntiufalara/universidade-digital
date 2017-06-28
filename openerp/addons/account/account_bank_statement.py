@@ -37,7 +37,7 @@ class account_bank_statement(osv.osv):
         account_bank_statement_line_obj = self.pool.get('account.bank.statement.line')
         for statement in self.browse(cr, uid, ids, context):
             for idx, line in enumerate(statement.line_ids):
-                account_bank_statement_line_obj.write(cr, uid, [line.id], {'sequence': idx + 1}, context=context)
+                account_bank_statement_line_obj.write(cr, uid, context=context)
         return res
 
     def _default_journal_id(self, cr, uid, context=None):
@@ -339,9 +339,7 @@ class account_bank_statement(osv.osv):
 
         move_vals = self._prepare_move(cr, uid, st_line, st_line_number, context=context)
         move_id = account_move_obj.create(cr, uid, move_vals, context=context)
-        account_bank_statement_line_obj.write(cr, uid, [st_line.id], {
-            'move_ids': [(4, move_id, False)]
-        })
+        account_bank_statement_line_obj.write(cr, uid)
         torec = []
         acc_cur = ((st_line.amount<=0) and st.journal_id.default_debit_account_id) or st_line.account_id
 

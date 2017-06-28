@@ -71,7 +71,7 @@ class TestPortalIssueProject(TestPortalProject):
         # Test: all project issues readable
         self.project_issue.read(cr, self.user_alfred_id, issue_ids, ['name'])
         # Test: all project issues writable
-        self.project_issue.write(cr, self.user_alfred_id, issue_ids, {'description': 'TestDescription'})
+        self.project_issue.write(cr, self.user_alfred_id)
 
         # Do: Bert reads project -> crash, no group
         # Test: no project issue visible
@@ -104,7 +104,7 @@ class TestPortalIssueProject(TestPortalProject):
         # ----------------------------------------
         # CASE2: portal project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'portal'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ok (employee ok public)
         # Test: all project issues visible
@@ -133,7 +133,7 @@ class TestPortalIssueProject(TestPortalProject):
         # ----------------------------------------
         # CASE3: employee project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'employees'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ok (employee ok employee)
         # Test: all project issues visible
@@ -150,7 +150,7 @@ class TestPortalIssueProject(TestPortalProject):
         # ----------------------------------------
         # CASE4: followers project
         # ----------------------------------------
-        self.project_project.write(cr, uid, [pigs_id], {'privacy_visibility': 'followers'})
+        self.project_project.write(cr, uid)
 
         # Do: Alfred reads project -> ko (employee ko followers)
         # Test: no project issue visible

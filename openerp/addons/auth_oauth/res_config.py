@@ -58,6 +58,6 @@ class base_config_settings(osv.TransientModel):
             'enabled':config.auth_oauth_facebook_enabled,
             'client_id':config.auth_oauth_facebook_client_id,
         }
-        self.pool.get('auth.oauth.provider').write(cr, uid, [google_id], rg)
-        self.pool.get('auth.oauth.provider').write(cr, uid, [facebook_id], rf)
+        self.pool.get('auth.oauth.provider').write(cr, uid)
+        self.pool.get('auth.oauth.provider').write(cr, uid)
 

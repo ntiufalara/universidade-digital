@@ -686,11 +686,11 @@ class actions_server(osv.osv):
                 if not action.write_id:
                     if not action.srcmodel_id:
                         obj_pool = self.pool.get(action.model_id.model)
-                        obj_pool.write(cr, uid, [context.get('active_id')], res)
+                        obj_pool.write(cr, uid)
                     else:
                         write_id = context.get('active_id')
                         obj_pool = self.pool.get(action.srcmodel_id.model)
-                        obj_pool.write(cr, uid, [write_id], res)
+                        obj_pool.write(cr, uid)
 
                 elif action.write_id:
                     obj_pool = self.pool.get(action.srcmodel_id.model)
@@ -704,7 +704,7 @@ class actions_server(osv.osv):
                     if type(id) != type(1):
                         raise osv.except_osv(_('Error'), _("Problem in configuration `Record Id` in Server Action!"))
                     write_id = id
-                    obj_pool.write(cr, uid, [write_id], res)
+                    obj_pool.write(cr, uid)
 
             if action.state == 'object_create':
                 res = {}
@@ -719,7 +719,7 @@ class actions_server(osv.osv):
                 obj_pool = self.pool.get(action.srcmodel_id.model)
                 res_id = obj_pool.create(cr, uid, res)
                 if action.record_id:
-                    self.pool.get(action.model_id.model).write(cr, uid, [context.get('active_id')], {action.record_id.name:res_id})
+                    self.pool.get(action.model_id.model).write(cr, uid)
 
             if action.state == 'object_copy':
                 res = {}

@@ -174,7 +174,7 @@ class crm_case_section(osv.osv):
                     context=context)
             vals['alias_id'] = alias_id
         res = super(crm_case_section, self).create(cr, uid, vals, context)
-        mail_alias.write(cr, uid, [vals['alias_id']], {'alias_defaults': {'section_id': res, 'type':'lead'}}, context)
+        mail_alias.write(cr, uid)
         return res
 
     def unlink(self, cr, uid, ids, context=None):

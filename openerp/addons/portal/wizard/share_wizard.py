@@ -131,19 +131,19 @@ class share_wizard_portal(osv.TransientModel):
                 for user in group.users:
                     new_line = {'user_id': user.id,
                                 'newly_created': False}
-                    wizard_data.write({'result_line_ids': [(0,0,new_line)]})
+                    wizard_data.write({'result_line_ids': [(0, 0, new_line)]})
 
         elif wizard_data.user_ids:
             # must take care of existing users, by adding them to the new group, which is super_result[0],
             # and adding the shortcut
             selected_user_ids = [x.id for x in wizard_data.user_ids]
-            self.pool.get('res.users').write(cr, UID_ROOT, selected_user_ids, {'groups_id': [(4, super_result[0])]})
+            self.pool.get('res.users').write(cr, UID_ROOT)
             self._setup_action_and_shortcut(cr, uid, wizard_data, selected_user_ids, make_home=False, context=context)
             # populate the result lines for existing users too
             for user in wizard_data.user_ids:
                 new_line = { 'user_id': user.id,
                              'newly_created': False}
-                wizard_data.write({'result_line_ids': [(0,0,new_line)]})
+                wizard_data.write({'result_line_ids': [(0, 0, new_line)]})
 
         return super_result
 
@@ -160,7 +160,7 @@ class share_wizard_portal(osv.TransientModel):
             # Link the rules to the group. This is appropriate because as of
             # v6.1, the algorithm for combining them will OR the rules, hence
             # extending the visible data.
-            Rules.write(cr, UID_ROOT, share_rule_ids, {'groups': [(4,target_group.id)]})
+            Rules.write(cr, UID_ROOT)
             _logger.debug("Linked sharing rules from temporary sharing group to group %s", target_group)
 
             # Copy the access rights. This is appropriate too because
@@ -171,7 +171,7 @@ class share_wizard_portal(osv.TransientModel):
             _logger.debug("Copied access rights from temporary sharing group to group %s", target_group)
 
         # finally, delete it after removing its users
-        Groups.write(cr, UID_ROOT, [share_group_id], {'users': [(6,0,[])]})
+        Groups.write(cr, UID_ROOT)
         Groups.unlink(cr, UID_ROOT, [share_group_id])
         _logger.debug("Deleted temporary sharing group %s", share_group_id)
 

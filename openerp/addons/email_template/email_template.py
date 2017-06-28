@@ -407,7 +407,7 @@ class email_template(osv.osv):
             attachment_ids.append(ir_attachment.create(cr, uid, attachment_data, context=context))
         if attachment_ids:
             values['attachment_ids'] = [(6, 0, attachment_ids)]
-            mail_mail.write(cr, uid, msg_id, {'attachment_ids': [(6, 0, attachment_ids)]}, context=context)
+            mail_mail.write(cr, uid, context=context)
 
         if force_send:
             mail_mail.send(cr, uid, [msg_id], recipient_ids=recipient_ids, context=context)

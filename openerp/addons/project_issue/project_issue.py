@@ -377,7 +377,7 @@ class project_issue(base_stage, osv.osv):
             }
             message = _("Project issue <b>converted</b> to task.")
             self.message_post(cr, uid, [bug.id], body=message, context=context)
-            case_obj.write(cr, uid, [bug.id], vals, context=context)
+            case_obj.write(cr, uid, context=context)
 
         return  {
             'name': _('Tasks'),
@@ -488,7 +488,7 @@ class project_issue(base_stage, osv.osv):
                 if case.project_id.project_escalation_id.user_id:
                     data['user_id'] = case.project_id.project_escalation_id.user_id.id
                 if case.task_id:
-                    self.pool.get('project.task').write(cr, uid, [case.task_id.id], {'project_id': data['project_id'], 'user_id': False})
+                    self.pool.get('project.task').write(cr, uid)
             else:
                 raise osv.except_osv(_('Warning!'), _('You cannot escalate this issue.\nThe relevant Project has not configured the Escalation Project!'))
             self.case_set(cr, uid, ids, 'draft', data, context=context)

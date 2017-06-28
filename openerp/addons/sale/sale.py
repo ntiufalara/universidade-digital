@@ -406,7 +406,7 @@ class sale_order(osv.osv):
         inv_id = inv_obj.create(cr, uid, inv, context=context)
         data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv['payment_term'], time.strftime(DEFAULT_SERVER_DATE_FORMAT))
         if data.get('value', False):
-            inv_obj.write(cr, uid, [inv_id], data['value'], context=context)
+            inv_obj.write(cr, uid, context=context)
         inv_obj.button_compute(cr, uid, [inv_id])
         return inv_id
 
@@ -532,7 +532,7 @@ class sale_order(osv.osv):
                 #remove last '|' in invoice_ref
                 if len(invoice_ref) >= 1: 
                     invoice_ref = invoice_ref[:-1]
-                invoice.write(cr, uid, [res], {'origin': invoice_ref, 'name': invoice_ref})
+                invoice.write(cr, uid)
             else:
                 for order, il in val:
                     res = self._make_invoice(cr, uid, order, il, context=context)
@@ -568,8 +568,7 @@ class sale_order(osv.osv):
             for r in self.read(cr, uid, ids, ['invoice_ids']):
                 for inv in r['invoice_ids']:
                     wf_service.trg_validate(uid, 'account.invoice', inv, 'invoice_cancel', cr)
-            sale_order_line_obj.write(cr, uid, [l.id for l in  sale.order_line],
-                    {'state': 'cancel'})
+            sale_order_line_obj.write(cr, uid)
         self.write(cr, uid, ids, {'state': 'cancel'})
         return True
 

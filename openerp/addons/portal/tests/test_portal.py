@@ -45,7 +45,7 @@ class test_portal(TestMailBase):
                         {'mail_create_nolog': True})
 
         # Set an email address for the user running the tests, used as Sender for outgoing mails
-        self.res_users.write(cr, uid, uid, {'email': 'test@localhost'})
+        self.res_users.write(cr, uid)
 
     @mute_logger('openerp.addons.base.ir.ir_model', 'openerp.osv.orm')
     def test_00_mail_access_rights(self):

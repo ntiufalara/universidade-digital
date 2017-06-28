@@ -386,22 +386,21 @@ class TinyPoFile(object):
                           "msgstr \"\"\n" \
                           '''"Project-Id-Version: %(project)s %(version)s\\n"\n''' \
                           '''"Report-Msgid-Bugs-To: \\n"\n''' \
-                          '''"POT-Creation-Date: %(now)s\\n"\n'''        \
-                          '''"PO-Revision-Date: %(now)s\\n"\n'''         \
+                          '''"POT-Creation-Date: %(now)s\\n"\n''' \
+                          '''"PO-Revision-Date: %(now)s\\n"\n''' \
                           '''"Last-Translator: <>\\n"\n''' \
-                          '''"Language-Team: \\n"\n'''   \
+                          '''"Language-Team: \\n"\n''' \
                           '''"MIME-Version: 1.0\\n"\n''' \
-                          '''"Content-Type: text/plain; charset=UTF-8\\n"\n'''   \
-                          '''"Content-Transfer-Encoding: \\n"\n'''       \
-                          '''"Plural-Forms: \\n"\n'''    \
+                          '''"Content-Type: text/plain; charset=UTF-8\\n"\n''' \
+                          '''"Content-Transfer-Encoding: \\n"\n''' \
+                          '''"Plural-Forms: \\n"\n''' \
                           "\n"
 
-                          % { 'project': release.description,
-                              'version': release.version,
-                              'modules': reduce(lambda s, m: s + "#\t* %s\n" % m, modules, ""),
-                              'now': datetime.utcnow().strftime('%Y-%m-%d %H:%M')+"+0000",
-                            }
-                          )
+                          % {'project': release.description,
+                             'version': release.version,
+                             'modules': reduce(lambda s, m: s + "#\t* %s\n" % m, modules, ""),
+                             'now': datetime.utcnow().strftime('%Y-%m-%d %H:%M') + "+0000",
+                             })
 
     def write(self, modules, tnrs, source, trad, comments=None):
 

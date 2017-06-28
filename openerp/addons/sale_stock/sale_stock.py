@@ -192,7 +192,7 @@ class sale_order(osv.osv):
         res = super(sale_order,self).action_invoice_create( cr, uid, ids, grouped=grouped, states=states, date_invoice = date_invoice, context=context)
         for order in self.browse(cr, uid, ids, context=context):
             if order.order_policy == 'picking':
-                picking_obj.write(cr, uid, map(lambda x: x.id, order.picking_ids), {'invoice_state': 'invoiced'})
+                picking_obj.write(cr, uid)
         return res
 
     def action_cancel(self, cr, uid, ids, context=None):
@@ -280,9 +280,9 @@ class sale_order(osv.osv):
                         if line.state != 'exception':
                             write_cancel_ids.append(line.id)
         if write_done_ids:
-            self.pool.get('sale.order.line').write(cr, uid, write_done_ids, {'state': 'done'})
+            self.pool.get('sale.order.line').write(cr, uid)
         if write_cancel_ids:
-            self.pool.get('sale.order.line').write(cr, uid, write_cancel_ids, {'state': 'exception'})
+            self.pool.get('sale.order.line').write(cr, uid)
 
         if mode == 'finished':
             return finished
@@ -373,8 +373,8 @@ class sale_order(osv.osv):
                     product_qty -= move.product_qty
                     product_uos_qty -= move.product_uos_qty
                 if product_qty > 0 or product_uos_qty > 0:
-                    move_obj.write(cr, uid, [move_id], {'product_qty': product_qty, 'product_uos_qty': product_uos_qty})
-                    proc_obj.write(cr, uid, [proc_id], {'product_qty': product_qty, 'product_uos_qty': product_uos_qty})
+                    move_obj.write(cr, uid)
+                    proc_obj.write(cr, uid)
                 else:
                     current_move.unlink()
                     proc_obj.unlink(cr, uid, [proc_id])
@@ -469,7 +469,7 @@ class sale_order(osv.osv):
                 if line.state == 'exception':
                     towrite.append(line.id)
                 if towrite:
-                    self.pool.get('sale.order.line').write(cr, uid, towrite, {'state': 'done'}, context=context)
+                    self.pool.get('sale.order.line').write(cr, uid, context=context)
             res = self.write(cr, uid, [order.id], val)
         return True
 

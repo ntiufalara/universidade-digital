@@ -57,9 +57,9 @@ class project_timebox_empty(osv.osv_memory):
             else:
                 up.append(task.id)
         if up:
-            obj_task.write(cr, uid, up, {'timebox_id':ids[0]})
+            obj_task.write(cr, uid)
         if close:
-            obj_task.write(cr, uid, close, {'timebox_id':False})
+            obj_task.write(cr, uid)
         return {}
 
 project_timebox_empty()

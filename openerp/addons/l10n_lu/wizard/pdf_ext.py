@@ -74,10 +74,10 @@ def extract_keys(lines):
 def write_field(out, key, value):
     out.write("<<\n")
     if value:
-        out.write("/V (%s)\n" %value)
+        out.write("/V (%s)\n" % value)
     else:
         out.write("/V /\n")
-    out.write("/T (%s)\n" % output_field(key) )
+    out.write("/T (%s)\n" % output_field(key))
     out.write(">> \n")
 
 def write_fields(out, fields):

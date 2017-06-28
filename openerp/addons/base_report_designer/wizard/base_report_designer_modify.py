@@ -97,10 +97,7 @@ class base_report_file_sxw(osv.osv_memory):
         sxwval = StringIO.StringIO(base64.decodestring(data['file_sxw_upload']))
         fp = tools.file_open('normalized_oo2rml.xsl',subdir='addons/base_report_designer/openerp_sxw2rml')
         newrmlcontent = str(openerp_sxw2rml.sxw2rml(sxwval, xsl=fp.read()))
-        report = self.pool.get('ir.actions.report.xml').write(cr, uid, [data['report_id']], {
-            'report_sxw_content': base64.decodestring(data['file_sxw_upload']),
-            'report_rml_content': newrmlcontent
-        })
+        report = self.pool.get('ir.actions.report.xml').write(cr, uid)
         cr.commit()
         data_obj = self.pool.get('ir.model.data')
         id2 = data_obj._get_id(cr, uid, 'base_report_designer', 'view_base_report_file_rml')

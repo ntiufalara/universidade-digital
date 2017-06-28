@@ -494,7 +494,7 @@ class hr_job(osv.osv):
                           context=context)
             vals['alias_id'] = alias_id
         res = super(hr_job, self).create(cr, uid, vals, context)
-        mail_alias.write(cr, uid, [vals['alias_id']], {"alias_defaults": {'job_id': res}}, context)
+        mail_alias.write(cr, uid)
         return res
 
     def unlink(self, cr, uid, ids, context=None):

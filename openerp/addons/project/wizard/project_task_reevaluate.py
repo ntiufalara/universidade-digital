@@ -76,7 +76,7 @@ class project_task_reevaluate(osv.osv_memory):
         task_id = context.get('active_id')
         if task_id:
             task_pool = self.pool.get('project.task')
-            task_pool.write(cr, uid, task_id, {'remaining_hours': data.remaining_hours})
+            task_pool.write(cr, uid)
             if context.get('button_reactivate'):
                 task_pool.do_reopen(cr, uid, [task_id], context=context)
         return {'type': 'ir.actions.act_window_close'}

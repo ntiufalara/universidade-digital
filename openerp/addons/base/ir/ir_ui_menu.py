@@ -231,7 +231,7 @@ class ir_ui_menu(osv.osv):
             ('key2', '=', 'tree_but_open'), ('res_id', '=', menu_id)],
             context=context)
         if value and values_ids:
-            ir_values_obj.write(cursor, user, values_ids, {'value': value}, context=ctx)
+            ir_values_obj.write(cursor, user, context=ctx)
         elif value:
             # no values_ids, create binding
             ir_values_obj.create(cursor, user, {

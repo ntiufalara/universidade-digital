@@ -575,7 +575,7 @@ class Employee(osv.osv):
                     dados["login"] = pessoa.cpf.replace(".", "").replace("-", "")
                 usuario = usuario or pessoa.user_id.id
                 if usuario and dados:
-                    user_model.write(cr, SUPERUSER_ID, usuario, dados, context)
+                    user_model.write(cr, SUPERUSER_ID)
 
     def _get_default_image(self, cr, uid, context=None):
         """

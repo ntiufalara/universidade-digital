@@ -55,17 +55,13 @@ class stock_split_into(osv.osv_memory):
                                     (move.product_id.name, move.product_id.id,))
             if quantity > 0:
                 move_obj.setlast_tracking(cr, uid, [move.id], context=context)
-                move_obj.write(cr, uid, [move.id], {
-                    'product_qty': quantity,
-                    'product_uos_qty': quantity,
-                    'product_uos': move.product_uom.id,
-                })
+                move_obj.write(cr, uid)
 
             if quantity_rest>0:
                 quantity_rest = move.product_qty - quantity
                 tracking_id = track_obj.create(cr, uid, {}, context=context)
                 if quantity == 0.0:
-                    move_obj.write(cr, uid, [move.id], {'tracking_id': tracking_id}, context=context)
+                    move_obj.write(cr, uid, context=context)
                 else:
                     default_val = {
                         'product_qty': quantity_rest,
@@ -76,7 +72,7 @@ class stock_split_into(osv.osv_memory):
                     }
                     current_move = move_obj.copy(cr, uid, move.id, default_val, context=context)
                     if inventory_id and current_move:
-                        inventory_obj.write(cr, uid, inventory_id, {'move_ids': [(4, current_move)]}, context=context)
+                        inventory_obj.write(cr, uid, context=context)
 
 
         return {'type': 'ir.actions.act_window_close'}

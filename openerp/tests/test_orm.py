@@ -42,7 +42,7 @@ class TestORM(common.TransactionCase):
 
         # Updating an already deleted record should raise, even as admin
         with self.assertRaises(Exception):
-            self.partner.write(cr, uid, [p1], {'name': 'foo'})
+            self.partner.write(cr, uid)
 
     @mute_logger('openerp.osv.orm')
     def testAccessFilteredRecords(self):
@@ -62,7 +62,7 @@ class TestORM(common.TransactionCase):
             self.partner.read(cr, uid2, [p1], ['name'])
         # write as unprivileged user
         with self.assertRaises(Exception):
-            self.partner.write(cr, uid2, [p1], {'name': 'foo'})
+            self.partner.write(cr, uid2)
         # unlink as unprivileged user
         with self.assertRaises(Exception):
             self.partner.unlink(cr, uid2, [p1])

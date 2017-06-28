@@ -1159,7 +1159,7 @@ class DataSet(openerpweb.Controller):
             return False
         # python 2.6 has no start parameter
         for i, id in enumerate(ids):
-            m.write(id, { field: i + offset })
+            m.write(id, {field: i + offset})
         return True
 
 class View(openerpweb.Controller):
@@ -1685,7 +1685,7 @@ class ExcelExport(ExportFormat, http.Controller):
         worksheet = workbook.add_sheet('Sheet 1')
 
         for i, fieldname in enumerate(fields):
-            worksheet.write(0, i, fieldname)
+            worksheet.write(0, i)
             worksheet.col(i).width = 8000 # around 220 pixels
 
         style = xlwt.easyxf('align: wrap yes')
@@ -1695,7 +1695,7 @@ class ExcelExport(ExportFormat, http.Controller):
                 if isinstance(cell_value, basestring):
                     cell_value = re.sub("\r", " ", cell_value)
                 if cell_value is False: cell_value = None
-                worksheet.write(row_index + 1, cell_index, cell_value, style)
+                worksheet.write(row_index + 1, cell_index)
 
         fp = StringIO()
         workbook.save(fp)

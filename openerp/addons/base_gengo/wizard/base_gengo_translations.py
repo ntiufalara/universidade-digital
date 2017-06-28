@@ -91,7 +91,7 @@ class base_gengo_translations(osv.osv_memory):
         try:
             res = []
             _, res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'base_gengo', xml_id)
-            cron_pool.write(cr, uid, [res], cron_vals, context=context)
+            cron_pool.write(cr, uid, context=context)
         except:
             #the cron job was not found, probably deleted previously, so we create it again using default values
             cron_vals.update({'numbercall': -1})
@@ -156,7 +156,7 @@ class base_gengo_translations(osv.osv_memory):
                         vals.update({'gengo_comment': gengo_comments})
                         up_comment += 1
                     if vals:
-                        translation_pool.write(cr, uid, term.id, vals)
+                        translation_pool.write(cr, uid)
                     _logger.info("Successfully Updated `%d` terms and %d Comments." % (up_term, up_comment ))
                 else:
                     _logger.warning("%s", 'Cannot retrieve the Gengo job ID for translation %s: %s' % (term.id, term.src))
@@ -176,7 +176,7 @@ class base_gengo_translations(osv.osv_memory):
                     vals.update({'value': res['body_tgt'], 'state': 'translated'})
                 else:
                     vals.update({'job_id': res['job_id'], 'state': 'inprogress'})
-                translation_pool.write(cr, uid, [t_id], vals, context=context)
+                translation_pool.write(cr, uid, context=context)
         return
 
     def pack_jobs_request(self, cr, uid, term_ids, context=None):

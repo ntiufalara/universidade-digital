@@ -52,7 +52,7 @@ class change_production_qty(osv.osv_memory):
     def _update_product_to_produce(self, cr, uid, prod, qty, context=None):
         move_lines_obj = self.pool.get('stock.move')
         for m in prod.move_created_ids:
-            move_lines_obj.write(cr, uid, [m.id], {'product_qty': qty})
+            move_lines_obj.write(cr, uid)
 
     def change_prod_qty(self, cr, uid, ids, context=None):
         """
@@ -71,7 +71,7 @@ class change_production_qty(osv.osv_memory):
         move_obj = self.pool.get('stock.move')
         for wiz_qty in self.browse(cr, uid, ids, context=context):
             prod = prod_obj.browse(cr, uid, record_id, context=context)
-            prod_obj.write(cr, uid, [prod.id], {'product_qty': wiz_qty.product_qty})
+            prod_obj.write(cr, uid)
             prod_obj.action_compute(cr, uid, [prod.id])
 
             for move in prod.move_lines:
@@ -81,7 +81,7 @@ class change_production_qty(osv.osv_memory):
                     bom_id = bom_obj._bom_find(cr, uid, prod.product_id.id, prod.product_uom.id)
                     if not bom_id:
                         raise osv.except_osv(_('Error!'), _("Cannot find bill of material for this product."))
-                    prod_obj.write(cr, uid, [prod.id], {'bom_id': bom_id})
+                    prod_obj.write(cr, uid)
                     bom_point = bom_obj.browse(cr, uid, [bom_id])[0]
 
                 if not bom_id:
@@ -93,11 +93,11 @@ class change_production_qty(osv.osv_memory):
                 product_move = dict((mv.product_id.id, mv.id) for mv in prod.picking_id.move_lines)
                 for r in product_details:
                     if r['product_id'] == move.product_id.id:
-                        move_obj.write(cr, uid, [move.id], {'product_qty': r['product_qty']})
+                        move_obj.write(cr, uid)
                     if r['product_id'] in product_move:
-                        move_obj.write(cr, uid, [product_move[r['product_id']]], {'product_qty': r['product_qty']})
+                        move_obj.write(cr, uid)
             if prod.move_prod_id:
-                move_obj.write(cr, uid, [prod.move_prod_id.id], {'product_qty' :  wiz_qty.product_qty})
+                move_obj.write(cr, uid)
             self._update_product_to_produce(cr, uid, prod, wiz_qty.product_qty, context=context)
         return {}
 

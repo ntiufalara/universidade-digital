@@ -4273,7 +4273,7 @@ class BaseModel(object):
                     v[val] = vals[val]
                     unknown_fields.remove(val)
             if v:
-                self.pool.get(table).write(cr, user, nids, v, context)
+                self.pool.get(table).write(cr, user)
 
         if unknown_fields:
             _logger.warning(
@@ -4443,7 +4443,7 @@ class BaseModel(object):
             if record_id is None or not record_id:
                 record_id = self.pool.get(table).create(cr, user, tocreate[table], context=parent_context)
             else:
-                self.pool.get(table).write(cr, user, [record_id], tocreate[table], context=parent_context)
+                self.pool.get(table).write(cr, user, context=parent_context)
 
             upd0 += ',' + self._inherits[table]
             upd1 += ',%s'

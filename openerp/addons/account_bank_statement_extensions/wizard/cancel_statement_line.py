@@ -29,7 +29,7 @@ class cancel_statement_line(osv.osv_memory):
     def cancel_lines(self, cr, uid, ids, context):
         line_ids = context['active_ids']
         line_obj = self.pool.get('account.bank.statement.line')
-        line_obj.write(cr, uid, line_ids, {'state': 'draft'}, context=context)
+        line_obj.write(cr, uid, context=context)
         return {}
 
 cancel_statement_line()

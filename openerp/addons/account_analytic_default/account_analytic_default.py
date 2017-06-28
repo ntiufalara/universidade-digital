@@ -115,7 +115,7 @@ class sale_order_line(osv.osv):
             rec = anal_def_obj.account_get(cr, uid, line.product_id.id, sale_line.order_id.partner_id.id, sale_line.order_id.user_id.id, time.strftime('%Y-%m-%d'), context=context)
 
             if rec:
-                inv_line_obj.write(cr, uid, [line.id], {'account_analytic_id': rec.analytic_id.id}, context=context)
+                inv_line_obj.write(cr, uid, context=context)
         return create_ids
 
 sale_order_line()

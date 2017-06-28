@@ -592,10 +592,7 @@ class crm_lead(base_stage, format_address, osv.osv):
         message = self.pool.get('mail.message')
         for opportunity in opportunities:
             for history in opportunity.message_ids:
-                message.write(cr, uid, history.id, {
-                        'res_id': opportunity_id,
-                        'subject' : _("From %s : %s") % (opportunity.name, history.subject)
-                }, context=context)
+                message.write(cr, uid, context=context)
 
         return True
 
@@ -771,7 +768,7 @@ class crm_lead(base_stage, format_address, osv.osv):
         res = False
         res_partner = self.pool.get('res.partner')
         if partner_id:
-            res_partner.write(cr, uid, partner_id, {'section_id': lead.section_id and lead.section_id.id or False})
+            res_partner.write(cr, uid)
             contact_id = res_partner.address_get(cr, uid, [partner_id])['default']
             res = lead.write({'partner_id': partner_id}, context=context)
             message = _("<b>Partner</b> set to <em>%s</em>." % (lead.partner_id.name))

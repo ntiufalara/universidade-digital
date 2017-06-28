@@ -175,10 +175,10 @@ class account_account_type(osv.osv):
         for key, financial_report in financial_report_ref.items():
             list_ids = [x.id for x in financial_report.account_type_ids]
             if account_type_id in list_ids:
-                obj_financial_report.write(cr, uid, [financial_report.id], {'account_type_ids': [(3, account_type_id)]})
+                obj_financial_report.write(cr, uid)
         #write it in the good place
         if field_value != 'none':
-            return obj_financial_report.write(cr, uid, [financial_report_ref[field_value].id], {'account_type_ids': [(4, account_type_id)]})
+            return obj_financial_report.write(cr, uid)
 
     _columns = {
         'name': fields.char('Account Type', size=64, required=True, translate=True),
@@ -429,9 +429,7 @@ class account_account(osv.osv):
         ], context=context)
         if move_id:
             move = move_obj.browse(cr, uid, move_id[0], context=context)
-            move_obj.write(cr, uid, move_id[0], {
-                name: diff+getattr(move,name)
-            }, context=context)
+            move_obj.write(cr, uid, context=context)
         else:
             if diff<0.0:
                 raise osv.except_osv(_('Error!'),_("Unable to adapt the initial balance (negative value)."))
@@ -1573,9 +1571,7 @@ class account_move(osv.osv):
                     continue
                 # Update the move lines (set them as valid)
 
-                obj_move_line.write(cr, uid, line_draft_ids, {
-                    'state': 'valid'
-                }, context, check=False)
+                obj_move_line.write(cr, uid, check=False)
 
                 account = {}
                 account2 = {}
@@ -1591,10 +1587,7 @@ class account_move(osv.osv):
                             code = account[line.account_id.id][0]
                             amount = account[line.account_id.id][1] * (line.debit + line.credit)
                         if (code or amount) and not (line.tax_code_id or line.tax_amount):
-                            obj_move_line.write(cr, uid, [line.id], {
-                                'tax_code_id': code,
-                                'tax_amount': amount
-                            }, context, check=False)
+                            obj_move_line.write(cr, uid, check=False)
             elif journal.centralisation:
                 # If the move is not balanced, it must be centralised...
 
@@ -1607,17 +1600,13 @@ class account_move(osv.osv):
                 #
                 self._centralise(cr, uid, move, 'debit', context=context)
                 self._centralise(cr, uid, move, 'credit', context=context)
-                obj_move_line.write(cr, uid, line_draft_ids, {
-                    'state': 'valid'
-                }, context, check=False)
+                obj_move_line.write(cr, uid, check=False)
             else:
                 # We can't validate it (it's unbalanced)
                 # Setting the lines as draft
                 not_draft_line_ids = list(set(line_ids) - set(line_draft_ids))
                 if not_draft_line_ids:
-                    obj_move_line.write(cr, uid, not_draft_line_ids, {
-                        'state': 'draft'
-                    }, context, check=False)
+                    obj_move_line.write(cr, uid, check=False)
         # Create analytic lines for the valid moves
         for record in valid_moves:
             obj_move_line.create_analytic_lines(cr, uid, [line.id for line in record.line_id], context)
@@ -1680,10 +1669,7 @@ class account_move_reconcile(osv.osv):
                 else:
                     total += (line.debit or 0.0) - (line.credit or 0.0)
         if not total:
-            self.pool.get('account.move.line').write(cr, uid,
-                map(lambda x: x.id, rec.line_partial_ids),
-                {'reconcile_id': rec.id }
-            )
+            self.pool.get('account.move.line').write(cr, uid)
         return True
 
     def name_get(self, cr, uid, ids, context=None):
@@ -1953,7 +1939,7 @@ class account_tax(osv.osv):
     def write(self, cr, uid, ids, vals, context=None):
         if vals.get('type', False) and vals['type'] in ('none', 'code'):
             vals.update({'amount': 0.0})
-        return super(account_tax, self).write(cr, uid, ids, vals, context=context)
+        return super(account_tax, self).write(cr, uid, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
@@ -3267,7 +3253,7 @@ class wizard_multi_charts_accounts(osv.osv_memory):
                 property_ids = property_obj.search(cr, uid, [('name','=', record[0]),('company_id', '=', company_id)], context=context)
                 if property_ids:
                     #the property exist: modify it
-                    property_obj.write(cr, uid, property_ids, vals, context=context)
+                    property_obj.write(cr, uid, context=context)
                 else:
                     #create the property
                     property_obj.create(cr, uid, vals, context=context)
@@ -3355,10 +3341,7 @@ class wizard_multi_charts_accounts(osv.osv_memory):
         # writing account values on tax after creation of accounts
         for key,value in generated_tax_res['account_dict'].items():
             if value['account_collected_id'] or value['account_paid_id']:
-                obj_acc_tax.write(cr, uid, [key], {
-                    'account_collected_id': account_ref.get(value['account_collected_id'], False),
-                    'account_paid_id': account_ref.get(value['account_paid_id'], False),
-                })
+                obj_acc_tax.write(cr, uid)
 
         # Create Journals
         self.generate_journals(cr, uid, template_id, account_ref, company_id, context=context)
@@ -3391,10 +3374,10 @@ class wizard_multi_charts_accounts(osv.osv_memory):
         if not chart_template.complete_tax_set:
             value = obj_wizard.sale_tax_rate
             ref_tax_ids = obj_tax_temp.search(cr, uid, [('type_tax_use','in', ('sale','all')), ('chart_template_id', 'in', all_parents)], context=context, order="sequence, id desc", limit=1)
-            obj_tax_temp.write(cr, uid, ref_tax_ids, {'amount': value/100.0, 'name': _('Tax %.2f%%') % value})
+            obj_tax_temp.write(cr, uid)
             value = obj_wizard.purchase_tax_rate
             ref_tax_ids = obj_tax_temp.search(cr, uid, [('type_tax_use','in', ('purchase','all')), ('chart_template_id', 'in', all_parents)], context=context, order="sequence, id desc", limit=1)
-            obj_tax_temp.write(cr, uid, ref_tax_ids, {'amount': value/100.0, 'name': _('Purchase Tax %.2f%%') % value})
+            obj_tax_temp.write(cr, uid)
         return True
 
     def execute(self, cr, uid, ids, context=None):
@@ -3410,17 +3393,15 @@ class wizard_multi_charts_accounts(osv.osv_memory):
         obj_wizard = self.browse(cr, uid, ids[0])
         company_id = obj_wizard.company_id.id
 
-        self.pool.get('res.company').write(cr, uid, [company_id], {'currency_id': obj_wizard.currency_id.id})
+        self.pool.get('res.company').write(cr, uid)
 
         # When we install the CoA of first company, set the currency to price types and pricelists
         if company_id==1:
             for ref in (('product','list_price'),('product','standard_price'),('product','list0'),('purchase','list0')):
                 try:
                     tmp2 = obj_data.get_object_reference(cr, uid, *ref)
-                    if tmp2: 
-                        self.pool.get(tmp2[0]).write(cr, uid, tmp2[1], {
-                            'currency_id': obj_wizard.currency_id.id
-                        })
+                    if tmp2:
+                        self.pool.get(tmp2[0]).write(cr, uid)
                 except ValueError:
                     pass
 

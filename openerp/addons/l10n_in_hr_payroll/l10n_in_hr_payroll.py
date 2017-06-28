@@ -116,7 +116,7 @@ class payroll_advice(osv.osv):
                             'bysal': line.total
                             }
                     advice_line_pool.create(cr, uid, advice_line, context=context)
-                payslip_pool.write(cr, uid, slip_ids, {'advice_id': advice.id}, context=context)
+                payslip_pool.write(cr, uid, context=context)
         return True
 
     def confirm_sheet(self, cr, uid, ids, context=None):

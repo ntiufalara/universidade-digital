@@ -123,7 +123,7 @@ class base_action_rule(osv.osv):
         if action.act_user_id and 'user_id' in model._all_columns:
             values['user_id'] = action.act_user_id.id
         if values:
-            model.write(cr, uid, record_ids, values, context=context)
+            model.write(cr, uid, context=context)
 
         if action.act_followers and hasattr(model, 'message_subscribe'):
             follower_ids = map(int, action.act_followers)

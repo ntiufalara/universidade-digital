@@ -155,7 +155,7 @@ class sale_advance_payment_inv(osv.osv_memory):
         inv_id = inv_obj.create(cr, uid, inv_values, context=context)
         inv_obj.button_reset_taxes(cr, uid, [inv_id], context=context)
         # add the invoice to the sales order's invoices
-        sale_obj.write(cr, uid, sale_id, {'invoice_ids': [(4, inv_id)]}, context=context)
+        sale_obj.write(cr, uid, context=context)
         return inv_id
 
 

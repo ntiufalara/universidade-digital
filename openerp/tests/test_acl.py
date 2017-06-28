@@ -66,21 +66,21 @@ class TestACL(common.TransactionCase):
         has_tech_feat = self.res_users.has_group(self.cr, self.demo_uid, GROUP_TECHNICAL_FEATURES)
         self.assertFalse(has_tech_feat, "`demo` user should not belong to the restricted group")
         self.assert_(self.res_partner.read(self.cr, self.demo_uid, [1], ['bank_ids']))
-        self.assert_(self.res_partner.write(self.cr, self.demo_uid, [1], {'bank_ids': []}))
+        self.assert_(self.res_partner.write(self.cr, self.demo_uid))
 
         # Now restrict access to the field and check it's forbidden
         self.res_partner._columns['bank_ids'].groups = GROUP_TECHNICAL_FEATURES
         with self.assertRaises(openerp.osv.orm.except_orm):
             self.res_partner.read(self.cr, self.demo_uid, [1], ['bank_ids'])
         with self.assertRaises(openerp.osv.orm.except_orm):
-            self.res_partner.write(self.cr, self.demo_uid, [1], {'bank_ids': []})
+            self.res_partner.write(self.cr, self.demo_uid)
 
         # Add the restricted group, and check that it works again
         self.tech_group.write({'users': [(4, self.demo_uid)]})
         has_tech_feat = self.res_users.has_group(self.cr, self.demo_uid, GROUP_TECHNICAL_FEATURES)
         self.assertTrue(has_tech_feat, "`demo` user should now belong to the restricted group")
         self.assert_(self.res_partner.read(self.cr, self.demo_uid, [1], ['bank_ids']))
-        self.assert_(self.res_partner.write(self.cr, self.demo_uid, [1], {'bank_ids': []}))
+        self.assert_(self.res_partner.write(self.cr, self.demo_uid))
 
         #cleanup
         self.tech_group.write({'users': [(3, self.demo_uid)]})

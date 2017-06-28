@@ -176,6 +176,6 @@ class plugin_handler(osv.osv_memory):
                 attach_ids.append(ir_attachment_obj.create(cr, uid, vals))
         mail_ids = mail_message.search(cr, uid, [('message_id', '=', message_id), ('res_id', '=', res_id), ('model', '=', model)])
         if mail_ids:
-            mail_message.write(cr, uid, mail_ids[0], {'attachment_ids': [(6, 0, attach_ids)], 'body': body_html})
+            mail_message.write(cr, uid)
         url = self._make_url(cr, uid, res_id, model)
         return (model, res_id, url, notify)

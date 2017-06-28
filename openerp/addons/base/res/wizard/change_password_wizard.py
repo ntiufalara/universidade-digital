@@ -55,7 +55,7 @@ class change_password_wizard(osv.TransientModel):
 
         self.pool.get('change.password.user').change_password_button(cr, uid, line_ids, context=context)
         # don't keep temporary password copies in the database longer than necessary
-        self.pool.get('change.password.user').write(cr, uid, line_ids, {'new_passwd': False}, context=context)
+        self.pool.get('change.password.user').write(cr, uid, context=context)
 
         if need_reload:
             return {
@@ -85,5 +85,5 @@ class change_password_user(osv.TransientModel):
 
     def change_password_button(self, cr, uid, ids, context=None):
         for user in self.browse(cr, uid, ids, context=context):
-            self.pool.get('res.users').write(cr, uid, user.user_id.id, {'password': user.new_passwd})
+            self.pool.get('res.users').write(cr, uid)
 

@@ -1027,7 +1027,7 @@ class account_move_line(osv.osv):
         all_moves = list(set(all_moves) - set(move_ids))
         if unlink_ids:
             if opening_reconciliation:
-                obj_move_rec.write(cr, uid, unlink_ids, {'opening_reconciliation': False})
+                obj_move_rec.write(cr, uid)
             obj_move_rec.unlink(cr, uid, unlink_ids)
             if len(all_moves) >= 2:
                 obj_move_line.reconcile_partial(cr, uid, all_moves, 'auto',context=context)
@@ -1095,7 +1095,7 @@ class account_move_line(osv.osv):
                     done.append(line.move_id.id)
                     move_obj.validate(cr, uid, [line.move_id.id], context)
                     if todo_date:
-                        move_obj.write(cr, uid, [line.move_id.id], {'date': todo_date}, context=context)
+                        move_obj.write(cr, uid, context=context)
         return result
 
     def _update_journal_check(self, cr, uid, journal_id, period_id, context=None):

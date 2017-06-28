@@ -1100,9 +1100,7 @@ class test_datetime(ImporterCase):
         """
         # write dummy tz in user (Asia/Hovd UTC+0700), should be superseded by
         # context
-        self.registry('res.users').write(
-            self.cr, openerp.SUPERUSER_ID, [openerp.SUPERUSER_ID],
-            {'tz': 'Asia/Hovd'})
+        self.registry('res.users').write(self.cr, openerp.SUPERUSER_ID)
 
         # UTC+1400
         result = self.import_(
@@ -1125,9 +1123,7 @@ class test_datetime(ImporterCase):
         should be used
         """
         # UTC +1000
-        self.registry('res.users').write(
-            self.cr, openerp.SUPERUSER_ID, [openerp.SUPERUSER_ID],
-            {'tz': 'Asia/Yakutsk'})
+        self.registry('res.users').write(self.cr, openerp.SUPERUSER_ID)
 
         result = self.import_(
             ['value'], [['2012-02-03 11:11:11']])
@@ -1140,9 +1136,7 @@ class test_datetime(ImporterCase):
         """ If there is no tz either in the context or on the user, falls back
         to UTC
         """
-        self.registry('res.users').write(
-            self.cr, openerp.SUPERUSER_ID, [openerp.SUPERUSER_ID],
-            {'tz': False})
+        self.registry('res.users').write(self.cr, openerp.SUPERUSER_ID)
 
         result = self.import_(['value'], [['2012-02-03 11:11:11']])
         self.assertFalse(result['messages'])

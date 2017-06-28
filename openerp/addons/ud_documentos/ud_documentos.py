@@ -831,8 +831,7 @@ class ud_documento_recebido(osv.osv):
                                  u"Não existe nenhuma pessoa cadastrada no núcleo vinculada ao seu login.")
         docs_enviados = self.read(cr, uid, ids, ["doc_enviado_id"], context=context, load="_classic_write")
         docs_enviados = map(lambda valor: valor.get("doc_enviado_id"), docs_enviados)
-        self.pool.get("ud.documento.enviado").write(cr, uid, docs_enviados, {"state": "recebido", "recebido_por": res},
-                                                    context=context)
+        self.pool.get("ud.documento.enviado").write(cr, uid, context=context)
         return self.write(cr, uid, ids, {"state": "recebido", "recebido_por": res}, context=context)
 
 

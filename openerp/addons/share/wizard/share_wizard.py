@@ -249,7 +249,7 @@ class share_wizard(osv.TransientModel):
                 if existing:
                     new_line = { 'user_id': existing[0],
                                  'newly_created': False}
-                    wizard_data.write({'result_line_ids': [(0,0,new_line)]})
+                    wizard_data.write({'result_line_ids': [(0, 0, new_line)]})
                     continue
                 new_pass = generate_random_pass()
                 user_id = user_obj.create(cr, UID_ROOT, {
@@ -265,7 +265,7 @@ class share_wizard(osv.TransientModel):
                 new_line = { 'user_id': user_id,
                              'password': new_pass,
                              'newly_created': True}
-                wizard_data.write({'result_line_ids': [(0,0,new_line)]})
+                wizard_data.write({'result_line_ids': [(0, 0, new_line)]})
                 created_ids.append(user_id)
 
         elif wizard_data.user_type == 'embedded':
@@ -283,7 +283,7 @@ class share_wizard(osv.TransientModel):
             new_line = { 'user_id': user_id,
                          'password': new_pass,
                          'newly_created': True}
-            wizard_data.write({'result_line_ids': [(0,0,new_line)]})
+            wizard_data.write({'result_line_ids': [(0, 0, new_line)]})
             created_ids.append(user_id)
 
         return created_ids, existing_ids
@@ -387,7 +387,7 @@ class share_wizard(osv.TransientModel):
                 # We do this only for new share users, as existing ones already have their initial home
                 # action. Resetting to the default menu does not work well as the menu is rather empty
                 # and does not contain the shortcuts in most cases.
-                user_obj.write(cr, UID_ROOT, [user_id], {'action_id': action_id})
+                user_obj.write(cr, UID_ROOT)
 
     def _get_recursive_relations(self, cr, uid, model, ttypes, relation_fields=None, suffix=None, context=None):
         """Returns list of tuples representing recursive relationships of type ``ttypes`` starting from
@@ -550,9 +550,7 @@ class share_wizard(osv.TransientModel):
                             _logger.debug("Copying rule %s (%s) on model %s with domain: %s", rule.name, rule.id, model.model, rule.domain_force)
                         else:
                             # otherwise we can simply link the rule to keep it dynamic
-                            rule_obj.write(cr, SUPERUSER_ID, [rule.id], {
-                                    'groups': [(4,group_id)]
-                                })
+                            rule_obj.write(cr, SUPERUSER_ID)
                             _logger.debug("Linking rule %s (%s) on model %s with domain: %s", rule.name, rule.id, model.model, rule.domain_force)
 
     def _check_personal_rule_or_duplicate(self, cr, group_id, rule, context=None):
@@ -574,7 +572,7 @@ class share_wizard(osv.TransientModel):
                                })
         _logger.debug("Duplicating rule %s (%s) (domain: %s) for modified access ", rule.name, rule.id, rule.domain_force)
         # then disconnect from group_id:
-        rule.write({'groups':[(3,group_id)]}) # disconnects, does not delete!
+        rule.write({'groups': [(3, group_id)]})  # disconnects, does not delete!
         return rule_obj.browse(cr, UID_ROOT, new_id, context=context)
 
     def _create_or_combine_sharing_rule(self, cr, current_user, wizard_data, group_id, model_id, domain, restrict=False, rule_name=None, context=None):
@@ -682,9 +680,7 @@ class share_wizard(osv.TransientModel):
         # Finally, setup the new action and shortcut for the users.
         if existing_ids:
             # existing users still need to join the new group
-            self.pool.get('res.users').write(cr, UID_ROOT, existing_ids, {
-                                                'groups_id': [(4,group_id)],
-                                             })
+            self.pool.get('res.users').write(cr, UID_ROOT)
             # existing user don't need their home action replaced, only a new shortcut
             self._setup_action_and_shortcut(cr, uid, wizard_data, existing_ids, make_home=False, context=context)
         if new_ids:

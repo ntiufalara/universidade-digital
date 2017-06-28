@@ -170,7 +170,7 @@ class mail_alias(osv.Model):
                 alias_vals['alias_force_thread_id'] = obj_data[alias_force_key]
             alias_vals['alias_defaults'] = dict((k, obj_data[v]) for k, v in alias_defaults.iteritems())
             alias_id = mail_alias.create_unique_alias(cr, SUPERUSER_ID, alias_vals, model_name=context.get('alias_model_name', child_model_name))
-            child_class_model.write(cr, SUPERUSER_ID, obj_data['id'], {'alias_id': alias_id})
+            child_class_model.write(cr, SUPERUSER_ID)
             _logger.info('Mail alias created for %s %s (uid %s)', child_model_name, obj_data[alias_key], obj_data['id'])
 
         # Finally attempt to reinstate the missing constraint

@@ -175,7 +175,7 @@ class mail_thread(osv.AbstractModel):
             elif command[0] == 0:
                 new.add(partner_obj.create(cr, uid, command[2], context=context))
             elif command[0] == 1:
-                partner_obj.write(cr, uid, [command[1]], command[2], context=context)
+                partner_obj.write(cr, uid, context=context)
                 new.add(command[1])
             elif command[0] == 2:
                 partner_obj.unlink(cr, uid, [command[1]], context=context)
@@ -717,7 +717,7 @@ class mail_thread(osv.AbstractModel):
             if partner_ids:
                 # postponed after message_post, because this is an external message and we don't want to create
                 # duplicate emails due to notifications
-                self.pool.get('mail.message').write(cr, uid, [new_msg_id], {'partner_ids': partner_ids}, context=context)
+                self.pool.get('mail.message').write(cr, uid, context=context)
 
         return thread_id
 
@@ -1015,7 +1015,7 @@ class mail_thread(osv.AbstractModel):
                                     ('author_id', '=', False)
                                 ], context=context)
                 if message_ids:
-                    mail_message_obj.write(cr, SUPERUSER_ID, message_ids, {'author_id': partner_info['partner_id']}, context=context)
+                    mail_message_obj.write(cr, SUPERUSER_ID, context=context)
         return result
 
     def message_post(self, cr, uid, thread_id, body='', subject=None, type='notification',
@@ -1249,7 +1249,7 @@ class mail_thread(osv.AbstractModel):
 
         # subtype_ids specified: update already subscribed partners
         if subtype_ids and fol_ids:
-            mail_followers_obj.write(cr, SUPERUSER_ID, fol_ids, {'subtype_ids': [(6, 0, subtype_ids)]}, context=context)
+            mail_followers_obj.write(cr, SUPERUSER_ID, context=context)
         # subtype_ids not specified: do not update already subscribed partner, fetch default subtypes for new partners
         if subtype_ids is None:
             subtype_ids = subtype_obj.search(

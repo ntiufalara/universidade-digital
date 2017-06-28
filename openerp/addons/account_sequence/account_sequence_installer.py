@@ -74,7 +74,7 @@ class account_sequence_installer(osv.osv_memory):
             if not journal.internal_sequence_id:
                 j_ids.append(journal.id)
         if j_ids:
-            jou_obj.write(cr, uid, j_ids, {'internal_sequence_id': ir_seq})
+            jou_obj.write(cr, uid)
         ir_values_obj = self.pool.get('ir.values')
         ir_values_obj.set(cr, uid, key='default', key2=False, name='internal_sequence_id', models =[('account.journal', False)], value=ir_seq)
         return res

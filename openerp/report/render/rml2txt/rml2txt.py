@@ -29,7 +29,7 @@ import utils
 Font_size= 10.0
 
 def verbose(text):
-    sys.stderr.write(text+"\n")
+    sys.stderr.write(text + "\n")
 
 
 class textbox(object):
@@ -464,7 +464,7 @@ class _rml_doc(object):
         else:
             self.result = "<cannot render w/o template>"
         self.result += '\n'
-        out.write( self.result)
+        out.write(self.result)
 
 def parseNode(rml, localcontext=None,fout=None, images=None, path='.',title=None):
     node = etree.XML(rml)

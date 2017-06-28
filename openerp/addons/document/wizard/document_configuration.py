@@ -39,11 +39,7 @@ class document_configuration(osv.osv_memory):
             else:
                 sale_dir_id = data_pool.create(cr, uid, {'name': 'Sale Orders'})
             mid = model_pool.search(cr, uid, [('model','=','sale.order')])
-            dir_pool.write(cr, uid, [sale_dir_id], {
-                'type':'ressource',
-                'ressource_type_id': mid[0],
-                'domain': '[]',
-            })
+            dir_pool.write(cr, uid)
             # Qutation
             dir_data_id = data_pool._get_id(cr, uid, 'document', 'dir_sale_order_quote')
             if dir_data_id:
@@ -51,11 +47,7 @@ class document_configuration(osv.osv_memory):
             else:
                 quta_dir_id = data_pool.create(cr, uid, {'name': 'Sale Quotations'})
 
-            dir_pool.write(cr, uid, [quta_dir_id], {
-                'type':'ressource',
-                'ressource_type_id': mid[0],
-                'domain': "[('state','=','draft')]",
-            })
+            dir_pool.write(cr, uid)
             # Sale Order Report
             order_report_data_id = data_pool._get_id(cr, uid, 'sale', 'report_sale_order')
             if order_report_data_id:
@@ -89,10 +81,7 @@ class document_configuration(osv.osv_memory):
                 product_dir_id = data_pool.create(cr, uid, {'name': 'Products'})
 
             mid = model_pool.search(cr, uid, [('model','=','product.product')])
-            dir_pool.write(cr, uid, [product_dir_id], {
-                'type':'ressource',
-                'ressource_type_id': mid[0],
-            })
+            dir_pool.write(cr, uid)
 
         if self.pool.get('account.analytic.account'):
             # Project
@@ -103,12 +92,7 @@ class document_configuration(osv.osv_memory):
                 project_dir_id = data_pool.create(cr, uid, {'name': 'Projects'})
 
             mid = model_pool.search(cr, uid, [('model','=','account.analytic.account')])
-            dir_pool.write(cr, uid, [project_dir_id], {
-                'type':'ressource',
-                'ressource_type_id': mid[0],
-                'domain': '[]',
-                'ressource_tree': 1
-        })
+            dir_pool.write(cr, uid)
 document_configuration()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -89,9 +89,7 @@ class procurement_order(osv.osv):
                 'note': _('Move for pulled procurement coming from original location %s, pull rule %s, via original Procurement %s (#%d)') % (proc.location_id.name, line.name, proc.name, proc.id),
             })
             if proc.move_id and proc.move_id.state in ('confirmed'):
-                move_obj.write(cr,uid, [proc.move_id.id],  {
-                    'state':'waiting'
-                }, context=context)
+                move_obj.write(cr, uid, context=context)
             proc_id = proc_obj.create(cr, uid, {
                 'name': line.name,
                 'origin': origin,
@@ -113,8 +111,7 @@ class procurement_order(osv.osv):
             wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
             wf_service.trg_validate(uid, 'procurement.order', proc_id, 'button_confirm', cr)
             if proc.move_id:
-                move_obj.write(cr, uid, [proc.move_id.id],
-                    {'location_id':proc.location_id.id})
+                move_obj.write(cr, uid)
             msg = _('Pulled from another location.')
             self.write(cr, uid, [proc.id], {'state':'running', 'message': msg})
             self.message_post(cr, uid, [proc.id], body=msg, context=context)
