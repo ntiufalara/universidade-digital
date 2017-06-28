@@ -15,6 +15,10 @@ regex_regra = compile("CASE .+ ELSE (?P<ord>\d+) END (?P<dir>(?:asc)|(?:desc))?"
 regex_clausula = compile("WHEN (?P<campo>\w+) *= *(?P<valor>'\w+') THEN (?P<ord>\d+)", IGNORECASE)
 regex_espacos = compile("\s+")
 
+_MESES = [("01", u"Janeiro"), ("02", u"Fevereiro"), ("03", u"Março"), ("04", u"Abril"), ("05", u"Maio"),
+              ("06", u"Junho"), ("07", u"julho"), ("08", u"Agosto"), ("09", u"Setembro"), ("10", u"Outubro"),
+              ("11", u"Novembro"), ("12", u"Dezembro")]
+
 
 class DocumentosDiscente(osv.Model):
     _name = "ud.monitoria.documentos.discente"
@@ -97,6 +101,8 @@ class DocumentosDiscente(osv.Model):
     _columns = {
         "inscricao_id": fields.many2one("ud.monitoria.inscricao", u"Inscrição", required=True, ondelete="restrict"),
         "discente_id": fields.related("inscricao_id", "discente_id", type="many2one", relation="ud.employee", readonly=True, string=u"Discente"),
+        "dados_bancarios_id": fields.many2one("ud.dados.bancarios", u"Dados Bancários", ondelete="restrict",
+                                              domain="[('ud_conta_id', '=', discente_id)]"),
         "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True, ondelete="restrict"),
         "orientador_id": fields.related("disciplina_id", "orientador_id", type="many2one", relation="ud.employee", string=u"Orientador"),
         "tutor": fields.boolean(u"Tutor?", help=u"Indica se o discente é um tutor, caso contrário, ele é um monitor"),
@@ -140,14 +146,19 @@ class DocumentosDiscente(osv.Model):
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("name", operator, name)], context=context)
-        discentes = self.pool.get("ud.monitoria.discente").search(
-            cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("pessoa_id", "in", pessoas)], context=context
+        perfis = self.pool.get("ud.perfil").search(
+            cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("ud_papel_id", "in", pessoas)], context=context
         )
-        args = [("discente_id", "in", discentes)] + (args or [])
+        inscricoes = self.pool.get("ud.monitoria.inscricao").search(cr, uid, [("perfil_id", "in", perfis)], context=context)
+
+        args = [("inscricao_id", "in", inscricoes)] + (args or [])
         ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
     def create(self, cr, uid, vals, context=None):
+        if not vals.get("dados_bancarios_id", False) and vals.get("inscricao_id", False):
+            insc = self.pool.get("ud.monitoria.inscricao").browse(cr, uid, vals["inscricao_id"], context)
+            vals["dados_bancarios_id"] = insc.dados_bancarios_id.id
         res = super(DocumentosDiscente, self).create(cr, uid, vals, context)
         self.get_create_relatorio_fim(cr, SUPERUSER_ID, res, context)
         self.add_grupo_monitor(cr, uid, res, context)
@@ -255,6 +266,22 @@ class DocumentosDiscente(osv.Model):
                                                                u" ao menos uma frequência aceita para cada mês")
         self.write(cr, uid, ids, {"is_active": False})
         return True
+
+    def reserva_para_bolsista(self, cr, uid, ids, context=None):
+        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True)], context):
+            raise osv.except_osv(
+                u"Registro inativo ou fora da reserva",
+                u"Esse recuros pode ser utilzado apenas em registros de discentes ativos e no cadastro de reserva"
+            )
+        return self.write(cr, uid, ids, {"state": 'bolsista'}, context)
+
+    def reserva_para_n_bolsista(self, cr, uid, ids, context=None):
+        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True)], context):
+            raise osv.except_osv(
+                u"Registro inativo ou fora da reserva",
+                u"Esse recuros pode ser utilzado apenas em registros de discentes ativos e no cadastro de reserva"
+            )
+        return self.write(cr, uid, ids, {"state": 'n_bolsista'}, context)
 
 
 class Horario(osv.Model):
@@ -370,6 +397,18 @@ class Relatorio(osv.Model):
 
     _STATES = [("analise", u"Em Análise"), ("rejeitado", u"Rejeitado"), ("aceito", u"Aceito")]
 
+    def valida_relatorios(self, cr, uid, ids, context=None):
+        for rel in self.browse(cr, uid, ids, context):
+            analise, aceito = 0, 0
+            for r in rel.documentos_id.relatorio_ids:
+                if r.state == "analise":
+                    analise += 1
+                elif r.state == "aceito":
+                    aceito += 1
+            if analise and aceito or analise > 1 or aceito > 1:
+                return False
+        return True
+
     _columns = {
         "id": fields.integer("ID", readonly=True, invisible=True),
         "relatorio_nome": fields.char(u"Nome Relatório", required=True, help=u"Relatório do discente"),
@@ -383,6 +422,10 @@ class Relatorio(osv.Model):
         "documentos_id": fields.many2one("ud.monitoria.documentos.discente", u"Documentos", ondelete="cascade",
                                         help=u"Documentos de um Discente", invisible=True),
     }
+
+    _constraints = [
+        (valida_relatorios, u"Não é possível criar novos relatórios enquanto houver outros registros em análise ou aceitos.", [u"Relatório"]),
+    ]
 
     def create(self, cr, uid, vals, context=None):
         vals["state"] = "analise"
@@ -439,10 +482,6 @@ class Frequencia(osv.Model):
     _name = "ud.monitoria.frequencia"
     _description = u"Frequência do monitor/tutor UD)"
     _order = "state"
-
-    _MESES = [("01", u"Janeiro"), ("02", u"Fevereiro"), ("03", u"Março"), ("04", u"Abril"), ("05", u"Maio"),
-              ("06", u"Junho"), ("07", u"julho"), ("08", u"Agosto"), ("09", u"Setembro"), ("10", u"Outubro"),
-              ("11", u"Novembro"), ("12", u"Dezembro")]
 
     _STATES = [("analise", u"Em Análise"), ("rejeitado", u"Rejeitado"), ("aceito", u"Aceito")]
 

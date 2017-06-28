@@ -25,12 +25,14 @@
             <field name="model">ud.monitoria.documentos.orientador</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Documentos" create="false">
+                <tree string="Documentos" create="false" colors="blue:is_active==True">
                     <field name="declaracao_nome" invisible="1"/>
                     <field name="certificado_nome" invisible="1"/>
                     <field name="disciplina_id"/>
+                    <field name="orientador_id"/>
                     <field name="declaracao" filename="declaracao_nome"/>
                     <field name="certificado" filename="certificado_nome"/>
+                    <field name="is_active" invisible="1"/>
                 </tree>
             </field>
         </record>

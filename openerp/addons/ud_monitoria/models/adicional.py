@@ -254,7 +254,7 @@ class Disciplina(osv.Model):
         disc = self.search(cr, uid, [("data_final", "<", datetime.utcnow().strftime("%Y-%m-%d")),
                                      ("is_active", "=", True)])
         if disc:
-            self.write(cr, SUPERUSER_ID, disc, context)
+            self.write(cr, SUPERUSER_ID, disc, {"is_active": False}, context)
         return True
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):

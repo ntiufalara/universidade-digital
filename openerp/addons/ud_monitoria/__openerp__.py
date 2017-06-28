@@ -23,7 +23,7 @@
 {
     "name": "Monitoria (UD)",
     "version": "1.0",
-    "category": u"Gerência de Monitores",
+    "category": u"Universidade Digital",
     "description": u"""Módulo de Monitoria
 ===================
 Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.""",
@@ -38,6 +38,7 @@ Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, su
         "wizards/inscricao_wizard_view.xml",
         "wizards/desligamento_wizard_view.xml",
         "wizards/relatorio_wizard_view.xml",
+        "wizards/alteracao_orientador_view.xml",
         # Views
         "views/adicional_view.xml",
         "views/registro_view.xml",
@@ -47,7 +48,6 @@ Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, su
         "views/menus_view.xml",
     ],
     "depends": ["base", "web_m2x_options", "ud", "ud_documentos"],
-
     "js": [
         "static/src/js/ud_monitoria.js",
     ],

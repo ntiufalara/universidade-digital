@@ -176,7 +176,9 @@ class AdicionarBolsaWizard(osv.TransientModel):
                     u"Multiplos vínculos",
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
-            perfil_model.write(cr, SUPERUSER_ID)
+            perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
+                "is_bolsista": True, "tipo_bolsa": "m", "valor_bolsa": ("%.2f" % add.valor_bolsa).replace(".", ",")
+            })
             add.doc_discente_id.write({"state": "bolsista", "is_active": True})
             get_banco(self, cr, add, add.doc_discente_id.discente_id.pessoa_id.id, context)
             evento = {
@@ -325,8 +327,12 @@ class TransferirBolsaWizard(osv.TransientModel):
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
             valor = perfil_de.valor_bolsa
-            perfil_model.write(cr, SUPERUSER_ID)
-            perfil_model.write(cr, SUPERUSER_ID)
+            perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
+                "is_bolsista": True, "tipo_bolsa": "m", "valor_bolsa": valor
+            })
+            perfil_model.write(cr, SUPERUSER_ID, perfil_de.id, {
+                "is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False
+            })
             transf.doc_discente_id_de.write({"state": "n_bolsista"})
             transf.doc_discente_id_para.write({"state": "bolsista", "is_active": True})
             get_banco(self, cr, transf, transf.doc_discente_id_para.discente_id.pessoa_id.id, context)
@@ -434,7 +440,9 @@ class RemoverBolsaWizard(osv.TransientModel):
                     u"Multiplos vínculos",
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
-            perfil_model.write(cr, SUPERUSER_ID)
+            perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
+                "is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False
+            })
             rem.doc_discente_id.write({"state": "n_bolsista"})
             evento = {
                 "responsavel_id": responsavel[0],
