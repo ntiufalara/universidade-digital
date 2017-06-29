@@ -84,7 +84,7 @@ def _initialize_db(serv, id, db_name, demo, lang, user_password):
 
         # update admin's password and lang
         values = {'password': user_password, 'lang': lang}
-        pool.get('res.users').write(cr, SUPERUSER_ID)
+        pool.get('res.users').write(cr, SUPERUSER_ID, [SUPERUSER_ID], values)
 
         cr.execute('SELECT login, password FROM res_users ORDER BY login')
         serv.actions[id].update(users=cr.dictfetchall(), clean=True)

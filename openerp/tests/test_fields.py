@@ -174,9 +174,9 @@ class TestPropertyField(common.TransactionCase):
             'email': 'partner@example.com',
             'company_id': parent_company_id,
         })
-        self.partner.write(cr, bob)
+        self.partner.write(cr, bob, [partner_id], {'property_country': country_fr})
         self.assertEqual(self.partner.browse(cr, bob, partner_id).property_country.id, country_fr, "Bob does not see the value he has set on the property field")
 
-        self.partner.write(cr, alice)
+        self.partner.write(cr, alice, [partner_id], {'property_country': country_be})
         self.assertEqual(self.partner.browse(cr, alice, partner_id).property_country.id, country_be, "Alice does not see the value he has set on the property field")
         self.assertEqual(self.partner.browse(cr, bob, partner_id).property_country.id, country_fr, "Changes made by Alice have overwritten Bob's value")

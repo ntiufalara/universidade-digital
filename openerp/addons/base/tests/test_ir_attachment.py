@@ -76,7 +76,7 @@ class test_ir_attachment(openerp.tests.common.TransactionCase):
         self.assertFalse(os.path.isfile(a2_fn))
 
         # update a4 blob2 by blob1
-        ira.write(cr, uid)
+        ira.write(cr, uid, [a4], {'datas': blob1_b64})
         a4_read = ira.read(cr, uid, [a4], ['datas'])
         self.assertEqual(a4_read[0]['datas'], blob1_b64)
 

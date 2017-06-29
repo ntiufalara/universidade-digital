@@ -116,7 +116,7 @@ class test_base(common.TransactionCase):
         self.assertFalse(ironshield.is_company, 'Partners are not companies by default')
         self.assertFalse(ironshield.use_parent_address, 'use_parent_address defaults to False')
         self.assertEqual(ironshield.type, 'contact', 'Default type must be "contact"')
-        ironshield.write({'type': 'default'})  # force default type to double-check sync
+        ironshield.write({'type': 'default'}) # force default type to double-check sync 
         p1 = self.res_partner.browse(cr, uid, self.res_partner.create(cr, uid,
                                                                       {'name': 'Isen Hardearth',
                                                                        'street': 'Strongarm Avenue, 12',
@@ -145,7 +145,7 @@ class test_base(common.TransactionCase):
         leaf111 = self.res_partner.browse(cr, uid, self.res_partner.create(cr, uid, {'name': 'Leaf 111',
                                                                                     'parent_id': branch11.id,
                                                                                     'type': 'delivery'}))
-        branch11.write({'is_company': False})  # force is_company after creating 1rst child
+        branch11.write({'is_company': False}) # force is_company after creating 1rst child
         branch2 = self.res_partner.browse(cr, uid, self.res_partner.create(cr, uid, {'name': 'Branch 2',
                                                                                      'parent_id': elmtree.id,
                                                                                      'is_company': True}))
@@ -414,7 +414,7 @@ class test_partner_recursion(common.TransactionCase):
     def test_110_res_partner_recursion_multi_update(self):
         """ multi-write on several partners in same hierarchy must not trigger a false cycle detection """
         cr, uid, p1, p2, p3 = self.cr, self.uid, self.p1, self.p2, self.p3
-        self.assertTrue(self.res_partner.write(cr, uid))
+        self.assertTrue(self.res_partner.write(cr, uid, [p1,p2,p3], {'phone': '123456'}))
 
 class test_translation(common.TransactionCase):
 

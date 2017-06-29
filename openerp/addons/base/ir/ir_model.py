@@ -941,12 +941,12 @@ class ir_model_data(osv.osv):
                     res_id,action_id = res_id2,imd_id2
 
         if action_id and res_id:
-            model_obj.write(cr, uid, context=context)
+            model_obj.write(cr, uid, [res_id], values, context=context)
             self.write(cr, uid, [action_id], {
                 'date_update': time.strftime('%Y-%m-%d %H:%M:%S'),
                 },context=context)
         elif res_id:
-            model_obj.write(cr, uid, context=context)
+            model_obj.write(cr, uid, [res_id], values, context=context)
             if xml_id:
                 self.create(cr, uid, {
                     'name': xml_id,

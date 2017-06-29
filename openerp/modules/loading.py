@@ -182,7 +182,7 @@ def load_module_graph(cr, graph, status=None, perform_checks=True, skip_modules=
         if hasattr(package, 'init') or hasattr(package, 'update') or package.state in ('to install', 'to upgrade'):
             if package.state=='to upgrade':
                 # upgrading the module information
-                modobj.write(cr, SUPERUSER_ID)
+                modobj.write(cr, SUPERUSER_ID, [module_id], modobj.get_values_from_terp(package.data))
             load_init_xml(module_name, idref, mode)
             load_update_xml(module_name, idref, mode)
             load_data(module_name, idref, mode)
@@ -211,7 +211,7 @@ def load_module_graph(cr, graph, status=None, perform_checks=True, skip_modules=
 
             ver = adapt_version(package.data['version'])
             # Set new modules and dependencies
-            modobj.write(cr, SUPERUSER_ID)
+            modobj.write(cr, SUPERUSER_ID, [module_id], {'state': 'installed', 'latest_version': ver})
             # Update translations for all installed languages
             modobj.update_translations(cr, SUPERUSER_ID, [module_id], None)
 

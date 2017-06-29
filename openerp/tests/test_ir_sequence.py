@@ -150,8 +150,10 @@ class test_ir_sequence_change_implementation(unittest2.TestCase):
         cr = cursor()
         ids = registry('ir.sequence').search(cr, ADMIN_USER_ID,
             [('code', 'in', ['test_sequence_type_3', 'test_sequence_type_4'])], {})
-        registry('ir.sequence').write(cr, ADMIN_USER_ID)
-        registry('ir.sequence').write(cr, ADMIN_USER_ID)
+        registry('ir.sequence').write(cr, ADMIN_USER_ID, ids,
+            {'implementation': 'standard'}, {})
+        registry('ir.sequence').write(cr, ADMIN_USER_ID, ids,
+            {'implementation': 'no_gap'}, {})
         cr.commit()
         cr.close()
 

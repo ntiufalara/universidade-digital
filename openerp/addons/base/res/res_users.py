@@ -302,7 +302,7 @@ class res_users(osv.osv):
     def create(self, cr, uid, vals, context=None):
         user_id = super(res_users, self).create(cr, uid, vals, context=context)
         user = self.browse(cr, uid, user_id, context=context)
-        if user.partner_id.company_id:
+        if user.partner_id.company_id: 
             user.partner_id.write({'company_id': user.company_id.id})
         return user_id
 
@@ -323,7 +323,7 @@ class res_users(osv.osv):
         if 'company_id' in values:
             for user in self.browse(cr, uid, ids, context=context):
                 # if partner is global we keep it that way
-                if user.partner_id.company_id and user.partner_id.company_id.id != values['company_id']:
+                if user.partner_id.company_id and user.partner_id.company_id.id != values['company_id']: 
                     user.partner_id.write({'company_id': user.company_id.id})
         # clear caches linked to the users
         self.pool.get('ir.model.access').call_cache_clearing_methods(cr)

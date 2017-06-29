@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import copy
 
 from openerp.osv import osv, fields
-import re
 from openerp.osv.orm import except_orm
 
 
@@ -15,17 +14,18 @@ class ud_biblioteca_publicacao(osv.osv):
     _name = "ud.biblioteca.publicacao"
 
     """
-    Atributo usado para salvar o Polo em caso de seleção manual (O sistema não envia valores de campos 'disabled')
+    Atributo usado para salvar o Polo em caso de seleção manual (O navegador não envia valores de campos 'disabled')
     """
     __polo_id = 0
 
-    _get_contato = lambda self, cr, uid, ids, field, **kwargs: self.get_contato(cr, uid, ids, field, kwargs)
+    _get_contato = lambda self, cr, uid, ids, field, *args, **kwargs: self.get_contato(cr, uid, ids, field, *args,
+                                                                                       **kwargs)
 
     _columns = {
         'name': fields.char(u'Título', required=True),
         'autor': fields.char(u'Autor', required=True),
-        'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', 'Autor'),
-        'contato': fields.function(_get_contato, type="text".encode('UTF-8'), string="Contato"),
+        'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', 'Autor', required=True),
+        'contato': fields.function(_get_contato, type="text".encode('UTF-8'), string="Contato", ),
         'ano_pub': fields.char(u'Ano de publicação', required=True),
         'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
         'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
@@ -49,7 +49,8 @@ class ud_biblioteca_publicacao(osv.osv):
             ('fotografia', "Fotografia"),
             ('outros', u"Outros")
         ), string=u'Tipo'),
-        'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', "Tipo"),
+        'categoria_cnpq_id': fields.many2one('ud.biblioteca.publicacao.categoria_cnpq', 'Categoria CNPQ'),
+        'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', "Tipo", required=True),
         "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
         'visualizacoes': fields.integer('Visualizações', required=True),
     }
@@ -62,24 +63,26 @@ class ud_biblioteca_publicacao(osv.osv):
         'visualizacoes': 0,
     }
 
-    def read(self, cr, uid, ids, **kwargs):
+    def read(self, cr, uid, ids, *args, **kwargs):
         """
-        Contador de leituras
+        Contador de Visualizações
         :param cr:
         :param uid:
         :param ids:
-        :param kwargs:
         :return:
         """
-        objs = self.browse(cr, uid, ids)
-        for obj in objs:
-            obj.visualizacoes += 1
-            obj.write(cr, uid, ids)
-        return super(ud_biblioteca_publicacao, self).read(cr, uid, ids, kwargs)
+        result = super(ud_biblioteca_publicacao, self).read(cr, uid, ids, *args, **kwargs)
+        if len(ids) == 1:
+            for obj in result:
+                if obj.get('visualizacoes') is not None:
+                    vals = {'visualizacoes': obj.get('visualizacoes') + 1}
+                    self.write(cr, uid, ids, vals)
+                    obj['visualizacoes'] = vals['visualizacoes']
+        return result
 
     def create(self, cr, user, vals, context=None):
         """
-        Recupera o polo para salvar
+        Recupera o polo antes de  salvar
         :param cr:
         :param user:
         :param vals:
@@ -88,7 +91,7 @@ class ud_biblioteca_publicacao(osv.osv):
         """
         if self.__polo_id != 0 and not vals.get('polo_id'):
             vals['polo_id'] = self.__polo_id
-        return super(ud_biblioteca_publicacao, self).create(cr, user, vals, context)
+        return super(osv.Model, self).create(cr, user, vals, context)
 
     def onchange_seleciona_polo(self, cr, uid, ids, polo_id):
         """
@@ -105,7 +108,7 @@ class ud_biblioteca_publicacao(osv.osv):
             'polo_id': polo_id
         }}
 
-    def get_contato(self, cr, uid, ids, field, **kwargs):
+    def get_contato(self, cr, uid, ids, field, *argsm, **kwargs):
         """
         Busca o contato do autor caso a publicações não seja autorizada
         :param cr:
@@ -170,6 +173,19 @@ class ud_biblioteca_publicacao(osv.osv):
             return obj.polo_id.id
 
 
+class ud_bilbioteca_publicacao_categoria_cnpq(osv.Model):
+    """
+    Nome: ud.biblioteca.publicacao.categoria_cnpq
+    Descrição: Cadastro de Categorias CNPQ
+    """
+    _name = 'ud.biblioteca.publicacao.categoria_cnpq'
+
+    _columns = {
+        'name': fields.char('Nome', required=True),
+        'publicacao_ids': fields.one2many('ud.biblioteca.publicacao', 'categoria_cnpq_id')
+    }
+
+
 # TODO: Registrar todos os trabalhos em seus novos tipos
 class ud_biblioteca_publicacao_tipo(osv.osv):
     '''
@@ -184,7 +200,6 @@ class ud_biblioteca_publicacao_tipo(osv.osv):
     }
 
 
-# TODO: REgistrar todos os autores para o novo tipo
 class ud_publicacao_autor(osv.osv):
     """
     Nome: ud.biblioteca.publicacao.autor
@@ -194,7 +209,7 @@ class ud_publicacao_autor(osv.osv):
 
     _columns = {
         'name': fields.char('Nome', required=True),
-        'contato': fields.text('Contato', required=True),
+        'contato': fields.text('Contato', required=False),
     }
 
 
@@ -282,11 +297,11 @@ class ud_biblioteca_pc(osv.osv):
         'publicacao_id': fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
     }
 
-    def write(self, cr, user, **kwargs):
-        # TODO: Verificar acentos
-        if hasattr(self, 'name') and self.name:
-            self.name = self._rec_name.lower()
-        return super(ud_biblioteca_pc, self).write(cr, user, kwargs)
+    # def write(self, cr, user, **kwargs):
+    #     # TODO: Verificar acentos
+    #     if hasattr(self, 'name') and self.name:
+    #         self.name = self._rec_name.lower()
+    #     return super(ud_biblioteca_pc, self).write(cr, user, **kwargs)
 
     def create(self, cr, user, vals, context=None):
         # TODO: Verificar acentos
