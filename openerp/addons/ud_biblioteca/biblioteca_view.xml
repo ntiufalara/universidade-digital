@@ -24,6 +24,8 @@
                                        widget="many2many_tags"/>
                                 <field name="palavras-chave_ids" widget="many2many_tags"
                                        placeholder="biotecnologia,microbiologia,irrigação,etc"/>
+                                <field name="contato"
+                                       attrs="{'invisible' : [('autorizar_publicacao', '=', True )], 'required' : [('autorizar_publicacao', '=', False)] }"/>
                             </group>
                             <group>
                                 <field name="autorizar_publicacao"/>
@@ -63,8 +65,9 @@
                     <field name="polo_id"/>
                     <field name="curso"/>
                     <field name="palavras-chave_ids"/>
-                    <field name="tipo_id" />
-                    <field name="categoria_cnpq_id" />
+                    <field name="tipo_id"/>
+                    <field name="categoria_cnpq_id"/>
+                    <field name="contato"/>
                     <group string="Agrupar Por...">
                         <filter string="Autor" domain="[]" context="{'group_by' : 'autor_id'}"/>
                         <filter string="Tipo" domain="[]" context="{'group_by' : 'tipo_id'}"/>

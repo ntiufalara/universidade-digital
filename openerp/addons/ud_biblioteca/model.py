@@ -18,14 +18,11 @@ class ud_biblioteca_publicacao(osv.osv):
     """
     __polo_id = 0
 
-    _get_contato = lambda self, cr, uid, ids, field, *args, **kwargs: self.get_contato(cr, uid, ids, field, *args,
-                                                                                       **kwargs)
-
     _columns = {
         'name': fields.char(u'Título', required=True),
-        'autor': fields.char(u'Autor', required=True),
+        'autor': fields.char(u'Autor'),
         'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', 'Autor', required=True),
-        'contato': fields.function(_get_contato, type="text".encode('UTF-8'), string="Contato", ),
+        'contato': fields.related('autor_id', 'contato', type="char", string="E-mail para contato"),
         'ano_pub': fields.char(u'Ano de publicação', required=True),
         'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
         'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
@@ -83,14 +80,21 @@ class ud_biblioteca_publicacao(osv.osv):
     def create(self, cr, user, vals, context=None):
         """
         Recupera o polo antes de  salvar
+        Salva o contato do Autor no objeto "Autor"
         :param cr:
         :param user:
         :param vals:
         :param context:
         :return:
         """
+        # Recuperando o Polo
         if self.__polo_id != 0 and not vals.get('polo_id'):
             vals['polo_id'] = self.__polo_id
+
+        # Salvando contato do autor
+        self.pool.get('ud.biblioteca.publicacao.autor').write(cr, user, [vals.get('autor_id')], {
+            'contato': vals.get('contato')
+        })
         return super(osv.Model, self).create(cr, user, vals, context)
 
     def onchange_seleciona_polo(self, cr, uid, ids, polo_id):
@@ -107,22 +111,6 @@ class ud_biblioteca_publicacao(osv.osv):
         return {"value": {
             'polo_id': polo_id
         }}
-
-    def get_contato(self, cr, uid, ids, field, *argsm, **kwargs):
-        """
-        Busca o contato do autor caso a publicações não seja autorizada
-        :param cr:
-        :param uid:
-        :param ids:
-        :param field:
-        :param kwargs:
-        :return:
-        """
-        res = {}
-        objs = self.browse(cr, uid, ids)
-        for obj in objs:
-            res[obj.id] = obj.autor_id.contato
-        return res
 
     def busca_campus(self, cr, uid, context):
         """
@@ -209,7 +197,7 @@ class ud_publicacao_autor(osv.osv):
 
     _columns = {
         'name': fields.char('Nome', required=True),
-        'contato': fields.text('Contato', required=False),
+        'contato': fields.char('E-mail', required=False),
     }
 
 
