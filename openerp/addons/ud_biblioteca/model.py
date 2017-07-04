@@ -73,7 +73,7 @@ class ud_biblioteca_publicacao(osv.osv):
             for obj in result:
                 if obj.get('visualizacoes') is not None:
                     vals = {'visualizacoes': obj.get('visualizacoes') + 1}
-                    self.write(cr, uid, ids, vals)
+                    self.write(cr, 1, ids, vals)
                     obj['visualizacoes'] = vals['visualizacoes']
         return result
 
