@@ -251,9 +251,9 @@ class ud_biblioteca_anexo(osv.osv):
     }
 
     def publicacao_ctx(self, cr, uid, context):
-        '''
+        """
         Retorna a publicação Atual usando o id de contexto
-        '''
+        """
         return context["active_id"]
 
     def unlink(self, cr, uid, ids, context=None):
@@ -273,10 +273,10 @@ class ud_biblioteca_anexo(osv.osv):
 
 
 class ud_biblioteca_pc(osv.osv):
-    '''
+    """
     Nome: ud.biblioteca.pc
     Descrição: Armazenar as palavras-chave de cada publicação
-    '''
+    """
     _name = 'ud.biblioteca.pc'
 
     _columns = {
@@ -285,7 +285,6 @@ class ud_biblioteca_pc(osv.osv):
     }
 
     # def write(self, cr, user, **kwargs):
-    #     # TODO: Verificar acentos
     #     if hasattr(self, 'name') and self.name:
     #         self.name = self._rec_name.lower()
     #     return super(ud_biblioteca_pc, self).write(cr, user, **kwargs)
