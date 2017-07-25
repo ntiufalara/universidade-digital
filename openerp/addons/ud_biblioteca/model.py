@@ -174,7 +174,6 @@ class ud_bilbioteca_publicacao_categoria_cnpq(osv.Model):
     }
 
 
-# TODO: Registrar todos os trabalhos em seus novos tipos
 class ud_biblioteca_publicacao_tipo(osv.osv):
     '''
     Nome: ud.biblioteca.publicacao.tipo
@@ -295,7 +294,7 @@ class ud_biblioteca_pc(osv.osv):
         # TODO: Verificar acentos
         if vals.get('name'):
             vals['name'] = vals['name'].lower()
-        super(ud_biblioteca_pc, self).create(cr, user, vals, context)
+        return super(ud_biblioteca_pc, self).create(cr, user, vals, context)
 
 
 class ud_biblioteca_bibliotecario(osv.osv):

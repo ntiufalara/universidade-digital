@@ -95,6 +95,17 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="ud_biblioteca_pc_tree_view">
+            <field name="name">Palavras-chave</field>
+            <field name="model">ud.biblioteca.pc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Palavras-chave">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="ud_bibliotec_pc_form_view">
             <field name="name">ud.biblioteca.pc.form</field>
             <field name="model">ud.biblioteca.pc</field>
@@ -207,6 +218,13 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="ud_biblioteca_pc_action" model="ir.actions.act_window">
+            <field name="name">Palavras-chave</field>
+            <field name="res_model">ud.biblioteca.pc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <!--MENU ITEM-->
         <menuitem name="Repositório Institucional" id="biblioteca_top"
                   sequence="4" parent="ud.menu_point_root"
@@ -218,6 +236,10 @@
 
         <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
                   action="ud_biblioteca_responsavel_action" groups="base.admin_ud"/>
+
+        <menuitem id="ud_biblioteca_pc" name="Gerenciar palavras-chave" parent="biblioteca_top"
+                  action="ud_biblioteca_pc_action"
+                  groups="base.admin_ud,base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario"/>
 
     </data>
 </openerp>
