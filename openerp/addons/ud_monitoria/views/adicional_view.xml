@@ -98,11 +98,12 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Disciplinas" version="7.0" create="false">
-                    <header groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                    <header attrs="{'invisible': [('is_active', '=', False)]}" groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                         <button name="%(ud_monitoria_alterar_orientador_wizard_action)d" type="action"
                                 string="Alterar Orientador" class="oe_highlight" context="{'disciplina_id': id}"/>
                     </header>
                     <field name="id"/>
+                    <field name="is_active" invisible="1"/>
                     <field name="processo_seletivo_id" invisible="1"/>
                     <group col="4">
                         <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
