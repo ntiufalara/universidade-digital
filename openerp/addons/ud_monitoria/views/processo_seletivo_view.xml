@@ -248,7 +248,7 @@
                         <field name="state" widget="statusbar" states="analise,concluido"/>
                     </header>
                     <group string="Dados Pessoais" col="4">
-                        <field name="perfil_id" on_change="onchange_perfil(perfil_id,bolsista)" readonly="1" colspan="2"/>
+                        <field name="perfil_id" readonly="1" colspan="2"/>
                         <field name="discente_id" colspan="2"
                                context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
                         <field name="curso_id" colspan="2"/>
