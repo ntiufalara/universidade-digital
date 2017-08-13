@@ -49,7 +49,9 @@ class ud_biblioteca_publicacao(osv.osv):
         'categoria_cnpq_id': fields.many2one('ud.biblioteca.publicacao.categoria_cnpq', 'Categoria CNPQ'),
         'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', "Tipo", required=True),
         "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
-        'visualizacoes': fields.integer('Visualizações', required=True),
+        'visualizacoes': fields.integer(u'Visualizações', required=True),
+        'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
+                                     string=u'Áreas do trabalho',),
     }
 
     _order = "ano_pub desc"
@@ -159,6 +161,19 @@ class ud_biblioteca_publicacao(osv.osv):
             if obj.admin_campus:
                 return None
             return obj.polo_id.id
+
+
+class ud_biblioteca_publicacao_area(osv.Model):
+    """
+    Nome: ud.biblioteca.publicacao.area
+    Descrição: Cadastro de área de trabalho
+    """
+    _name = 'ud.biblioteca.publicacao.area'
+
+    _columns = {
+        'name': fields.char(u'Área', required=True),
+        'publicacao_ids': fields.many2many('ud.biblioteca.publicacao', 'area_ids', string=u'Publicações')
+    }
 
 
 class ud_bilbioteca_publicacao_categoria_cnpq(osv.Model):
@@ -283,17 +298,6 @@ class ud_biblioteca_pc(osv.osv):
         'name': fields.char('Palavra-chave', required=True),
         'publicacao_id': fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
     }
-
-    # def write(self, cr, user, **kwargs):
-    #     if hasattr(self, 'name') and self.name:
-    #         self.name = self._rec_name.lower()
-    #     return super(ud_biblioteca_pc, self).write(cr, user, **kwargs)
-
-    def create(self, cr, user, vals, context=None):
-        # TODO: Verificar acentos
-        if vals.get('name'):
-            vals['name'] = vals['name'].lower()
-        return super(ud_biblioteca_pc, self).create(cr, user, vals, context)
 
 
 class ud_biblioteca_bibliotecario(osv.osv):

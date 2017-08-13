@@ -39,6 +39,7 @@
                                        attrs="{'invisible' : [('curso_indefinido', '=', False )], 'required' : [('curso_indefinido', '=', True)] }"/>
                                 <field name="curso" domain="[('polo_id','=',polo_id)]"
                                        attrs="{'invisible' : [('curso_indefinido', '=', True )], 'required' : [('curso_indefinido', '=', False)] }"/>
+                                <field name="area_ids" widget="many2many_tags" />
                             </group>
                         </group>
                         <group>
@@ -68,6 +69,7 @@
                     <field name="tipo_id"/>
                     <field name="categoria_cnpq_id"/>
                     <field name="contato"/>
+                    <field name="area_ids"/>
                     <group string="Agrupar Por...">
                         <filter string="Autor" domain="[]" context="{'group_by' : 'autor_id'}"/>
                         <filter string="Tipo" domain="[]" context="{'group_by' : 'tipo_id'}"/>
@@ -80,13 +82,13 @@
         </record>
 
         <record id="ud_biblioteca_publicacao_tree" model="ir.ui.view">
-            <field name="name">publicacao's</field>
+            <field name="name">Publicações</field>
             <field name="model">ud.biblioteca.publicacao</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Publicações">
                     <field name="name"/>
-                    <field name="autor"/>
+                    <field name="autor_id"/>
                     <field name="curso"/>
                     <field name="ano_pub"/>
                     <field name="anexo_ids"/>
