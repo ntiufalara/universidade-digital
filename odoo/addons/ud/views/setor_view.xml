@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_setor_action" model="ir.actions.act_window">
+            <field name="name">Setor</field>
+            <field name="res_model">ud.setor</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="view_setor_form" model="ir.ui.view">
+            <field name="name">ud.setor.form</field>
+            <field name="model">ud.setor</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Setor">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="sigla"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="sigla"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="is_active"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="is_active"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_setor_tree" model="ir.ui.view">
+            <field name="name">ud.setor.tree</field>
+            <field name="model">ud.setor</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Setor">
+                    <field name="name"/>
+                    <field name="polo_id"/>
+                    <field name="sigla"/>
+                    <field name="is_active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_setor_filter" model="ir.ui.view">
+            <field name="name">Setor</field>
+            <field name="model">ud.setor</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Setor">
+                    <field name="name"/>
+                    <newline/>
+                    <group expand="0" string="Filtrar por...">
+                        <filter string="Nome" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                        <filter string="Sigla" icon="terp-personal" domain="[]" context="{'group_by':'sigla'}"/>
+                        <filter string="Ativo" icon="terp-personal" domain="[]" context="{'group_by':'is_active'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

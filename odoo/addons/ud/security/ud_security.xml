@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data noupdate="0">
+        <record model="ir.module.category" id="base.module_category_ud">
+            <field name="name">Núcleo UD</field>
+        </record>
+
+        <record id="base.usuario_ud" model="res.groups">
+            <field name="name">Usuário UD</field>
+            <field name="category_id" ref="base.module_category_ud"/>
+        </record>
+
+        <record id="base.gerente_espaco_ud" model="res.groups">
+            <field name="name">Gerente Espaço</field>
+            <field name="category_id" ref="base.module_category_ud"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud'))]"/>
+        </record>
+
+        <record id="base.admin_ud" model="res.groups">
+            <field name="name">Gerente Geral</field>
+            <field name="category_id" ref="base.module_category_ud"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.usuario_ud')), (4, ref('base.gerente_espaco_ud'))]"/>
+        </record>
+    </data>
+</odoo>

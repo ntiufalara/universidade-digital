@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_espaco_tree" model="ir.ui.view">
+            <field name="name">Visualizaçao dos Espaços</field>
+            <field name="model">ud.espaco</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Espaço">
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_espaco_action" model="ir.actions.act_window">
+            <field name="name">Espaço</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud.espaco</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ud_espaco_tree"/>
+            <!--
+            <field name="context">{'search_default_polo': 1}</field>
+            -->
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="view_pessoa_form" model="ir.ui.view">
+            <field name="name">Cadastrar Pessoa</field>
+            <field name="model">res.users</field>
+            <field name="type">form</field>
+            <field name="context">{'res.users': True}</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Pessoa">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#dados_pessoais" aria-controls="home" role="tab" data-toggle="tab">Dados
+                                    pessoais
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#contato" aria-controls="profile" role="tab" data-toggle="tab">Contato</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#endereco" aria-controls="messages" role="tab" data-toggle="tab">Endereço</a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="dados_pessoais">
+                                <fieldset>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="name"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="cpf"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="cpf"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="rg"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="rg"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="orgaoexpedidor"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="orgaoexpedidor"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="genero"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="genero"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="nacionalidade"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="nacionalidade"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="estado_civil"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="estado_civil"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="data_nascimento"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="data_nascimento"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="contato">
+                                <fieldset>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="telefone_fixo"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="telefone_fixo"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="celular"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="celular"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="email"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="email"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label"
+                                               for="curriculo_lattes_link"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="curriculo_lattes_link"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="endereco">
+                                <fieldset>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="rua"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="rua"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="bairro"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="bairro"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="cidade"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="cidade"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="estado"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="estado"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
+                    <field name="dados" nolabel="1"/>
+                    -->
+                </form>
+            </field>
+        </record>
+
+        <record id="view_pessoa_tree" model="ir.ui.view">
+            <field name="name">res.users.tree</field>
+            <field name="model">res.users</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Pessoas">
+                    <field name="cpf"/>
+                    <field name="name" string="Nome"/>
+                    <field name="celular"/>
+                    <field name="email"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_pessoa_action" model="ir.actions.act_window">
+            <field name="name">Pessoas</field>
+            <field name="res_model">res.users</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_pessoa_tree"></field>
+        </record>
+
+        <record id="view_pessoas_filter" model="ir.ui.view">
+            <field name="name">Setor</field>
+            <field name="model">res.users</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Setor">
+                    <field name="name"/>
+                    <field name="cpf"/>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

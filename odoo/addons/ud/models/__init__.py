@@ -1,0 +1,10 @@
+import Banco
+import DadosBancarios
+import Campus
+import Espaco
+import Polo
+import Bloco
+import Setor
+import Curso
+import Disciplina
+import Pessoa

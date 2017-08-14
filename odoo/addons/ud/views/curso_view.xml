@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_curso_action" model="ir.actions.act_window">
+            <field name="name">Curso</field>
+            <field name="res_model">ud.curso</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="view_curso_form" model="ir.ui.view">
+            <field name="name">ud.curso.form</field>
+            <field name="model">ud.curso</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Curso">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="coordenador_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="coordenador_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="turno"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="turno"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="modalidade"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="modalidade"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="is_active"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="is_active"/>
+                            </div>
+                        </div>
+
+                        <notebook>
+                            <page string="Disciplinas">
+                                <field colspan="4" nolabel="1" name="disciplina_ids"/>
+                            </page>
+                        </notebook>
+
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Outras Informações</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="description" nolabel="1"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_curso_form_admin" model="ir.ui.view">
+            <field name="name">ud.curso.form</field>
+            <field name="model">ud.curso</field>
+            <field name="inherit_id" ref="view_curso_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.admin_ud')])]"/>
+            <field name="arch" type="xml">
+                <field name="coordenador_id" position="attributes">
+                    <attribute name="options"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_curso_tree" model="ir.ui.view">
+            <field name="name">ud.curso.tree</field>
+            <field name="model">ud.curso</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Curso">
+                    <field name="name"/>
+                    <field name="coordenador_id"/>
+                    <field name="modalidade"/>
+                    <field name="turno"/>
+                    <field name="is_active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_curso_filter" model="ir.ui.view">
+            <field name="name">Curso</field>
+            <field name="model">ud.curso</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Curso">
+                    <field name="name"/>
+                    <newline/>
+                    <group expand="0" string="Grupo por...">
+                        <filter string="Nome" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
+                        <filter string="Coordenador" icon="terp-personal" domain="[]"
+                                context="{'group_by':'coordenador_id'}"/>
+                        <filter string="Ativo" icon="terp-personal" domain="[]" context="{'group_by':'is_active'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

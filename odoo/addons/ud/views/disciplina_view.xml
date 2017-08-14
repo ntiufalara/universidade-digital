@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_disciplina_form" model="ir.ui.view">
+            <field name="name">ud.disciplina.form</field>
+            <field name="model">ud.disciplina</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Disciplina">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="codigo"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="codigo"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="ch"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="ch"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Descrição</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="descricao"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_disciplina_tree" model="ir.ui.view">
+            <field name="name">ud.disciplina.tree</field>
+            <field name="model">ud.disciplina</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Disciplina">
+                    <field name="codigo"/>
+                    <field name="name"/>
+                    <field name="ch"/>
+                    <field name="descricao"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

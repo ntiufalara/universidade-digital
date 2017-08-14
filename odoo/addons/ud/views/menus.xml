@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <data>
+
+        <!-- MENUS -->
+        <menuitem id="ud_root" name="Núcleo" sequence="0" icon="terp-partner"
+                  web_icon="imagens/unidig.jpg" groups="base.usuario_ud"/>
+        <menuitem id="menu_campus" parent="ud_root" action="ud_campus_action" sequence="2"/>
+        <menuitem id="menu_polo" parent="ud_root" action="ud_polo_action" sequence="3"/>
+        <menuitem id="menu_setor" parent="ud_root" action="ud_setor_action" sequence="4" groups="base.admin_ud"/>
+        <menuitem id="menu_curso" parent="ud_root" action="ud_curso_action" sequence="5"/>
+        <menuitem id="menu_espaco" parent="ud_root" action="ud_espaco_action" sequence="7"
+                  groups="base.gerente_espaco_ud,base.admin_ud"/>
+        <menuitem id="menu_pessoa" parent="ud_root" action="ud_pessoa_action" sequence="8" groups="base.admin_ud"/>
+
+    </data>
+</odoo>

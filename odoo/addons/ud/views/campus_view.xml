@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <!-- CAMPUS -->
+        <record id="ud_campus_action" model="ir.actions.act_window">
+            <field name="name">Campus</field>
+            <field name="res_model">ud.campus</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="view_campus_form" model="ir.ui.view">
+            <field name="name">ud.campus.form</field>
+            <field name="model">ud.campus</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Campus">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="diretor"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="diretor" options="{'no_open': true}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="diretor_academico"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="diretor_academico" options="{'no_open': true}"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_campus_form_admin" model="ir.ui.view">
+            <field name="name">ud.campus.form.admin</field>
+            <field name="model">ud.campus</field>
+            <field name="inherit_id" ref="view_campus_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.admin_ud')])]"/>
+            <field name="arch" type="xml">
+                <field name="diretor" position="attributes">
+                    <attribute name="options"/>
+                </field>
+                <field name="diretor_academico" position="attributes">
+                    <attribute name="options"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_campus_tree" model="ir.ui.view">
+            <field name="name">ud.campus.tree</field>
+            <field name="model">ud.campus</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Campus">
+                    <field name="name"/>
+                    <field name="diretor_academico"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_campus_filter" model="ir.ui.view">
+            <field name="name">Campus</field>
+            <field name="model">ud.campus</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Campus">
+                    <field name="name"/>
+                    <newline/>
+                    <group expand="0" string="Grupo por...">
+                        <filter string="Nome" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
+                        <filter string="Diretor" icon="terp-personal" domain="[]" context="{'group_by':'diretor'}"/>
+                        <filter string="Diretor Acadêmico" icon="terp-personal" domain="[]"
+                                context="{'group_by':'diretor_academico'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

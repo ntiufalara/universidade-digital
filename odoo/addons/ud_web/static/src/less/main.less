@@ -1,0 +1,55 @@
+/* Copyright 2016 LasLabs Inc.
+ * License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). */
+
+body {
+    width: 100%;
+    height: 100%;
+
+    // Do not fix the search part, it's too big for small screens
+    @media (max-width: @screen-sm-max) {
+        overflow: inherit;
+        .o_main {
+            .oe-view-manager {
+                overflow: inherit;
+            }
+        }
+    }
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* Simulação do FormSheet Responsivo*/
+
+.o_form_nosheet, .o_web_client > .o_main .o_main_content {
+    background: #fff;
+}
+
+.sheet {
+    width: 94%;
+    margin-left: 3%;
+    background: #fff;
+    padding: 20px 20px;
+    box-shadow: 0 0 2px #000;
+}
+
+
+.o_form_view .o_form_required.o_form_input,
+.o_form_view .o_form_required .o_form_input,
+.o_form_view .o_form_required.o_form_textarea,
+.o_form_view .o_form_required .o_form_textarea {
+    border-bottom: 2px solid #337AB7;
+    background: transparent;
+}
+
+.o_web_client input:focus, .o_web_client textarea:focus, .o_web_client select:focus {
+    border-bottom: 1px solid #337AB7;
+}
+
+.tab-content {
+    padding-top: 20px;
+}
