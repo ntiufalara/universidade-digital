@@ -7,6 +7,17 @@ class AlterarOrientadorWizard(osv.TransientModel):
     _name = "ud.monitoria.alterar.orientador.wizard"
     _description = u"Alteração de orientador de disciplinas ativas"
 
+    def disciplina_ativa(self, cr, uid, ids, context):
+        """
+        Validador para verificar se a disciplina que se deseja fazer a mudança de orientador está ativa.
+
+        :return: Boolean
+        """
+        for alt in self.browse(cr, uid, ids, context):
+            if not alt.disciplina_id.is_active:
+                return False
+        return True
+
     _columns = {
         "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
                                          domain=[("is_active", "=", True)]),
@@ -15,13 +26,27 @@ class AlterarOrientadorWizard(osv.TransientModel):
                                         string=u"Orientador", readonly=True),
     }
 
+    _constraints = [
+        (disciplina_ativa, u"Não é permitido alterar orientador de disciplinas inativas", [u"Disciplina"])
+    ]
+
     def default_get(self, cr, uid, fields_list, context=None):
+        """
+        === Extensão do método osv.TransientModel.default_get
+        Caso o modelo a
+        """
         res = super(AlterarOrientadorWizard, self).default_get(cr, uid, fields_list, context)
         if context.get("active_id", False) and context.get("active_model", False) == "ud.monitoria.disciplina":
             res["disciplina_id"] = context["active_id"]
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        """
+        === Extensão do método osv.TransientModel.fields_view_get
+        Para atender a necessidade na view, foi adicionado a opção de filtro de perfis
+        caso o ID da disciplina tenha sido informado. Isso permitirá que a modificação seja realizada apenas para
+        professores do mesmo curso.
+        """
         context = context or {}
         res = super(AlterarOrientadorWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
         if "perfil_id" in res["fields"]:
@@ -40,12 +65,25 @@ class AlterarOrientadorWizard(osv.TransientModel):
         return res
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
+        """
+        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
+        """
         if perfil_id:
             perfil_id = self.pool.get("ud.perfil").browse(cr, uid, perfil_id, context)
             return {"value": {"orientador_id": perfil_id.ud_papel_id.id}}
         return {"value": {"orientador_id": False}}
 
     def botao_alterar(self, cr, uid, ids, context=None):
+        """
+        Muda o orientador de uma disciplina para outra
+
+        :param cr: Cursor
+        :param uid: ID do usuário logado
+        :param ids: Lista de ids do modelo atual
+        :return: True
+
+        :raise osv.except_osv: Se usuário logado não tiver ou possuir múltiplos vínculos com Perfil do núcleo.
+        """
         doc_orientador_model = self.pool.get("ud.monitoria.documentos.orientador")
         pessoa_model = self.pool.get("ud.employee")
         for alt in self.browse(cr, uid, ids, context):
@@ -83,3 +121,4 @@ class AlterarOrientadorWizard(osv.TransientModel):
                 ),
             }
             alt.disciplina_id.semestre_id.write({"eventos_ids": [(0, 0, evento)]})
+        return True

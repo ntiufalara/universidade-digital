@@ -21,6 +21,11 @@ class Curso(osv.Model):
     ]
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Verifica se foi vinculado alguém como coordenador de monitoria de um curso para adicioná-lo ao grupo de segurança
+        correspondente.
+        """
         res = super(Curso, self).create(cr, uid, vals, context)
         if vals.get("coord_monitoria_id", False):
             group = self.pool.get("ir.model.data").get_object(
@@ -32,6 +37,15 @@ class Curso(osv.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        """
+        === Extensão do método osv.Model.write
+        Verifica a alteração do coordenador de monitoria de um curso. Se adicionado, esse será inserido no grupo de
+        segurança correspodente. Se modificado, o anterior e retirado do grupo de segurança e o novo é adicionado. Se
+        o orientador é retirado, então também é removido do grupo de segurança.
+
+        :attention: Antes de remover qualquer orientador do grupo de segurança, é verificado se esse não possui nenhum
+        vínculo com outros cursos.
+        """
         if "coord_monitoria_id" in vals:
             coordenadores_antigos = []
             for curso in self.browse(cr, uid, ids, context):
@@ -60,6 +74,11 @@ class Curso(osv.Model):
         return super(Curso, self).write(cr, uid, ids, vals, context)
 
     def unlink(self, cr, uid, ids, context=None):
+        """
+        === Extensão do método osv.Model.unlink
+        Virifica se o coordenador de monitoria do curso não possui vínculos com outras disciplinas para essa função e
+        remove-o do grupo de segurança correspondente.
+        """
         coordenadores = [curso.coord_monitoria_id for curso in self.browse(cr, uid, ids, context)]
         super(Curso, self).unlink(cr, uid, ids, context)
         group = self.pool.get("ir.model.data").get_object(
@@ -76,17 +95,10 @@ class Disciplina(osv.Model):
     _name = "ud.monitoria.disciplina"
     _description = u"Disciplinas de monitoria (UD)"
     
-    def get_orientador(self, cr, uid, ids, campos, arg, context=None):
-        perfil_model = self.pool.get("ud.perfil")
-        res = {}
-        for inf_disc in self.read(cr, uid, ids, ["siape"], context=context, load="_classic_write"):
-            papel_id = perfil_model.search(cr, SUPERUSER_ID, [("matricula", "=", inf_disc["siape"]),
-                                                                ("tipo", "=", "p")], context=context)
-            if papel_id:
-                res[inf_disc.get("id")] = perfil_model.read(cr, SUPERUSER_ID, papel_id[0], ["ud_papel_id"], context=context).get("ud_papel_id")
-        return res
-
     def get_discentes(self, cr, uid, ids, campo, args, context=None):
+        """
+        Busca todos os discentes e separa-os em um dicionário de acordo com seu status e seu campo correspondente.
+        """
         doc_model = self.pool.get("ud.monitoria.documentos.discente")
         res = {}
         for disc_id in ids:
@@ -99,15 +111,22 @@ class Disciplina(osv.Model):
         return res
 
     def valida_datas(self, cr, uid, ids, context=None):
+        """
+        Valida se a data inicial ocorre antes ou é igual a final.
+        """
         for disc in self.browse(cr, uid, ids, context=context):
             if datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT) >= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT):
                 return False
         return True
 
     def valida_disciplina_ps(self, cr, uid, ids, context=None):
+        """
+        Verifica a validade para as disciplinas duplicadas em um processo seletivo.
+        """
         for disc in self.browse(cr, uid, ids, context=context):
-            if self.search(cr, uid, [("curso_id", "=", disc.curso_id.id), ("disciplina_id", "=", disc.disciplina_id.id),
-                                     ("id", "!=", disc.id), ("processo_seletivo_id", "=", disc.processo_seletivo_id.id)], context=context, count=2) > 0:
+            args = [("curso_id", "=", disc.curso_id.id), ("disciplina_id", "=", disc.disciplina_id.id),
+                    ("id", "!=", disc.id), ("processo_seletivo_id", "=", disc.processo_seletivo_id.id)]
+            if self.search_count(cr, uid, args, context) > 0:
                 return False
         return True
 
@@ -157,9 +176,18 @@ class Disciplina(osv.Model):
     ]
     
     def name_get(self, cr, uid, ids, context=None):
+        """
+        === Sobrescrita do método osv.Model.name_get
+        As informações de visualização desse modelo em campos many2one será o nome da disciplina do núcleo.
+        """
         return [(disc.id, disc.disciplina_id.name) for disc in self.browse(cr, uid, ids, context=context)]
     
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        === Sobrescrita do método osv.Model.name_search
+        Ao realizar pesquisas em campos many2one para esse modelo, os dados inseridos serão utilizados para pesquisar a
+        discplina no núcleo e fazer referência com o modelo atual.
+        """
         if not isinstance(args, (list, tuple)):
             args = []
         if not (name == '' and operator == 'ilike'):
@@ -169,6 +197,11 @@ class Disciplina(osv.Model):
         return self.name_get(cr, uid, ids, context)
 
     def default_get(self, cr, uid, fields_list, context=None):
+        """
+        === Extensão do método osv.Model.default_get
+        Adiciona um curso padrão no campo correspondente quando disciplina for criada por usando o filtro de coordenador
+        de monitoria de algum curso.
+        """
         context = context or {}
         res = super(Disciplina, self).default_get(cr, uid, fields_list, context)
         if context.get("filtro_coord_disciplina", False):
@@ -188,6 +221,13 @@ class Disciplina(osv.Model):
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        """
+        === Extensão do método osv.Model.fields_view_get
+        Define o filtro de cursos com de acordo com os que estão listados nas configurações do semestre para definir
+        quantas bolsas cada um possui. Caso seja definido para filtrar pelo coordenador do curso de monitoria usando
+        o marcador em context, essa lista, já filtrada, será limitada aos cursos que o usuário logado é o coordenador
+        de monitoria.
+        """
         context = context or {}
         res = super(Disciplina, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
         domain_temp = res["fields"]["curso_id"].get("domain", [])
@@ -195,7 +235,7 @@ class Disciplina(osv.Model):
             domain_temp = list(eval(domain_temp))
         domain = []
         for d in domain_temp:
-            if d[0] != "id" and d[1] != "in":
+            if d[0] != "id":
                 domain.append(d)
         del domain_temp
         cursos = []
@@ -217,6 +257,12 @@ class Disciplina(osv.Model):
         return res
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Adiciona orientador ao grupo de segurança correspondente.
+
+        :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
+        """
         res = super(Disciplina, self).create(cr, uid, vals, context)
         disciplina = self.browse(cr, uid, res, context)
         group = self.pool.get("ir.model.data").get_object(
@@ -229,19 +275,32 @@ class Disciplina(osv.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        """
+        === Extensão do método osv.Model.write
+        Se orientador for modificado, adiciona-o ao grupo de segurança correspondente.
+
+        :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
+        """
         super(Disciplina, self).write(cr, uid, ids, vals, context)
         if "orientador_id" in vals or "siape" in vals:
-            disciplina = self.browse(cr, uid, ids, context)
             group = self.pool.get("ir.model.data").get_object(
                 cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
             )
-            if not disciplina.orientador_id.user_id:
-                raise osv.except_osv("Usuário não encontrado",
-                                     "O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
-            group.write({"users": [(4, disciplina.orientador_id.user_id.id)]})
+            add = []
+            for disciplina in self.browse(cr, uid, ids if isinstance(ids, (list, tuple)) else [ids], context):
+                if not disciplina.orientador_id.user_id:
+                    raise osv.except_osv("Usuário não encontrado",
+                                         "O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
+                add.append((4, disciplina.orientador_id.user_id.id))
+            group.write({"users": add})
         return True
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
+        monitoria do curso correspondente.
+        """
         if (context or {}).get("filtro_coord_disciplina", False):
             pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
             if not pessoas:
@@ -251,6 +310,10 @@ class Disciplina(osv.Model):
         return super(Disciplina, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def atualiza_status_cron(self, cr, uid, context=None):
+        """
+        Método de atualização do status da disciplina caso essa tenha sua data de finalização tenha sido ultrapassada
+        usando o modelo "ir.cron".
+        """
         disc = self.search(cr, uid, [("data_final", "<", datetime.utcnow().strftime("%Y-%m-%d")),
                                      ("is_active", "=", True)])
         if disc:
@@ -258,6 +321,9 @@ class Disciplina(osv.Model):
         return True
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
+        """
+        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
+        """
         if perfil_id:
             return {"value": {"orientador_id": self.pool.get("ud.perfil").read(
                 cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context

@@ -354,11 +354,8 @@
                          groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                         <h3>O processo seletivo torna-se inválido quando:</h3>
                         <ol>
-                            <li>
-                                O registro do semestre do processo seletivo tenha sido marcado como inativo enquanto sua
-                                data final não passou da atual;
-                            </li>
-                            <li>Não possui anexos ou disciplinas.</li>
+                            <li>Não possui ao menos um anexo;</li>
+                            <li>Não possui ao menos uma disciplina.</li>
                         </ol>
                     </div>
                     <group col="4">

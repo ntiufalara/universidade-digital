@@ -21,6 +21,9 @@ class CriterioAvaliativo(osv.Model):
     _description = u"Critério Avaliativo das inscrições de monitoria (UD)"
     
     def valida_peso(self, cr, uid, ids, context=None):
+        """
+        Verifica se o peso é menor ou igual a zero.
+        """
         for crit in self.browse(cr, uid, ids, context=context):
             if crit.peso <= 0:
                 return False
@@ -46,12 +49,21 @@ class CriterioAvaliativo(osv.Model):
     }
     
     def create(self, cr, uid, vals, context=None):
-        vals["name"] = vals.get("name", u"CITÉRIO").upper()
+        """
+        === Extensão do método osv.Model.create
+        Torna o nome do critério maiúsculo.
+        """
+        if vals.get("name", False):
+            vals["name"] = vals["name"].upper()
         return super(CriterioAvaliativo, self).create(cr, uid, vals, context=context)
     
     def write(self, cr, uid, ids, vals, context=None):
-        if "name" in vals:
-            vals["name"] = vals.get("name", u"CITÉRIO").upper()
+        """
+        === Extensão do método osv.Model.write
+        Torna o nome do critério maiúsculo.
+        """
+        if vals.get("name", False):
+            vals["name"] = vals["name"].upper()
         return super(CriterioAvaliativo, self).write(cr, uid, ids, vals, context=context)
 
 
@@ -60,6 +72,9 @@ class Pontuacao(osv.Model):
     _description = u"Pontuação de cada critério (UD)"
 
     def valida_pontuacao(self, cr, uid, ids, context=None):
+        """
+        Verifica se a pontuação dada está entre 0 e 10.
+        """
         for pontuacao in self.browse(cr, uid, ids, context):
             if pontuacao.pontuacao < 0 and pontuacao.pontuacao > 10:
                 return False
@@ -83,9 +98,17 @@ class Pontuacao(osv.Model):
     _rec_name = "criterio_avaliativo_id"
     
     def name_get(self, cr, uid, ids, context=None):
+        """
+        === Sobrescrita do método osv.Model.name_get
+        Define a forma de visualização desse modelo em campos many2one.
+        """
         return [(pont.id, u"%s (%d)" % pont.criterio_avaliativo_id.name, pont.pontuacao) for pont in self.browse(cr, uid, ids, context=context)]
     
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        === Sobrescrita do método osv.Model.name_search
+        Define a forma de pesquisa desse modelo em campos many2one.
+        """
         if not isinstance(args, (list, tuple)):
             args = []
         if not (name == '' and operator == 'ilike'):
@@ -101,6 +124,9 @@ class PontuacoesDisciplina(osv.Model):
     _order = "disciplina_id"
 
     def calcula_media(self, cr, uid, ids, campos, args, context=None):
+        """
+        Calcula a média das pontuações dessa disciplina.
+        """
         def media_aritmetica(pontuacoes):
             soma = div = 0
             for pont in pontuacoes:
@@ -123,9 +149,15 @@ class PontuacoesDisciplina(osv.Model):
         return res
     
     def atualiza_media_pont(self, cr, uid, ids, context=None):
+        """
+        Gatilho para atualizar a pontuação dada a algum critério avaliativo dessa disciplina.
+        """
         return [pont.pontuacoes_disc_id.id for pont in self.browse(cr, uid, ids, context) if pont.pontuacoes_disc_id]
     
     def atualiza_media_peso(self, cr, uid, ids, context=None):
+        """
+        Gatilho para atualizar a média o peso de caso algum critério avaliativo do processo seletivo seja alterado.
+        """
         pont_model = self.pool.get("ud.monitoria.pontuacao")
         pont_ids = pont_model.search(cr, uid, [("criterio_avaliativo_id", "in", ids)], context=context)
         return [pont["pontuacoes_disc_id"] for pont in pont_model.read(cr, uid, pont_ids, ["pontuacoes_disc_id"], context=context, load="_classic_write")]
@@ -152,13 +184,26 @@ class PontuacoesDisciplina(osv.Model):
     _rec_name = "disciplina_id"
     
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Valor de "state" padrão passa a ser analise.
+        """
         vals["state"] = "analise"
         return super(PontuacoesDisciplina, self).create(cr, uid, vals, context=context)
     
     def name_get(self, cr, uid, ids, context=None):
+        """
+        === Sobrescrita do método osv.Model.name_get
+        Em campos many2one, o nome da pontuação será o nome de sua disciplina.
+        """
         return [(pont.id, pont.disciplina_id.disciplina_id.name) for pont in self.browse(cr, uid, ids, context=context)]
     
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        === Sobrescrita do método osv.Model.name_search
+        Em campos many2one relacionados ao atual modelo, os valores informados serão pesquisados a partir do nome da
+        disciplina desse objeto.
+        """
         if not isinstance(args, (list, tuple)):
             args = []
         if not (name == '' and operator == 'ilike'):
@@ -168,6 +213,11 @@ class PontuacoesDisciplina(osv.Model):
         return self.name_get(cr, uid, ids, context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Adicionado a opção de filtrar as pontuações para as disciplinas que o usuário logado estiver sido definido como
+        orientador.
+        """
         context = context or {}
         res = super(PontuacoesDisciplina, self).search(cr, uid, args, offset, limit, order, context, count)
         if context.get("filtrar_orientador", False):
@@ -181,6 +231,13 @@ class PontuacoesDisciplina(osv.Model):
         return res
 
     def onchange_pontuacoes(self, cr, uid, ids, inscricao_id, pontuacoes_ids, context=None):
+        """
+        Usado para atualizar a média ao atualizar as pontuações de cada critério avaliativo.
+
+        :param inscricao_id: ID da inscrição
+        :param pontuacoes_ids: IDs das pontuações
+        :return:
+        """
         if inscricao_id and pontuacoes_ids:
             criterio_model = self.pool.get("ud.monitoria.criterio.avaliativo")
             pontuacao_model = self.pool.get("ud.monitoria.pontuacao")
@@ -215,6 +272,9 @@ class PontuacoesDisciplina(osv.Model):
         return {"value": {"media": 0}}
 
     def conf_view(self, cr, uid, res_id, context=None):
+        """
+        Configuração de redirecionamento para uma nova tela.
+        """
         obj_model = self.pool.get('ir.model.data')
         form_id = obj_model.get_object_reference(cr, uid, "ud_monitoria", "ud_monitoria_inscricao_form_view")[1]
         return {
@@ -232,6 +292,14 @@ class PontuacoesDisciplina(osv.Model):
         }
     
     def aprovar(self, cr, uid, ids, context=None):
+        """
+        Aplica o status de aprovado ao registro pontuação atual e cria um documento de discente para a disciplina
+        correspondente. Se a inscrição tiver sido para bolsista e em context for informado para aprovar sem bolsa,
+        essa será aprovada e a informação é adicionada na inscrição.
+
+        :raise osv.except_osv: Caso a média esteja abaixo da definida no processo seletivo ou se o discente se inscreveu
+                               como bolsista já tendo vínculo com outra bolsa
+        """
         context = context or {}
         perfil_model = self.pool.get("ud.perfil")
         dados_bancarios_model = self.pool.get("ud.dados.bancarios")
@@ -275,11 +343,21 @@ class PontuacoesDisciplina(osv.Model):
         return self.conf_view(cr, uid, res_id, context)
 
     def aprovar_s_bolsa(self, cr, uid, ids, context=None):
+        """
+        Aplica o status de aprovado ao registro de pontuação atual, cria um documento para o discente na disciplina
+        correspondente e adiciona a informação de que aprovou um discente que se inscreveu como bolsista mas foi aprovado
+        sem bolsa.
+
+        :raise osv.except_osv: Caso a média esteja abaixo da definida no processo seletivo.
+        """
         context = context or {}
         context["sem_bolsa"] = True
         return self.aprovar(cr, uid, ids, context)
     
     def reservar(self, cr, uid, ids, context=None):
+        """
+        Aplica o status de reserva ao registro de pontuação atual e adiciona a informação na inscrição.
+        """
         res_id = False
         inscricao_model = self.pool.get("ud.monitoria.inscricao")
         hoje = datetime.strptime(fields.date.context_today(self, cr, uid, context), DEFAULT_SERVER_DATE_FORMAT)
@@ -296,15 +374,32 @@ class PontuacoesDisciplina(osv.Model):
         return self.conf_view(cr, uid, res_id, context)
     
     def reprovar(self, cr, uid, ids, context=None):
+        """
+        Aplica o status de reprovado ao registro de pontuação atual.
+        """
         self.write(cr, uid, ids, {"state": "reprovado"}, context=context)
         return self.conf_view(cr, uid, self.browse(cr, uid, ids, context=context)[0].inscricao_id.id, context)
     
     def _add_info(self, inscricao, info):
+        """
+        Acrescenta informações ao campo "info" de inscrição.
+
+        :param inscricao: Objeto browser de inscrição.
+        :param info: String a ser incrementada.
+        """
         if inscricao.info:
             info = "%s\n%s" %(inscricao.info, info)
         inscricao.write({"info": info})
 
     def _create_doc_discente(self, cr, browse_self, state, context=None, ativo=True):
+        """
+        Cria um novo documento de discente ativo ou não, depende dos parâmetros.
+
+        :param browse_self: Objeto browse de Pontuação de Disciplina
+        :param state: Status do documento criado
+        :param ativo: True ou False para definir se o documento estará ativo
+        :return: ID do registro criado.
+        """
         dados = {
             "inscricao_id": browse_self.inscricao_id.id, "tutor": browse_self.inscricao_id.modalidade == "tutor",
             "disciplina_id": browse_self.disciplina_id.id, "state": state, "is_active": ativo
@@ -339,45 +434,45 @@ class ProcessoSeletivo(osv.Model):
              "END Asc, name asc"
     
     def atualiza_status_cron(self, cr, uid, context=None):
+        """
+        Atualiza o status dos processos seletivos para demanda, novo e andamento de acordo com suas datas utilizado o
+        modelo "ir.cron".
+        """
         ps = self.search(cr, uid, [("state", "in", ["demanda", "novo", "andamento"])])
         if ps:
-            context = context or {}
-            context["tz"] = "America/Maceio"
             dados = self.status(cr, uid, ps, None, None, context)
             for ps_id in dados:
                 self.write(cr, SUPERUSER_ID, ps_id, {"state": dados[ps_id]})
         return True
     
     def status(self, cr, uid, ids, campo, args, context=None):
+        """
+        Define o valor do status.
+        """
         res = {}.fromkeys(ids, False)
-        hoje = datetime.strptime(fields.date.context_today(self, cr, uid, context), DEFAULT_SERVER_DATE_FORMAT).date()
+        hoje = datetime.today().date()
         for ps in self.browse(cr, uid, ids, context):
             if hoje <= datetime.strptime(ps.prazo_demanda, DEFAULT_SERVER_DATE_FORMAT).date():
                 res[ps.id] = "demanda"
             elif ps.disciplinas_ids and ps.anexos_ids:
-                if ps.semestre_id.is_active:
-                    if hoje < datetime.strptime(ps.data_inicio, DEFAULT_SERVER_DATE_FORMAT).date():
-                        res[ps.id] = "novo"
-                    elif hoje <= datetime.strptime(ps.data_fim, DEFAULT_SERVER_DATE_FORMAT).date():
-                        res[ps.id] = "andamento"
-                    else:
-                        res[ps.id] = "encerrado"
+                if hoje < datetime.strptime(ps.data_inicio, DEFAULT_SERVER_DATE_FORMAT).date():
+                    res[ps.id] = "novo"
+                elif hoje <= datetime.strptime(ps.data_fim, DEFAULT_SERVER_DATE_FORMAT).date():
+                    res[ps.id] = "andamento"
                 else:
-                    res[ps.id] = "invalido"
+                    res[ps.id] = "encerrado"
             else:
                 res[ps.id] = "invalido"
         return res
-    
+
     def atualiza_status(self, cr, uid, ids, context=None):
-        proc_sels = []
-        if self._name == "ud.monitoria.registro":
-            for reg in self.browse(cr, uid, ids, context):
-                proc_sels.extend([ps.id for ps in reg.processos_seletivos_ids])
-        elif self._name == "ud.monitoria.processo.seletivo":
-            proc_sels.extend(ids)
-        hoje = datetime.utcnow().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        """
+        Gatilho utilizado para atualizar o status do processo seletivo quando os campos de disciplinas, anexos e todas
+        as suas datas forem modificados.
+        """
+        hoje = datetime.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
         args = [
-            '&', ("id", "in", proc_sels), "|", "|", "|", '|', '|', ("state", "=", "invalido"), ("state", "=", None),
+            '&', ("id", "in", ids), "|", "|", "|", '|', '|', ("state", "=", "invalido"), ("state", "=", None),
             "&", ("state", "=", "demanda"), ("prazo_demanda", "<", hoje),
             "&", ("state", "=", "novo"), '|', ("prazo_demanda", ">=", hoje), ("data_inicio", "<=", hoje),
             "&", ("state", "=", "andamento"), "|", ("data_inicio", ">", hoje), ("data_fim", "<", hoje),
@@ -386,18 +481,15 @@ class ProcessoSeletivo(osv.Model):
         res = self.pool.get("ud.monitoria.processo.seletivo").search(
             cr, uid, args, context=context
         )
-        for ps in self.pool.get("ud.monitoria.processo.seletivo").browse(cr, uid, proc_sels, context):
+        for ps in self.pool.get("ud.monitoria.processo.seletivo").browse(cr, uid, list(set(ids).difference(res)), context):
             if not (ps.anexos_ids and ps.disciplinas_ids):
                 res.append(ps.id)
         return res
 
-    def valida_registro(self, cr, uid, ids, context=None):
-        for ps in self.browse(cr, uid, ids, context=context):
-            if not ps.semestre_id.is_active:
-                return False
-        return True
-    
     def valida_datas(self, cr, uid, ids, context=None):
+        """
+        Verifica se as datas de demana, data inicia e final ocorrem uma antes da outra nessa ordem.
+        """
         for ps in self.browse(cr, uid, ids, context=context):
             data_inicial = datetime.strptime(ps.data_inicio, DEFAULT_SERVER_DATE_FORMAT)
             data_final = datetime.strptime(ps.data_fim, DEFAULT_SERVER_DATE_FORMAT)
@@ -407,18 +499,28 @@ class ProcessoSeletivo(osv.Model):
         return True
 
     def valida_bolsa(self, cr, uid, ids, context=None):
+        """
+        Verifica se o valor da nolsa é menor que 1.
+        """
         for ps in self.browse(cr, uid, ids, context=context):
             if ps.valor_bolsa < 1:
                 return False
         return True
 
     def valida_criterios_avaliativos(self, cr, uid, ids, context=None):
+        """
+        Verifica se há ao menos um critério avaliativo vinculado ao processo seletivo.
+        """
         for ps in self.browse(cr, uid, ids, context):
             if len(ps.criterios_avaliativos_ids) == 0:
                 return False
         return True
 
     def valida_bolsas_disciplinas(self, cr, uid, ids, context=None):
+        """
+        Verifica se há alguma disciplina que o número de bolsas definido no processo seletivo ultrapassou do informado
+        no registro do semestre.
+        """
         for ps in self.browse(cr, uid, ids, context):
             bolsas = {}
             for disc in ps.disciplinas_ids:
@@ -434,14 +536,15 @@ class ProcessoSeletivo(osv.Model):
     _columns = {
         "id": fields.integer(u"ID", readonly=True, invisible=True),
         "name": fields.char(u"Nome", required=True),
-        "prazo_demanda": fields.date(u"Prazo da demanda", required=True, help=u"Prazo final da demanda"),
+        "prazo_demanda": fields.date(u"Em demanda até", required=True, help=u"Prazo final da demanda"),
         "data_inicio": fields.date(u"Data Inicial", required=True, help=u"Início das inscrições"),
         "data_fim": fields.date(u"Data Final", required=True, help=u"Encerramento das inscrições"),
         "valor_bolsa": fields.float(u"Bolsa (R$)", required=True, help=u"Valor da bolsa"),
         "tipo_media": fields.selection([("a", u"Aritmética"), ("p", u"Ponderada")], u"Tipo de Média", required=True,
                                        help=u"Tipo de média a ser utilizada na aprovação."),
         "media_minima": fields.float(u"Nota Minima", required=True, help=u"Média mínima para aprovação de discentes."),
-        "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, ondelete="cascade", help=u"Semestres ativos"),
+        "semestre_id": fields.many2one("ud.monitoria.registro", u"Semestre", required=True, ondelete="cascade",
+                                       domain=[("is_active", "=", True)], help=u"Semestres ativos"),
         "disciplinas_ids": fields.one2many("ud.monitoria.disciplina", "processo_seletivo_id", u"Disciplinas"),
         "anexos_ids": fields.one2many("ud.monitoria.anexo", "processo_seletivo_id", u"Anexos"),
         "inscricoes_ids": fields.one2many("ud.monitoria.inscricao", "processo_seletivo_id", u"Inscrições"),
@@ -451,8 +554,7 @@ class ProcessoSeletivo(osv.Model):
                                          atualiza_status,
                                          ["prazo_demanda", "data_inicio", "data_fim", "disciplinas_ids", "anexos_ids"],
                                          10
-                                     ),
-                                     "ud.monitoria.registro": (atualiza_status, ["is_active"], 10)
+                                     )
                                  }),
         "criterios_avaliativos_ids": fields.one2many("ud.monitoria.criterio.avaliativo", "processo_seletivo_id",
                                                      u"Critérios Avaliativos"),
@@ -464,7 +566,6 @@ class ProcessoSeletivo(osv.Model):
     ]
     
     _constraints = [
-        (valida_registro, u"O registro para semestre selecionado não está ativo!", [u"Semestre"]),
         (
             valida_datas,
             u"O prazo da demanda deve ocorrer antes da data inicial e, por sua vez, deve ocorrer antes da data final.",
@@ -492,22 +593,48 @@ class ProcessoSeletivo(osv.Model):
     }
     
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Deixa o nome do processo seletivo em maiúsculo.
+        """
         if "name" in vals:
             vals["name"] = vals.get("name").upper()
         return super(ProcessoSeletivo, self).create(cr, uid, vals, context=context)
     
     def write(self, cr, uid, ids, vals, context=None):
+        """
+        === Extensão do método osv.Model.write
+        Impede a antecipação da data de encerramento do processo seletivo caso ele esteja em andamento ou encerrado e
+        adiamento da data final para uma data anterior a atual.
+
+        :raise osv.except_osv: Caso haja a tentantiva de alterar para um semestre inativo ou tentativa indevida de
+                               antecipação ou adiamento da data de encerramento.
+        """
+        if "semestre_id" in vals:
+            if self.pool.get("ud.monitoria.registro").search_count(
+                    cr, SUPERUSER_ID, [("id", "=", vals["semestre_id"]), ("is_active", "=", False)]):
+                raise osv.except_osv(u"Registro Inativo",
+                                     u"Não é permitido alterar o semestre do processo seletivo para um inativo")
         if "name" in vals:
             vals["name"] = vals.get("name").upper()
         if "data_fim" in vals:
             data_fim = vals["data_fim"]
             for ps in self.browse(cr, uid, ids, context):
-                if ps.state in ["andamento", "encerrado"] and data_fim < ps.data_fim:
-                    raise osv.except_osv(u"Data Final", u"Nâo é permitido antecipar a data de finalização quando o "
-                                                        u"processo seletivo já está em andamento ou encerrado.")
+                if ps.state in ["andamento", "encerrado"]:
+                    if data_fim < ps.data_fim:
+                        raise osv.except_osv(u"Data Final", u"Não é permitido antecipar a data de finalização quando o "
+                                                            u"processo seletivo já está em andamento ou encerrado.")
+                    elif datetime.strptime(data_fim, DEFAULT_SERVER_DATE_FORMAT).date() < datetime.today().date():
+                        raise osv.except_osv(u"Data Final", u"A data final do processo seletivo deve ser maior ou "
+                                                            u"igual a data atual.")
         return super(ProcessoSeletivo, self).write(cr, uid, ids, vals, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Limita os processos seletivos de acordo com seu status caso o usuário não pertença aos grupos de segurança de
+        coordenador de monitoria (não é o mesmo que coordenador de monitoria do curso) e administrador.
+        """
         if (context or {}).get("filtro_coordenador", False):
             grupos = "ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
             states = []
@@ -521,16 +648,28 @@ class ProcessoSeletivo(osv.Model):
         return super(ProcessoSeletivo, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def default_get(self, cr, uid, fields_list, context=None):
+        """
+        === Extensão do método osv.Model.default_get
+        Campo semestre com valor padrão se existir em context.
+        """
         res = super(ProcessoSeletivo, self).default_get(cr, uid, fields_list, context)
         res["semestre_id"] = (context or {}).get("registro_id", False)
         return res
 
     def _check_qorder(self, word):
+        """
+        === Sobrescrita do método osv.Model._check_qorder
+        Adaptação para as novas modificações da validação da cláusula de ordenação condicional.
+        """
         if not regex_order.match(word):
             raise orm.except_orm(_('AccessError'), u"A ordenação do Processo Seletivo não está de acordo com o padrão. Use apenas o nome do campo ou um conjunto de casos seguidos, ou não, de ASC/DESC!")
         return True
     
     def _generate_order_by(self, order_spec, query):
+        """
+        === Extensão do método osv.Model._generate_order_by
+        Geração personalizada da cláusula SQL "ORDER BY" para suportar ordenação condicional "WHERE ... CASE ... THEN ...".
+        """
         inserir = lambda valores: " ".join(map(lambda v: "WHEN {}.{} = {} THEN {}".format(self._table, *v), valores))
         clausulas = ""
         order_spec = order_spec or self._order
@@ -563,6 +702,9 @@ class Inscricao(osv.Model):
     _order = "state asc, processo_seletivo_id asc, perfil_id asc"
     
     def get_state(self, cr, uid, ids, campo, arg, context=None):
+        """
+        Define o status da inscrição.
+        """
         state = True
         res = {}
         for insc in self.browse(cr, uid, ids, context=context):
@@ -574,11 +716,18 @@ class Inscricao(osv.Model):
         return res
     
     def atualiza_state(self, cr, uid, ids, context=None):
+        """
+        Gatilho utilizando para atualizar o status da inscrição quando o status de alguma das pontuações correspondentes
+        for modificado.
+        """
         return map(lambda pont: pont["inscricao_id"], self.read(cr, uid, ids, ["inscricao_id"], context=context, load="_classic_write"))
     
-    def valida_registro(self, cr, uid, ids, context=None):
+    def valida_processo_seletivo(self, cr, uid, ids, context=None):
+        """
+        Verifica se o processo seletivo correspondente é inválido.
+        """
         for insc in self.browse(cr, uid, ids, context=context):
-            if not insc.processo_seletivo_id.semestre_id.is_active:
+            if insc.processo_seletivo_id.status == "invalido":
                 return False
         return True
     
@@ -623,14 +772,22 @@ class Inscricao(osv.Model):
     ]
     
     _constraints = [
-        (valida_registro, u"Não é possível realizar as ações desejadas enquanto o processo seletivo estiver vinculado a um registro inativo", [u"Processo Seletivo"]),
+        (valida_processo_seletivo, u"Não é possível realizar as ações desejadas enquanto o processo seletivo for inválido", [u"Processo Seletivo"]),
     ]
 
     def name_get(self, cr, uid, ids, context=None):
+        """
+        === Sobrescrita do método osv.Model.search
+        Define como inscrição será visualizada em campos many2one.
+        """
         return [(insc.id, u"%s (Matrícula: %s)" % (insc.discente_id.name, insc.perfil_id.matricula))
                 for insc in self.browse(cr, uid, ids, context=context)]
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        === Sobrescrita do método osv.Model.search
+        Ao pesquisar inscrições em campos many2one, será pesquisado pelo nome do discente ou matrícula.
+        """
         discentes_ids = self.pool.get("ud.employee").search(cr, uid, [("name", operator, name)], context=context)
         args += [("discente_id", "in", discentes_ids)]
         perfil_model = self.pool.get("ud.perfil")
@@ -640,22 +797,27 @@ class Inscricao(osv.Model):
         return self.name_get(cr, uid, ids, context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Filtra as inscrições se context tiver a chave para filtrar discente e/ou orientador. A primeira opção limita as
+        inscrições ao proprietário da mesma, a segunda limita as inscrições pelas disciplinas que foram selecionadas
+        na inscrição. É necessário saber que a primeira pode influenciar no resultado da segunda.
+        """
         context = context or {}
         pessoa = None
         if context.pop("filtrar_discente", False):
             pessoa= self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=1)
-            if pessoa:
-                args += [("perfil_id", "in",
-                          self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", pessoa[0])]))]
-            else:
+            if not pessoa:
                 return []
+            perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", pessoa[0])])
+            args += [("perfil_id", "in", perfis)]
         res = super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
         if context.get("filtrar_orientador", False):
             if not pessoa:
                 pessoa = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=1)
                 if not pessoa:
                     return []
-            perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", pessoa[0])], context=context)
+                perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "=", pessoa[0])], context=context)
             pontuacoes_model = self.pool.get("ud.monitoria.pontuacoes.disciplina")
             pontuacoes = pontuacoes_model.search(cr, uid, [("inscricao_id", "in", res)], context=context)
             return list(
@@ -666,19 +828,3 @@ class Inscricao(osv.Model):
             )
         return res
 
-    def onchange_perfil(self, cr, uid, ids, perfil_id, bolsista, context=None):
-        value = {"curso_id": False, "discente_id": False, "telefone_fixo": False, "celular": False, "email": False}
-        res = {"value": value}
-        if perfil_id:
-            perfil = self.pool.get("ud.perfil").browse(cr, uid, perfil_id, context=context)
-            value["curso_id"] = perfil.ud_cursos.id
-            value["discente_id"] = perfil.ud_papel_id.id
-            value["telefone_fixo"] = perfil.ud_papel_id.work_phone
-            value["celular"] = perfil.ud_papel_id.mobile_phone
-            value["email"] = perfil.ud_papel_id.work_email
-            if bolsista:
-                if perfil.is_bolsista:
-                    value["bolsista"] =  False
-                    res["warning"] = {"title": u"Discente bolsista",
-                                      "message": u"Não é permitido fazer inscrição de discentes registrados como bolsista."}
-        return res

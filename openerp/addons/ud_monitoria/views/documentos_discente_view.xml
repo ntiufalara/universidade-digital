@@ -364,6 +364,7 @@
                     </header>
                     <group>
                         <field name="mes"/>
+                        <field name="ano"/>
                         <field name="frequencia" filename="frequencia_nome"/>
                     </group>
                 </form>

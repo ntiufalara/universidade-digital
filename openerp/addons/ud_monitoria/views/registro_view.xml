@@ -252,6 +252,7 @@
                     <field name="name" invisible="1"/>
                     <group col="4">
                         <field name="mes" colspan="2" attrs="{'readonly': [('name', '!=', False)]}"/>
+                        <field name="ano" colspan="2" attrs="{'readonly': [('name', '!=', False)]}"/>
                         <field name="state" colspan="2"/>
                     </group>
                 </form>

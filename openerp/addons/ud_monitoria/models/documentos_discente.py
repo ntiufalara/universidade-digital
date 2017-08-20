@@ -29,6 +29,9 @@ class DocumentosDiscente(osv.Model):
                ("bolsista", u"Bolsista"), ("desligado", u"Desligado(a)")]
 
     def calcula_ch(self, cr, uid, ids, campo, args, context=None):
+        """
+        Calcula a carga horária total que o discente atribuiu em seus horários de atendimento.
+        """
         def converte(dt):
             horas = divmod(dt.seconds, 3600)
             minutos = divmod(horas[1], 60)
@@ -52,6 +55,9 @@ class DocumentosDiscente(osv.Model):
         return res
 
     def status_relatorios(self, cr, uid, ids, campo, args, context=None):
+        """
+        Verifica se há ao menos um relatório final aceito.
+        """
         res = {}
         for doc in self.browse(cr, uid, ids, context):
             for rel in doc.relatorio_ids:
@@ -61,6 +67,9 @@ class DocumentosDiscente(osv.Model):
         return res
 
     def frequencia_controle(self, cr, uid, ids, campo, args, context=None):
+        """
+        Define se o discente pode adicionar novas frequências.
+        """
         res = {}
         hoje = datetime.utcnow().date()
         for doc in self.browse(cr, SUPERUSER_ID, ids, context):
@@ -69,11 +78,17 @@ class DocumentosDiscente(osv.Model):
         return res
 
     def horas_alteradas(self, cr, uid, ids, context=None):
+        """
+        Define quais documentos deverão ter sua carga horária atualizada.
+        """
         return [
             h.documento_id.id for h in self.browse(cr, uid, ids, context)
             ]
 
     def valida_vagas_bolsista(self, cr, uid, ids, context=None):
+        """
+        Verifica se há vagas para novos discentes bolsistas.
+        """
         for doc in self.browse(cr, uid, ids, context):
             if doc.is_active and doc.state == "bolsista":
                 args = [("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True), ("state", "=", "bolsista")]
@@ -86,6 +101,9 @@ class DocumentosDiscente(osv.Model):
         return True
 
     def valida_vagas_n_bolsista(self, cr, uid, ids, context=None):
+        """
+        Verifica se há vagas para novos discentes não bolsistas.
+        """
         for doc in self.browse(cr, uid, ids, context):
             if doc.is_active and doc.state == "n_bolsista":
                 args = [("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True), ("state", "=", "n_bolsista")]
@@ -139,12 +157,20 @@ class DocumentosDiscente(osv.Model):
     ]
 
     def name_get(self, cr, uid, ids, context=None):
+        """
+        === Sobrescrita do método osv.Model.name_get
+        Define a forma de visualização desse modelo em campos many2one.
+        """
         return [
             (doc["id"], doc["discente_id"][1])
             for doc in self.read(cr, uid, ids, ["discente_id"], context=context)
             ]
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        """
+        === Sobrescrita do método osv.Model.name_search
+        Define a forma de pesquisa desse modelo em campos many2one.
+        """
         pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("name", operator, name)], context=context)
         perfis = self.pool.get("ud.perfil").search(
             cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("ud_papel_id", "in", pessoas)], context=context
@@ -156,45 +182,74 @@ class DocumentosDiscente(osv.Model):
         return self.name_get(cr, uid, ids, context)
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Caso não tenha sido inserido nenhum dado bancário, busca da inscrição do discente, cria um relatório final para
+        a disciplina e discente correspondentes e adiciona o mesmo no grupo de segurança de monitores.
+        """
         if not vals.get("dados_bancarios_id", False) and vals.get("inscricao_id", False):
             insc = self.pool.get("ud.monitoria.inscricao").browse(cr, uid, vals["inscricao_id"], context)
             vals["dados_bancarios_id"] = insc.dados_bancarios_id.id
         res = super(DocumentosDiscente, self).create(cr, uid, vals, context)
-        self.get_create_relatorio_fim(cr, SUPERUSER_ID, res, context)
+        self.relatorio_fim_correspondente(cr, SUPERUSER_ID, res, context)
         self.add_grupo_monitor(cr, uid, res, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        if "frequencia_ids" in vals:
-            meses = set()
-            for freq in vals["frequencia_ids"]:
-                if freq[0] == 0:
-                    meses.add(freq[2].get("mes", None))
-            try:
-                meses.remove(None)
-            except KeyError: pass
-            if meses:
-                relatorio_fim_model = self.pool.get("ud.monitoria.relatorio.final.disc")
-                relatorio_fim = relatorio_fim_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", ids)])
-                relatorio_fim_model.add_meses(cr, SUPERUSER_ID, relatorio_fim, meses, context)
+        """
+        === Extensão do método osv.Model.write
+        Se adicionado novas frequências e não houver relatórios do mês correspondente para elas, novos serão criados e
+        vinculados ao discente correspondente.
+        """
         super(DocumentosDiscente, self).write(cr, uid, ids, vals, context)
-        self.add_grupo_monitor(cr, uid, ids, context)
+        if "frequencia_ids" in vals:
+            args = []
+            meses = set()
+            clausulas = ""
+            for freq in vals["frequencia_ids"]:
+                if freq[0] == 0 and freq[2].get("ano", None) and freq[2].get("mes", None):
+                    if clausulas:
+                        clausulas += " OR mes = '{}' AND ano = '{}'".format(freq[2]["mes"], freq[2]["ano"])
+                        args += ["|", ("mes", "=", freq[2]["mes"]), ("ano", "=", freq[2]["ano"])]
+                    else:
+                        clausulas = "mes = '{}' AND ano = '{}'".format(freq[2]["mes"], freq[2]["ano"])
+                        args += [("mes", "=", freq[2]["mes"]), ("ano", "=", freq[2]["ano"])]
+                    meses.add((freq[2]["mes"], freq[2]["ano"]))
+            if meses:
+                rel_model = self.pool.get("ud.monitoria.relatorio.final.disc")
+                rfd_model = self.pool.get("ud.monitoria.rfd.mes")
+                sql = "SELECT mes, ano FROM {rfd} WHERE relatorio_id = {rel} AND ({clausulas});"
+                for rel in rel_model.search(cr, SUPERUSER_ID, [("doc_discente_id", "in", ids)]):
+                    cr.execute(sql.format(rfd=rfd_model._table, rel=rel, clausulas=clausulas))
+                    res = meses.difference(cr.fetchall())
+                    if res:
+                        for mes in res:
+                            rfd_model.create(cr, SUPERUSER_ID, {"mes": mes[0], "ano": mes[1], "relatorio_id": rel})
         return True
 
     def unlink(self, cr, uid, ids, context=None):
+        """
+        === Extensão do método osv.Model.unlink
+        Remove os discentes envolvidos do grupo de segurança e verifica se há algum perfil de discente como bolsista
+        de monitoria para remover os dados referentes a mesma.
+        """
         perfil_model = self.pool.get("ud.perfil")
-        perfis = []
+        perfis = set()
         for doc in self.browse(cr, uid, ids, context):
             if doc.state == "bolsista" and doc.is_active and doc.inscricao_id.perfil_id.tipo_bolsa == "m":
-                perfis.append(doc.inscricao_id.perfil_id.id)
+                perfis.add(doc.inscricao_id.perfil_id.id)
         self.remove_grupo_monitor(cr, uid, ids, context)
         super(DocumentosDiscente, self).unlink(cr, uid, ids, context)
         if perfis:
-            perfil_model.write(cr, SUPERUSER_ID, perfis,
+            perfil_model.write(cr, SUPERUSER_ID, list(perfis),
                                {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False}, context)
         return True
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Se utilizado o valor "filtrar_discente" em context, filtra os documentos do discente.
+        """
         if (context or {}).get("filtrar_discente", False):
             pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
             if not pessoas:
@@ -205,6 +260,11 @@ class DocumentosDiscente(osv.Model):
         return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def add_grupo_monitor(self, cr, uid, ids, context=None):
+        """
+        Adiciona discente do documento ao groupo de segurança.
+
+        :raise osv.except_osv: Se não houver um usuário vinculado ao perfil.
+        """
         if isinstance(ids, (int, long)):
             ids = [ids]
         group = self.pool.get("ir.model.data").get_object(
@@ -218,6 +278,9 @@ class DocumentosDiscente(osv.Model):
             group.write({"users": [(4, doc.discente_id.user_id.id)]})
 
     def remove_grupo_monitor(self, cr, uid, ids, context=None):
+        """
+        Remove discente do grupo de segurança de monitores caso não possua mais vínculos do gênero.
+        """
         if isinstance(ids, (int, long)):
             ids = [ids]
         group = self.pool.get("ir.model.data").get_object(
@@ -233,14 +296,25 @@ class DocumentosDiscente(osv.Model):
                 elif doc.discente_id.user_id:
                     group.write({"users": [(3, doc.discente_id.user_id.id)]})
 
-    def get_create_relatorio_fim(self, cr, uid, id_doc, context):
+    def relatorio_fim_correspondente(self, cr, uid, id_doc, context):
+        """
+        Cria um registro de relatorio final de disciplina, caso não exista, e vincula com o documento informado.
+
+        :param id_doc: ID de documento de discente.
+        """
         rel_model = self.pool.get("ud.monitoria.relatorio.final.disc")
         rel_id = rel_model.search(cr, uid, [("doc_discente_id", "=", id_doc)], context=context)
-        if rel_id:
-            return rel_id[0]
-        return rel_model.create(cr, uid, {"doc_discente_id": id_doc}, context)
+        if not rel_id:
+            rel_model.create(cr, uid, {"doc_discente_id": id_doc}, context)
 
     def finalizar(self, cr, uid, ids, context=None):
+        """
+        Inativa o registro.
+
+        :raise osv.except_osv: Se disciplina ainda ativa; Se documento ativo e não possui frequências, relatórios, uma
+                               das frequências ainda está em análise ou não há uma frequência aceita para os meses
+                               correspondentes.
+        """
         for doc in self.browse(cr, uid, ids, context):
             if doc.disciplina_id.is_active:
                 raise osv.except_osv(u"Ação Indisponível",
@@ -269,7 +343,12 @@ class DocumentosDiscente(osv.Model):
         return True
 
     def reserva_para_bolsista(self, cr, uid, ids, context=None):
-        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True)], context):
+        """
+        Muda o status do documento do discnete de reserva para bolsista.
+
+        :raise osv.except_osv: Caso haja algum registro inativo ou com status diferente de "reserva".
+        """
+        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True), ("state", "=", "reserva")], context):
             raise osv.except_osv(
                 u"Registro inativo ou fora da reserva",
                 u"Esse recuros pode ser utilzado apenas em registros de discentes ativos e no cadastro de reserva"
@@ -277,7 +356,13 @@ class DocumentosDiscente(osv.Model):
         return self.write(cr, uid, ids, {"state": 'bolsista'}, context)
 
     def reserva_para_n_bolsista(self, cr, uid, ids, context=None):
-        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True)], context):
+        """
+        Muda o status do documento do discnete de reserva para não bolsista.
+
+        :raise osv.except_osv: Caso haja algum registro inativo ou com status diferente de "reserva".
+        """
+        ids = list(set(ids))
+        if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ('is_active', '=', True), ("state", "=", "reserva")], context):
             raise osv.except_osv(
                 u"Registro inativo ou fora da reserva",
                 u"Esse recuros pode ser utilzado apenas em registros de discentes ativos e no cadastro de reserva"
@@ -326,6 +411,10 @@ class Horario(osv.Model):
     ]
 
     def _check_qorder(self, word):
+        """
+        === Sobrescrita do método osv.Model._check_qorder
+        Adaptação para as novas modificações da validação da cláusula de ordenação condicional.
+        """
         if not regex_order.match(word):
             raise orm.except_orm(_('AccessError'),
                                  u"A ordenação do Horário não está de acordo com o padrão. Use apenas o nome do campo "
@@ -333,6 +422,10 @@ class Horario(osv.Model):
         return True
 
     def _generate_order_by(self, order_spec, query):
+        """
+        === Extensão do método osv.Model._generate_order_by
+        Geração personalizada da cláusula SQL "ORDER BY" para suportar ordenação condicional "WHERE ... CASE ... THEN ...".
+        """
         inserir = lambda valores: " ".join(map(lambda v: "WHEN {}.{} = {} THEN {}".format(self._table, *v), valores))
         clausulas = ""
         order_spec = order_spec or self._order
@@ -359,6 +452,9 @@ class Horario(osv.Model):
         return clausulas or ''
 
     def calc_ch(self, cr, uid, ids, campo, args, context=None):
+        """
+        Calcula o número de horas entre a hora inicial e final.
+        """
         res = {}
         for horario in self.browse(cr, uid, ids, context=context):
             horas = divmod(
@@ -373,6 +469,10 @@ class Horario(osv.Model):
         return res
 
     def valida_hora(self, cr, uid, ids, context=None):
+        """
+        Verifica se o padrão de horas inseridas estão corretas com horas de 0 à 23 e minutos de 0 até 59 e se a hora
+        inicial ocorre antes da final.
+        """
         for horario in self.read(cr, uid, ids, ["hora_i", "hora_f"], context=context, load="_classic_write"):
             if not regex_hora.match(horario["hora_i"]) or not regex_hora.match(horario["hora_f"]):
                 return False
@@ -399,6 +499,9 @@ class Relatorio(osv.Model):
     _STATES = [("analise", u"Em Análise"), ("rejeitado", u"Rejeitado"), ("aceito", u"Aceito")]
 
     def valida_relatorios(self, cr, uid, ids, context=None):
+        """
+        Verifica se há mais de um relatório com status "analise", "aceito" ou um com status "analise" e outr "aceito".
+        """
         for rel in self.browse(cr, uid, ids, context):
             analise, aceito = 0, 0
             for r in rel.documentos_id.relatorio_ids:
@@ -429,10 +532,18 @@ class Relatorio(osv.Model):
     ]
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Atribui o valor inicial do status para "analise".
+        """
         vals["state"] = "analise"
         return super(Relatorio, self).create(cr, uid, vals, context)
 
     def _check_qorder(self, word):
+        """
+        === Sobrescrita do método osv.Model._check_qorder
+        Adaptação para as novas modificações da validação da cláusula de ordenação condicional.
+        """
         if not regex_order.match(word):
             raise orm.except_orm(_('AccessError'),
                                  u"A ordenação do Horário não está de acordo com o padrão. Use apenas o nome do campo "
@@ -440,6 +551,10 @@ class Relatorio(osv.Model):
         return True
 
     def _generate_order_by(self, order_spec, query):
+        """
+        === Extensão do método osv.Model._generate_order_by
+        Geração personalizada da cláusula SQL "ORDER BY" para suportar ordenação condicional "WHERE ... CASE ... THEN ...".
+        """
         inserir = lambda valores: " ".join(map(lambda v: "WHEN {}.{} = {} THEN {}".format(self._table, *v), valores))
         clausulas = ""
         order_spec = order_spec or self._order
@@ -466,6 +581,11 @@ class Relatorio(osv.Model):
         return clausulas or ''
 
     def alterar_status(self, cr, uid, ids, status, context=None):
+        """
+        Altera o status para algum valor.
+
+        :raise osv.except_osv: Caso o relatório do professor não tenha sido anexado.
+        """
         for relatorio in self.browse(cr, uid, ids, context):
             if not relatorio.parecer:
                 raise osv.except_osv(u"Ação Inválida",
@@ -473,9 +593,15 @@ class Relatorio(osv.Model):
         return self.write(cr, uid, ids, {"state": status}, context)
 
     def botao_aceitar(self, cr, uid, ids, context=None):
+        """
+        Altera o status para "aceito".
+        """
         return self.alterar_status(cr, uid, ids, "aceito", context)
 
     def botao_rejeitar(self, cr, uid, ids, context=None):
+        """
+        Altera o status para "rejeitado".
+        """
         return self.alterar_status(cr, uid, ids, "rejeitado", context)
 
 
@@ -488,6 +614,7 @@ class Frequencia(osv.Model):
 
     _columns = {
         "mes": fields.selection(_MESES, u"Mês", required=True),
+        "ano": fields.integer(u"Ano", required=True),
         "state": fields.selection(_STATES, u"Status"),
         "frequencia": fields.binary(u"Frequência", required=True),
         "frequencia_nome": fields.char(u"Nome da Frequência"),
@@ -495,7 +622,14 @@ class Frequencia(osv.Model):
                                          help=u"Documentos de um Discente", invisible=True),
     }
 
+    _defaults = {
+        "ano": datetime.today().year,
+    }
+
     def valida_fequencia(self, cr, uid, ids, context=None):
+        """
+        Verifica se há mais de uma frequência com status "analise", "aceito" ou uma com status "analise" e outra "aceito".
+        """
         for freq in self.browse(cr, uid, ids, context):
             analise, aceita = 0, 0
             for f in freq.documentos_id.frequencia_ids:
@@ -509,15 +643,25 @@ class Frequencia(osv.Model):
         return True
 
     _constraints = [
-        (valida_fequencia, u"Não é possível criar novas frequências para meses que já possua outros registros em análise ou aceitos.", [u"Mês"]),
+        (valida_fequencia, u"Não é possível criar novas frequências para meses que possuam outros registros em análise ou aceitos.", [u"Mês"]),
     ]
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Atribui o statuso ao valor "analise".
+        """
         vals["state"] = "analise"
         return super(Frequencia, self).create(cr, uid, vals, context)
 
     def botao_aceitar(self, cr, uid, ids, context=None):
+        """
+        Altera o status para "aceito".
+        """
         return self.write(cr, uid, ids, {"state": "aceito"}, context)
 
     def botao_rejeitar(self, cr, uid, ids, context=None):
+        """
+        Altera o status para "rejeitado".
+        """
         return self.write(cr, uid, ids, {"state": "rejeitado"}, context)

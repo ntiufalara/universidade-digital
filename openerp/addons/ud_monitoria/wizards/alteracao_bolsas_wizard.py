@@ -7,6 +7,11 @@ TIPOS_BOLSA = dict(_TIPOS_BOLSA)
 
 
 def get_banco(cls, cr, browse_record, usuario_id, context=None):
+    """
+    Busca ou cria um registro de dados bancários do núcleo para um usuário.
+
+    :raise osv.except_osv: Caso os dados bancários pesquisados pertençam a outro usuário.
+    """
     dados_bancarios_model = cls.pool.get("ud.dados.bancarios")
     args = [("banco_id", "=", browse_record.banco_id.id)]
     if browse_record.agencia_v:

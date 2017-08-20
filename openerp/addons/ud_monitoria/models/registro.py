@@ -39,12 +39,18 @@ class Registro(osv.Model):
     ]
     
     def valida_intervalo_frequencia(self, cr, uid, ids, context=None):
+        """
+        Verifica se o internvalo de submissão de frequências dos discnetes é menor que 1.
+        """
         for registro in self.browse(cr, uid, ids, context=context):
             if (registro.intervalo_frequencia < 1):
                 return False
         return True
 
     def valida_semestre(self, cr, uid, ids, context=None):
+        """
+        Verifica se o semestre está no padrão de ano e semestre AAAA.S.
+        """
         padrao = compile("\d{4}\.[12]")
         for registro in self.browse(cr, uid, ids, context=context):
             if not padrao.match(registro.semestre):
@@ -52,6 +58,9 @@ class Registro(osv.Model):
         return True
 
     def valida_bolsas(self, cr, uid, ids, context=None):
+        """
+        Verifica se a soma das bolsas distribuídas entre os cursos ultrapassou a quantidade máxima para o semestre.
+        """
         for reg in self.browse(cr, uid, ids, context):
             bolsas = 0
             for dist in reg.distribuicao_bolsas_ids:
@@ -61,6 +70,9 @@ class Registro(osv.Model):
         return True
 
     def __get_create(self, cr, nome, campos, template=u"Template não definido pelo administrador.", context=None):
+        """
+        Busca ou cria um modelo de documento em "ud.documento.tipo".
+        """
         tipo_doc_model = self.pool.get("ud.documento.tipo")
         tipos_doc = tipo_doc_model.search(cr, SUPERUSER_ID, [("name", "=", nome)], context=context)
         if tipos_doc:
@@ -70,26 +82,49 @@ class Registro(osv.Model):
                                                                 u"pois esses são usados internamente pelo módulo de monitoria.",})
     
     def __modelo_certificado(self, cr, uid, context=None):
+        """
+        Busca o modelo de certificado em "ud.documento.tipo".
+
+        :attention: Ainda não utilizado.
+        """
         return self.__get_create(cr, u"CERTIFICADO (UD MONITORIA)", self._campos_certificado, context=context)
     
     def __modelo_relatorio_final(self, cr, uid, context=None):
+        """
+        Busca o modelo de relatório em "ud.documento.tipo".
+
+        :attention: Ainda não utilizado.
+        """
         return self.__get_create(cr, u"RELATÓRIO FINAL (UD MONITORIA)", self._campos_relatorio, context=context)
 
-    def getl_bolsas_distribuidas(self, cr, uid, ids, campo, args, context=None):
+    def get_bolsas_distribuidas(self, cr, uid, ids, campo, args, context=None):
+        """
+        Calcula o total de bolsas distribuídas
+        """
         res = {}
         for registro in self.browse(cr, uid, ids, context):
             res[registro.id] = 0
             for dist in registro.distribuicao_bolsas_ids:
-                res[registro.id] = dist.bolsas
-
+                res[registro.id] += dist.bolsas
         return res
+
+    def update_bolsas_distribuidas(self, cr, uid, ids, context=None):
+        """
+        Define quais registros serão atualizados ao alterar o campo bolsas em distribuição de bolsas.
+        """
+        return [
+            dist.registro_id.id
+            for dist in self.browse(cr, uid, ids)
+        ]
 
     _columns = {
         "id": fields.integer(u"ID", readonly=True, invisible=True),
         "semestre": fields.char(u"Semestre", size=6, required=True, help=u"Semestre no formato '2016.1'"),
         "max_bolsas": fields.integer(u"Máximo de Bolsas", required=True,
                                      help=u"Número máximo de bolsas disponíveis para o semestre"),
-        "bolsas_distribuidas": fields.function(getl_bolsas_distribuidas, type="integer", string=u"Bolsas Distribuidas", help=u"Número total de bolsas distribuidas entre os cursos"),
+        "bolsas_distribuidas": fields.function(get_bolsas_distribuidas, type="integer", string=u"Bolsas Distribuidas",
+                                               store={"ud.monitoria.distribuicao.bolsas": (update_bolsas_distribuidas, ["bolsas"], 10)},
+                                               help=u"Número total de bolsas distribuidas entre os cursos"),
         "distribuicao_bolsas_ids": fields.one2many("ud.monitoria.distribuicao.bolsas", "registro_id", u"Distribuição de Bolsas",
                                                    help=u"Permite distribuir bolsas entre cursos ativos"),
         "data_i_frequencia": fields.date(u"Envio de Frequência", required=True,
@@ -128,6 +163,9 @@ class Registro(osv.Model):
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
+        """
+        Configuração de como um registro será duplicado.
+        """
         default = default or {}
         def proximo_semestre(s):
             if s:
@@ -151,18 +189,21 @@ class Registro(osv.Model):
             "data_i_frequencia": (datetime.now() + timedelta(30)).strftime("%Y-%m-%d"),
             "processos_seletivos_ids": [],
             "relatorio_discentes_ids": [],
-            "evento_ids": [],
+            "eventos_ids": [],
             "is_active": True
         })
         return super(Registro, self).copy(cr, uid, id, default, context)
 
-    def atualizar_datas_frequencia(self, cr, uid, context=None):
-        return []
-    
     def ativar_registro(self, cr, uid, ids, context=None):
+        """
+        Marca o registro como ativo
+        """
         return self.write(cr, uid, ids, {"is_active": True}, context=context)
     
     def desativar_registro(self, cr, uid, ids, context=None):
+        """
+        Marca o registro como inativo.
+        """
         return self.write(cr, uid, ids, {"is_active": False}, context=context)
     
     def resetar_modelos(self, cr, uid, ids, context=None):
@@ -189,21 +230,36 @@ class DistribuicaoBolsas(osv.Model):
     _description = u"Distribuição de bolsas de cursos (UD)"
 
     def get_bolsas_distribuidas(self, cr, uid, ids, campo, args, context=None):
+        """
+        Define o valor do número de bolsas distribuídas.
+        """
         res = {}.fromkeys(ids, 0)
         processo_seletivo_model = self.pool.get("ud.monitoria.processo.seletivo")
         disciplina_model = self.pool.get("ud.monitoria.disciplina")
         for distribuicao in self.browse(cr, uid, ids, context):
-            processos_seletivos = processo_seletivo_model.search(cr, uid, [("semestre_id", "=", distribuicao.registro_id.id)], context=context)
-            disciplinas = disciplina_model.search(cr, uid, [("curso_id", "=", distribuicao.curso_id.id), ("processo_seletivo_id", "in", processos_seletivos)], context=context)
+            processos_seletivos = processo_seletivo_model.search(cr, uid, [("semestre_id", "=", distribuicao.registro_id.id)])
+            disciplinas = disciplina_model.search(cr, uid, [("curso_id", "=", distribuicao.curso_id.id), ("processo_seletivo_id", "in", processos_seletivos)])
             for disciplina in disciplina_model.browse(cr, uid, disciplinas, context):
                 res[distribuicao.id] += disciplina.bolsas
         return res
 
     def update_bolsas_distribuidas(self, cr, uid, ids, context=None):
+        """
+        Gatilho para atualizar o número de bolsas distribuídas.
+        """
         res = []
         for disciplina in self.browse(cr, uid, ids, context):
             res.extend([dist.id for dist in disciplina.processo_seletivo_id.semestre_id.distribuicao_bolsas_ids])
         return res
+
+    def valida_bolsas(self, cr, uid, ids, context=None):
+        """
+        Verifica se o número de bolsas é menor do que o número de bolsas distribuídas.
+        """
+        for dist in self.browse(cr, uid, ids, context):
+            if dist.bolsas < dist.bolsas_distribuidas:
+                return False
+        return True
 
     _columns = {
         "id": fields.integer("ID", readonly=True, invisible=True),
@@ -218,6 +274,10 @@ class DistribuicaoBolsas(osv.Model):
         "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", ondelete="cascade"),
     }
 
+    _constraints = [
+        (valida_bolsas, u"O número de bolsas não pode ser reduzido para um valor menor ao que já foi distribuído", [u"Bolsas"]),
+    ]
+
     _sql_constraints = [
         ("distribuicao_d_registro_uniques", "unique(curso_id,registro_id)",
          u"Não é permitido distribuir bolsas de cursos repetidos em um mesmo registro semestral."),
@@ -230,6 +290,9 @@ class Evento(osv.Model):
     _order = "state asc,create_date asc"
     
     def responsavel(self, cr, uid, context=None):
+        """
+        Busca o perfil no núcleo do responsável atualmente logado.
+        """
         responsavel = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
         if not responsavel:
             raise osv.except_osv(
@@ -243,12 +306,6 @@ class Evento(osv.Model):
             )
         return responsavel[0]
 
-    def valida_registro(self, cr, uid, ids, context=None):
-        for registro in self.browse(cr, uid, ids, context=context):
-            if not registro.registro_id.is_active:
-                return False
-        return True
-    
     _STATES = [
         ("novo", u"Novo"),
         ("visto", u"Visualizado"),
@@ -270,12 +327,23 @@ class Evento(osv.Model):
         "state": "novo",
         "responsavel_id": responsavel,
     }
-    
-    _constraints = [
-        (valida_registro, u"O Registro não está mais ativo!", [u"Registro"])
-    ]
-    
+
+    def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Impede que seja criado novos logs de eventos se o registro semestral correspondente estiver inativo.
+
+        :raise osv.except_osv: Caso registro semestral esteja inativo.
+        """
+        semestre = vals.get("registro_id", None)
+        if semestre and not self.pool.get("ud.monitoria.registro").browse(cr, SUPERUSER_ID, semestre).is_active:
+            raise osv.except_osv(u"Registro Semestral", u"O registro do semestre em questão está inativo")
+        return super(Evento, self).create(cr, uid, vals, context)
+
     def botao_visualizar(self, cr, uid, ids, context=None):
+        """
+        Marca o log de evento como "visto".
+        """
         return self.write(cr, uid, ids, {"state": "visto"}, context=context)
 
 
@@ -284,19 +352,20 @@ class RelatorioFinalDisc(osv.Model):
     _description = u"Relatório de status final dos discentes (UD)"
     _order = "doc_discente_id"
 
-    def valida_registro(self, cr, uid, ids, context=None):
-        for registro in self.browse(cr, uid, ids, context=context):
-            if not registro.registro_id.is_active:
-                return False
-        return True
-
     def relatorio(self, cr, uid, ids, campos, args, context=None):
+        """
+        Define o status final dos relatórios do discente.
+        """
         res = {}
         for rel_f in self.browse(cr, uid, ids, context):
             res[rel_f.id] = rel_f.doc_discente_id.relatorios_ok
         return res
 
     def update_relatorio(self, cr, uid, ids, context=None):
+        """
+        Gatilho para atualizar o status final dos relatórios do discente se em "state" de "ud.monitoria.relatorio" for
+        modificado ou se for adicionado novos relatórios para o discente.
+        """
         rel_model, self = self, self.pool.get("ud.monitoria.relatorio.final.disc")
         doc_disc = []
         if self._name == "ud.monitoria.relatorio":
@@ -332,16 +401,17 @@ class RelatorioFinalDisc(osv.Model):
         "registro_id": fields.many2one("ud.monitoria.registro", u"Registro", required=True, ondelete="cascade", invisible=True),
     }
 
-    _constraints = [
-        (valida_registro, u"O registro semestral não está mais ativo!", [u"Registro/Semestre"])
-    ]
-
     _sql_constraints = [
         ("relatorio_doc_discent_unico", "unique(doc_discente_id)",
          u"Os documentos de um discente não pode conter mais de um relatório"),
     ]
 
     def create(self, cr, uid, vals, context=None):
+        """
+        === Extensão do método osv.Model.create
+        Se documento de discente for informado, vincula automaticamente com o registro do semestre correto, se não tiver
+        sido inserido, e cria todos os relatórios de frequência mensal correspondente.
+        """
         if vals.get("doc_discente_id", False):
             doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, vals["doc_discente_id"], context)
             if "registro_id" not in vals:
@@ -354,33 +424,27 @@ class RelatorioFinalDisc(osv.Model):
                     meses.append(freq.mes)
         return super(RelatorioFinalDisc, self).create(cr, uid, vals, context)
 
-    def add_meses(self, cr, uid, ids, meses, context=None):
-        meses = set(meses)
-        for rel in self.browse(cr, uid, ids, context):
-            exist = set()
-            for fm in rel.meses_frequencia_ids:
-                exist.add(fm.mes)
-            add = []
-            for mes in meses.difference(exist):
-                add.append((0, 0, {"mes": mes}))
-            if add:
-                rel.write({"meses_frequencia_ids": add})
-
 
 class RelatorioFimDiscMes(osv.Model):
     _name = "ud.monitoria.rfd.mes"
     _description = u"Controle da frequência mensal dos discentes (UD)"
-    _order = "mes asc"
+    _order = "ano, mes"
 
     def get_mes(self, cr, uid, ids, campo, arg, context=None):
+        """
+        Define o mês.
+        """
         res = {}
         meses = {'01': u"Janeiro", '02': u"Fevereiro", '03': u"Março", '04': u"Abril", '05': u"Maio", '06': u"Junho",
                  '07': u"Julho", '08': u"Agosto", '09': u"Setembro", '10': u"Outubro", '11': u"Novembro", '12': u"Dezembro"}
-        for mes in self.read(cr, uid, ids, ["seq"], context=context, load="_classic_write"):
-            res[mes.get("id")] = meses.get(mes.get("seq"))
+        for mes in self.read(cr, uid, ids, ["mes", "ano"], context=context, load="_classic_write"):
+            res[mes.get("id")] = u"{}/{}".format(meses.get(mes.get("mes")), mes.get("ano"))
         return res
 
     def get_status(self, cr, uid, ids, campo, arg, context=None):
+        """
+        Define o status.
+        """
         res = {}
         for mes in self.browse(cr, uid, ids, context):
             res[mes.id] = "s_registro"
@@ -400,6 +464,7 @@ class RelatorioFimDiscMes(osv.Model):
     _columns = {
         "name": fields.function(get_mes, type="char", store=False, method=True, string=u"Nome do Mês"),
         "mes": fields.selection(_MESES, u"Mês", required=True),
+        "ano": fields.integer(u"Ano", required=True),
         "state": fields.function(get_status, type="selection", selection=_STATES, string=u"Status",
                                  help=u"Seguindo a ordem de prioridade, se houver ao menos uma frequência em análise, "
                                       u"o status será \"Análise\", se houver alguma aceita, o status passa a ser "
@@ -411,19 +476,3 @@ class RelatorioFimDiscMes(osv.Model):
     _sql_constraints = [
         ("mes_relatorio_unique", "unique(mes, relatorio_id)", u"Não é permitido repetir o mês para o mesmo relatório!"),
     ]
-
-    # def name_get(self, cr, uid, ids, context=None):
-    #     meses = dict(_MESES)
-    #     return [
-    #         (rel_mes.id, meses[rel_mes.mes]) for rel_mes in self.browse(cr, uid, ids, context)
-    #     ]
-    #
-    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-    #     mes = ""
-    #     for mes in _MESES:
-    #         if name.lower() in mes[1].lower():
-    #             mes = mes[1]
-    #             break
-    #     args = [("mes", "=", mes)] + (args or [])
-    #     ids = self.search(cr, uid, args, limit=limit, context=context)
-    #     return self.name_get(cr, uid, ids, context)
