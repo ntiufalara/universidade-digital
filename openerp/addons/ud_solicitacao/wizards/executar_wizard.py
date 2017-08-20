@@ -14,4 +14,4 @@ class executar_wiz (osv.osv_memory):
     def execucao (self, cr, uid, ids, ctx):
         lt = self.read(cr, uid, ids)[0]
         valores = {'execucao':lt["execucao"], "data_execucao":lt["data_execucao"],"state":"execucao"}
-        self.pool.get("ud.solicitacao").write(cr, uid, ctx["active_ids"], valores)
+        self.pool.get("ud.solicitacao").write(cr, uid)

@@ -75,7 +75,7 @@ class audittrail_rule(osv.osv):
                 raise osv.except_osv(
                         _('WARNING: audittrail is not part of the pool'),
                         _('Change audittrail depends -- Setting rule as DRAFT'))
-                self.write(cr, uid, [thisrule.id], {"state": "draft"})
+                self.write(cr, uid)
             val = {
                  "name": 'View Log',
                  "res_model": 'audittrail.log',

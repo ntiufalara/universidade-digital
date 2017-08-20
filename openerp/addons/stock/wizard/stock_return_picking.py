@@ -207,12 +207,12 @@ class stock_return_picking(osv.osv_memory):
                                             'location_dest_id': move.location_id.id,
                                             'date': date_cur,
                 })
-                move_obj.write(cr, uid, [move.id], {'move_history_ids2':[(4,new_move)]}, context=context)
+                move_obj.write(cr, uid, context=context)
         if not returned_lines:
             raise osv.except_osv(_('Warning!'), _("Please specify at least one non-zero quantity."))
 
         if set_invoice_state_to_none:
-            pick_obj.write(cr, uid, [pick.id], {'invoice_state':'none'}, context=context)
+            pick_obj.write(cr, uid, context=context)
         wf_service.trg_validate(uid, 'stock.picking', new_picking, 'button_confirm', cr)
         pick_obj.force_assign(cr, uid, [new_picking], context)
         # Update view id in context, lp:702939

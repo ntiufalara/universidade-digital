@@ -221,7 +221,7 @@ class OpenIDController(openerp.addons.web.http.Controller):
                         user_id = ids[0]
                         login = Users.browse(cr, SUPERUSER_ID, user_id).login
                         key = randomString(utils.KEY_LENGTH, '0123456789abcdef')
-                        Users.write(cr, SUPERUSER_ID, [user_id], {'openid_key': key})
+                        Users.write(cr, SUPERUSER_ID)
                         # TODO fill empty fields with the ones from sreg/ax
                         cr.commit()
 

@@ -554,7 +554,7 @@ class document_storage(osv.osv):
         store_fname = None
         fname = None
         filesize = len(data)
-        self.pool.get('ir.attachment').write(cr, uid, [file_node.file_id], {'datas': data.encode('base64')}, context=context)
+        self.pool.get('ir.attachment').write(cr, uid, context=context)
         # 2nd phase: store the metadata
         try:
             icont = ''
@@ -1230,7 +1230,7 @@ class node_dir(node_database):
             if ret:
                 ctx = self.context.context.copy()
                 ctx['__from_node'] = True
-                dir_obj.write(cr, self.context.uid, [self.dir_id,], ret, ctx)
+                dir_obj.write(cr, self.context.uid)
             ret = True
 
         return ret
@@ -1818,7 +1818,7 @@ class node_file(node_class):
             if ret:
                 ctx = self.context.context.copy()
                 ctx['__from_node'] = True
-                doc_obj.write(cr, self.context.uid, [self.file_id,], ret, ctx )
+                doc_obj.write(cr, self.context.uid)
             ret = True
 
         return ret
@@ -2113,7 +2113,7 @@ class nodefd_db(StringIO, node_descriptor):
         with registry.cursor() as cr:
             data = self.getvalue().encode('base64')
             if self.mode in ('w', 'w+', 'r+'):
-                registry.get('ir.attachment').write(cr, 1, par.file_id, {'datas': data})
+                registry.get('ir.attachment').write(cr, 1)
             cr.commit()
         StringIO.close(self)
 

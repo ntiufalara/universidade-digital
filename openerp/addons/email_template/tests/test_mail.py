@@ -37,7 +37,7 @@ class test_message_compose(TestMailBase):
         """ Tests designed for the mail.compose.message wizard updated by email_template. """
         cr, uid = self.cr, self.uid
         mail_compose = self.registry('mail.compose.message')
-        self.res_users.write(cr, uid, [uid], {'signature': 'Admin', 'email': 'a@a.a'})
+        self.res_users.write(cr, uid)
         user_admin = self.res_users.browse(cr, uid, uid)
         p_a_id = user_admin.partner_id.id
         group_pigs = self.mail_group.browse(cr, uid, self.group_pigs_id)
@@ -188,13 +188,7 @@ class test_message_compose(TestMailBase):
         p_d_id = self.res_partner.search(cr, uid, [('email', '=', 'd@d.d')])[0]
         # modify template: use email_recipients, use template and email address in email_to to test all features together
         user_model_id = self.registry('ir.model').search(cr, uid, [('model', '=', 'res.users')])[0]
-        email_template.write(cr, uid, [email_template_id], {
-            'model_id': user_model_id,
-            'body_html': '${object.login}',
-            'email_to': '${object.email}, c@c',
-            'email_recipients': '%i,%i' % (p_b_id, p_c_id),
-            'email_cc': 'd@d',
-            })
+        email_template.write(cr, uid)
         # patner by email + partner by id (no double)
         send_to = [p_a_id, p_b_id, p_c_id, p_d_id]
         # Generate messsage with default email and partner on template

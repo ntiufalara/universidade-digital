@@ -245,7 +245,7 @@ class mail_message(osv.Model):
 
         # all message have notifications: already set them as (un)read
         if len(notif_ids) == len(msg_ids) or not create_missing:
-            notification_obj.write(cr, uid, notif_ids, {'read': read}, context=context)
+            notification_obj.write(cr, uid, context=context)
             return len(notif_ids)
 
         # some messages do not have notifications: find which one, create notification, update read status
@@ -253,7 +253,7 @@ class mail_message(osv.Model):
         to_create_msg_ids = list(set(msg_ids) - set(notified_msg_ids))
         for msg_id in to_create_msg_ids:
             notification_obj.create(cr, uid, {'partner_id': user_pid, 'read': read, 'message_id': msg_id}, context=context)
-        notification_obj.write(cr, uid, notif_ids, {'read': read}, context=context)
+        notification_obj.write(cr, uid, context=context)
         return len(notif_ids)
 
     def set_message_starred(self, cr, uid, msg_ids, starred, create_missing=True, context=None):
@@ -279,7 +279,7 @@ class mail_message(osv.Model):
 
         # all message have notifications: already set them as (un)starred
         if len(notif_ids) == len(msg_ids) or not create_missing:
-            notification_obj.write(cr, uid, notif_ids, values, context=context)
+            notification_obj.write(cr, uid, context=context)
             return starred
 
         # some messages do not have notifications: find which one, create notification, update starred status
@@ -287,7 +287,7 @@ class mail_message(osv.Model):
         to_create_msg_ids = list(set(msg_ids) - set(notified_msg_ids))
         for msg_id in to_create_msg_ids:
             notification_obj.create(cr, uid, dict(values, partner_id=user_pid, message_id=msg_id), context=context)
-        notification_obj.write(cr, uid, notif_ids, values, context=context)
+        notification_obj.write(cr, uid, context=context)
         return starred
 
     #------------------------------------------------------

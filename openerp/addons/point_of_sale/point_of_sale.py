@@ -311,7 +311,7 @@ class pos_session(osv.osv):
         if not pos_config.journal_id:
             jid = jobj.default_get(cr, uid, ['journal_id'], context=context)['journal_id']
             if jid:
-                jobj.write(cr, uid, [pos_config.id], {'journal_id': jid}, context=context)
+                jobj.write(cr, uid, context=context)
             else:
                 raise osv.except_osv( _('error!'),
                     _("Unable to open the session. You have to assign a sale journal to your point of sale."))
@@ -325,7 +325,7 @@ class pos_session(osv.osv):
                 if not cashids:
                     cashids = journal_proxy.search(cr, uid, [('journal_user','=',True)], context=context)
 
-            jobj.write(cr, uid, [pos_config.id], {'journal_ids': [(6,0, cashids)]})
+            jobj.write(cr, uid)
 
 
         pos_config = jobj.browse(cr, uid, config_id, context=context)
@@ -383,7 +383,7 @@ class pos_session(osv.osv):
             if not record.start_at:
                 values['start_at'] = time.strftime('%Y-%m-%d %H:%M:%S')
             values['state'] = 'opened'
-            record.write(values, context=context)
+            record.write(values, user=context)
             for st in record.statement_ids:
                 st.button_open(context=context)
 
@@ -396,7 +396,7 @@ class pos_session(osv.osv):
         for session in self.browse(cr, uid, ids, context=context):
             for statement in session.statement_ids:
                 if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
-                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id], {'balance_end_real': statement.balance_end})
+                    self.pool.get('account.bank.statement').write(cr, uid)
         return self.write(cr, uid, ids, {'state' : 'closing_control', 'stop_at' : time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
 
     def wkf_action_close(self, cr, uid, ids, context=None):
@@ -431,7 +431,7 @@ class pos_session(osv.osv):
                     }, context=context)
 
                 if st.journal_id.type == 'bank':
-                    st.write({'balance_end_real' : st.balance_end})
+                    st.write({'balance_end_real': st.balance_end})
                 getattr(st, 'button_confirm_%s' % st.journal_id.type)(context=context)
         self._confirm_orders(cr, uid, ids, context=context)
         self.write(cr, uid, ids, {'state' : 'closed'}, context=context)
@@ -555,7 +555,7 @@ class pos_order(osv.osv):
                 else:
                     part_id = False
                 bsl_ids = [x.id for x in posorder.statement_ids]
-                bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
+                bsl_obj.write(cr, uid, context=context)
         return res
 
     def unlink(self, cr, uid, ids, context=None):
@@ -821,9 +821,7 @@ class pos_order(osv.osv):
 
         for clone in self.browse(cr, uid, clone_list, context=context):
             for order_line in clone.lines:
-                line_obj.write(cr, uid, [order_line.id], {
-                    'qty': -order_line.qty
-                }, context=context)
+                line_obj.write(cr, uid, context=context)
 
         new_order = ','.join(map(str,clone_list))
         abs = {
@@ -1119,14 +1117,14 @@ class pos_order(osv.osv):
                 'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
             })
 
-            order.write({'state':'done', 'account_move': move_id})
+            order.write({'state': 'done', 'account_move': move_id})
 
         all_lines = []
         for group_key, group_data in grouped_data.iteritems():
             for value in group_data:
                 all_lines.append((0, 0, value),)
         if move_id: #In case no order was changed
-            self.pool.get("account.move").write(cr, uid, [move_id], {'line_id':all_lines}, context=context)
+            self.pool.get("account.move").write(cr, uid, context=context)
 
         return True
 
@@ -1330,7 +1328,7 @@ class ean_wizard(osv.osv_memory):
             ean13 = openerp.addons.product.product.sanitize_ean13(r.ean13_pattern)
             m = context.get('active_model')
             m_id =  context.get('active_id')
-            self.pool.get(m).write(cr,uid,[m_id],{'ean13':ean13})
+            self.pool.get(m).write(cr, uid)
         return { 'type' : 'ir.actions.act_window_close' }
 
 class product_product(osv.osv):

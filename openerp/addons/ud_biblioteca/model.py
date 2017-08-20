@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import copy
 
 from openerp.osv import osv, fields
-import re
 from openerp.osv.orm import except_orm
 
 
@@ -15,13 +14,15 @@ class ud_biblioteca_publicacao(osv.osv):
     _name = "ud.biblioteca.publicacao"
 
     """
-    Atributo usado para salvar o Polo em caso de seleção manual (O sistema não envia valores de campos 'disabled')
+    Atributo usado para salvar o Polo em caso de seleção manual (O navegador não envia valores de campos 'disabled')
     """
     __polo_id = 0
 
     _columns = {
         'name': fields.char(u'Título', required=True),
-        'autor': fields.char(u'Autor', required=True),
+        'autor': fields.char(u'Autor'),
+        'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', 'Autor', required=True),
+        'contato': fields.related('autor_id', 'contato', type="char", string="E-mail para contato"),
         'ano_pub': fields.char(u'Ano de publicação', required=True),
         'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
         'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
@@ -45,29 +46,82 @@ class ud_biblioteca_publicacao(osv.osv):
             ('fotografia', "Fotografia"),
             ('outros', u"Outros")
         ), string=u'Tipo'),
+        'categoria_cnpq_id': fields.many2one('ud.biblioteca.publicacao.categoria_cnpq', 'Categoria CNPQ'),
+        'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', "Tipo", required=True),
         "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
+        'visualizacoes': fields.integer(u'Visualizações', required=True),
+        'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
+                                     string=u'Áreas do trabalho',),
     }
 
     _order = "ano_pub desc"
 
     _defaults = {
         'ud_campus_id': lambda self, cr, uid, context: self.busca_campus(cr, uid, context),
-        'polo_id': lambda self, cr, uid, context: self.busca_polo(cr, uid, context)
+        'polo_id': lambda self, cr, uid, context: self.busca_polo(cr, uid, context),
+        'visualizacoes': 0,
     }
 
+    def read(self, cr, uid, ids, *args, **kwargs):
+        """
+        Contador de Visualizações
+        :param cr:
+        :param uid:
+        :param ids:
+        :return:
+        """
+        result = super(ud_biblioteca_publicacao, self).read(cr, uid, ids, *args, **kwargs)
+        if len(ids) == 1:
+            for obj in result:
+                if obj.get('visualizacoes') is not None:
+                    vals = {'visualizacoes': obj.get('visualizacoes') + 1}
+                    self.write(cr, 1, ids, vals)
+                    obj['visualizacoes'] = vals['visualizacoes']
+        return result
+
     def create(self, cr, user, vals, context=None):
+        """
+        Recupera o polo antes de  salvar
+        Salva o contato do Autor no objeto "Autor"
+        :param cr:
+        :param user:
+        :param vals:
+        :param context:
+        :return:
+        """
+        # Recuperando o Polo
         if self.__polo_id != 0 and not vals.get('polo_id'):
             vals['polo_id'] = self.__polo_id
-        return super(ud_biblioteca_publicacao, self).create(cr, user, vals, context)
+
+        # Salvando contato do autor
+        self.pool.get('ud.biblioteca.publicacao.autor').write(cr, user, [vals.get('autor_id')], {
+            'contato': vals.get('contato')
+        })
+        return super(osv.Model, self).create(cr, user, vals, context)
 
     def onchange_seleciona_polo(self, cr, uid, ids, polo_id):
+        """
+        Salva o valor do onchange para adicionar ao dicionário de criação.
+        Fields disabled não são enviados ao servidor
+        :param cr:
+        :param uid:
+        :param ids:
+        :param polo_id:
+        :return:
+        """
         self.__polo_id = polo_id
-        print self.__polo_id
         return {"value": {
             'polo_id': polo_id
         }}
 
     def busca_campus(self, cr, uid, context):
+        """
+        Localiza o Campus do qual ele é responsável, preenche o campo "campus_id"
+        :param cr:
+        :param uid:
+        :param context:
+        :return:
+        """
         user_id = copy.copy(uid)
         uid = 1
         try:
@@ -84,6 +138,13 @@ class ud_biblioteca_publicacao(osv.osv):
             return obj.campus_id.id
 
     def busca_polo(self, cr, uid, context):
+        """
+        Busca o polo que o usuário é reponsável, caso ele seja administrador do campus, ele pode escolher.
+        :param cr:
+        :param uid:
+        :param context:
+        :return:
+        """
         user_id = copy.copy(uid)
         uid = 1
         try:
@@ -102,6 +163,58 @@ class ud_biblioteca_publicacao(osv.osv):
             return obj.polo_id.id
 
 
+class ud_biblioteca_publicacao_area(osv.Model):
+    """
+    Nome: ud.biblioteca.publicacao.area
+    Descrição: Cadastro de área de trabalho
+    """
+    _name = 'ud.biblioteca.publicacao.area'
+
+    _columns = {
+        'name': fields.char(u'Área', required=True),
+        'publicacao_ids': fields.many2many('ud.biblioteca.publicacao', 'area_ids', string=u'Publicações')
+    }
+
+
+class ud_bilbioteca_publicacao_categoria_cnpq(osv.Model):
+    """
+    Nome: ud.biblioteca.publicacao.categoria_cnpq
+    Descrição: Cadastro de Categorias CNPQ
+    """
+    _name = 'ud.biblioteca.publicacao.categoria_cnpq'
+
+    _columns = {
+        'name': fields.char('Nome', required=True),
+        'publicacao_ids': fields.one2many('ud.biblioteca.publicacao', 'categoria_cnpq_id')
+    }
+
+
+class ud_biblioteca_publicacao_tipo(osv.osv):
+    '''
+    Nome: ud.biblioteca.publicacao.tipo
+    Descrição: Cadastro de tipos de publicações
+    '''
+    _name = 'ud.biblioteca.publicacao.tipo'
+
+    _columns = {
+        'name': fields.char('Tipo', required=True),
+        'publicacao_ids': fields.one2many('ud.biblioteca.publicacao', 'tipo_id')
+    }
+
+
+class ud_publicacao_autor(osv.osv):
+    """
+    Nome: ud.biblioteca.publicacao.autor
+    Descrição: Cadastro de autor de publicações
+    """
+    _name = "ud.biblioteca.publicacao.autor"
+
+    _columns = {
+        'name': fields.char('Nome', required=True),
+        'contato': fields.char('E-mail', required=False),
+    }
+
+
 class ud_biblioteca_orientador(osv.osv):
     '''
     Nome: ud.biblioteca.orientador
@@ -110,10 +223,30 @@ class ud_biblioteca_orientador(osv.osv):
     _name = 'ud.biblioteca.orientador'
     _columns = {
         'name': fields.char('Nome', size=64, required=True),
+        'titulacao_id': fields.many2one('ud.biblioteca.orientador.titulacao', "Titulação", required=True),
         'publicacao_orientador_id': fields.many2many('ud.biblioteca.publicacao', 'orientador_ids',
                                                      string=u'Publicação'),
         'publicacao_coorientador_id': fields.many2many('ud.biblioteca.publicacao', 'coorientador_ids',
                                                        string=u'Publicação'),
+    }
+
+    def name_get(self, cr, uid, ids, context=None):
+        objs = self.browse(cr, uid, ids, context)
+        return [(obj.id, "{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else "{}".format(obj.name))
+                for obj in objs]
+        # return "{} {}".format(titulacao, name)
+
+
+class ud_biblioteca_orientador_titulacao(osv.Model):
+    """
+    Nome: ud.biblioteca.orientador.titulacao
+    Descrição: Relação Many2many de orientador para titulação, permite adicionar mais de uma titulação
+    """
+    _name = 'ud.biblioteca.orientador.titulacao'
+
+    _columns = {
+        'name': fields.char("Titulação", required=True),
+        'orientador_ids': fields.one2many('ud.biblioteca.orientador', 'titulacao_id')
     }
 
 
@@ -133,9 +266,9 @@ class ud_biblioteca_anexo(osv.osv):
     }
 
     def publicacao_ctx(self, cr, uid, context):
-        '''
+        """
         Retorna a publicação Atual usando o id de contexto
-        '''
+        """
         return context["active_id"]
 
     def unlink(self, cr, uid, ids, context=None):
@@ -155,10 +288,10 @@ class ud_biblioteca_anexo(osv.osv):
 
 
 class ud_biblioteca_pc(osv.osv):
-    '''
+    """
     Nome: ud.biblioteca.pc
     Descrição: Armazenar as palavras-chave de cada publicação
-    '''
+    """
     _name = 'ud.biblioteca.pc'
 
     _columns = {

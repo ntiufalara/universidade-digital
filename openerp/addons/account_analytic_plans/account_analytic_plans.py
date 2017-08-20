@@ -247,7 +247,7 @@ class account_analytic_plan_instance(osv.osv):
             #get the list of the invoice line that were linked to the model
             lists = invoice_line_obj.search(cr, uid, [('analytics_id','=',this.id)], context=context)
             #make them link to the copy
-            invoice_line_obj.write(cr, uid, lists, {'analytics_id':temp_id}, context=context)
+            invoice_line_obj.write(cr, uid, context=context)
 
             #and finally modify the old model to be not a model anymore
             vals['plan_id'] = False
@@ -456,7 +456,7 @@ class sale_order_line(osv.osv):
                 rec = acct_anal_def_obj.account_get(cr, uid, line.product_id.id, sale_line.order_id.partner_id.id, uid, time.strftime('%Y-%m-%d'), context)
 
                 if rec:
-                    inv_line_obj.write(cr, uid, [line.id], {'analytics_id': rec.analytics_id.id}, context=context)
+                    inv_line_obj.write(cr, uid, context=context)
         return create_ids
 
 sale_order_line()

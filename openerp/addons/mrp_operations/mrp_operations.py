@@ -153,7 +153,7 @@ class mrp_production_workcenter_line(osv.osv):
             for prod in self.browse(cr, uid, ids, context=context):
                 if prod.production_id.workcenter_lines:
                     dstart = min(vals['date_planned'], prod.production_id.workcenter_lines[0]['date_planned'])
-                    prod_obj.write(cr, uid, [prod.production_id.id], {'date_start':dstart}, context=context, mini=False)
+                    prod_obj.write(cr, uid, context=context, mini=False)
         return result
 
     def action_draft(self, cr, uid, ids, context=None):
@@ -278,9 +278,7 @@ class mrp_production(osv.osv):
                 if context.get('__last_update'):
                     del context['__last_update']
                 if (wc.date_planned < dt.strftime('%Y-%m-%d %H:%M:%S')) or mini:
-                    self.pool.get('mrp.production.workcenter.line').write(cr, uid, [wc.id],  {
-                        'date_planned': dt.strftime('%Y-%m-%d %H:%M:%S')
-                    }, context=context, update=False)
+                    self.pool.get('mrp.production.workcenter.line').write(cr, uid, context=context, update=False)
                     i = self.pool.get('resource.calendar').interval_get(
                         cr,
                         uid,
@@ -498,7 +496,7 @@ class mrp_operations_operation(osv.osv):
             vals['code_id']=oper_objs.code_id.id
             delay=self.calc_delay(cr, uid, vals)
             wc_op_id=self.pool.get('mrp.production.workcenter.line').search(cr,uid,[('workcenter_id','=',vals['workcenter_id']),('production_id','=',vals['production_id'])])
-            self.pool.get('mrp.production.workcenter.line').write(cr,uid,wc_op_id,{'delay':delay})
+            self.pool.get('mrp.production.workcenter.line').write(cr, uid)
 
         return super(mrp_operations_operation, self).write(cr, uid, ids, vals, context=context)
 
@@ -519,7 +517,7 @@ class mrp_operations_operation(osv.osv):
             if code.start_stop=='done':
                 self.pool.get('mrp.production.workcenter.line').action_done(cr,uid,wc_op_id)
                 wf_service.trg_validate(uid, 'mrp.production.workcenter.line', wc_op_id[0], 'button_done', cr)
-                self.pool.get('mrp.production').write(cr,uid,vals['production_id'],{'date_finished':datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+                self.pool.get('mrp.production').write(cr, uid)
 
             if code.start_stop=='pause':
                 self.pool.get('mrp.production.workcenter.line').action_pause(cr,uid,wc_op_id)
@@ -544,7 +542,7 @@ class mrp_operations_operation(osv.osv):
             elif code.start_stop == 'start':
                 line_vals['date_start'] = vals['date_start']
 
-        self.pool.get('mrp.production.workcenter.line').write(cr, uid, wc_op_id, line_vals, context=context)
+        self.pool.get('mrp.production.workcenter.line').write(cr, uid, context=context)
 
         return super(mrp_operations_operation, self).create(cr, uid, vals, context=context)
 

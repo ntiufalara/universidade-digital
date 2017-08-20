@@ -262,10 +262,7 @@ class project(osv.osv):
                         'date_start': p.start.strftime('%Y-%m-%d %H:%M:%S'),
                         'date_end': p.end.strftime('%Y-%m-%d %H:%M:%S')
                     }, context=context)
-                self.pool.get('project.phase').write(cr, uid, [phase.id], {
-                    'date_start': p.start.strftime('%Y-%m-%d %H:%M:%S'),
-                    'date_end': p.end.strftime('%Y-%m-%d %H:%M:%S')
-                }, context=context)
+                self.pool.get('project.phase').write(cr, uid, context=context)
         return True
 project()
 

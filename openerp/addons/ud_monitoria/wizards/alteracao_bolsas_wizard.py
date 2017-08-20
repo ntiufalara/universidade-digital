@@ -31,7 +31,7 @@ def get_banco(cls, cr, browse_record, usuario_id, context=None):
             return dados_bancarios.id
         elif dados_bancarios.ud_conta_id.id == usuario_id:
             return dados_bancarios.id
-        raise osv.except_osv(u"Dados Bancários duplicados", u"Outra pessoa já possui esses dados bancários!")
+        raise osv.except_osv(u"Dados Bancários duplicados", u"Não é permitido duplicar dados bancários!")
     dados = {"banco_id": browse_record.banco_id.id, "agencia": browse_record.agencia, "dv_agencia": browse_record.dv_agencia,
              "conta": browse_record.conta, "dv_conta": browse_record.dv_conta, "operacao": browse_record.operacao,
              "ud_conta_id": usuario_id}
@@ -51,7 +51,12 @@ class AdicionarBolsaWizard(osv.TransientModel):
         oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
         res = {}
         for add in self.browse(cr, uid, ids, context):
-            res[add.id] = add.disciplina_id.bolsas
+            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", add.disciplina_id.disciplina_id.id), ("em_oferta", "=", True)],
+                                         context=context)
+            if oferta:
+                res[add.id] = oferta_model.browse(cr, uid, oferta[0], context=context).bolsas_disponiveis
+            else:
+                res[add.id] = 0
         return res
 
     _columns = {
@@ -69,7 +74,6 @@ class AdicionarBolsaWizard(osv.TransientModel):
                                              domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
                                                     "('is_active', '=', True), ('state', '=', status)]"),
         # DADOS BANCÁRIOS
-        "dados_bancarios_id": fields.many2one("ud.dados.bancarios", u"Dados Bancários", domain=[('id', '=', False)]),
         "banco_id": fields.many2one("ud.banco", u"Banco", ondelete="restrict"),
         "agencia": fields.char(u"Agência", size=4, help=u"Número da Agência"),
         "dv_agencia": fields.char(u"DV Agência", size=2, help=u"Dígito verificador da Agência"),
@@ -97,7 +101,8 @@ class AdicionarBolsaWizard(osv.TransientModel):
                 if doc.state == "bolsista":
                     raise osv.except_osv(u"Discente bolsista", u"O discente já é bolsista")
                 elif not doc.is_active:
-                    raise osv.except_osv(u"Documento do discente inativo", u"Não é possível alterar o status de discentes inativos")
+                    raise osv.except_osv(u"Documento do discente inativo",
+                                         u"Não é possível alterar o status de discentes inativos")
                 res["semestre_id"] = doc.disciplina_id.semestre_id.id
                 res["curso_id"] = doc.disciplina_id.curso_id.id
                 res["disciplina_id"] = doc.disciplina_id.id
@@ -120,22 +125,15 @@ class AdicionarBolsaWizard(osv.TransientModel):
             if doc_discente_id:
                 doc_discente = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id, context)
                 doc_discente_id = doc_discente_id if doc_discente.disciplina_id.id == disciplina_id else False
-            disciplina_id = self.pool.get("ud.monitoria.disciplina").browse(cr, uid, disciplina_id, context)
-            return {
-                "value": {"doc_discente_id": doc_discente_id,
-                          "bolsas": disciplina_id.bolsas}
-            }
+            disciplina_id = self.pool.get("ud.monitoria.disciplina").browse(cr, uid, disciplina_id, context).disciplina_id.id
+            oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
+            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", disciplina_id), ("em_oferta", "=", True)], context=context)
+            if oferta:
+                return {
+                    "value": {"doc_discente_id": doc_discente_id,
+                              "bolsas": oferta_model.browse(cr, uid, oferta[0], context=context).bolsas_disponiveis}
+                }
         return {"value": {"doc_discente_id": False, "bolsas": 0}}
-
-    def onchange_doc_discente(self, cr, uid, ids, doc_discente_id, dados_bancarios_id, context=None):
-        if doc_discente_id:
-            doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id, context)
-            if not dados_bancarios_id:
-                dados_bancarios_id = getattr(doc.dados_bancarios_id, "id", False)
-            return {"value": {"dados_bancarios_id": dados_bancarios_id},
-                    "domain": {"dados_bancarios_id": [("ud_conta_id", "=", doc.discente_id.id)]}}
-        return {"value": {"dados_bancarios_id": False},
-                "domain": {"dados_bancarios_id": [("id", "=", False)]}}
 
     def onchange_banco(self, cr, uid, ids, banco_id, context=None):
         if banco_id:
@@ -156,40 +154,45 @@ class AdicionarBolsaWizard(osv.TransientModel):
             elif not add.doc_discente_id.is_active:
                 raise osv.except_osv(u"Documento do discente inativo",
                                      u"O discente não pode ser classificado como bolsista")
-            if add.doc_discente_id.inscricao_id.perfil_id.is_bolsista:
+            matricula = add.doc_discente_id.discente_id.matricula
+            for perfil in add.doc_discente_id.discente_id.pessoa_id.papel_ids:
+                if perfil.matricula == matricula and perfil.tipo == "a":
+                    if perfil.is_bolsista:
+                        raise osv.except_osv(
+                            u"Discente bolsista",
+                            u"O discente \"{}\" sob matrícula \"{}\" possui bolsa do tipo: \"{}\"".format(
+                                add.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
+                            )
+                        )
+                    break
+            if not perfil:
                 raise osv.except_osv(
-                    u"Discente bolsista",
-                    u"O discente \"{}\" sob matrícula \"{}\" possui bolsa do tipo: \"{}\"".format(
-                        add.doc_discente_id.discente_id.name, add.doc_discente_id.inscricao_id.perfil_id.matricula,
-                        TIPOS_BOLSA[add.doc_discente_id.inscricao_id.perfil_id.tipo_bolsa]
-                    )
+                    u"Perfil excluído",
+                    u"O perfil do discente para a matrícula \"%s\" não existe ou foi excluído" % matricula or ""
                 )
             responsavel = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
             if not responsavel:
                 raise osv.except_osv(
                     u"Registro Inexistente",
-                    u"Não é possível realizar essa alteração enquanto seu login não estiver vinculado a uma pessoa no núcleo"
+                    u"Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo"
                 )
             if len(responsavel) > 1:
                 raise osv.except_osv(
                     u"Multiplos vínculos",
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
-            perfil_model.write(cr, SUPERUSER_ID, add.doc_discente_id.inscricao_id.perfil_id.id, {
+            perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
                 "is_bolsista": True, "tipo_bolsa": "m", "valor_bolsa": ("%.2f" % add.valor_bolsa).replace(".", ",")
             })
-            if not add.dados_bancarios_id:
-                dados_bancarios = get_banco(self, cr, add, add.doc_discente_id.discente_id.id, context)
-            else:
-                dados_bancarios = add.dados_bancarios_id.id
-            add.doc_discente_id.write({"state": "bolsista", "dados_bancarios_id": dados_bancarios})
+            add.doc_discente_id.write({"state": "bolsista", "is_active": True})
+            get_banco(self, cr, add, add.doc_discente_id.discente_id.pessoa_id.id, context)
             evento = {
                 "responsavel_id": responsavel[0],
-                "name": u"Adição de bolsa: \"%s\"" % add.doc_discente_id.discente_id.name,
-                "envolvidos_ids": [(4, add.doc_discente_id.discente_id.id)],
+                "name": u"Adição de bolsa: \"%s\"" % add.doc_discente_id.discente_id.pessoa_id.name,
+                "envolvidos_ids": [(4, add.doc_discente_id.discente_id.pessoa_id.id)],
                 "descricao": u"Uma bolsa de R$ %s foi vinculada para o(a) discente \"%s\" sob matrícula \"%s\"." % (
                     ("%.2f" % add.valor_bolsa).replace(".", ","),
-                    add.doc_discente_id.discente_id.name.upper(), add.doc_discente_id.inscricao_id.perfil_id.matricula
+                    add.doc_discente_id.discente_id.pessoa_id.name.upper(), matricula
                 )
             }
             add.semestre_id.write({"eventos_ids": [(0, 0, evento)]})
@@ -414,6 +417,23 @@ class RemoverBolsaWizard(osv.TransientModel):
         perfil_model = self.pool.get("ud.perfil")
         pessoa_model = self.pool.get("ud.employee")
         for rem in self.browse(cr, uid, ids, context):
+            matricula = rem.doc_discente_id.discente_id.matricula
+            for perfil in rem.doc_discente_id.discente_id.pessoa_id.papel_ids:
+                if perfil.matricula == matricula and perfil.tipo == "a":
+                    if perfil.is_bolsista and perfil.tipo_bolsa != "m":
+                        raise osv.except_osv(
+                            u"Categoria de bolsa",
+                            u"A categoria de bolsa do discente \"{}\" sob matrícula \"{}\" não é pertencente à "
+                            u"monitoria: \"{}\"".format(
+                                rem.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
+                            )
+                        )
+                    break
+            if not perfil:
+                raise osv.except_osv(
+                    u"Perfil excluído",
+                    u"O perfil do discente para a matrícula \"%s\" não existe ou foi excluído" % matricula or ""
+                )
             responsavel = pessoa_model.search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
             if not responsavel:
                 raise osv.except_osv(
@@ -425,17 +445,16 @@ class RemoverBolsaWizard(osv.TransientModel):
                     u"Multiplos vínculos",
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
-            perfil = rem.doc_discente_id.inscricao_id.perfil_id
             perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
                 "is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False
             })
             rem.doc_discente_id.write({"state": "n_bolsista"})
             evento = {
                 "responsavel_id": responsavel[0],
-                "name": u"Remoção de bolsa: \"%s\"" % rem.doc_discente_id.discente_id.name,
-                "envolvidos_ids": [(4, rem.doc_discente_id.discente_id.id)],
+                "name": u"Remoção de bolsa: \"%s\"" % rem.doc_discente_id.discente_id.pessoa_id.name,
+                "envolvidos_ids": [(4, rem.doc_discente_id.discente_id.pessoa_id.id)],
                 "descricao": u"A bolsa do discente \"%s\" sob matrícula \"%s\" foi removida." % (
-                    rem.doc_discente_id.discente_id.name.upper(), perfil.matricula
+                    rem.doc_discente_id.discente_id.pessoa_id.name.upper(), matricula
                 )
             }
             rem.semestre_id.write({"eventos_ids": [(0, 0, evento)]})

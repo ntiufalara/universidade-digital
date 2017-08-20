@@ -53,7 +53,7 @@ class specify_partner_terminology(osv.osv_memory):
         context_lang = user_obj.browse(cr, uid, uid, context=context).lang
         existing_trans_ids = trans_obj.search(cr, uid, [('name','=',name), ('lang','=',context_lang), ('type','=',type), ('src','=',src), ('res_id','=',res_id)])
         if existing_trans_ids:
-            trans_obj.write(cr, uid, existing_trans_ids, {'value': value}, context=context)
+            trans_obj.write(cr, uid, context=context)
         else:
             create_id = trans_obj.create(cr, uid, {'name': name,'lang': context_lang, 'type': type, 'src': src, 'value': value , 'res_id': res_id}, context=context)
         return {}

@@ -65,7 +65,7 @@ class test_mail_access_rights(TestMailBase):
         self.mail_group.read(cr, user_raoul_id, [self.group_priv_id])
 
         # Do: Raoul write on Jobs -> ok
-        self.mail_group.write(cr, user_raoul_id, [self.group_priv_id], {'name': 'modified'})
+        self.mail_group.write(cr, user_raoul_id)
         # Do: Bert cannot write on Private -> ko (read but no write)
         self.assertRaises(except_orm, self.mail_group.write,
             cr, user_bert_id, [self.group_priv_id], {'name': 're-modified'})
@@ -154,20 +154,20 @@ class test_mail_access_rights(TestMailBase):
         self.assertRaises(except_orm, self.mail_message.download_attachment,
             cr, user_bert_id, message_id, attachment_id)
         # Do: Bert is now the author
-        self.mail_message.write(cr, uid, [message_id], {'author_id': partner_bert_id})
+        self.mail_message.write(cr, uid)
         # Test: Bert reads the message, ok because Bert is the author
         self.mail_message.read(cr, user_bert_id, message_id)
         # Do: Bert is not the author anymore
-        self.mail_message.write(cr, uid, [message_id], {'author_id': partner_raoul_id})
+        self.mail_message.write(cr, uid)
         # Test: Bert reads the message, crash because not notification/not in doc followers/not read on doc
         self.assertRaises(except_orm, self.mail_message.read,
             cr, user_bert_id, message_id)
         # Do: message is attached to a document Bert can read, Jobs
-        self.mail_message.write(cr, uid, [message_id], {'model': 'mail.group', 'res_id': self.group_jobs_id})
+        self.mail_message.write(cr, uid)
         # Test: Bert reads the message, ok because linked to a doc he is allowed to read
         self.mail_message.read(cr, user_bert_id, message_id)
         # Do: message is attached to a document Bert cannot read, Pigs
-        self.mail_message.write(cr, uid, [message_id], {'model': 'mail.group', 'res_id': self.group_pigs_id})
+        self.mail_message.write(cr, uid)
         # Test: Bert reads the message, crash because not notification/not in doc followers/not read on doc
         self.assertRaises(except_orm, self.mail_message.read,
             cr, user_bert_id, message_id)

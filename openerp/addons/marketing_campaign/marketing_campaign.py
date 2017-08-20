@@ -319,14 +319,14 @@ class marketing_campaign_segment(osv.osv):
     def state_done_set(self, cr, uid, ids, *args):
         wi_ids = self.pool.get("marketing.campaign.workitem").search(cr, uid,
                                 [('state', '=', 'todo'), ('segment_id', 'in', ids)])
-        self.pool.get("marketing.campaign.workitem").write(cr, uid, wi_ids, {'state':'cancelled'})
+        self.pool.get("marketing.campaign.workitem").write(cr, uid)
         self.write(cr, uid, ids, {'state': 'done','date_done': time.strftime('%Y-%m-%d %H:%M:%S')})
         return True
 
     def state_cancel_set(self, cr, uid, ids, *args):
         wi_ids = self.pool.get("marketing.campaign.workitem").search(cr, uid,
                                 [('state', '=', 'todo'), ('segment_id', 'in', ids)])
-        self.pool.get("marketing.campaign.workitem").write(cr, uid, wi_ids, {'state':'cancelled'})
+        self.pool.get("marketing.campaign.workitem").write(cr, uid)
         self.write(cr, uid, ids, {'state': 'cancelled','date_done': time.strftime('%Y-%m-%d %H:%M:%S')})
         return True
 
@@ -692,7 +692,7 @@ class marketing_campaign_workitem(osv.osv):
             if condition:
                 if not eval(condition, eval_context):
                     if activity.keep_if_condition_not_met:
-                        workitem.write({'state': 'cancelled'}, context=context)
+                        workitem.write({'state': 'cancelled'}, user=context)
                     else:
                         workitem.unlink(context=context)
                     return
@@ -705,7 +705,7 @@ class marketing_campaign_workitem(osv.osv):
             values = dict(state='done')
             if not workitem.date:
                 values['date'] = datetime.now().strftime(DT_FMT)
-            workitem.write(values, context=context)
+            workitem.write(values, user=context)
 
             if result:
                 # process _chain

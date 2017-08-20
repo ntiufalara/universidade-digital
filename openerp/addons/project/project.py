@@ -441,7 +441,7 @@ class project(osv.osv):
             cr.execute('select id from project_task where project_id=%s', (proj.id,))
             tasks_id = [x[0] for x in cr.fetchall()]
             if tasks_id:
-                task_obj.write(cr, uid, tasks_id, {'active': value}, context=context)
+                task_obj.write(cr, uid, context=context)
             child_ids = self.search(cr, uid, [('parent_id','=', proj.analytic_account_id.id)])
             if child_ids:
                 self.setActive(cr, uid, child_ids, value, context=None)
@@ -537,14 +537,9 @@ def Project():
 
                 p = getattr(project_gantt, 'Task_%d' % (task.id,))
 
-                self.pool.get('project.task').write(cr, uid, [task.id], {
-                    'date_start': p.start.strftime('%Y-%m-%d %H:%M:%S'),
-                    'date_end': p.end.strftime('%Y-%m-%d %H:%M:%S')
-                }, context=context)
+                self.pool.get('project.task').write(cr, uid, context=context)
                 if (not task.user_id) and (p.booked_resource):
-                    self.pool.get('project.task').write(cr, uid, [task.id], {
-                        'user_id': int(p.booked_resource[0].name[5:]),
-                    }, context=context)
+                    self.pool.get('project.task').write(cr, uid, context=context)
         return True
 
     # ------------------------------------------------
@@ -568,7 +563,7 @@ def Project():
         if vals.get('type', False) not in ('template','contract'):
             vals['type'] = 'contract'
         project_id = super(project, self).create(cr, uid, vals, context)
-        mail_alias.write(cr, uid, [vals['alias_id']], {'alias_defaults': {'project_id': project_id} }, context)
+        mail_alias.write(cr, uid)
         return project_id
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -716,8 +711,8 @@ class task(base_stage, osv.osv):
             new_child_ids = set(map(mapper, task.child_ids))
             new_parent_ids = set(map(mapper, task.parent_ids))
             if new_child_ids or new_parent_ids:
-                task.write({'parent_ids': [(6,0,list(new_parent_ids))],
-                            'child_ids':  [(6,0,list(new_child_ids))]})
+                task.write({'parent_ids': [(6, 0, list(new_parent_ids))],
+                            'child_ids': [(6, 0, list(new_child_ids))]})
 
     def copy_data(self, cr, uid, id, default=None, context=None):
         if default is None:
@@ -1074,7 +1069,7 @@ class task(base_stage, osv.osv):
                 'remaining_hours': delegate_data['planned_hours_me'],
                 'planned_hours': delegate_data['planned_hours_me'] + (task.effective_hours or 0.0),
                 'name': newname,
-            }, context=context)
+            }, user=context)
             if delegate_data['state'] == 'pending':
                 self.do_pending(cr, uid, [task.id], context=context)
             elif delegate_data['state'] == 'done':

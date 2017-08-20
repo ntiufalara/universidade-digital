@@ -90,9 +90,7 @@ class ud_almoxarifado_produto_qtd(osv.osv):
         res_id = super(ud_almoxarifado_produto_qtd, self).create(cr, uid, vals, context)
         estoque_model = self.pool.get('ud.almoxarifado.estoque')
         estoque = estoque_model.search(cr, uid, [('produto_id', '=', vals['produto_id'])], context=context)
-        estoque_model.write(cr, uid, estoque[0],
-                            {'saida_ids': [(0, 0, {'data_saida': datetime.utcnow().strftime('%Y-%m-%d'),
-                                                   'quantidade': vals['quantidade']})]}, context=context)
+        estoque_model.write(cr, uid, context=context)
         return res_id
 
     def unlink(self, cr, uid, ids, context=None):
@@ -108,10 +106,7 @@ class ud_almoxarifado_produto_qtd(osv.osv):
         estoque_model = self.pool.get('ud.almoxarifado.estoque')
         for produto in self.browse(cr, uid, ids, context=context):
             estoque = estoque_model.search(cr, uid, [('produto_id', '=', produto.produto_id.id)])
-            estoque_model.write(cr, uid, estoque[0],
-                                {'entrada_ids': [(0, 0, {'data_entrada': datetime.utcnow().strftime('%Y-%m-%d'),
-                                                         'quantidade': produto.quantidade,
-                                                         'tipo': 'estorno'})]})
+            estoque_model.write(cr, uid)
 
 
 class ud_almoxarifado_solicitacao(osv.osv):

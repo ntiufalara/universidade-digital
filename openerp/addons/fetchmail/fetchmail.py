@@ -157,7 +157,7 @@ openerp_mailgate: "|/path/to/openerp-mailgate.py --host=localhost -u %(uid)d -p 
         for server in self.browse(cr, uid, ids, context=context):
             try:
                 connection = server.connect()
-                server.write({'state':'done'})
+                server.write({'state': 'done'})
             except Exception, e:
                 _logger.exception("Failed to connect to %s server %s.", server.type, server.name)
                 raise osv.except_osv(_("Connection test failed!"), _("Here is what we got instead:\n %s.") % tools.ustr(e))
@@ -260,7 +260,7 @@ openerp_mailgate: "|/path/to/openerp-mailgate.py --host=localhost -u %(uid)d -p 
             ids = self.search(cr, uid, [('state','=','done'),('type','in',['pop','imap'])])
             try:
                 cron_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'fetchmail', 'ir_cron_mail_gateway_action')[1]
-                self.pool.get('ir.cron').write(cr, 1, [cron_id], {'active': bool(ids)})
+                self.pool.get('ir.cron').write(cr, 1)
             except ValueError:
                 # Nevermind if default cron cannot be found
                 pass

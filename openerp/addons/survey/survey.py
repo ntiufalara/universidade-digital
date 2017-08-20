@@ -242,7 +242,7 @@ class survey_page(osv.osv):
         search_obj = self.pool.get('ir.ui.view')
         search_id = search_obj.search(cr,uid,[('model','=','survey.question.wiz'),('name','=','Survey Search')])
         surv_name_wiz = self.pool.get('survey.name.wiz')
-        surv_name_wiz.write(cr, uid, [context.get('sur_name_id',False)], {'transfer':True, 'page_no' : context.get('page_number',0) })
+        surv_name_wiz.write(cr, uid)
         return {
             'view_type': 'form',
             'view_mode': 'form',
@@ -542,7 +542,7 @@ class survey_question(osv.osv):
         search_obj = self.pool.get('ir.ui.view')
         search_id = search_obj.search(cr,uid,[('model','=','survey.question.wiz'),('name','=','Survey Search')])
         surv_name_wiz = self.pool.get('survey.name.wiz')
-        surv_name_wiz.write(cr, uid, [context.get('sur_name_id',False)], {'transfer':True, 'page_no' : context.get('page_number',False) })
+        surv_name_wiz.write(cr, uid)
         return {
             'view_type': 'form',
             'view_mode': 'form',

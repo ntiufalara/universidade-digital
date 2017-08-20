@@ -91,12 +91,7 @@ class StockMove(osv.osv):
                         'move_id': mid,
                     })
                     wf_service.trg_validate(uid, 'procurement.order', proc_id, 'button_confirm', cr)
-                move_obj.write(cr, uid, [move.id], {
-                    'location_dest_id': move.location_id.id, # dummy move for the kit
-                    'auto_validate': True,
-                    'picking_id': False,
-                    'state': 'confirmed'
-                })
+                move_obj.write(cr, uid)
                 for m in procurement_obj.search(cr, uid, [('move_id','=',move.id)], context):
                     wf_service.trg_validate(uid, 'procurement.order', m, 'button_confirm', cr)
                     wf_service.trg_validate(uid, 'procurement.order', m, 'button_wait_done', cr)
@@ -123,7 +118,7 @@ class StockMove(osv.osv):
                 if new_move == move.id:
                     #This move is already there in move lines of production order
                     continue
-                production_obj.write(cr, uid, production_ids, {'move_lines': [(4, new_move)]})
+                production_obj.write(cr, uid)
                 res.append(new_move)
         return res
     
@@ -144,7 +139,7 @@ class StockMove(osv.osv):
             for prod_id in production_ids:
                 wf_service.trg_validate(uid, 'mrp.production', prod_id, 'button_produce', cr)
             for new_move in new_moves:
-                production_obj.write(cr, uid, production_ids, {'move_lines': [(4, new_move)]})
+                production_obj.write(cr, uid)
                 res.append(new_move)
         return res
 
@@ -179,7 +174,7 @@ class split_in_production_lot(osv.osv_memory):
         new_moves = super(split_in_production_lot, self).split(cr, uid, ids, move_ids, context=context)
         production_obj = self.pool.get('mrp.production')
         production_ids = production_obj.search(cr, uid, [('move_lines', 'in', move_ids)])
-        production_obj.write(cr, uid, production_ids, {'move_lines': [(4, m) for m in new_moves]})
+        production_obj.write(cr, uid)
         return new_moves
 
 split_in_production_lot()

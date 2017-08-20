@@ -79,7 +79,7 @@ class mrp_production(osv.osv):
         if production.move_prod_id:
             parent_move_line = get_parent_move(production.move_prod_id)
             if parent_move_line and parent_move_line.sale_line_id:
-                self.pool.get('procurement.order').write(cr, uid, procurement_id, {'sale_line_id': parent_move_line.sale_line_id.id})
+                self.pool.get('procurement.order').write(cr, uid)
         return res
 
     _columns = {

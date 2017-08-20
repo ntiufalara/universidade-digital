@@ -164,7 +164,7 @@ class InscricaoWizard(osv.TransientModel):
                 pessoa_dados["work_email"] = inscricao.email
             if pessoa_dados:
                 pessoa_id = perfil_model.read(cr, uid, inscricao.perfil_id.id, ["ud_papel_id"], context=context, load="_classic_write")["ud_papel_id"]
-                pessoa_model.write(cr, SUPERUSER_ID, pessoa_id, pessoa_dados, context=context)
+                pessoa_model.write(cr, SUPERUSER_ID, context=context)
             if inscricao.banco_id:
                 dados_bancarios_id = self._get_banco(cr, inscricao, context)
             pontuacoes = [(0, 0, {"disciplina_id": disc.id,

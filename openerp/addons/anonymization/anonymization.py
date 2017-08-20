@@ -364,10 +364,7 @@ class ir_model_fields_anonymize_wizard(osv.osv_memory):
         return res
 
     def _raise_after_history_update(self, cr, uid, history_id, error_type, error_msg):
-        self.pool.get('ir.model.fields.anonymization.history').write(cr, uid, history_id, {
-            'state': 'in_exception',
-            'msg': error_msg,
-        })
+        self.pool.get('ir.model.fields.anonymization.history').write(cr, uid)
         raise osv.except_osv(error_type, error_msg)
 
     def anonymize_database(self, cr, uid, ids, context=None):
@@ -464,7 +461,7 @@ class ir_model_fields_anonymize_wizard(osv.osv_memory):
         values = {
             'state': 'anonymized',
         }
-        ir_model_fields_anonymization_model.write(cr, uid, field_ids, values, context=context)
+        ir_model_fields_anonymization_model.write(cr, uid, context=context)
 
         # add a result message in the wizard:
         msgs = ["Anonymization successful.",
@@ -484,12 +481,7 @@ class ir_model_fields_anonymize_wizard(osv.osv_memory):
         fn.close()
 
         # update the history record:
-        anonymization_history_model.write(cr, uid, history_id, {
-            'field_ids': [[6, 0, field_ids]],
-            'msg': msg,
-            'filepath': abs_filepath,
-            'state': 'done',
-        })
+        anonymization_history_model.write(cr, uid)
 
         # handle the view:
         view_id = self._id_get(cr, uid, 'ir.ui.view', 'view_ir_model_fields_anonymize_wizard_form', 'anonymization')
@@ -578,7 +570,7 @@ class ir_model_fields_anonymize_wizard(osv.osv_memory):
             values = {
                 'state': 'clear',
             }
-            ir_model_fields_anonymization_model.write(cr, uid, field_ids, values, context=context)
+            ir_model_fields_anonymization_model.write(cr, uid, context=context)
 
             # add a result message in the wizard:
             msg = '\n'.join(["Successfully reversed the anonymization.",
@@ -588,12 +580,7 @@ class ir_model_fields_anonymize_wizard(osv.osv_memory):
             self.write(cr, uid, ids, {'msg': msg})
 
             # update the history record:
-            anonymization_history_model.write(cr, uid, history_id, {
-                'field_ids': [[6, 0, field_ids]],
-                'msg': msg,
-                'filepath': False,
-                'state': 'done',
-            })
+            anonymization_history_model.write(cr, uid)
 
             # handle the view:
             view_id = self._id_get(cr, uid, 'ir.ui.view', 'view_ir_model_fields_anonymize_wizard_form', 'anonymization')

@@ -269,7 +269,7 @@ class hr_evaluation(osv.osv):
             obj_hr_eval_iterview = self.pool.get('hr.evaluation.interview')
             for evalutation in self.browse(cr, uid, ids, context=context):
                 for survey_req in evalutation.survey_request_ids:
-                    obj_hr_eval_iterview.write(cr, uid, [survey_req.id], new_vals, context=context)
+                    obj_hr_eval_iterview.write(cr, uid, context=context)
         return super(hr_evaluation, self).write(cr, uid, ids, vals, context=context)
 
 hr_evaluation()

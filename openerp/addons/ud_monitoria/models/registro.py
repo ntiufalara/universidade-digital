@@ -213,15 +213,9 @@ class Registro(osv.Model):
         tipo_doc_model = self.pool.get("ud.documento.tipo")
         for modelos in self.read(cr, uid, ids, ["modelo_certificado_id", "modelo_relatorio_id"], context=context, load="_classic_write"):
             tipo_doc_model.botao_remover_campos(cr, uid, [modelos["modelo_certificado_id"]], context)
-            tipo_doc_model.write(cr, uid, modelos["modelo_certificado_id"], {"campos_ids": self._campos_certificado,
-                                                                             "info": u"ATENÇÃO: Não modifique o nome do tipo e tenha cuidado "\
-                                                                                     u"com alterações nos campos, pois esses "\
-                                                                                     u"são usados internamente pelo módulo de monitoria."}, context=context)
+            tipo_doc_model.write(cr, uid, context=context)
             tipo_doc_model.botao_remover_campos(cr, uid, [modelos["modelo_relatorio_id"]], context)
-            tipo_doc_model.write(cr, uid, modelos["modelo_relatorio_id"], {"campos_ids": self._campos_relatorio,
-                                                                           "info": u"ATENÇÃO: Não modifique o nome do tipo e tenha cuidado "\
-                                                                                   u"com alterações nos campos, pois esses "\
-                                                                                   u"são usados internamente pelo módulo de monitoria."}, context=context)
+            tipo_doc_model.write(cr, uid, context=context)
         return True
 
 

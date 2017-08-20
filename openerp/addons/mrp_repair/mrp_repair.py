@@ -317,7 +317,7 @@ class mrp_repair(osv.osv):
             return False
         mrp_line_obj = self.pool.get('mrp.repair.line')
         for repair in self.browse(cr, uid, ids):
-            mrp_line_obj.write(cr, uid, [l.id for l in repair.operations], {'state': 'draft'})
+            mrp_line_obj.write(cr, uid)
         self.write(cr, uid, ids, {'state':'draft'})
         wf_service = netsvc.LocalService("workflow")
         for id in ids:
@@ -339,7 +339,7 @@ class mrp_repair(osv.osv):
                 for line in o.operations:
                     if line.product_id.track_production and not line.prodlot_id:
                         raise osv.except_osv(_('Warning!'), _("Serial number is required for operation line with product '%s'") % (line.product_id.name))
-                mrp_line_obj.write(cr, uid, [l.id for l in o.operations], {'state': 'confirmed'})
+                mrp_line_obj.write(cr, uid)
         return True
 
     def action_cancel(self, cr, uid, ids, context=None):
@@ -349,7 +349,7 @@ class mrp_repair(osv.osv):
         mrp_line_obj = self.pool.get('mrp.repair.line')
         for repair in self.browse(cr, uid, ids, context=context):
             if not repair.invoiced:
-                mrp_line_obj.write(cr, uid, [l.id for l in repair.operations], {'state': 'cancel'}, context=context)
+                mrp_line_obj.write(cr, uid, context=context)
             else:
                 raise osv.except_osv(_('Warning!'),_('Repair order is already invoiced.'))
         return self.write(cr,uid,ids,{'state':'cancel'})
@@ -385,7 +385,7 @@ class mrp_repair(osv.osv):
                         'origin': invoice.origin+', '+repair.name,
                         'comment':(comment and (invoice.comment and invoice.comment+"\n"+comment or comment)) or (invoice.comment and invoice.comment or ''),
                     }
-                    inv_obj.write(cr, uid, [inv_id], invoice_vals, context=context)
+                    inv_obj.write(cr, uid, context=context)
                 else:
                     if not repair.partner_id.property_account_receivable:
                         raise osv.except_osv(_('Error!'), _('No account defined for partner "%s".') % repair.partner_id.name )
@@ -430,7 +430,7 @@ class mrp_repair(osv.osv):
                             'price_subtotal': operation.product_uom_qty*operation.price_unit,
                             'product_id': operation.product_id and operation.product_id.id or False
                         })
-                        repair_line_obj.write(cr, uid, [operation.id], {'invoiced': True, 'invoice_line_id': invoice_line_id})
+                        repair_line_obj.write(cr, uid)
                 for fee in repair.fees_lines:
                     if fee.to_invoice == True:
                         if group:
@@ -459,7 +459,7 @@ class mrp_repair(osv.osv):
                             'price_unit': fee.price_unit,
                             'price_subtotal': fee.product_uom_qty*fee.price_unit
                         })
-                        repair_fee_obj.write(cr, uid, [fee.id], {'invoiced': True, 'invoice_line_id': invoice_fee_id})
+                        repair_fee_obj.write(cr, uid)
                 res[repair.id] = inv_id
         return res
 
@@ -468,8 +468,7 @@ class mrp_repair(osv.osv):
         @return: True
         """
         for repair in self.browse(cr, uid, ids, context=context):
-            self.pool.get('mrp.repair.line').write(cr, uid, [l.id for
-                    l in repair.operations], {'state': 'confirmed'}, context=context)
+            self.pool.get('mrp.repair.line').write(cr, uid, context=context)
             self.write(cr, uid, [repair.id], {'state': 'ready'})
         return True
 
@@ -479,8 +478,7 @@ class mrp_repair(osv.osv):
         """
         repair_line = self.pool.get('mrp.repair.line')
         for repair in self.browse(cr, uid, ids, context=context):
-            repair_line.write(cr, uid, [l.id for
-                    l in repair.operations], {'state': 'confirmed'}, context=context)
+            repair_line.write(cr, uid, context=context)
             repair.write({'state': 'under_repair'})
         return True
 
@@ -530,7 +528,7 @@ class mrp_repair(osv.osv):
                     'state': 'assigned',
                 })
                 move_obj.action_done(cr, uid, [move_id], context=context)
-                repair_line_obj.write(cr, uid, [move.id], {'move_id': move_id, 'state': 'done'}, context=context)
+                repair_line_obj.write(cr, uid, context=context)
             if repair.deliver_bool:
                 pick_name = seq_obj.get(cr, uid, 'stock.picking.out')
                 picking = pick_obj.create(cr, uid, {

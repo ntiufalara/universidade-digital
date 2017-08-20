@@ -52,10 +52,7 @@ class report_xml(osv.osv):
             fp = open(addons.get_module_resource('base_report_designer','openerp_sxw2rml', 'normalized_oo2rml.xsl'),'rb')
         if file_type=='odt':
             fp = open(addons.get_module_resource('base_report_designer','openerp_sxw2rml', 'normalized_odt2rml.xsl'),'rb')
-        report = pool.get('ir.actions.report.xml').write(cr, uid, [report_id], {
-            'report_sxw_content': base64.decodestring(file_sxw), 
-            'report_rml_content': str(sxw2rml(sxwval, xsl=fp.read())), 
-        })
+        report = pool.get('ir.actions.report.xml').write(cr, uid)
 
         # FIXME: this should be moved to an override of the ir.actions.report_xml.create() method
         cr.commit()

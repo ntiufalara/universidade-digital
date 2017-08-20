@@ -87,7 +87,7 @@ class event_event(osv.osv):
         for event_reg in registration.browse(cr,uid,reg_ids,context=context):
             if event_reg.state == 'done':
                 raise osv.except_osv(_('Error!'),_("You have already set a registration for this event as 'Attended'. Please reset it to draft if you want to cancel this event.") )
-        registration.write(cr, uid, reg_ids, {'state': 'cancel'}, context=context)
+        registration.write(cr, uid, context=context)
         return self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
 
     def button_done(self, cr, uid, ids, context=None):
@@ -228,7 +228,7 @@ class event_event(osv.osv):
         if not curr_reg_ids:
             curr_reg_ids = [register_pool.create(cr, SUPERUSER_ID, {'event_id': ids[0] ,'email': user.email, 'name':user.name, 'user_id': user.id, 'nb_register': num_of_seats})]
         else:
-            register_pool.write(cr, uid, curr_reg_ids, {'nb_register': num_of_seats}, context=context)
+            register_pool.write(cr, uid, context=context)
         return register_pool.confirm_registration(cr, SUPERUSER_ID, curr_reg_ids, context=context)
 
     def unsubscribe_to_event(self, cr, uid, ids, context=None):

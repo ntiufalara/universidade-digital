@@ -160,18 +160,18 @@ class payment_order(osv.osv):
             for order in self.browse(cr, uid, ids, context=context):
                 for line in order.line_ids:
                     payment_line_ids.append(line.id)
-            payment_line_obj.write(cr, uid, payment_line_ids, {'date': vals.get('date_scheduled', False)}, context=context)
+            payment_line_obj.write(cr, uid, context=context)
         elif vals.get('date_prefered', False) == 'due':
             vals.update({'date_scheduled': False})
             for order in self.browse(cr, uid, ids, context=context):
                 for line in order.line_ids:
-                    payment_line_obj.write(cr, uid, [line.id], {'date': line.ml_maturity_date}, context=context)
+                    payment_line_obj.write(cr, uid, context=context)
         elif vals.get('date_prefered', False) == 'now':
             vals.update({'date_scheduled': False})
             for order in self.browse(cr, uid, ids, context=context):
                 for line in order.line_ids:
                     payment_line_ids.append(line.id)
-            payment_line_obj.write(cr, uid, payment_line_ids, {'date': False}, context=context)
+            payment_line_obj.write(cr, uid, context=context)
         return super(payment_order, self).write(cr, uid, ids, vals, context=context)
 
 payment_order()

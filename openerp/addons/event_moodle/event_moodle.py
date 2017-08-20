@@ -205,7 +205,7 @@ class event_event(osv.osv):
                         #create the user in moodle
                         response_user = moodle_pool.create_moodle_user(cr, uid, moodle_config_wiz_id, [dic_users], context=context)
                         for user in response_user:
-                            self.pool.get('event.registration').write(cr,uid,[registration.id],{'moodle_uid': user['id'], 'moodle_user_password': passwd, 'moodle_username': name_user})
+                            self.pool.get('event.registration').write(cr, uid)
                             moodle_uids.append(user['id'])
                     else:
                         moodle_uids.append(registration.moodle_uid)
@@ -258,7 +258,7 @@ class event_registration(osv.osv):
                     response_user = moodle_pool.create_moodle_user(cr, uid, moodle_config_wiz_id, dic_users, context=context)
                     #write in database the password and the username
                     moodle_user_id = response_user[0]['id']
-                    self.pool.get('event.registration').write(cr, uid, ids, {'moodle_uid': moodle_user_id, 'moodle_user_password': passwd, 'moodle_username': name_user})
+                    self.pool.get('event.registration').write(cr, uid)
                 else:
                     moodle_user_id = register.moodle_uid
                 enrolled=[{

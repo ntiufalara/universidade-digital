@@ -78,7 +78,7 @@ class document_page_create_menu(osv.osv_memory):
                         'icon': 'STOCK_DIALOG_QUESTION',
                         'action': 'ir.actions.act_window,'+ str(action_id),
                         }, context)
-        obj_page.write(cr, uid, [page_id], {'menu_id':menu_id})
+        obj_page.write(cr, uid)
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',

@@ -257,7 +257,7 @@ class procurement_order(osv.osv):
                             for proc_data in procure_datas:
                                 if to_generate >= proc_data['product_qty']:
                                     wf_service.trg_validate(uid, 'procurement.order', proc_data['id'], 'button_confirm', cr)
-                                    procurement_obj.write(cr, uid, [proc_data['id']],  {'origin': op.name}, context=context)
+                                    procurement_obj.write(cr, uid, context=context)
                                     to_generate -= proc_data['product_qty']
                                 if not to_generate:
                                     break
@@ -271,8 +271,7 @@ class procurement_order(osv.osv):
                                 'button_confirm', cr)
                         wf_service.trg_validate(uid, 'procurement.order', proc_id,
                                 'button_check', cr)
-                        orderpoint_obj.write(cr, uid, [op.id],
-                                {'procurement_id': proc_id}, context=context)
+                        orderpoint_obj.write(cr, uid, context=context)
             offset += len(ids)
             if use_new_cursor:
                 cr.commit()

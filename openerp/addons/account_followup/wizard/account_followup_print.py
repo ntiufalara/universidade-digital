@@ -188,8 +188,7 @@ class account_followup_print(osv.osv_memory):
         #update the follow-up level on account.move.line
         for id in to_update.keys():
             if to_update[id]['partner_id'] in partner_list:
-                self.pool.get('account.move.line').write(cr, uid, [int(id)], {'followup_line_id': to_update[id]['level'], 
-                                                                              'followup_date': date})
+                self.pool.get('account.move.line').write(cr, uid)
 
     def clear_manual_actions(self, cr, uid, partner_list, context=None):
         # Partnerlist is list to exclude

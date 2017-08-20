@@ -193,7 +193,8 @@ def main():
             config.MAIL_ADMINS,
             subject, msg, files=[('message.txt', msg_txt)]
         )
-        sys.stderr.write("Failed to deliver email to OpenERP Server, sending error notification to %s\n" % config.MAIL_ADMINS)
+        sys.stderr.write(
+            "Failed to deliver email to OpenERP Server, sending error notification to %s\n" % config.MAIL_ADMINS)
 
 if __name__ == '__main__':
     main()

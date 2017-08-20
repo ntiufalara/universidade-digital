@@ -141,7 +141,7 @@ Thanks,''') % (name, self.pool.get('ir.config_parameter').get_param(cr, uid, 'we
                 if user[0] not in new_user:
                     new_user.append(user[0])
                 user = user_ref.browse(cr, uid, user[0])
-                user_ref.write(cr, uid, user.id, {'survey_id':[[6, 0, survey_ids]]})
+                user_ref.write(cr, uid)
                 mail = record['mail']%{'login':partner.email, 'passwd':user.password, \
                                             'name' : partner.name}
                 if record['send_mail_existing']:
@@ -196,7 +196,7 @@ Thanks,''') % (name, self.pool.get('ir.config_parameter').get_param(cr, uid, 'we
 
         new_vals = {}
         new_vals.update({'invited_user_ids':[[6,0,new_user]]})
-        survey_ref.write(cr, uid, context.get('active_id'),new_vals)
+        survey_ref.write(cr, uid)
         note= ""
         if created:
             note += 'Created users:\n%s\n\n' % (created)

@@ -91,13 +91,13 @@ class stock_inventory_line_split(osv.osv_memory):
                             'name': line.name,
                             'product_id': inv_line.product_id.id},
                         context=context)
-                    line_obj.write(cr, uid, [current_line], {'prod_lot_id': prodlot_id})
+                    line_obj.write(cr, uid)
                     prodlot = prodlot_obj.browse(cr, uid, prodlot_id)
 
                     update_val = {}
                     if quantity_rest > 0:
                         update_val['product_qty'] = quantity_rest
-                        line_obj.write(cr, uid, [inv_line.id], update_val)
+                        line_obj.write(cr, uid)
 
         return new_line
 

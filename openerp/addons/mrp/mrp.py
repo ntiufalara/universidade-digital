@@ -685,8 +685,7 @@ class mrp_production(osv.osv):
                     self._make_production_line_procurement(cr, uid, scheduled, False, context=context)
         
             if production.move_prod_id and production.move_prod_id.location_id.id != production.location_dest_id.id:
-                move_obj.write(cr, uid, [production.move_prod_id.id],
-                        {'location_id': production.location_dest_id.id})
+                move_obj.write(cr, uid)
         return True
 
     def action_production_end(self, cr, uid, ids, context=None):
@@ -815,7 +814,7 @@ class mrp_production(osv.osv):
                 if final_product.id not in parent_move_ids:
                     new_parent_ids.append(final_product.id)
             for new_parent_id in new_parent_ids:
-                stock_mov_obj.write(cr, uid, [raw_product.id], {'move_history_ids': [(4,new_parent_id)]})
+                stock_mov_obj.write(cr, uid)
 
         wf_service.trg_validate(uid, 'mrp.production', production_id, 'button_produce_done', cr)
         return True
@@ -972,7 +971,7 @@ class mrp_production(osv.osv):
             'auto_picking': self._get_auto_picking(cr, uid, production),
             'company_id': production.company_id.id,
         })
-        production.write({'picking_id': picking_id}, context=context)
+        production.write({'picking_id': picking_id}, user=context)
         return picking_id
 
     def _make_production_produce_line(self, cr, uid, production, context=None):
@@ -994,7 +993,7 @@ class mrp_production(osv.osv):
             'company_id': production.company_id.id,
         }
         move_id = stock_move.create(cr, uid, data, context=context)
-        production.write({'move_created_ids': [(6, 0, [move_id])]}, context=context)
+        production.write({'move_created_ids': [(6, 0, [move_id])]}, user=context)
         return move_id
 
     def _make_production_consume_line(self, cr, uid, production_line, parent_move_id, source_location_id=False, context=None):
@@ -1020,7 +1019,7 @@ class mrp_production(osv.osv):
             'state': 'waiting',
             'company_id': production.company_id.id,
         })
-        production.write({'move_lines': [(4, move_id)]}, context=context)
+        production.write({'move_lines': [(4, move_id)]}, user=context)
         return move_id
 
     def action_confirm(self, cr, uid, ids, context=None):
@@ -1049,7 +1048,7 @@ class mrp_production(osv.osv):
 
             if shipment_id:
                 wf_service.trg_validate(uid, 'stock.picking', shipment_id, 'button_confirm', cr)
-            production.write({'state':'confirmed'}, context=context)
+            production.write({'state': 'confirmed'}, user=context)
         return shipment_id
 
     def force_production(self, cr, uid, ids, *args):

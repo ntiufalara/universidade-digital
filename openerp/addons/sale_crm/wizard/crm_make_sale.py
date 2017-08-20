@@ -108,7 +108,7 @@ class crm_make_sale(osv.osv_memory):
                     vals['user_id'] = partner.user_id and partner.user_id.id or uid
                 new_id = sale_obj.create(cr, uid, vals, context=context)
                 sale_order = sale_obj.browse(cr, uid, new_id, context=context)
-                case_obj.write(cr, uid, [case.id], {'ref': 'sale.order,%s' % new_id})
+                case_obj.write(cr, uid)
                 new_ids.append(new_id)
                 message = _("Opportunity has been <b>converted</b> to the quotation <em>%s</em>.") % (sale_order.name)
                 case.message_post(body=message)

@@ -210,7 +210,7 @@ class purchase_order(osv.osv):
                     if order.id != po.id:
                         proc_ids = proc_obj.search(cr, uid, [('purchase_id', '=', order.id)])
                         if proc_ids and po.state=='confirmed':
-                            proc_obj.write(cr, uid, proc_ids, {'purchase_id': po.id})
+                            proc_obj.write(cr, uid)
                         wf_service = netsvc.LocalService("workflow")
                         wf_service.trg_validate(uid, 'purchase.order', order.id, 'purchase_cancel', cr)
                     po.requisition_id.tender_done(context=context)

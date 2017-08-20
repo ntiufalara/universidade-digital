@@ -393,7 +393,7 @@ class account_coda_import(osv.osv_memory):
                     }
                     self.pool.get('account.bank.statement.line').create(cr, uid, data, context=context)
             if statement['coda_note'] != '':
-                self.pool.get('account.bank.statement').write(cr, uid, [statement['id']], {'coda_note': statement['coda_note']}, context=context)
+                self.pool.get('account.bank.statement').write(cr, uid, context=context)
         model, action_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'account', 'action_bank_statement_tree')
         action = self.pool.get(model).browse(cr, uid, action_id, context=context)
         return {

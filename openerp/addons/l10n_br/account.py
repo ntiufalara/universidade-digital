@@ -141,8 +141,7 @@ class account_tax_template(osv.osv):
         obj_acc_tax = self.pool.get('account.tax')
         for tax_template in tax_templates:
             if tax_template.tax_code_id:
-                obj_acc_tax.write(cr, uid, result['tax_template_to_tax'][tax_template.id], {'domain': tax_template.tax_code_id.domain,
-                                                                                            'tax_discount': tax_template.tax_code_id.tax_discount})    
+                obj_acc_tax.write(cr, uid)
         return result
     
     def onchange_tax_code_id(self, cr, uid, ids, tax_code_id, context=None):

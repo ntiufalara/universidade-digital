@@ -50,8 +50,7 @@ class WebkitXMLImport(original_xml_import):
                     webkit_header_id = False
                 else:
                     webkit_header_id = self.id_get(cr, header)
-                self.pool.get('ir.actions.report.xml').write(cr, self.uid,
-                    report_id, {'webkit_header': webkit_header_id})
+                self.pool.get('ir.actions.report.xml').write(cr, self.uid)
         return report_id
 
 convert.xml_import = WebkitXMLImport

@@ -627,7 +627,7 @@ class account_invoice(osv.osv):
                                 if not result_id:
                                     raise osv.except_osv(_('Configuration Error!'),
                                         _('Cannot find a chart of account, you should create one from Settings\Configuration\Accounting menu.'))
-                                inv_line_obj.write(cr, uid, [line.id], {'account_id': result_id[-1]})
+                                inv_line_obj.write(cr, uid)
             else:
                 if invoice_line:
                     for inv_line in invoice_line:
@@ -743,14 +743,14 @@ class account_invoice(osv.osv):
             for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
                 ait_obj.create(cr, uid, taxe)
         # Update the stored value (fields.function), so we write to trigger recompute
-        self.pool.get('account.invoice').write(cr, uid, ids, {'invoice_line':[]}, context=ctx)
+        self.pool.get('account.invoice').write(cr, uid, context=ctx)
         return True
 
     def button_compute(self, cr, uid, ids, context=None, set_total=False):
         self.button_reset_taxes(cr, uid, ids, context)
         for inv in self.browse(cr, uid, ids, context=context):
             if set_total:
-                self.pool.get('account.invoice').write(cr, uid, [inv.id], {'check_total': inv.amount_total})
+                self.pool.get('account.invoice').write(cr, uid)
         return True
 
     def _convert_ref(self, cr, uid, ref):
@@ -1368,7 +1368,7 @@ class account_invoice(osv.osv):
             self.pool.get('account.move.line').reconcile_partial(cr, uid, line_ids, 'manual', context)
 
         # Update the stored value (fields.function), so we write to trigger recompute
-        self.pool.get('account.invoice').write(cr, uid, ids, {}, context=context)
+        self.pool.get('account.invoice').write(cr, uid, context=context)
         return True
 
 
@@ -1803,7 +1803,7 @@ class mail_compose_message(osv.Model):
         context = context or {}
         if context.get('default_model') == 'account.invoice' and context.get('default_res_id') and context.get('mark_invoice_as_sent'):
             context = dict(context, mail_post_autofollow=True)
-            self.pool.get('account.invoice').write(cr, uid, [context['default_res_id']], {'sent': True}, context=context)
+            self.pool.get('account.invoice').write(cr, uid, context=context)
         return super(mail_compose_message, self).send_mail(cr, uid, ids, context=context)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

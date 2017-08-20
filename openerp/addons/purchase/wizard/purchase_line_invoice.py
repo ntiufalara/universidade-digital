@@ -100,7 +100,7 @@ class purchase_line_invoice(osv.osv_memory):
                     inv_line_data = purchase_obj._prepare_inv_line(cr, uid, acc_id, line, context=context)
                     inv_line_data.update({'origin': line.order_id.name})
                     inv_id = invoice_line_obj.create(cr, uid, inv_line_data, context=context)
-                    purchase_line_obj.write(cr, uid, [line.id], {'invoiced': True, 'invoice_lines': [(4, inv_id)]})
+                    purchase_line_obj.write(cr, uid)
                     invoices[line.partner_id.id].append((line,inv_id))
 
             res = []

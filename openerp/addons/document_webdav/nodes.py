@@ -225,7 +225,7 @@ class node_acl_mixin(object):
                     # the write uid+date, won't it?
                     # Note: we don't update the owner, because incoming refresh
                     # wouldn't have a body, anyway.
-                    propobj.write(cr, uid, [pbro.id,], { 'name': 'lockdiscovery'})
+                    propobj.write(cr, uid)
                 elif lock_data.get('unlock_mode', False):
                     if old_token != lock_data.get('token'):
                         continue

@@ -432,7 +432,7 @@ class account_voucher(osv.osv):
             for line in voucher.line_ids:
                 voucher_amount += line.untax_amount or line.amount
                 line.amount = line.untax_amount or line.amount
-                voucher_line_pool.write(cr, uid, [line.id], {'amount':line.amount, 'untax_amount':line.untax_amount})
+                voucher_line_pool.write(cr, uid)
 
             if not voucher.tax_id:
                 self.write(cr, uid, [voucher.id], {'amount':voucher_amount, 'tax_amount':0.0})
@@ -461,7 +461,7 @@ class account_voucher(osv.osv):
                         line_total += tax_line.get('price_unit')
                     total_tax += line_tax
                     untax_amount = line.untax_amount or line.amount
-                    voucher_line_pool.write(cr, uid, [line.id], {'amount':line_total, 'untax_amount':untax_amount})
+                    voucher_line_pool.write(cr, uid)
 
             self.write(cr, uid, [voucher.id], {'amount':total, 'tax_amount':total_tax})
         return True
@@ -1607,7 +1607,7 @@ class account_bank_statement(osv.osv):
         for statement in self.browse(cr, uid, ids, context=context):
             voucher_ids += [line.voucher_id.id for line in statement.line_ids if line.voucher_id]
         if voucher_ids:
-            voucher_obj.write(cr, uid, voucher_ids, {'active': True}, context=context)
+            voucher_obj.write(cr, uid, context=context)
         return super(account_bank_statement, self).button_confirm_bank(cr, uid, ids, context=context)
 
     def button_cancel(self, cr, uid, ids, context=None):
@@ -1627,21 +1627,15 @@ class account_bank_statement(osv.osv):
         bank_st_line_obj = self.pool.get('account.bank.statement.line')
         st_line = bank_st_line_obj.browse(cr, uid, st_line_id, context=context)
         if st_line.voucher_id:
-            voucher_obj.write(cr, uid, [st_line.voucher_id.id],
-                            {'number': next_number,
-                            'date': st_line.date,
-                            'period_id': st_line.statement_id.period_id.id},
-                            context=context)
+            voucher_obj.write(cr, uid, context=context)
             if st_line.voucher_id.state == 'cancel':
                 voucher_obj.action_cancel_draft(cr, uid, [st_line.voucher_id.id], context=context)
             wf_service.trg_validate(uid, 'account.voucher', st_line.voucher_id.id, 'proforma_voucher', cr)
 
             v = voucher_obj.browse(cr, uid, st_line.voucher_id.id, context=context)
-            bank_st_line_obj.write(cr, uid, [st_line_id], {
-                'move_ids': [(4, v.move_id.id, False)]
-            })
+            bank_st_line_obj.write(cr, uid)
 
-            return move_line_obj.write(cr, uid, [x.id for x in v.move_ids], {'statement_id': st_line.statement_id.id}, context=context)
+            return move_line_obj.write(cr, uid, context=context)
         return super(account_bank_statement, self).create_move_from_st_line(cr, uid, st_line.id, company_currency_id, next_number, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):

@@ -39,7 +39,7 @@ class analytic_plan_create_model(osv.osv_memory):
             pids = anlytic_plan_obj.search(cr, uid, [], context=context)
             if not pids:
                 raise osv.except_osv(_('Error!'), _('There is no analytic plan defined.'))
-            plan_obj.write(cr, uid, [context['active_id']], {'plan_id':pids[0]}, context=context)
+            plan_obj.write(cr, uid, context=context)
 
             model_data_ids = mod_obj.search(cr, uid, [('model', '=', 'ir.ui.view'),('name', '=', 'view_analytic_plan_create_model')], context=context)
             resource_id = mod_obj.read(cr, uid, model_data_ids, fields=['res_id'], context=context)[0]['res_id']

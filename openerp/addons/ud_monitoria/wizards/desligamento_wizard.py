@@ -51,7 +51,7 @@ class DesligamentoWizard(osv.TransientModel):
                     ("tipo", "=", "a"),
                 ])
                 if perfil:
-                    perfil_model.write(cr, SUPERUSER_ID, perfil, {"is_bolsista": False, "tipo_bolsa": False, "valor_bolsa": False})
+                    perfil_model.write(cr, SUPERUSER_ID)
             desligamento.doc_discente_id.write({"state": "desligado", "is_active": False})
             evento = {
                 "responsavel_id": responsavel[0],

@@ -234,8 +234,8 @@ class test_mail(TestMailBase):
         # Data creation
         # --------------------------------------------------
         # 0 - Update existing users-partners
-        self.res_users.write(cr, uid, [uid], {'email': 'a@a', 'notification_email_send': 'comment'})
-        self.res_users.write(cr, uid, [self.user_raoul_id], {'email': 'r@r'})
+        self.res_users.write(cr, uid)
+        self.res_users.write(cr, uid)
         # 1 - Bert Tartopoils, with email, should receive emails for comments and emails
         p_b_id = self.res_partner.create(cr, uid, {'name': 'Bert Tartopoils', 'email': 'b@b'})
         # 2 - Carine Poilvache, with email, should receive emails for emails
@@ -272,7 +272,7 @@ class test_mail(TestMailBase):
         # Data: set alias_domain to see emails with alias
         self.registry('ir.config_parameter').set_param(self.cr, self.uid, 'mail.catchall.domain', 'schlouby.fr')
         # Data: change Pigs name to test reply_to
-        self.mail_group.write(cr, uid, [self.group_pigs_id], {'name': '"Pigs" !ù $%-'})
+        self.mail_group.write(cr, uid)
 
         # Do: subscribe Raoul
         new_follower_ids = [self.partner_raoul_id]
@@ -372,7 +372,7 @@ class test_mail(TestMailBase):
                         'message_post: mail.message created mail.notification incorrect')
 
         # Data: Pigs name back to normal
-        self.mail_group.write(cr, uid, [self.group_pigs_id], {'name': 'Pigs'})
+        self.mail_group.write(cr, uid)
 
         # --------------------------------------------------
         # CASE2: reply + parent_id + parent notification
@@ -463,8 +463,8 @@ class test_mail(TestMailBase):
         # Data creation
         # --------------------------------------------------
         # 0 - Update existing users-partners
-        self.res_users.write(cr, uid, [uid], {'email': 'a@a'})
-        self.res_users.write(cr, uid, [self.user_raoul_id], {'email': 'r@r'})
+        self.res_users.write(cr, uid)
+        self.res_users.write(cr, uid)
         # 1 - Bert Tartopoils, with email, should receive emails for comments and emails
         p_b_id = self.res_partner.create(cr, uid, {'name': 'Bert Tartopoils', 'email': 'b@b'})
         # 2 - Carine Poilvache, with email, should receive emails for emails
@@ -702,7 +702,7 @@ class test_mail(TestMailBase):
         group_public_col.track_visibility = 'onchange'
 
         # Test: change name -> always tracked, not related to a subtype
-        self.mail_group.write(cr, self.user_raoul_id, [self.group_pigs_id], {'public': 'public'})
+        self.mail_group.write(cr, self.user_raoul_id)
         self.group_pigs.refresh()
         self.assertEqual(len(self.group_pigs.message_ids), 1, 'tracked: a message should have been produced')
         # Test: first produced message: no subtype, name change tracked
@@ -712,7 +712,7 @@ class test_mail(TestMailBase):
         self.assertIn('Pigs', _strip_string_spaces(last_msg.body), 'tracked: message body does not hold always tracked field')
 
         # Test: change name as supername, public as private -> 2 subtypes
-        self.mail_group.write(cr, self.user_raoul_id, [self.group_pigs_id], {'name': 'supername', 'public': 'private'})
+        self.mail_group.write(cr, self.user_raoul_id)
         self.group_pigs.refresh()
         self.assertEqual(len(self.group_pigs.message_ids), 3, 'tracked: two messages should have been produced')
         # Test: first produced message: mt_name_supername
@@ -728,7 +728,7 @@ class test_mail(TestMailBase):
         self.assertIn(u'Pigs\u2192supername', _strip_string_spaces(last_msg.body), 'tracked feature: message body does not hold always tracked field')
 
         # Test: change public as public, group_public_id -> 1 subtype, name always tracked
-        self.mail_group.write(cr, self.user_raoul_id, [self.group_pigs_id], {'public': 'public', 'group_public_id': group_system_id})
+        self.mail_group.write(cr, self.user_raoul_id)
         self.group_pigs.refresh()
         self.assertEqual(len(self.group_pigs.message_ids), 4, 'tracked: one message should have been produced')
         # Test: first produced message: mt_group_public_id, with name always tracked, public tracked on change
@@ -739,7 +739,7 @@ class test_mail(TestMailBase):
         self.assertIn(u'HumanResources/Employee\u2192Administration/Settings', _strip_string_spaces(last_msg.body), 'tracked: message body does not hold always tracked field')
 
         # Test: change not tracked field, no tracking message
-        self.mail_group.write(cr, self.user_raoul_id, [self.group_pigs_id], {'description': 'Dummy'})
+        self.mail_group.write(cr, self.user_raoul_id)
         self.group_pigs.refresh()
         self.assertEqual(len(self.group_pigs.message_ids), 4, 'tracked: No message should have been produced')
 

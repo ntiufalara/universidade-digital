@@ -32,9 +32,7 @@ class TestNote(common.TransactionCase):
         _, demo_user = IMD.get_object_reference(cr, uid, 'base', 'user_demo')
         _, group_id = IMD.get_object_reference(cr, uid, 'base', 'group_erp_manager')
 
-        Users.write(cr, uid, [demo_user], {
-            'groups_id': [(4, group_id)],
-        })
+        Users.write(cr, uid)
 
         # must not fail
         Users.create(cr, demo_user, {

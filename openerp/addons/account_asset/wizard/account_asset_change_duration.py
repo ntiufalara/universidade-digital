@@ -123,7 +123,7 @@ class asset_modify(osv.osv_memory):
             'method_period': data.method_period,
             'method_end': data.method_end,
         }
-        asset_obj.write(cr, uid, [asset_id], asset_vals, context=context)
+        asset_obj.write(cr, uid, context=context)
         asset_obj.compute_depreciation_board(cr, uid, [asset_id], context=context)
         return {'type': 'ir.actions.act_window_close'}
 

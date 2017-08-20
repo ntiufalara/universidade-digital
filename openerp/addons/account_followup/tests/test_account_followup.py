@@ -127,10 +127,10 @@ class TestAccountFollowup(TransactionCase):
         """
         cr, uid = self.cr, self.uid
         aml_id = self.partner.browse(cr, uid, self.partner_id).unreconciled_aml_ids[0].id
-        self.registry('account.move.line').write(cr, uid, aml_id, {'blocked': True})
+        self.registry('account.move.line').write(cr, uid)
         self.run_wizard_three_times()
         self.assertFalse(self.partner.browse(cr, uid, self.partner_id).latest_followup_level_id, "Litigation does not work")
-        self.registry('account.move.line').write(cr, uid, aml_id, {'blocked': False})
+        self.registry('account.move.line').write(cr, uid)
         self.run_wizard_three_times()
         self.assertEqual(self.partner.browse(cr, uid, self.partner_id).latest_followup_level_id.id, 
                          self.last_followup_line_id, "Lines are not equal")

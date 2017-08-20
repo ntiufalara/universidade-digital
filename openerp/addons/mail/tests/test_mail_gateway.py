@@ -266,7 +266,7 @@ class TestMailgateway(TestMailBase):
         frog_group.unlink()
 
         # Do: incoming email from a known partner on an alias with known recipients, alias is owned by user that can create a group
-        self.mail_alias.write(cr, uid, [alias_id], {'alias_user_id': self.user_raoul_id})
+        self.mail_alias.write(cr, uid)
         p1id = self.res_partner.create(cr, uid, {'name': 'Sylvie Lelitre', 'email': 'test.sylvie.lelitre@agrolait.com'})
         p2id = self.res_partner.create(cr, uid, {'name': 'Other Poilvache', 'email': 'other@gmail.com'})
         self._init_mock_build_email()
@@ -378,7 +378,7 @@ class TestMailgateway(TestMailBase):
         # Do: post a new message, with a known partner -> duplicate emails -> user
         frog_group.message_unsubscribe([extra_partner_id])
         raoul_email = self.user_raoul.email
-        self.res_users.write(cr, uid, self.user_raoul_id, {'email': 'test_raoul@email.com'})
+        self.res_users.write(cr, uid)
         format_and_process(MAIL_TEMPLATE, email_from='Lombrik Lubrik <test_raoul@email.com>',
                            to='groups@example.com', subject='Re: news (3)',
                            msg_id='<1198923581.41972151344608186760.JavaMail.new2@agrolait.com>',
@@ -393,7 +393,7 @@ class TestMailgateway(TestMailBase):
         frog_group.message_unsubscribe([self.partner_raoul_id])
         frog_group.message_subscribe([extra_partner_id])
         raoul_email = self.user_raoul.email
-        self.res_users.write(cr, uid, self.user_raoul_id, {'email': 'test_raoul@email.com'})
+        self.res_users.write(cr, uid)
         format_and_process(MAIL_TEMPLATE, email_from='Lombrik Lubrik <test_raoul@email.com>',
                            to='groups@example.com', subject='Re: news (3)',
                            msg_id='<1198923581.41972151344608186760.JavaMail.new3@agrolait.com>',
@@ -404,7 +404,7 @@ class TestMailgateway(TestMailBase):
         self.assertEqual(frog_group.message_ids[0].author_id.id, extra_partner_id,
                          'message_process: email_from -> author_id wrong')
 
-        self.res_users.write(cr, uid, self.user_raoul_id, {'email': raoul_email})
+        self.res_users.write(cr, uid)
 
         # --------------------------------------------------
         # Test4: misc gateway features

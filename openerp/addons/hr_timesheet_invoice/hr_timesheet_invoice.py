@@ -357,10 +357,7 @@ class account_move_line(osv.osv):
             #For customer invoice, link analytic line to the invoice so it is not proposed for invoicing in Bill Tasks Work
             invoice_id = move_line.invoice and move_line.invoice.type in ('out_invoice','out_refund') and move_line.invoice.id or False
             for line in move_line.analytic_lines:
-                analytic_line_obj.write(cr, uid, line.id, {
-                    'invoice_id': invoice_id,
-                    'to_invoice': line.account_id.to_invoice and line.account_id.to_invoice.id or False
-                    }, context=context)
+                analytic_line_obj.write(cr, uid, context=context)
         return res
 
 account_move_line()
