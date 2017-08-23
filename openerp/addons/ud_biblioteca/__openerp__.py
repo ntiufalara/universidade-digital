@@ -9,6 +9,7 @@
         'security/ud_biblioteca_security.xml',
         'security/ir.model.access.csv',
         'biblioteca_view.xml',
+        'wizards/substituir_palavra_chave_wizard_view.xml',
     ],
     'css': [
         'static/src/css/*.css',

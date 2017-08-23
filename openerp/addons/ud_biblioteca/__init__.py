@@ -1,3 +1,3 @@
 # -*- encoding: UTF-8 -*-
 
-import model
+import model, wizards

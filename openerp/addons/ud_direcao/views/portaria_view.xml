@@ -19,7 +19,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="ud_direcao_portaria)tree">
+        <record model="ir.ui.view" id="ud_direcao_portaria_tree">
             <field name="name">Portarias</field>
             <field name="model">ud.direcao.portaria</field>
             <field name="arch" type="xml">
