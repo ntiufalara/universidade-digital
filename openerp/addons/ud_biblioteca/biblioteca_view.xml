@@ -97,6 +97,18 @@
             </field>
         </record>
 
+        <record id="ud_biblioteca_orientador_tree" model="ir.ui.view">
+            <field name="name">Orientadores</field>
+            <field name="model">ud.biblioteca.orientador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Orientadores">
+                    <field name="name" />
+                    <field name="titulacao_id" />
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="ud_biblioteca_pc_tree_view">
             <field name="name">Palavras-chave</field>
             <field name="model">ud.biblioteca.pc</field>
@@ -220,6 +232,13 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="ud_biblioteca_orientador_action" model="ir.actions.act_window">
+            <field name="name">Orientadores</field>
+            <field name="res_model">ud.biblioteca.orientador</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="ud_biblioteca_pc_action" model="ir.actions.act_window">
             <field name="name">Palavras-chave</field>
             <field name="res_model">ud.biblioteca.pc</field>
@@ -241,6 +260,10 @@
 
         <menuitem id="ud_biblioteca_pc" name="Gerenciar palavras-chave" parent="biblioteca_top"
                   action="ud_biblioteca_pc_action"
+                  groups="base.admin_ud,base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario"/>
+
+        <menuitem id="ud_biblioteca_orientador" name="Gerenciar orientadores" parent="biblioteca_top"
+                  action="ud_biblioteca_orientador_action"
                   groups="base.admin_ud,base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario"/>
 
     </data>
