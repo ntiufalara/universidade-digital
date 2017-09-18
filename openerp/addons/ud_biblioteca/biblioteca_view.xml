@@ -22,7 +22,7 @@
                                        widget="many2many_tags"/>
                                 <field name="coorientador_ids" placeholder="Digite o nome e tecle Enter para adicionar"
                                        widget="many2many_tags"/>
-                                <field name="palavras-chave_ids" widget="many2many_tags"
+                                <field name="palavras_chave_ids" widget="many2many_tags"
                                        placeholder="biotecnologia,microbiologia,irrigação,etc"/>
                                 <field name="contato"
                                        attrs="{'invisible' : [('autorizar_publicacao', '=', True )], 'required' : [('autorizar_publicacao', '=', False)] }"/>
@@ -65,7 +65,7 @@
                     <field name="ano_pub"/>
                     <field name="polo_id"/>
                     <field name="curso"/>
-                    <field name="palavras-chave_ids"/>
+                    <field name="palavras_chave_ids"/>
                     <field name="tipo_id"/>
                     <field name="categoria_cnpq_id"/>
                     <field name="contato"/>

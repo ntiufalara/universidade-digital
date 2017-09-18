@@ -20,6 +20,11 @@
                     <group>
                         <field name="nova_palavra"/>
                     </group>
+                    <footer>
+                        <button name="subistituir_palavra_chave" string="Subistituir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>

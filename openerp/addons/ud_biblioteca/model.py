@@ -28,7 +28,7 @@ class ud_biblioteca_publicacao(osv.osv):
         'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
         "curso_indefinido": fields.boolean("Outro curso"),
         "curso_indefinido_detalhes": fields.char("Curso"),
-        'palavras-chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id', 'pc_id',
+        'palavras_chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id', 'pc_id',
                                                u'Palavras-chave', required=True),
         'polo_id': fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
         'orientador_ids': fields.many2many('ud.biblioteca.orientador', 'ud_biblioteca_publicacao_orientador_rel',
@@ -51,7 +51,7 @@ class ud_biblioteca_publicacao(osv.osv):
         "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
         'visualizacoes': fields.integer(u'Visualizações', required=True),
         'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
-                                     string=u'Áreas do trabalho',),
+                                     string=u'Áreas do trabalho', ),
     }
 
     _order = "ano_pub desc"
@@ -296,7 +296,8 @@ class ud_biblioteca_pc(osv.osv):
 
     _columns = {
         'name': fields.char('Palavra-chave', required=True),
-        'publicacao_id': fields.many2one('ud.biblioteca.publicacao', 'publicacao'),
+        'publicacao_id': fields.many2many('ud.biblioteca.publicacao', 'ud_biblioteca_publicacao_pc_rel', 'pc_id',
+                                          'pub_id', 'Palavras-chave', ondelete='set null'),
     }
 
 
