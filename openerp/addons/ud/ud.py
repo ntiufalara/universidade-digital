@@ -342,7 +342,7 @@ class Curso(osv.osv):
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
               ("v", u"Vespertino"), ("n", u"Noturno"), ]
-    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado")]
+    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado"), ('e', 'Especialização')]
 
     _columns = {
         'name': fields.char(u'Nome', size=40, help=u"Ex.: Ciência da Computação", required=True),
