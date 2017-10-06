@@ -1,9 +1,8 @@
 # coding: utf-8
-from __future__ import unicode_literals
+
 from openerp.osv import fields, osv
 from datetime import datetime
 from openerp.addons.ud_almoxarifado import utils
-from openerp.osv.orm import except_orm
 
 
 class ud_almoxarifado_produto(osv.osv):
@@ -15,16 +14,13 @@ class ud_almoxarifado_produto(osv.osv):
         'produto': fields.char(u'Produto', size=64, required=True),
         'observacao': fields.text(u'Observação'),
         'categoria_id': fields.many2one('ud.almoxarifado.categoria', u'Categoria', required=True, ondelete='restrict'),
-        'fabricante_id': fields.many2one('ud.almoxarifado.fabricante', u'Fabricante', required=True),
     }
 
     _sql_constraints = [
         ('produto_unico', 'unique (produto,categoria_id)', u'Produto já cadastrado nessa categoria!'),
     ]
 
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = {}
+    def create(self, cr, uid, vals, context={}):
         vals['produto'] = vals.get("produto").upper()
         res_id = super(ud_almoxarifado_produto, self).create(cr, uid, vals, context)
         self.pool.get('ud.almoxarifado.estoque').create(cr, uid, {'produto_id': res_id, 'estoque_min': 1})
@@ -61,8 +57,9 @@ class ud_almoxarifado_produto_qtd(osv.osv):
                                       domain="[('categoria_id','=', categoria_id)]", required=True, ondelete='cascade'),
         'quantidade': fields.integer(u'Quantidade', required=True),
         'categoria_id': fields.many2one('ud.almoxarifado.categoria', 'categoria', ondelete='restrict'),
-        'estoque': fields.function(_estoque, type=str('integer'), string=u'Estoque', method=True),
-        'solicitacao_id': fields.many2one('ud.almoxarifado.solicitacao', 'solicitacao', invisible=True),
+        'estoque': fields.function(_estoque, type='integer', string=u'Estoque', method=True),
+        'solicitacao_id': fields.many2one('ud.almoxarifado.solicitacao', 'solicitacao', invisible=True,
+                                          ondelete='cascade'),
     }
 
     _rec_name = 'produto_id'
@@ -84,20 +81,20 @@ class ud_almoxarifado_produto_qtd(osv.osv):
                                                        context=context),
         return {"value": {"estoque": quantidade[0].values()[0]}}
 
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = {}
+    def create(self, cr, uid, vals, context={}):
         res_id = super(ud_almoxarifado_produto_qtd, self).create(cr, uid, vals, context)
         estoque_model = self.pool.get('ud.almoxarifado.estoque')
         estoque = estoque_model.search(cr, uid, [('produto_id', '=', vals['produto_id'])], context=context)
-        estoque_model.write(cr, uid, context=context)
+        estoque_model.write(cr, uid, estoque[0],
+                            {'saida_ids': [(0, 0, {'data_saida': datetime.utcnow().strftime('%Y-%m-%d'),
+                                                   'quantidade': vals['quantidade']})]}, context=context)
         return res_id
 
     def unlink(self, cr, uid, ids, context=None):
-        # solicitacao_ids = self.read(cr, uid, ids, ["solicitacao_id"], context=context, load="_classic_write")
+        solicitacao_ids = self.read(cr, uid, ids, ["solicitacao_id"], context=context, load="_classic_write")
         res = super(ud_almoxarifado_produto_qtd, self).unlink(cr, uid, ids, context=context)
-        # solicitacao_ids = [solicitacao.get("solicitacao_id") for solicitacao in solicitacao_ids]
-        # self.pool.get("ud.almoxarifado.solicitacao").unlink(cr, uid, solicitacao_ids, context=context)
+        solicitacao_ids = [solicitacao.get("solicitacao_id") for solicitacao in solicitacao_ids]
+        self.pool.get("ud.almoxarifado.solicitacao").unlink(cr, uid, solicitacao_ids, context=context)
         return res
 
     def restaurar_produtos(self, cr, uid, ids, context=None):
@@ -106,7 +103,10 @@ class ud_almoxarifado_produto_qtd(osv.osv):
         estoque_model = self.pool.get('ud.almoxarifado.estoque')
         for produto in self.browse(cr, uid, ids, context=context):
             estoque = estoque_model.search(cr, uid, [('produto_id', '=', produto.produto_id.id)])
-            estoque_model.write(cr, uid)
+            estoque_model.write(cr, uid, estoque[0],
+                                {'entrada_ids': [(0, 0, {'data_entrada': datetime.utcnow().strftime('%Y-%m-%d'),
+                                                         'quantidade': produto.quantidade,
+                                                         'tipo': 'estorno'})]})
 
 
 class ud_almoxarifado_solicitacao(osv.osv):
@@ -131,7 +131,7 @@ class ud_almoxarifado_solicitacao(osv.osv):
               ("cancelada", "Cancelada")]
 
     _columns = {
-        'name': fields.function(_get_name, string=u'Nome', type=str('char')),
+        'name': fields.function(_get_name, string=u'Nome', type='char'),
         'produtos_ids': fields.one2many('ud.almoxarifado.produto.qtd', 'solicitacao_id', string=u'Produtos',
                                         required=True),
         "solicitante_id": fields.many2one('ud.employee', 'Solicitante', ondelete='restrict'),
@@ -141,78 +141,22 @@ class ud_almoxarifado_solicitacao(osv.osv):
     }
 
     _defaults = {
-        'data_hora': fields.datetime.now(),
-        'solicitante_id': lambda self, cr, uid, c: self.obter_solicitante(cr, uid, c),
-        'setor_id': lambda self, cr, uid, c: self.obter_setor(cr, uid, c),
+        'data_hora': fields.datetime.now()
     }
 
     _rec_name = 'name'
 
-    def obter_solicitante(self, cr, uid, c):
-        '''
-        Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
-        '''
-        pessoa = self.pool.get("ud.employee").browse(
-                cr, uid,
-                self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
-        )
-        if pessoa:
-            return pessoa[0].id
-        else:
-            raise except_orm("Pessoa não localizada".decode("UTF-8"),
-                             "Não há pessoa associada a esse usuário".decode("UTF-8"))
-
-    def obter_setor(self, cr, uid, c):
-        '''
-        Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
-        '''
-        pessoa = self.pool.get("ud.employee").browse(
-                cr, uid,
-                self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
-        )
-        if pessoa[0].papel_ids:
-            for papel in pessoa[0].papel_ids:
-                if papel.ud_setores:
-                    return papel.ud_setores.id
-        else:
-            raise except_orm("Perfil não localizado".decode("UTF-8"),
-                             "É preciso ter papel em algum setor".decode("UTF-8"))
-
     def get_name(self, cr, uid, ids, field, args, context):
         dados = self.browse(cr, uid, ids, context)[0]
-        data = datetime.now()
-        if dados.data_hora:
-            data = datetime.strptime(dados.data_hora, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
+        data = datetime.strptime(dados.data_hora, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
         return {
             dados.id: 'Solicitante {}; Setor:{}; Data: {}'.format(dados.solicitante_id.name, dados.setor_id.name, data)}
 
     def create(self, cr, uid, vals, context=None):
         vals['state'] = "aguardando"
-        res_id = super(ud_almoxarifado_solicitacao, self).create(cr, 1, vals, context)
+        res_id = super(ud_almoxarifado_solicitacao, self).create(cr, uid, vals, context)
 
         return res_id
-
-    def write(self, cr, user, ids, vals, context=None):
-        """
-        (0, 0,  { values })    link to a new record that needs to be created with the given values dictionary
-        (1, ID, { values })    update the linked record with id = ID (write *values* on it)
-        (2, ID)                remove and delete the linked record with id = ID (calls unlink on ID, that will delete the object completely, and the link to it as well)
-        (3, ID)                cut the link to the linked record with id = ID (delete the relationship between the two objects but does not delete the target object itself)
-        (4, ID)                link to existing record with id = ID (adds a relationship)
-        (5)                    unlink all (like using (3,ID) for all linked records)
-        (6, 0, [IDs])          replace the list of linked IDs (like using (5) then (4,ID) for each ID in the list of IDs)
-        :param cr:
-        :param user:
-        :param ids:
-        :param vals:
-        :param context:
-        :return:
-        """
-        if vals.get('produtos_ids'):
-            for i in vals.get('produtos_ids'):
-                if i[0] in [2, 3]:
-                    self.pool.get('ud.almoxarifado.produto.qtd').restaurar_produtos(cr, user, i[1])
-        return super(ud_almoxarifado_solicitacao, self).write(cr, user, ids, vals, context)
 
     def botao_cancelar(self, cr, uid, ids, context=None):
         ids_produtos = self.read(cr, uid, ids, ['produtos_ids'], load='_classic_write')
@@ -220,9 +164,7 @@ class ud_almoxarifado_solicitacao(osv.osv):
             self.pool.get('ud.almoxarifado.produto.qtd').restaurar_produtos(cr, uid, ids_produto.get("produtos_ids"))
         return self.write(cr, uid, ids, {"state": "cancelada"}, context=context)
 
-    def botao_entregue(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
+    def botao_entregue(self, cr, uid, ids, context={}):
         return self.write(cr, uid, ids, {"state": "entregue"}, context=context)
 
 
@@ -242,6 +184,7 @@ class ud_almoxarifado_fornecedor(osv.osv):
     _columns = {
         'name': fields.char(u'Fornecedor', size=64, required=True, readonly=False),
         'cpf_cnpj': fields.char(u'CPF/CNPJ'),
+        'cnpj': fields.char(u'CNPJ'),
         'fixo': fields.char(u'Telefone'),
         'celular': fields.char(u'Celular'),
         'email': fields.char(u'E-mail'),
@@ -287,9 +230,7 @@ class ud_almoxarifado_categoria(osv.osv):
 
     _SQL_CONSTRAINTS = [('unique_name', 'unique(name)', u"Categoria já cadastrada!")]
 
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = {}
+    def create(self, cr, uid, vals, context={}):
         vals['name'] = vals.get("name").upper()
         res_id = super(ud_almoxarifado_categoria, self).create(cr, uid, vals, context)
         return res_id
@@ -339,7 +280,7 @@ class ud_almoxarifado_estoque(osv.osv):
         'categoria_id': fields.related('produto_id', 'categoria_id', type='many2one',
                                        relation='ud.almoxarifado.categoria', string=u'Categoria', readonly=True),
         'estoque_min': fields.integer(u'Estoque Mínimo', required=True),
-        'quantidade': fields.function(_calcula_quantidade, type=str("integer"), method=True, string=u'Quantidade',
+        'quantidade': fields.function(_calcula_quantidade, type="integer", method=True, string=u'Quantidade',
                                       store=False),
         # atualiza o modelo "ud.almoxarifado.estoque' sempre que os campos dentro da lista forem atualizados ele retorna a lista de ids que precisam serem atualizados.
         'fornecedor_id': fields.many2one('ud.almoxarifado.fornecedor', u'Fornecedor', ondelete='restrict'),
@@ -355,11 +296,30 @@ class ud_almoxarifado_estoque(osv.osv):
 
     _constraints = [
         (
-            _valida_quantidade,
-            u'A quantidade está incorreta, precisa ser maior que 0 e menor que a quantidade em Estoque',
-            ['\nQuantidade']),
+        _valida_quantidade, u'A quantidade está incorreta, precisa ser maior que 0 e menor que a quantidade em Estoque',
+        ['\nQuantidade']),
         (_valida_estoque_min, u'A quantidade deve ser maior que 0', [u'\nEstoque Mínimo']),
-    ]
+    ]  # validar os dados
+
+    #     def create(self, cr, uid, vals, context={}):
+    #         vals['name']=vals.get("name").upper()
+    #         res_id = super(ud_almoxarifado_estoque, self).create(cr, uid, vals, context)
+    #         return res_id
+    #
+    #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+    #         if not order:
+    #             order = "name asc"
+    #         if args:
+    #             res = super(ud_almoxarifado_estoque, self).search(cr, uid, args, offset, limit, order, context, count)
+    #         else:
+    #             cr.execute("""SELECT id
+    #                           FROM ud_almoxarifado_estoque
+    #                           WHERE quantidade <= estoque_min ORDER BY "produto_id";""")
+    #             res = map(lambda linha: linha[0], cr.fetchall())
+    #             if res:
+    #                 args = [("id", "not in", res)]
+    #             res = res + super(ud_almoxarifado_estoque, self).search(cr, uid, args, offset, limit, order, context, count)
+    #         return res
 
     def unlink(self, cr, uid, ids, context=None):
         produto_ids = self.read(cr, uid, ids, ["produto_id"], context=context, load="_classic_write")
@@ -410,12 +370,4 @@ class ud_almoxarifado_saida(osv.Model):
         'observacao': fields.text(u'Observação'),
         'estoque_id': fields.many2one('ud.almoxarifado.estoque', u'Estoque', invisible=True, ondelete='cascade'),
 
-    }
-
-
-class ud_almoxarifado_fabricante(osv.Model):
-    _name = 'ud.almoxarifado.fabricante'
-
-    _columns = {
-        'name': fields.char(u'Nome', required=True),
     }
