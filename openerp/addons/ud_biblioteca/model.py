@@ -7,10 +7,10 @@ from openerp.osv.orm import except_orm
 
 
 class ud_biblioteca_publicacao(osv.osv):
-    '''
+    """
     Nome: ud.biblioteca.publicacao
     Descrição: Cadastro de publicações do repositório institucional
-    '''
+    """
     _name = "ud.biblioteca.publicacao"
 
     """
@@ -191,10 +191,10 @@ class ud_publicacao_autor(osv.osv):
 
 
 class ud_biblioteca_orientador(osv.osv):
-    '''
+    """
     Nome: ud.biblioteca.orientador
     Deescrição: Relação many2many de publicação para orientador, permite adicionar mais de um orientador
-    '''
+    """
     _name = 'ud.biblioteca.orientador'
     _columns = {'name': fields.char('Nome', size=64, required=True),
                 'titulacao_id': fields.many2one('ud.biblioteca.orientador.titulacao', "Titulação", required=True),
@@ -223,10 +223,10 @@ class ud_biblioteca_orientador_titulacao(osv.Model):
 
 
 class ud_biblioteca_anexo(osv.osv):
-    '''
+    """
     Nome: ud.biblioteca.anexo
     Deescrição: Arquivos contendo as publicações
-    '''
+    """
     _name = 'ud.biblioteca.anexo'
     _columns = {"name": fields.char("Anexo", required=True), 'arquivo': fields.binary('Arquivo PDF', filters="*.pdf"),
                 'publicacao_id': fields.many2one('ud.biblioteca.publicacao', u'Publicação', required=False), }
