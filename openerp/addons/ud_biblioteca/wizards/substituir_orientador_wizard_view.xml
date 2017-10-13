@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<openerp>
+    <data>
+
+        <record id="action_ud_bibliotecqa_substituir_orientador_wizard" model="ir.actions.act_window">
+            <field name="name">Substituir orientador</field>
+            <field name="res_model">ud.biblioteca.substituir_orientador.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="form_ud_biblioteca_substituir_orientador_wizard" model="ir.ui.view">
+            <field name="name">Substituir orientador form</field>
+            <field name="model">ud.biblioteca.substituir_orientador.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Substituir Orientador" version="7.0">
+                    <group>
+                        <field name="novo_orientador"/>
+                    </group>
+                    <footer>
+                        <button name="subistituir_orientador" string="Subistituir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.values" id="substituir_orientador">
+            <field name="name">Substituir orientador</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value"
+                   eval="'ir.actions.act_window,' + str(ref('action_ud_bibliotecqa_substituir_orientador_wizard'))"/>
+            <field name="key">action</field>
+            <field name="model">ud.biblioteca.orientador</field>
+        </record>
+
+    </data>
+</openerp>

@@ -16,7 +16,7 @@
             <field name="model">ud.biblioteca.substituir_palavra_chave.wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Buscar palavra-chave" version="7.0">
+                <form string="Substituir palavra-chave" version="7.0">
                     <group>
                         <field name="nova_palavra"/>
                     </group>

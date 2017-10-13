@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'biblioteca_view.xml',
         'wizards/substituir_palavra_chave_wizard_view.xml',
+        'wizards/substituir_orientador_wizard_view.xml',
     ],
     'css': [
         'static/src/css/*.css',

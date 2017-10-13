@@ -1,1 +1,2 @@
 import substituir_palavra_chave_wizard
+import substituir_orientador_wizard

@@ -109,6 +109,23 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="ud_biblioteca_orientador_form">
+            <field name="name">Orientador</field>
+            <field name="model">ud.biblioteca.orientador</field>
+            <field name="arch" type="xml">
+                <form string="Orientador" version="7.0">
+                    <group>
+                        <field name="name" />
+                        <field name="titulacao_id" />
+                    </group>
+                    <group>
+                        <field name="publicacao_orientador_id" />
+                        <field name="publicacao_coorientador_id" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="ud_biblioteca_pc_tree_view">
             <field name="name">Palavras-chave</field>
             <field name="model">ud.biblioteca.pc</field>
