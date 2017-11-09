@@ -1,0 +1,21 @@
+name,ud_bloco_ids,id
+A,"[1, 'ARAPIRACA']",1
+ADMI,False,9
+Administrativo,False,16
+Administrativo,"[4, u'VI\xc7OSA']",18
+Administrativo,False,17
+ADMINISTRATIVO,False,11
+ADMINSTRATIVO,False,8
+ADMNISTRATIVO,False,10
+B,"[1, 'ARAPIRACA']",2
+BLOCO L,"[1, 'ARAPIRACA']",14
+C,"[1, 'ARAPIRACA']",3
+Casa do Hóspede,"[4, u'VI\xc7OSA']",20
+Central,False,5
+Central,False,7
+Central,False,6
+COORDENAÇÕES,"[1, 'ARAPIRACA']",4
+Hospital Veterinário,"[4, u'VI\xc7OSA']",19
+LABORATORIO CASA VELHA,False,12
+LABORATORIO CASA VELHA,"[1, 'ARAPIRACA']",13
+LABORATORIOS DE CIENCIAS AGRÁRIAS,"[1, 'ARAPIRACA']",15

@@ -15,11 +15,7 @@ def gera_csv(nome, dados=None):
         for instancia in dados:
             row = []
             for c in cabecalhos:
-                if type(instancia[c]) is str:
-                    print instancia[c]
-                    row.append(unicode(instancia[c]).encode('utf-8'))
-                else:
-                    row.append(instancia[c])
+                row.append(unicode(instancia[c]).encode('utf-8'))
             writer.writerow(row)
 
 
@@ -35,6 +31,24 @@ def dados_polo(_server, _db, _uid, _password):
     gera_csv('dados_polo.csv', polos)
 
 
+def dados_espaco(_server, _db, _uid, _password):
+    espaco_ids = _server.execute(_db, _uid, _password, 'ud.espaco', 'search', [])
+    espacos = _server.execute(_db, _uid, _password, 'ud.espaco', 'read', espaco_ids)
+    gera_csv('dados_espaco.csv', espacos)
+
+
+def dados_bloco(_server, _db, _uid, _password):
+    bloco_ids = _server.execute(_db, _uid, _password, 'ud.bloco', 'search', [])
+    blocos = _server.execute(_db, _uid, _password, 'ud.bloco', 'read', bloco_ids)
+    gera_csv('dados_bloco.csv', blocos)
+
+
+def dados_setor(_server, _db, _uid, _password):
+    setor_ids = _server.execute(_db, _uid, _password, 'ud.setor', 'search', [])
+    setores = _server.execute(_db, _uid, _password, 'ud.setor', 'read', setor_ids)
+    gera_csv('dados_setor.csv', setores)
+
+
 # https://www.odoo.com/documentation/8.0/api_integration.html
 # https://doc.odoo.com/6.1/developer/12_api/
 # https://doc.odoo.com/6.1/developer/12_api/#python
@@ -46,6 +60,9 @@ def main(_url, _db, _username, _password):
 
     dados_campus(server, _db, uid, _password)
     dados_polo(server, _db, uid, _password)
+    dados_espaco(server, _db, uid, password)
+    dados_bloco(server, _db, uid, password)
+    dados_setor(server, _db, uid, password)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,22 @@
+name,emite_portaria,is_active,polo_id,responsavel_id,id,descricao,sigla
+NTI,False,True,"[1, 'ARAPIRACA']",False,179,False,NTI
+SECRETARIA DE CURSOS,False,True,"[1, 'ARAPIRACA']",False,180,False,SC
+NÚCLEO PEDAGÓGICO,False,True,"[1, 'ARAPIRACA']",False,181,False,NP
+BIBLIOTECA,False,True,"[1, 'ARAPIRACA']",False,182,False,BBL
+CRCA,False,True,"[1, 'ARAPIRACA']",False,183,False,CRCA
+NAE,False,True,"[1, 'ARAPIRACA']",False,184,False,NAE
+COORDENADORIA DE RECURSOS HUMANOS,False,True,"[1, 'ARAPIRACA']",False,185,False,CDR
+DSG-PATRIMÔNIO,False,True,"[1, 'ARAPIRACA']",False,186,False,DSG-PAT
+DIREÇÃO ACADÊMICA,True,True,"[1, 'ARAPIRACA']","[1756, u'ARNALDO TEN\xd3RIO DA CUNHA J\xdaNIOR']",187,False,DIR-ACA
+LICENÇA CAPACITAÇÃO,False,True,"[1, 'ARAPIRACA']",False,188,False,LICAP
+COINFRA,False,True,"[1, 'ARAPIRACA']",False,189,False,COINFRA
+SECRETARIA EXECUTIVA,False,True,"[1, 'ARAPIRACA']",False,190,False,SE
+SETOR DE TRANSPORTES,False,True,"[1, 'ARAPIRACA']",False,191,False,ST
+SECRETARIA DO CONSELHO,False,True,"[1, 'ARAPIRACA']",False,192,False,SC
+APOIO AO TRABALHADOR E ESTUDANTE,False,True,"[1, 'ARAPIRACA']",False,193,False,ATE
+TRANSPORTES,False,True,"[1, 'ARAPIRACA']",False,194,False,TRA
+ADMINISTRAÇÃO,False,True,"[1, 'ARAPIRACA']",False,195,False,ADM
+DSG-ALMOXARIFADO,False,True,"[1, 'ARAPIRACA']",False,196,False,DSG-ALM
+COORDENADORIA DE GRADUAÇÃO,False,True,"[1, 'ARAPIRACA']",False,197,False,COGRAD
+Biblioteca-VIC,False,True,"[4, u'VI\xc7OSA']",False,198,False,BIB VIC
+DIREÇÃO GERAL,True,True,"[1, 'ARAPIRACA']","[1792, 'ELIANE APARECIDA HOLANDA CAVALCANTI']",199,False,DIR GER

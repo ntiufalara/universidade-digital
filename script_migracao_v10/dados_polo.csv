@@ -1,3 +1,5 @@
 bloco_ids,campus_id,name,is_active,localizacao,id,descricao
 "[1, 2, 14, 3, 4, 13, 15]","[1, 'CAMPUS ARAPIRACA']",ARAPIRACA,True,False,1,False
 [],"[1, 'CAMPUS ARAPIRACA']",PENEDO,True,False,2,False
+[],"[1, 'CAMPUS ARAPIRACA']",PALMEIRA DOS ÍNDIOS,True,False,3,False
+"[18, 20, 19]","[1, 'CAMPUS ARAPIRACA']",VIÇOSA,True,False,4,False
