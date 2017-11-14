@@ -135,7 +135,7 @@ class mail_group(osv.Model):
 
         # Create group and alias
         mail_group_id = super(mail_group, self).create(cr, uid, vals, context=context)
-        mail_alias.write(cr, uid)
+        mail_alias.write(cr, uid, [vals['alias_id']], {"alias_force_thread_id": mail_group_id}, context)
         group = self.browse(cr, uid, mail_group_id, context=context)
 
         # Create client action for this group and link the menu to it
@@ -160,7 +160,7 @@ class mail_group(osv.Model):
             }
             cobj = self.pool.get('ir.actions.client')
             newref = cobj.copy(cr, SUPERUSER_ID, ref[1], default={'params': str(params), 'name': vals['name']}, context=context)
-            mobj.write(cr, SUPERUSER_ID, context=context)
+            mobj.write(cr, SUPERUSER_ID, menu_id, {'action': 'ir.actions.client,' + str(newref), 'mail_group_id': mail_group_id}, context=context)
 
         if vals.get('group_ids'):
             self._subscribe_users(cr, uid, [mail_group_id], context=context)
@@ -189,11 +189,13 @@ class mail_group(osv.Model):
             for action in [group.menu_id.action for group in self.browse(cr, uid, ids, context=context)]:
                 new_params = action.params
                 new_params['header_description'] = self._generate_header_description(cr, uid, group, context=context)
-                cobj.write(cr, SUPERUSER_ID, context=context)
+                cobj.write(cr, SUPERUSER_ID, [action.id], {'params': str(new_params)}, context=context)
         # if name is changed: update menu
         if vals.get('name'):
             mobj = self.pool.get('ir.ui.menu')
-            mobj.write(cr, SUPERUSER_ID, context=context)
+            mobj.write(cr, SUPERUSER_ID,
+                [group.menu_id.id for group in self.browse(cr, uid, ids, context=context)],
+                {'name': vals.get('name')}, context=context)
 
         return result
 
