@@ -21,18 +21,17 @@ class change_password_wizard(osv.TransientModel):
             users = []
             for pessoa in self.pool.get("ud.employee").browse(cr, uid, ids, context):
                 if pessoa.user_id:
-                    users.append((0, 0, { "user_id": pessoa.user_id.id, "user_login": pessoa.user_id.login}))
+                    users.append((0, 0, {"user_id": pessoa.user_id.id, "user_login": pessoa.user_id.login}))
             if users:
                 res["user_ids"] = users
         return res
 
-    def change_password_button(self, cr, uid, id, context=None):
-        wizard = self.browse(cr, uid, id, context=context)[0]
+    def change_password_button(self, cr, uid, ids, context=None):
+        wizard = self.browse(cr, uid, ids, context=context)[0]
         need_reload = any(uid == user.user_id.id for user in wizard.user_ids)
         line_ids = [user.id for user in wizard.user_ids]
 
         self.pool.get('change.password.user.ud').change_password_button(cr, uid, line_ids, context=context)
-        self.pool.get('change.password.user.ud').write(cr, uid, context=context)
 
         if need_reload:
             return {
@@ -61,6 +60,7 @@ class change_password_user(osv.TransientModel):
     }
 
     def change_password_button(self, cr, uid, ids, context=None):
-        for user in self.browse(cr, uid, ids, context=context):
-            self.pool.get('res.users').write(cr, uid)
+        for usuario_senha in self.browse(cr, uid, ids, context=context):
+            usuario_senha.user_id.write({'password': usuario_senha.new_passwd})
+            # self.pool.get('res.users').write(cr, uid)
 
