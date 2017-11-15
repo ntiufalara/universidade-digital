@@ -30,6 +30,7 @@ from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
+
 # Inspired by http://stackoverflow.com/questions/517923
 def remove_accents(input_str):
     """Suboptimal-but-better-than-nothing way to replace accented
@@ -39,6 +40,7 @@ def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', input_str)
     return u''.join([c for c in nkfd_form if not unicodedata.combining(c)])
 
+
 class mail_alias(osv.Model):
     """A Mail Alias is a mapping of an email address with a given OpenERP Document
        model. It is used by OpenERP's mail gateway when processing incoming emails
@@ -47,7 +49,7 @@ class mail_alias(osv.Model):
        of that alias. If the message is a reply it will be attached to the
        existing discussion on the corresponding record, otherwise a new
        record of the corresponding model will be created.
-       
+
        This is meant to be used in combination with a catch-all email configuration
        on the company's mail server, so that as soon as a new mail.alias is
        created, it becomes immediately usable and OpenERP will accept email for it.
@@ -64,8 +66,8 @@ class mail_alias(osv.Model):
 
     _columns = {
         'alias_name': fields.char('Alias', required=True,
-                            help="The name of the email alias, e.g. 'jobs' "
-                                 "if you want to catch emails for <jobs@example.my.openerp.com>",),
+                                  help="The name of the email alias, e.g. 'jobs' "
+                                       "if you want to catch emails for <jobs@example.my.openerp.com>", ),
         'alias_model_id': fields.many2one('ir.model', 'Aliased Model', required=True, ondelete="cascade",
                                           help="The model (OpenERP Document Kind) to which this alias "
                                                "corresponds. Any incoming email that does not reply to an "
@@ -75,29 +77,30 @@ class mail_alias(osv.Model):
                                           # (have a few false positives, though)
                                           domain="[('field_id.name', '=', 'message_ids')]"),
         'alias_user_id': fields.many2one('res.users', 'Owner',
-                                           help="The owner of records created upon receiving emails on this alias. "
-                                                "If this field is not set the system will attempt to find the right owner "
-                                                "based on the sender (From) address, or will use the Administrator account "
-                                                "if no system user is found for that address."),
+                                         help="The owner of records created upon receiving emails on this alias. "
+                                              "If this field is not set the system will attempt to find the right owner "
+                                              "based on the sender (From) address, or will use the Administrator account "
+                                              "if no system user is found for that address."),
         'alias_defaults': fields.text('Default Values', required=True,
                                       help="A Python dictionary that will be evaluated to provide "
                                            "default values when creating new records for this alias."),
         'alias_force_thread_id': fields.integer('Record Thread ID',
-                                      help="Optional ID of a thread (record) to which all incoming "
-                                           "messages will be attached, even if they did not reply to it. "
-                                           "If set, this will disable the creation of new records completely."),
+                                                help="Optional ID of a thread (record) to which all incoming "
+                                                     "messages will be attached, even if they did not reply to it. "
+                                                     "If set, this will disable the creation of new records completely."),
         'alias_domain': fields.function(_get_alias_domain, string="Alias domain", type='char', size=None),
     }
 
     _defaults = {
         'alias_defaults': '{}',
-        'alias_user_id': lambda self,cr,uid,context: uid,
+        'alias_user_id': lambda self, cr, uid, context: uid,
         # looks better when creating new aliases - even if the field is informative only
-        'alias_domain': lambda self,cr,uid,context: self._get_alias_domain(cr, SUPERUSER_ID,[1],None,None)[1]
+        'alias_domain': lambda self, cr, uid, context: self._get_alias_domain(cr, SUPERUSER_ID, [1], None, None)[1]
     }
 
     _sql_constraints = [
-        ('alias_unique', 'UNIQUE(alias_name)', 'Unfortunately this email alias is already used, please choose a unique one')
+        ('alias_unique', 'UNIQUE(alias_name)',
+         'Unfortunately this email alias is already used, please choose a unique one')
     ]
 
     def _check_alias_defaults(self, cr, uid, ids, context=None):
@@ -109,7 +112,9 @@ class mail_alias(osv.Model):
         return True
 
     _constraints = [
-        (_check_alias_defaults, '''Invalid expression, it must be a literal python dictionary definition e.g. "{'field': 'value'}"''', ['alias_defaults']),
+        (_check_alias_defaults,
+         '''Invalid expression, it must be a literal python dictionary definition e.g. "{'field': 'value'}"''',
+         ['alias_defaults']),
     ]
 
     def name_get(self, cr, uid, ids, context=None):
@@ -118,7 +123,7 @@ class mail_alias(osv.Model):
            e.g. `jobs@openerp.my.openerp.com` or `sales@openerp.my.openerp.com`
         """
         return [(record['id'], "%s@%s" % (record['alias_name'], record['alias_domain']))
-                    for record in self.read(cr, uid, ids, ['alias_name', 'alias_domain'], context=context)]
+                for record in self.read(cr, uid, ids, ['alias_name', 'alias_domain'], context=context)]
 
     def _find_unique(self, cr, uid, name, context=None):
         """Find a unique alias name similar to ``name``. If ``name`` is
@@ -134,7 +139,8 @@ class mail_alias(osv.Model):
         return new_name
 
     def migrate_to_alias(self, cr, child_model_name, child_table_name, child_model_auto_init_fct,
-        alias_id_column, alias_key, alias_prefix='', alias_force_key='', alias_defaults={}, context=None):
+                         alias_id_column, alias_key, alias_prefix='', alias_force_key='', alias_defaults={},
+                         context=None):
         """ Installation hook to create aliases for all users and avoid constraint errors.
 
             :param child_model_name: model name of the child class (i.e. res.users)
@@ -162,23 +168,25 @@ class mail_alias(osv.Model):
         registry = RegistryManager.get(cr.dbname)
         mail_alias = registry.get('mail.alias')
         child_class_model = registry.get(child_model_name)
-        no_alias_ids = child_class_model.search(cr, SUPERUSER_ID, [('alias_id', '=', False)], context={'active_test': False})
+        no_alias_ids = child_class_model.search(cr, SUPERUSER_ID, [('alias_id', '=', False)],
+                                                context={'active_test': False})
         # Use read() not browse(), to avoid prefetching uninitialized inherited fields
         for obj_data in child_class_model.read(cr, SUPERUSER_ID, no_alias_ids, [alias_key]):
             alias_vals = {'alias_name': '%s%s' % (alias_prefix, obj_data[alias_key])}
             if alias_force_key:
                 alias_vals['alias_force_thread_id'] = obj_data[alias_force_key]
             alias_vals['alias_defaults'] = dict((k, obj_data[v]) for k, v in alias_defaults.iteritems())
-            alias_id = mail_alias.create_unique_alias(cr, SUPERUSER_ID, alias_vals, model_name=context.get('alias_model_name', child_model_name))
-            child_class_model.write(cr, SUPERUSER_ID)
+            alias_id = mail_alias.create_unique_alias(cr, SUPERUSER_ID, alias_vals,
+                                                      model_name=context.get('alias_model_name', child_model_name))
+            child_class_model.write(cr, SUPERUSER_ID, obj_data['id'], {'alias_id': alias_id})
             _logger.info('Mail alias created for %s %s (uid %s)', child_model_name, obj_data[alias_key], obj_data['id'])
 
         # Finally attempt to reinstate the missing constraint
         try:
             cr.execute('ALTER TABLE %s ALTER COLUMN alias_id SET NOT NULL' % (child_table_name))
         except Exception:
-            _logger.warning("Table '%s': unable to set a NOT NULL constraint on column '%s' !\n"\
-                            "If you want to have it, you should update the records and execute manually:\n"\
+            _logger.warning("Table '%s': unable to set a NOT NULL constraint on column '%s' !\n" \
+                            "If you want to have it, you should update the records and execute manually:\n" \
                             "ALTER TABLE %s ALTER COLUMN %s SET NOT NULL",
                             child_table_name, 'alias_id', child_table_name, 'alias_id')
 
@@ -190,9 +198,9 @@ class mail_alias(osv.Model):
     def create_unique_alias(self, cr, uid, vals, model_name=None, context=None):
         """Creates an email.alias record according to the values provided in ``vals``,
         with 2 alterations: the ``alias_name`` value may be suffixed in order to
-        make it unique (and certain unsafe characters replaced), and 
+        make it unique (and certain unsafe characters replaced), and
         he ``alias_model_id`` value will set to the model ID of the ``model_name``
-        value, if provided, 
+        value, if provided,
         """
         # when an alias name appears to already be an email, we keep the local part only
         alias_name = remove_accents(vals['alias_name']).lower().split('@')[0]
