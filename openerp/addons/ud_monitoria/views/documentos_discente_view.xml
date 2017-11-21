@@ -74,6 +74,9 @@
                         <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard_form_view)d'
                                 type='action' string='Vincular Bolsa' attrs="{'invisible': [('state', '=', 'bolsista')]}"
                                 groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                        <button name="tornar_n_bolsista" string="Tornar Não bolsista" type="object" attrs="{'invisible': [('state', '!=', 'reserva')]}"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                                confirm="Realmente deseja retirar do cadastro de reserva para torná-lo(a) um(a) discente não bolsista?"/>
                         <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
                                 type='action' string='Remover Bolsa' attrs="{'invisible': [('state', '!=', 'bolsista')]}"
                                 groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>

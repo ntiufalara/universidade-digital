@@ -16,8 +16,8 @@ regex_clausula = compile("WHEN (?P<campo>\w+) *= *(?P<valor>'\w+') THEN (?P<ord>
 regex_espacos = compile("\s+")
 
 _MESES = [("01", u"Janeiro"), ("02", u"Fevereiro"), ("03", u"Março"), ("04", u"Abril"), ("05", u"Maio"),
-              ("06", u"Junho"), ("07", u"julho"), ("08", u"Agosto"), ("09", u"Setembro"), ("10", u"Outubro"),
-              ("11", u"Novembro"), ("12", u"Dezembro")]
+          ("06", u"Junho"), ("07", u"julho"), ("08", u"Agosto"), ("09", u"Setembro"), ("10", u"Outubro"),
+          ("11", u"Novembro"), ("12", u"Dezembro")]
 
 
 class DocumentosDiscente(osv.Model):
@@ -309,7 +309,7 @@ class DocumentosDiscente(osv.Model):
 
     def finalizar(self, cr, uid, ids, context=None):
         """
-        Inativa o registro.
+        Inativa o documento do discente.
 
         :raise osv.except_osv: Se disciplina ainda ativa; Se documento ativo e não possui frequências, relatórios, uma
                                das frequências ainda está em análise ou não há uma frequência aceita para os meses
@@ -339,8 +339,25 @@ class DocumentosDiscente(osv.Model):
                 if not all(freqs.values()):
                     raise osv.except_osv(u"Ação Indisponível", u"Você não pode finalizar documentos enquanto não houver"
                                                                u" ao menos uma frequência aceita para cada mês")
-        self.write(cr, uid, ids, {"is_active": False})
-        return True
+        return self.write(cr, uid, ids, {"is_active": False})
+
+    def tornar_n_bolsista(self, cr, uid, ids, context=None):
+        """
+        Muda o status para "Não bolsista" e habilida o documento do discente.
+
+        :raise osv.except_osv: Caso sua disciplina esteja inativa.
+        """
+        context = context or {}
+        doc_orientador_model = self.pool.get("ud.monitoria.documentos.orientador")
+        for doc in self.browse(cr, uid, ids, context):
+            if not doc.disciplina_id.is_active:
+                raise osv.except_osv(u"Ação Indisponível",
+                                     u"Não é possível retirar um discente do cadastro de reserva se sua disciplina está inativa.")
+            if not doc_orientador_model.search_count(cr, uid, [("disciplina_id", "=", doc.disciplina_id.id)]):
+                doc_orientador_model.create(
+                    cr, SUPERUSER_ID, {"disciplina_id": doc.disciplina_id.id}, context
+                )
+        return self.write(cr, uid, ids, {"is_active": True, "state": "n_bolsista"})
 
     def reserva_para_bolsista(self, cr, uid, ids, context=None):
         """

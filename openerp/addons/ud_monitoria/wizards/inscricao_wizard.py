@@ -12,11 +12,11 @@ from openerp.osv import osv, fields
 class InscricaoWizard(osv.TransientModel):
     _name = "ud.monitoria.inscricao.wizard"
     _description = u"Wizard para inscrição de Processos Seletivos"
-    
+
     _MODALIDADE = [("monitor", u"Monitoria"), ("tutor", u"Tutoria")]
-    
+
     _TURNO = [("m", u"Matutino"), ("v", u"Vespertino"), ("n", u"Noturno")]
-    
+
     _columns = {
         "matricula": fields.char(u"Matrícula", size=15),
         "perfil_id": fields.many2one("ud.perfil", u"Matrícula", ondelete="cascade", domain=[("tipo", "=", "a")], required=True),
@@ -25,7 +25,7 @@ class InscricaoWizard(osv.TransientModel):
         "celular": fields.char(u"Celular", size=32),
         "email": fields.char(u"E-mail", size=240),
         "controle": fields.char(u"Controle"),
-        
+
         "nome_cpf": fields.char(u"Nome CPF"),
         "nome_identidade": fields.char(u"Nome Identidade"),
         "nome_hist_analitico": fields.char(u"Nome Histórico Analítico"),
@@ -47,14 +47,14 @@ class InscricaoWizard(osv.TransientModel):
         "conta": fields.char(u"Conta", size=10, help=u"Número da Conta"),
         "dv_conta": fields.char(u"DV Conta", size=1, help=u"Dígito verificador da Conta"),
         "operacao": fields.char(u"Operação", size=3, help=u"Tipo de conta"),
-        
+
         "agencia_v": fields.related("banco_id", "agencia", type="boolean", invisible=True, readonly=True),
         "dv_agencia_v": fields.related("banco_id", "dv_agencia", type="boolean", invisible=True, readonly=True),
         "conta_v": fields.related("banco_id", "conta", type="boolean", invisible=True, readonly=True),
         "dv_conta_v": fields.related("banco_id", "dv_conta", type="boolean", invisible=True, readonly=True),
         "operacao_v": fields.related("banco_id", "operacao", type="boolean", invisible=True, readonly=True),
     }
-    
+
     def default_get(self, cr, uid, fields_list, context=None):
         res = super(InscricaoWizard, self).default_get(cr, uid, fields_list, context=context)
         context = context or {}
@@ -64,12 +64,13 @@ class InscricaoWizard(osv.TransientModel):
         return res
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, bolsista, context=None):
-        res = {}
+        res = {"domain": {"disciplinas_ids": [("curso_id", "=", False)]}}
         if perfil_id:
             perfil_model = self.pool.get("ud.perfil")
             perfil = perfil_model.browse(cr, uid, perfil_id, context=context)
-            res = {"value": {"discente_id": perfil.ud_papel_id.id, "celular": perfil.ud_papel_id.mobile_phone,
-                             "email": perfil.ud_papel_id.work_email, "controle": ""}}
+            res["value"] = {"discente_id": perfil.ud_papel_id.id, "celular": perfil.ud_papel_id.mobile_phone,
+                            "email": perfil.ud_papel_id.work_email, "controle": ""}
+            res["domain"]["disciplinas_ids"] = [("curso_id", "=", perfil.ud_cursos.id)]
             if not perfil.ud_papel_id.mobile_phone:
                 res["value"]["controle"] += "c"
             if not perfil.ud_papel_id.work_email:
@@ -82,7 +83,7 @@ class InscricaoWizard(osv.TransientModel):
                             "message": u"Não é permitido fazer inscrição de discentes registrados como bolsista."
                         }
         return res
-    
+
     def onchange_bolsista(self, cr, uid, ids, perfil_id, discente_id, bolsista, context=None):
         if perfil_id and discente_id and bolsista:
             perfil_model = self.pool.get("ud.perfil")
@@ -93,7 +94,7 @@ class InscricaoWizard(osv.TransientModel):
         elif not bolsista:
             return {"value": {"banco_id": False}}
         return {}
-    
+
     def onchange_banco(self, cr, uid, ids, banco_id, context=None):
         if banco_id:
             banco = self.pool.get("ud.banco").read(cr, uid, banco_id, [
@@ -104,7 +105,7 @@ class InscricaoWizard(osv.TransientModel):
             return {"value": vals}
         return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,"operacao_v": False,
                           "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}}
-    
+
     def onchange_mod_disc(self, cr, uid, ids, modalidade, disciplinas_ids, context=None):
         if disciplinas_ids:
             if modalidade == "monitor" and len(disciplinas_ids[0][2]) > 1:
@@ -120,7 +121,7 @@ class InscricaoWizard(osv.TransientModel):
 #                         "warning": {"title": u"Modalidade",
 #                                     "message": u"Modalidade não selecionada"}}
         return {}
-    
+
     def onchange_processo_seletivo(self, cr, uid, ids, context=None):
         return {"value": {"disciplinas_ids": []}}
 
@@ -155,9 +156,12 @@ class InscricaoWizard(osv.TransientModel):
         perfil_model = self.pool.get("ud.perfil")
         pessoa_model = self.pool.get("ud.employee")
         res_id = False
+        continua = True
         for inscricao in self.browse(cr, uid, ids, context=context):
             dados_bancarios_id = False
             pessoa_dados = {}
+            if continua and inscricao.perfil_id.ud_papel_id.user_id != uid:
+                continua = False
             if inscricao.celular and inscricao.controle in ["c", "ce"]:
                 pessoa_dados["mobile_phone"] = inscricao.celular
             if inscricao.email and inscricao.controle in ["e", "ce"]:
@@ -181,17 +185,19 @@ class InscricaoWizard(osv.TransientModel):
                      "dados_bancarios_id": dados_bancarios_id, "state": "analise",
                      "pontuacoes_ids": pontuacoes}
             res_id = inscricao_model.create(cr, SUPERUSER_ID, dados, context=context)
-        obj_model = self.pool.get('ir.model.data')
-        form_id = obj_model.get_object_reference(cr, uid, "ud_monitoria", "ud_monitoria_inscricao_form_view")[1]
-        return {
-            "name": u"Gerenciamento de Inscrições",
-            "view_type": "form",
-            "view_mode": "form",
-            "res_model": "ud.monitoria.inscricao",
-            "view_id": form_id,
-            # "view_id": False,
-            "type": "ir.actions.act_window",
-            "nodestroy": True,
-            "res_id": res_id or False,
-            "target": "current",
-        }
+        if continua or self.user_has_groups(cr, uid, "ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador,ud_monitoria.group_ud_monitoria_coord_disciplina"):
+            obj_model = self.pool.get('ir.model.data')
+            form_id = obj_model.get_object_reference(cr, uid, "ud_monitoria", "ud_monitoria_inscricao_form_view")[1]
+            return {
+                "name": u"Gerenciamento de Inscrições",
+                "view_type": "form",
+                "view_mode": "form",
+                "res_model": "ud.monitoria.inscricao",
+                "view_id": form_id,
+                # "view_id": False,
+                "type": "ir.actions.act_window",
+                "nodestroy": True,
+                "res_id": res_id or False,
+                "target": "current",
+            }
+        return True

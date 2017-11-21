@@ -310,6 +310,7 @@ class PontuacoesDisciplina(osv.Model):
         context = context or {}
         perfil_model = self.pool.get("ud.perfil")
         dados_bancarios_model = self.pool.get("ud.dados.bancarios")
+        doc_orientador_model = self.pool.get("ud.monitoria.documentos.orientador")
         hoje = datetime.strptime(fields.date.context_today(self, cr, uid, context), DEFAULT_SERVER_DATE_FORMAT)
         res_id = False
         for pont in self.browse(cr, uid, ids, context=context):
@@ -343,9 +344,13 @@ class PontuacoesDisciplina(osv.Model):
                     }, context=context)
                     state = "bolsista"
             self._create_doc_discente(cr, pont, state, context)
-            self.pool.get("ud.monitoria.documentos.orientador").create(
-                cr, SUPERUSER_ID, {"disciplina_id": pont.disciplina_id.id}, context
+            doc_orientador = doc_orientador_model.search(
+                cr, uid, [("disciplina_id", "=", pont.disciplina_id.id), ("is_active", "=", True)]
             )
+            if not doc_orientador:
+                doc_orientador_model.create(
+                    cr, SUPERUSER_ID, {"disciplina_id": pont.disciplina_id.id}, context
+                )
         self.write(cr, uid, ids, {"state": "aprovado"}, context=context)
         return self.conf_view(cr, uid, res_id, context)
 

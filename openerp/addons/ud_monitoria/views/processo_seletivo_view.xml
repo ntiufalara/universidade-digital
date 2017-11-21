@@ -261,7 +261,7 @@
                         <field name="modalidade" readonly="1"/>
                         <field name="turno" readonly="1"/>
                         <field name="bolsista" readonly="1"/>
-                        <field name="dados_bancarios_id" readonly="1" options="{'no_open': true}"
+                        <field name="dados_bancarios_id" readonly="1" options="{'no_open': true}" colspan="4"
                                attrs="{'invisible': [('bolsista', '=', False)],'required': [('bolsista', '=', True)]}"/>
                     </group>
                     <group string="Disciplinas / Pontuações">
@@ -352,11 +352,10 @@
                     <field name="id"/>
                     <div attrs="{'invisible': [('state', '!=', 'invalido')]}"
                          groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                        <h3>O processo seletivo torna-se inválido quando:</h3>
-                        <ol>
-                            <li>Não possui ao menos um anexo;</li>
-                            <li>Não possui ao menos uma disciplina.</li>
-                        </ol>
+                        <p>
+                            O processo seletivo torna-se inválido quando não está sob demanda e não possui ao menos um
+                            anexo e/ou uma disciplina.
+                        </p>
                     </div>
                     <group col="4">
                         <field name="name" colspan="4" placeholder="Nome do Processo Seletivo"
@@ -476,7 +475,9 @@
                         </field>
                     </group>
                     <div>
-                        Para verificar o número de bolsas distribuídas para cada curso, acesse o link no campo semestre.
+                        <strong>Atenção:</strong> Caso sua disciplina não esteja na lista, acesse o link no campo
+                        <span style="text-decoration: underline;">Semestre</span> para verificar quais cursos foram disponibilizados. Nesse link também será
+                        possível verificar o número de bolsas disponibilizadas para cada curso.
                     </div>
                 </form>
             </field>

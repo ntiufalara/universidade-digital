@@ -79,12 +79,14 @@
                             <field name="operacao_v"/>
                         </group>
                     </group>
-                    <group string="Disciplinas(s)" attrs="{'invisible': [('processo_seletivo_id', '=', False)]}" col="4">
+                    <group string="Disciplinas(s)" col="4"
+                           attrs="{'invisible': ['|', ('processo_seletivo_id', '=', False), ('perfil_id', '=', False)]}">
                         <field name="disciplinas_ids" nolabel="1"  widget="many2many_tags"
                                on_change="onchange_mod_disc(modalidade,disciplinas_ids)"
                                options="{'create_edit': false, 'create': false}" colspan="4"/>
                         <div colspan="4">
-                            Número máximo de disciplinas por modalidade:
+                            É importante saber que serão mostradas apenas as disciplinas do curso do discente.
+                            <p>Número máximo de disciplinas por modalidade:</p>
                             <ul>
                                 <li>Monitoria: 1 disciplina;</li>
                                 <li>

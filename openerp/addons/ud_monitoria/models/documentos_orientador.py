@@ -35,6 +35,10 @@ class DocumentosOrientador(osv.Model):
         (valida_disciplina, u"O orientador da disciplina deve ser o mesmo que o proprietário documento enquanto este estiver ativo.", [u"Ativo"])
     ]
 
+    _sql_constraints = [
+        ("doc_perfil_disciplina_unique", "unique(disciplina_id,perfil_id)", u"Deve haver apenas um documento para um orientador e disciplina.")
+    ]
+
     _defaults = {
         "is_active": True,
     }
@@ -85,8 +89,8 @@ class DocumentosOrientador(osv.Model):
         === Extensão do método osv.Model.unlink
         Se orientador não tiver mais vínculos com outros documentos, remove-o do grupo de segurança.
         """
-        self.remove_grupo_orientador(cr, uid, ids, context)
         try:
+            self.remove_grupo_orientador(cr, uid, ids, context)
             return super(DocumentosOrientador, self).unlink(cr, uid, ids, context)
         except:
             self.add_grupo_orientador(cr, uid, ids, context)

@@ -320,6 +320,10 @@ class Disciplina(osv.Model):
             self.write(cr, SUPERUSER_ID, disc, {"is_active": False}, context)
         return True
 
+    def onchange_curso(self, cr, uid, ids, curso_id, context=None):
+        return {"value": {"disciplina_id": False, "perfil_id": False},
+                "domain": {"perfil_id": [("ud_cursos", "=", curso_id), ("tipo", "=", "p")]}}
+
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
         """
         Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
@@ -329,3 +333,7 @@ class Disciplina(osv.Model):
                 cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
             ).get("ud_papel_id")}}
         return {"value": {"orientador_id": False}}
+
+    def bolsas_disponiveis(self, cr, uid, id_, context=None, *args, **kwargs):
+        disciplina = self.browse(cr, uid, id_ if not isinstance(id_, (list, tuple)) else id_[0], context)
+        return disciplina.bolsas - len(disciplina.bolsista_ids)

@@ -106,7 +106,7 @@
                     <field name="is_active" invisible="1"/>
                     <field name="processo_seletivo_id" invisible="1"/>
                     <group col="4">
-                        <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
+                        <field name="curso_id" on_change="onchange_curso(curso_id)" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
                         <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2"/>
                         <field name="perfil_id" on_change="onchange_perfil(perfil_id)" colspan="2" readonly="context.get('no_edit', True)"
                                options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
