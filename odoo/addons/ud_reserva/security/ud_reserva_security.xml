@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.module.category" id="base.module_category_ud_reserva">
+           <field name="name">Reserva de Espaço</field>
+        </record>
+        <record id="visitante_reserva" model="res.groups">
+            <field name="name">Visitante de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>
+        </record>
+        <record id="solicitante_reserva" model="res.groups">
+            <field name="name">Solicitante de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>
+            <field name="implied_ids" eval="[(4, ref('visitante_reserva'))]"/>
+        </record>
+        <record id="gerente_reserva" model="res.groups">
+            <field name="name">Gerente de Reserva</field>
+            <field name="category_id" ref="base.module_category_ud_reserva"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+        <!-- Regras de acesso -->
+        <record model="ir.rule" id="solicitante_reserva_rule">
+            <field name="name">Registros do usuário</field>
+            <field name="model_id" ref="ud_reserva.model_ud_reserva"/>
+            <field name="domain_force">[('solicitante_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('solicitante_reserva'))]"/>
+            <field name="perm_write">True</field>
+            <field name="perm_unlink">True</field>
+            <field name="perm_read">False</field>
+            <field name="perm_create">False</field>
+        </record>
+
+    </data>
+</odoo>

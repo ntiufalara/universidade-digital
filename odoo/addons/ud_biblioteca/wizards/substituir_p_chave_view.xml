@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<openerp>
+    <data>
+
+        <record id="action_ud_bibliotecqa_substituir_palavra_chave_wizard" model="ir.actions.act_window">
+            <field name="name">Substituir palavra-chave</field>
+            <field name="res_model">ud.biblioteca.substituir_palavra_chave.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="form_ud_biblioteca_substituir_palavra_chave_wizard" model="ir.ui.view">
+            <field name="name">Substituir palavra-chave form</field>
+            <field name="model">ud.biblioteca.substituir_palavra_chave.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Substituir palavra-chave" version="7.0">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="nova_palavra"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="nova_palavra"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button name="substituir_palavra_chave" string="Substituir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.values" id="atribuir_item">
+            <field name="name">Substituir palavra-chave</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value"
+                   eval="'ir.actions.act_window,' + str(ref('action_ud_bibliotecqa_substituir_palavra_chave_wizard'))"/>
+            <field name="key">action</field>
+            <field name="model">ud.biblioteca.p_chave</field>
+        </record>
+
+    </data>
+</openerp>

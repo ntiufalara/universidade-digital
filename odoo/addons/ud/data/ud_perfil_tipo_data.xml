@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_perfil_docente" model="ud.perfil.tipo">
+            <field name="name">Docente</field>
+            <field name="curso_ou_setor">curso</field>
+        </record>
+        <record id="ud_perfil_tecnico" model="ud.perfil.tipo">
+            <field name="name">Técnico</field>
+            <field name="curso_ou_setor">setor</field>
+        </record>
+        <record id="ud_perfil_terceirizado" model="ud.perfil.tipo">
+            <field name="name">Terceirizado</field>
+        </record>
+        <record id="ud_perfil_discente" model="ud.perfil.tipo">
+            <field name="name">Discente</field>
+            <field name="curso_ou_setor">curso</field>
+        </record>
+
+    </data>
+</odoo>

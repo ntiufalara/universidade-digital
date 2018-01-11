@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="ud_reserva_tree_no_create">
+            <field name="name">Reservas de espaço</field>
+            <field name="model">ud.reserva</field>
+            <field name="arch" type="xml">
+                <tree string="Reservas de espaço" create="0">
+                    <field name="name"/>
+                    <field name="solicitante_id"/>
+                    <field name="data_solicitacao"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ud_reserva_action">
+            <field name="name">Reserva de espaço</field>
+            <field name="res_model">ud.reserva</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ud_reserva_tree_no_create"/>
+            <field name="context">{'search_default_agrupar_state': 1}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ud_reserva_minhas_solicitacoes_action">
+            <field name="name">Reserva de espaço</field>
+            <field name="res_model">ud.reserva</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_agrupar_state': 1, 'filtrar_solicitante': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para cadastrar uma nova solicitação de reserva
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <!-- Usado para mostrar a lista de solicitações nos espaços em que o usuário é responsável -->
+        <record id="ud_reserva_gerenciar_solicitacao_action" model="ir.actions.act_window">
+            <field name="name">Gerenciar solicitações</field>
+            <field name="res_model">ud.reserva</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ud_reserva_tree_no_create"/>
+            <!-- Parâmetros passados ao método read() da reserva -->
+            <field name="context">{'filtrar_responsavel': 1, 'search_default_agrupar_state': 1}
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_tree">
+            <field name="name">Reservas de espaço</field>
+            <field name="model">ud.reserva</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree string="Reservas de espaço">
+                    <field name="name"/>
+                    <field name="solicitante_id"/>
+                    <field name="data_solicitacao"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.reserva</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" string="Nome"/>
+                    <field name="solicitante_id" string="Solicitante"/>
+                    <field name="titulo" string="Título"/>
+                    <field name="descricao" string="Descrição"/>
+                    <field name="data_solicitacao" string="Data de solicitação"/>
+                    <field name="state" string="Status"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Solicitante" icon="terp-personal" domain="[]"
+                                context="{'group_by':'solicitante_id'}"/>
+                        <filter string="Status" name="agrupar_state" icon="terp-personal" domain="[]"
+                                context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_form">
+            <field name="name">Reserva de espaço</field>
+            <field name="model">ud.reserva</field>
+            <field name="arch" type="xml">
+                <form string="Reserva de espaço">
+                    <header>
+                        <button name="aprovar" type="object" string="Aprovar" states="enviada,aguardando_aprovacao"
+                                groups="ud_reserva.gerente_reserva"/>
+                        <button name="ud_reserva.ud_reserva_cancelamento_reserva_wizard_action" type="action"
+                                string="Cancelar" states="enviada,aprovada,aguardando_aprovacao"
+                                groups="ud_reserva.gerente_reserva"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="nova,enviada,aguardando_aprovacao,aprovada,cancelada"
+                               readonly="1"/>
+                    </header>
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Solicitação</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="solicitante_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="solicitante_id"
+                                           attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="titulo"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="titulo"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="descricao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="descricao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_solicitacao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_solicitacao" attrs="{'readonly':[('state','!=', 'nova')]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('state', '!=', 'cancelada')]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_cancelamento"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_cancelamento"/>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 form-group"
+                                 attrs="{'invisible': [('state', '!=', 'cancelada')]}">
+                                <legend>Motivo do cancelamento</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="motivo_cancelamento"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset attrs="{'invisible': [('state', '!=', 'aguardando_aprovacao')]}">
+                            <legend>Espaços aprovados</legend>
+                            <div class="alert alert-info">
+                                Os responsáveis por cada um dos espaços solicitados devem aprovar esta solicitação
+                            </div>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="espaco_aprovado_ids"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Dias</legend>
+                            <div style="padding-left: 30px" class="col-md-12 col-lg-12 form-group">
+                                <button name="ud_reserva.adicionar_dias_wizard_action" type="action"
+                                        string="Adicionar vários" states="nova,enviada"/>
+                            </div>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="dia_ids" attrs="{'readonly': [('state', '=', 'aprovada')]}"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

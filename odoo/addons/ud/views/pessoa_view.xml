@@ -14,8 +14,8 @@
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
-                                <a href="#dados_pessoais" aria-controls="home" role="tab" data-toggle="tab">Dados
-                                    pessoais
+                                <a href="#dados_pessoais" aria-controls="home" role="tab" data-toggle="tab">
+                                    Dados pessoais
                                 </a>
                             </li>
                             <li role="presentation">
@@ -23,6 +23,9 @@
                             </li>
                             <li role="presentation">
                                 <a href="#endereco" aria-controls="messages" role="tab" data-toggle="tab">Endereço</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#perfil" aria-controls="messages" role="tab" data-toggle="tab">Perfil</a>
                             </li>
                         </ul>
 
@@ -34,6 +37,12 @@
                                         <label class="col-md-4 col-sm-4 control-label" for="name"></label>
                                         <div class="col-md-7 col-sm-7">
                                             <field name="name"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="email"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="email"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-6 form-group">
@@ -95,12 +104,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="email"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="email"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 form-group">
                                         <label class="col-md-4 col-sm-4 control-label"
                                                for="curriculo_lattes_link"></label>
                                         <div class="col-md-7 col-sm-7">
@@ -137,6 +140,22 @@
                                     </div>
                                 </fieldset>
                             </div>
+                            <div role="tabpanel" class="tab-pane" id="perfil">
+                                <fieldset>
+                                    <div class="col-md-12 col-lg-12 form-group">
+                                        <legend>Perfil institucional</legend>
+                                        <div class="col-md-12 col-sm-12">
+                                            <field name="perfil_ids"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 form-group">
+                                        <legend>Grupos de acesso</legend>
+                                        <div class="col-md-12 col-sm-12">
+                                            <field name="groups_id"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
                         </div>
                     </div>
 
@@ -158,6 +177,22 @@
                     <field name="celular"/>
                     <field name="email"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_pessoa_search" model="ir.ui.view">
+            <field name="name">Busca</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <search string="Busca">
+                    <field name="name" filter_domain="" />
+                    <field name="cpf" filter_domain="" />
+                    <field name="rg" filter_domain="" />
+                    <field name="data_nascimento" filter_domain="" />
+                    <field name="email" filter_domain="" />
+                    <field name="telefone_fixo" filter_domain="" />
+                    <field name="celular" filter_domain="" />
+                </search>
             </field>
         </record>
 

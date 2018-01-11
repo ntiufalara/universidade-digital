@@ -18,7 +18,8 @@ BANCOS = [
 ]
 
 TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
-              ("v", u"Vespertino"), ("n", u"Noturno"), ]
+         ("v", u"Vespertino"), ("n", u"Noturno"),
+         ('i', u'Integral')]
 MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado"), ('e', u'Especialização'), ('m', u'Mestrado'), ('d', u'')]
 
 NACIONALIDADES = [
@@ -33,4 +34,3 @@ ESTADOS = [
     ('pe', u'PE'), ('pi', u'PI'), ('pr', u'PR'), ('rj', u'RJ'), ('rn', u'RN'), ('ro', u'RO'), ('rr', u'RR'),
     ('rs', u'RS'), ('sc', u'SC'), ('se', u'SE'), ('sp', u'SP'), ('to', u'TO')
 ]
-

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_reserva_cancelamento_reserva_wizard_action">
+            <field name="name">Cancelar</field>
+            <field name="res_model">ud.reserva.cancelamento_reserva_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_cancelamento_reserva_wizard_form">
+            <field name="name">Cancelar</field>
+            <field name="model">ud.reserva.cancelamento_reserva_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Cancelar">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Descreva o motivo</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="motivo"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                		<button string="Salvar" name="cancelar" type="object"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                	</footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

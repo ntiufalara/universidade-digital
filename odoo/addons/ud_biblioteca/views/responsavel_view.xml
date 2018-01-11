@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_biblioteca_responsavel_action" model="ir.actions.act_window">
+            <field name="name">Responsável</field>
+            <field name="res_model">ud.biblioteca.responsavel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_biblioteca_responsavel_tree_view" model="ir.ui.view">
+            <field name="name">Responsáveis</field>
+            <field name="model">ud.biblioteca.responsavel</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Responsáveis">
+                    <field name="pessoa_id"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_biblioteca_responsavel_form_view" model="ir.ui.view">
+            <field name="name">Responsável</field>
+            <field name="model">ud.biblioteca.responsavel</field>
+            <field name="arch" type="xml">
+                <form string="Responsável">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="pessoa_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="pessoa_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="admin_campus"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="admin_campus"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="campus_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('admin_campus', '=', True)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id" domain="[('campus_id', '=', campus_id)]"
+                                       attrs="{'required': [('admin_campus', '=', False)]}"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

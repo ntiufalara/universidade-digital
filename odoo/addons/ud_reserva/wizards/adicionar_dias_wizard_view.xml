@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="adicionar_dias_wizard_action">
+            <field name="name">Dias</field>
+            <field name="res_model">ud.reserva.adicionar_dias_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="adicionar_dias_wizard_form">
+            <field name="name">Dias</field>
+            <field name="model">ud.reserva.adicionar_dias_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Dias">
+                    <div class="alert alert-info">
+                        Use o formulário abaixo para adicionar 2 ou mais dias à reserva. Caso queira adicionar apenas um
+                        dia, use a lista no formulário anterior.
+                    </div>
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Período</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_inicio"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_inicio"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_fim"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_fim"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="hora_inicio"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="hora_inicio" widget="mask" data-inputmask-mask="99:99"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="hora_fim"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="hora_fim" widget="mask" data-inputmask-mask="99:99"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Espaços</legend>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="espaco_ids" domain="[('permite_reserva', '=', True)]"
+                                           widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Dias da semana</legend>
+                            <div class="col-sm-12">
+                                <div class="col-md-6 col-lg-6 form-group"
+                                     attrs="{'invisible': [('dias_uteis', '=', True)]}">
+                                    <label class="col-md-4 col-sm-4 control-label" for="todos"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="todos"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('todos', '=', True)]}">
+                                    <label class="col-md-4 col-sm-4 control-label" for="dias_uteis"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="dias_uteis"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12"
+                                 attrs="{'invisible': ['|', ('todos', '=', True), ('dias_uteis', '=', True)]}">
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="domingo"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="domingo"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="segunda"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="segunda"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="terca"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="terca"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="quarta"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="quarta"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="quinta"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="quinta"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="sexta"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="sexta"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label class="col-md-4 col-sm-4 control-label" for="sabado"></label>
+                                    <div class="col-md-7 col-sm-7">
+                                        <field name="sabado"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <footer>
+                        <button name="adicionar" string="Adicionar" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

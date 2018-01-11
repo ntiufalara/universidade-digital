@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_biblioteca_publicacao_action" model="ir.actions.act_window">
+            <field name="name">Publicações</field>
+            <field name="res_model">ud.biblioteca.publicacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_agrupar_curso': 1}</field>
+        </record>
+
+        <record id="ud_biblioteca_publicacao_form" model="ir.ui.view">
+            <field name="name">Nova publicação</field>
+            <field name="model">ud.biblioteca.publicacao</field>
+            <field name="type">form</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="publicacao">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Local</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_id" readonly="1"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_id" domain="[('campus_id','=', campus_id)]"
+                                           attrs="{'readonly': [('polo_id', '!=', False)]}"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Informações da publicação</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="name"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="ano_pub"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="ano_pub" class="campo_ano"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="autor_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="autor_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="orientador_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="orientador_ids"
+                                           placeholder="Digite o nome e tecle Enter para adicionar"
+                                           widget="many2many_tags"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="coorientador_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="coorientador_ids"
+                                           placeholder="Digite o nome e tecle Enter para adicionar"
+                                           widget="many2many_tags"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="palavras_chave_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="palavras_chave_ids" widget="many2many_tags"
+                                           placeholder="biotecnologia,microbiologia,irrigação"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible' : [('autorizar_publicacao', '=', True )]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="contato"
+                                           attrs="{'required' : [('autorizar_publicacao', '=', False)] }"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="autorizar_publicacao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="autorizar_publicacao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="visualizacoes"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="visualizacoes" readonly="1"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="curso_indefinido"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="curso_indefinido"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible' : [('curso_indefinido', '=', False )]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="curso_indefinido_detalhes"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="curso_indefinido_detalhes"
+                                           attrs="{'required' : [('curso_indefinido', '=', True)] }"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible' : [('curso_indefinido', '=', True )]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="curso_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="curso_id" domain="[('polo_id','=',polo_id)]"
+                                           attrs="{'required' : [('curso_indefinido', '=', False)] }"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="area_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="area_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Anexos</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="anexo_ids"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_biblioteca_publicacao_filter" model="ir.ui.view">
+            <field name="name">Busca</field>
+            <field name="model">ud.biblioteca.publicacao</field>
+            <field name="arch" type="xml">
+                <search string="Buscar publicação">
+                    <field name="name"/>
+                    <field name="nome_autor"/>
+                    <field name="ano_pub"/>
+                    <field name="polo_id"/>
+                    <field name="curso_id"/>
+                    <field name="palavras_chave_ids"/>
+                    <field name="tipo_id"/>
+                    <field name="categoria_cnpq_id"/>
+                    <field name="contato"/>
+                    <field name="area_ids"/>
+                    <group string="Agrupar Por...">
+                        <filter string="Autor" domain="[]" context="{'group_by' : 'autor_id'}"/>
+                        <filter string="Tipo" domain="[]" context="{'group_by' : 'tipo_id'}"/>
+                        <filter string="Ano de publicação" domain="[]" context="{'group_by' : 'ano_pub'}"/>
+                        <filter string="Polo" domain="[]" context="{'group_by' : 'polo_id'}"/>
+                        <filter string="Curso" domain="[]" name="agrupar_curso" context="{'group_by' : 'curso_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="ud_biblioteca_publicacao_tree" model="ir.ui.view">
+            <field name="name">Publicações</field>
+            <field name="model">ud.biblioteca.publicacao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Publicações">
+                    <field name="name"/>
+                    <field name="autor_id"/>
+                    <field name="curso_id"/>
+                    <field name="ano_pub"/>
+                    <field name="visualizacoes"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

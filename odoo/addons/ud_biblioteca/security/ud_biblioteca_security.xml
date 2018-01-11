@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data noupdate="0">
+        <record id="module_category_ud_biblioteca" model="ir.module.category">
+            <field name="name">Biblioteca UD</field>
+        </record>
+
+        <record id="group_biblioteca_visitante" model="res.groups">
+            <field name="name">Visitante</field>
+            <field name="category_id" ref="module_category_ud_biblioteca"/>
+        </record>
+
+        <record id="group_biblioteca_bibliotecario" model="res.groups">
+            <field name="name">Bibliotecário</field>
+            <field name="category_id" ref="module_category_ud_biblioteca"/>
+            <field name="implied_ids" eval="[(4, ref('group_biblioteca_visitante'))]"/>
+        </record>
+
+        <record id="group_biblioteca_bibliotecario_admin" model="res.groups">
+            <field name="name">Bibliotecário/ Administrador</field>
+            <field name="category_id" ref="module_category_ud_biblioteca"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('group_biblioteca_visitante')), (4, ref('group_biblioteca_bibliotecario'))]"/>
+        </record>
+    </data>
+</odoo>

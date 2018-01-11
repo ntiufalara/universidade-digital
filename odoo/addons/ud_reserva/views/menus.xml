@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <menuitem id="reserva_root" name="Reserva de espaço"/>
+        <menuitem id="calendario_reserva" name="Calendário de reserva" parent="reserva_root"
+                  action="ud_reserva_dia_action" sequence="0"/>
+        <menuitem id="solicitacao_root" name="Solicitações de reserva" parent="reserva_root" sequence="1"/>
+        <menuitem id="minha_reserva" name="Minhas solicitações" parent="solicitacao_root"
+                  action="ud_reserva_minhas_solicitacoes_action" sequence="2"
+                  groups="ud_reserva.solicitante_reserva,ud_reserva.gerente_reserva"/>
+        <menuitem id="cadastro_reserva" name="Todas as solicitações" parent="solicitacao_root"
+                  action="ud_reserva_action" sequence="3"/>
+        <menuitem id="gerenciar_reserva" name="Gerenciar solicitações" parent="solicitacao_root"
+                  action="ud_reserva_gerenciar_solicitacao_action" sequence="4" groups="ud_reserva.gerente_reserva"/>
+        <menuitem id="responsavel_reserva" name="Responsáveis" parent="reserva_root"
+                  action="ud_reserva_responsavel_action" sequence="5"
+                  groups="base.admin_ud"/>
+
+    </data>
+</odoo>

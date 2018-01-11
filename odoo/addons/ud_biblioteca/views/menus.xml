@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <menuitem name="Repositório Institucional" id="biblioteca_top"
+                  sequence="4"
+                  groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"/>
+
+        <menuitem string="Publicações" action="ud_biblioteca_publicacao_action"
+                  id="cadsatro_publicacao" parent="biblioteca_top"
+                  groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"/>
+
+        <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
+                  action="ud_biblioteca_responsavel_action" groups="base.admin_ud"/>
+
+
+        <menuitem name="Gerenciar palavras-chave" id="ud_biblioteca_p_chave" parent="biblioteca_top"
+                  action="ud_biblioteca_p_chave_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+
+        <menuitem name="Gerenciar orientadores" id="ud_biblioteca_orientador" parent="biblioteca_top"
+                  action="ud_biblioteca_orientador_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+    </data>
+</odoo>

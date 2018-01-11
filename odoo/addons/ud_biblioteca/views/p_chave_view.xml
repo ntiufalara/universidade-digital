@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_biblioteca_p_chave_action">
+            <field name="name">Palavras-chave</field>
+            <field name="res_model">ud.biblioteca.p_chave</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar uma nova Palavra-chave
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_p_chave_tree">
+            <field name="name">Palavras-chave</field>
+            <field name="model">ud.biblioteca.p_chave</field>
+            <field name="arch" type="xml">
+                <tree string="Palavras-chave">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_p_chave_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.biblioteca.p_chave</field>
+            <field name="arch" type="xml">
+                <search string="Buscar palavra-chave">
+                    <field name="name" filter_domain="" string="Nome"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_p_chave_form">
+            <field name="name">Palavra-chave</field>
+            <field name="model">ud.biblioteca.p_chave</field>
+            <field name="arch" type="xml">
+                <form string="Palavra-chave">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

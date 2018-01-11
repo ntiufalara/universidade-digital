@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="curso_modalidade_licenciatura" model="ud.curso.modalidade">
+            <field name="name">Licenciatura</field>
+        </record>
+        <record id="curso_modalidade_bacharelado" model="ud.curso.modalidade">
+            <field name="name">Bacharelado</field>
+        </record>
+        <record id="curso_modalidade_especializacao" model="ud.curso.modalidade">
+            <field name="name">Especialização</field>
+        </record>
+        <record id="curso_modalidade_mestrado" model="ud.curso.modalidade">
+            <field name="name">Mestrado</field>
+        </record>
+        <record id="curso_modalidade_doutorado" model="ud.curso.modalidade">
+            <field name="name">Doutorado</field>
+        </record>
+
+    </data>
+</odoo>

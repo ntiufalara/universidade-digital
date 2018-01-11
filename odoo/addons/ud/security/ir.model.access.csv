@@ -9,9 +9,15 @@ access_ud_admin_dados_bancarios,Administrador: ud.dados.bancarios,ud.model_ud_da
 access_ud_admin_curso,Administrador: ud.curso,ud.model_ud_curso,base.admin_ud,1,1,1,1
 access_ud_admin_disciplina,Administrador: ud.disciplina,ud.model_ud_disciplina,base.admin_ud,1,1,1,1
 access_ud_admin_bloco,Administrador: ud.bloco,ud.model_ud_bloco,base.admin_ud,1,1,1,1
+access_ud_admin_perfil,Administrador: ud.perfil,ud.model_ud_perfil,base.admin_ud,1,1,1,1
+access_ud_admin_perfil_tipo,Administrador: ud.perfil_tipo,ud.model_ud_perfil_tipo,base.admin_ud,1,1,1,1
+access_ud_admin_perfil_tipo_docente,Administrador: ud.perfil.tipo_docente,ud.model_ud_perfil_tipo_docente,base.admin_ud,1,1,1,1
+access_ud_admin_bolsa,Administrador: ud.bolsa,ud.model_ud_bolsa,base.admin_ud,1,1,1,1
+access_ud_admin_curso_modalidade,Administrador: ud.curso.modalidade,ud.model_ud_curso_modalidade,base.admin_ud,1,1,1,1
 access_ud_gerente_espaco_espaco,Gerente de Espaço: ud.espaco,ud.model_ud_espaco,base.gerente_espaco_ud,1,1,1,1
 access_ud_gerente_espaco_polo,Gerente de Espaço: ud.polo,ud.model_ud_polo,base.gerente_espaco_ud,1,0,0,0
 access_ud_gerente_espaco_bloco,Gerente de Espaço: ud.bloco,ud.model_ud_bloco,base.gerente_espaco_ud,1,0,0,0
+access_ud_gerente_perfil_tipo_docente,Gerente de Espaço: ud.perfil.tipo_docente,ud.model_ud_perfil_tipo_docente,base.gerente_espaco_ud,1,0,0,0
 access_ud_usuario_res_users,Usuário: res.users,base.model_res_users,base.usuario_ud,1,1,0,0
 access_ud_usuario_pessoa,Usuário: ud.pessoa,ud.model_res_users,base.usuario_ud,1,0,0,0
 access_ud_usuario_curso,Usuário: ud.curso,ud.model_ud_curso,base.usuario_ud,1,0,0,0
@@ -21,3 +27,9 @@ access_ud_usuario_dados_bancarios,Usuário: ud.dados.bancarios,ud.model_ud_dados
 access_ud_usuario_polo,Usuário: ud.polo,ud.model_ud_polo,base.usuario_ud,1,0,0,0
 access_ud_usuario_bloco,Usuário: ud.bloco,ud.model_ud_bloco,base.usuario_ud,1,0,0,0
 access_ud_usuario_campus,Usuário: ud.campus,ud.model_ud_campus,base.usuario_ud,1,0,0,0
+access_ud_usuario_perfil,Usuário: ud.perfil,ud.model_ud_perfil,base.usuario_ud,1,0,0,0
+access_ud_usuario_perfil_tipo,Usuário: ud.perfil_tipo,ud.model_ud_perfil_tipo,base.usuario_ud,1,0,0,0
+access_ud_usuario_perfil_tipo_docente,Usuário: ud.perfil.tipo_docente,ud.model_ud_perfil_tipo_docente,base.usuario_ud,1,0,0,0
+access_ud_usuario_bolsa,Usuário: ud.bolsa,ud.model_ud_bolsa,base.usuario_ud,1,0,0,0
+access_ud_usuario_curso_modalidade,Usuário: ud.curso.modalidade,ud.model_ud_curso_modalidade,base.usuario_ud,1,0,0,0
+access_ud_usuario_espaco,Usuário: ud.espaco,ud.model_ud_espaco,base.usuario_ud,1,0,0,0

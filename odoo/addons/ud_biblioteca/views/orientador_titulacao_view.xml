@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_biblioteca_orientador_titulacao_action">
+            <field name="name">Titulações</field>
+            <field name="res_model">ud.biblioteca.orientador.titulacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar uma nova Titulação
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_orientador_titulacao_tree">
+            <field name="name">Titulações</field>
+            <field name="model">ud.biblioteca.orientador.titulacao</field>
+            <field name="arch" type="xml">
+                <tree string="Titulações">
+                    <field name="name"/>
+                    <field name="sigla"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_orientador_titulacao_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.biblioteca.orientador.titulacao</field>
+            <field name="arch" type="xml">
+                <search string="Busca">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <field name="sigla" filter_domain="" string="Sigla"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_orientador_titulacao_form">
+            <field name="name">Titulação</field>
+            <field name="model">ud.biblioteca.orientador.titulacao</field>
+            <field name="arch" type="xml">
+                <form string="Titulação">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="sigla"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="sigla"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

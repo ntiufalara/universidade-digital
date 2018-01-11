@@ -13,4 +13,5 @@ class Bloco(models.Model):
 
     name = fields.Char(u'Bloco', size=80, required=True)
     polo_id = fields.Many2one('ud.polo', u'Polo', ondelete='cascade', invisible=True)
+    campus_id = fields.Char(related='polo_id.campus_id.name', string=u'Campus')
 

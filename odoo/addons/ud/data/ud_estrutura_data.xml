@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <!-- Campi -->
+        <record id="campus_arapiraca" model="ud.campus">
+            <field name="name">Campus Arapiraca</field>
+        </record>
+
+        <!-- Polos -->
+        <record id="polo_arapiraca" model="ud.polo">
+            <field name="name">Arapiraca</field>
+            <field name="campus_id" ref="campus_arapiraca" />
+        </record>
+
+        <record id="polo_penedo" model="ud.polo">
+            <field name="name">Penedo</field>
+            <field name="campus_id" ref="campus_arapiraca" />
+        </record>
+
+        <record id="polo_palmeira" model="ud.polo">
+            <field name="name">Palmeira dos Índios</field>
+            <field name="campus_id" ref="campus_arapiraca" />
+        </record>
+
+        <record id="polo_vicosa" model="ud.polo">
+            <field name="name">Viçosa</field>
+            <field name="campus_id" ref="campus_arapiraca" />
+        </record>
+
+        <!-- Blocos -->
+        <!-- ARAPIRACA -->
+        <record id="bloco_arapiraca_a" model="ud.bloco">
+            <field name="name">A</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_b" model="ud.bloco">
+            <field name="name">B</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_c" model="ud.bloco">
+            <field name="name">C</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_l" model="ud.bloco">
+            <field name="name">L</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_coordenacoes" model="ud.bloco">
+            <field name="name">Coordenações</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_administrativo" model="ud.bloco">
+            <field name="name">Administrativo Arapiraca</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_casa_velha" model="ud.bloco">
+            <field name="name">Laboratórios Casa Velha</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <record id="bloco_arapiraca_lab_ciencias_agrarias" model="ud.bloco">
+            <field name="name">Laboratórios de Ciências Agrárias</field>
+            <field name="polo_id" ref="polo_arapiraca" />
+        </record>
+
+        <!-- VIÇOSA -->
+        <record id="bloco_vicosa_administrativo" model="ud.bloco">
+            <field name="name">Administrativo</field>
+            <field name="polo_id" ref="polo_vicosa" />
+        </record>
+
+        <record id="bloco_vicosa_hosp_vet" model="ud.bloco">
+            <field name="name">Hospital veterinário</field>
+            <field name="polo_id" ref="polo_vicosa" />
+        </record>
+
+        <record id="bloco_vicosa_casa_hospede" model="ud.bloco">
+            <field name="name">Casa de hóspede</field>
+            <field name="polo_id" ref="polo_vicosa" />
+        </record>
+
+        <!-- PENEDO -->
+        <record id="bloco_penedo_central" model="ud.bloco">
+            <field name="name">Central Penedo</field>
+            <field name="polo_id" ref="polo_penedo" />
+        </record>
+
+        <!-- PALMEIRA DOS ÍNDIOS -->
+        <record id="bloco_palmeira_central" model="ud.bloco">
+            <field name="name">Central Palmeira</field>
+            <field name="polo_id" ref="polo_palmeira" />
+        </record>
+
+    </data>
+</odoo>

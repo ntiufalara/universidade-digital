@@ -16,4 +16,4 @@ class DadosBancarios(models.Model):
     conta = fields.Char(u"Conta", size=10, help=u"Número da Conta")
     dv_conta = fields.Char(u"DV Conta", size=4, help=u"Dígito verificador da Conta")
     operacao = fields.Char(u"Operação", size=4, help=u"Tipo de conta")
-    pessoa_id = fields.Many2one("ud.pessoa", u"Proprietário", invisible=True, ondelete="cascade")
+    pessoa_id = fields.Many2one("res.users", u"Proprietário", invisible=True, ondelete="cascade")

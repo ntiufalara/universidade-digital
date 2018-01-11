@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_biblioteca_orientador_action" model="ir.actions.act_window">
+            <field name="name">Gerenciar orientadores</field>
+            <field name="res_model">ud.biblioteca.publicacao.orientador</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para cadastrar um orientador
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record id="ud_biblioteca_orientador_tree" model="ir.ui.view">
+            <field name="name">Orientadores</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Orientadores">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Usado no formulário de gerenciamento de orientadores -->
+        <record id="ud_biblioteca_orientador_form" model="ir.ui.view">
+            <field name="name">Orientador</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+            <field name="arch" type="xml">
+                <form string="Orientador">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="nome_orientador"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="nome_orientador"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="titulacao_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Orientador em:</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="publicacao_orientador_ids"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Coorientador em:</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="publicacao_coorientador_ids"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Prioridade maior, usado para adicionar rapidamente orientador -->
+        <record id="ud_biblioteca_orientador_form2" model="ir.ui.view">
+            <field name="name">Orientador</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+            <field name="priority" eval="1" />
+            <field name="arch" type="xml">
+                <form string="Orientador">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="nome_orientador"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="nome_orientador"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="titulacao_id"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

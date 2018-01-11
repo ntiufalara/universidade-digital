@@ -42,9 +42,9 @@
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">
-                            <label class="col-md-4 col-sm-4 control-label" for="modalidade"></label>
+                            <label class="col-md-4 col-sm-4 control-label" for="modalidade_id"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="modalidade"/>
+                                <field name="modalidade_id"/>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">
@@ -91,7 +91,7 @@
                 <tree string="Curso">
                     <field name="name"/>
                     <field name="coordenador_id"/>
-                    <field name="modalidade"/>
+                    <field name="modalidade_id"/>
                     <field name="turno"/>
                     <field name="is_active"/>
                 </tree>

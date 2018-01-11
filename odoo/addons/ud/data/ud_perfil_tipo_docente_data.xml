@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_perfil_tipo_docente_assistente" model="ud.perfil.tipo_docente">
+            <field name="name">Professor Assistente</field>
+        </record>
+        <record id="ud_perfil_tipo_docente_adjunto" model="ud.perfil.tipo_docente">
+            <field name="name">Professor Adjunto</field>
+        </record>
+        <record id="ud_perfil_tipo_docente_titular" model="ud.perfil.tipo_docente">
+            <field name="name">Professor Titular</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_perfil_tree" model="ir.ui.view">
+            <field name="name">Perfil</field>
+            <field name="model">ud.perfil</field>
+            <field name="arch" type="xml">
+                <tree string="Perfil">
+                    <field name="tipo_id"/>
+                    <field name="matricula"/>
+                    <field name="curso_id"/>
+                    <field name="setor_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_perfil_form" model="ir.ui.view">
+            <field name="name">Perfil</field>
+            <field name="model">ud.perfil</field>
+            <field name="arch" type="xml">
+                <form string="Perfil">
+                    <field name="curso_ou_setor" invisible="1"/>
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="tipo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="tipo_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('curso_ou_setor', '=', 'setor')]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="curso_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="curso_id" attrs="{'required': [('curso_ou_setor', '=', 'curso')]}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('curso_ou_setor', '=', 'curso')]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="setor_id" attrs="{'required': [('curso_ou_setor', '=', 'setor')]}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('tipo_id', '!=', %(ud.ud_perfil_docente)d)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="tipo_docente_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="tipo_docente_id" attrs="{'required': [('tipo_id', '=', %(ud.ud_perfil_docente)d)]}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('tipo_id', '!=', %(ud.ud_perfil_discente)d)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="bolsista"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="bolsista"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('bolsista', '=', False)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="bolsa_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="bolsa_id" attrs="{'required': [('bolsista', '=', True)]}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="matricula"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="matricula"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

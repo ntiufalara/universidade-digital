@@ -8,3 +8,8 @@ import Setor
 import Curso
 import Disciplina
 import Pessoa
+import PerfilTipo
+import PerfilTipoDocente
+import Perfil
+import Bolsa
+import CursoModalidade

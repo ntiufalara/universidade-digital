@@ -16,6 +16,6 @@ class Curso(models.Model):
     is_active = fields.Boolean(u'Ativo?', default=True)
     description = fields.Text(u'Descrição')
     disciplina_ids = fields.One2many('ud.disciplina', 'curso_id', u'Disciplinas',)
-    turno = fields.Selection(utils.TURNO, u"Turno", required=True)
-    modalidade = fields.Selection(utils.MODALIDADE, u"Modalidade", required=True)
+    turno = fields.Selection(utils.TURNO, u"Turno")
+    modalidade_id = fields.Many2one('ud.curso.modalidade', u"Modalidade", required=True)
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_bolsa_permanencia" model="ud.bolsa">
+            <field name="sigla">pg</field>
+            <field name="name">Pró-graduando</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_painter" model="ud.bolsa">
+            <field name="sigla">painter</field>
+            <field name="name">PAINTER</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_pibic" model="ud.bolsa">
+            <field name="sigla">pibic</field>
+            <field name="name">PIBIC-CNPq</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_pibip" model="ud.bolsa">
+            <field name="sigla">pibip</field>
+            <field name="name">PIBIP-Ação</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_pibit" model="ud.bolsa">
+            <field name="sigla">pibit</field>
+            <field name="name">PIBIT-CNPq</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_auxilio_alimentacao" model="ud.bolsa">
+            <field name="sigla">aux_alimentacao</field>
+            <field name="name">Auxílio Alimentação</field>
+            <field name="valor">150</field>
+        </record>
+        <record id="ud_bolsa_auxilio_transporte" model="ud.bolsa">
+            <field name="sigla">aux_transporte</field>
+            <field name="name">Auxílio Transporte</field>
+            <field name="valor">150</field>
+        </record>
+        <record id="ud_bolsa_bdi" model="ud.bolsa">
+            <field name="sigla">bdi</field>
+            <field name="name">BDI</field>
+            <field name="valor">500</field>
+        </record>
+        <record id="ud_bolsa_bdai" model="ud.bolsa">
+            <field name="sigla">bdai</field>
+            <field name="name">BDAI</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_permanencia" model="ud.bolsa">
+            <field name="sigla">pibid</field>
+            <field name="name">PIBID</field>
+            <field name="valor">400</field>
+        </record>
+        <record id="ud_bolsa_monitoria" model="ud.bolsa">
+            <field name="sigla">monitoria</field>
+            <field name="name">Monitoria</field>
+            <field name="valor">400</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="publicacao_tipo_tcc" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">TCC</field>
+        </record>
+        <record id="publicacao_tipo_dissertacao" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Dissertação</field>
+        </record>
+        <record id="publicacao_tipo_monografia" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Monografia</field>
+        </record>
+        <record id="publicacao_tipo_artigo" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Artigo</field>
+        </record>
+        <record id="publicacao_tipo_tese" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Tese</field>
+        </record>
+        <record id="publicacao_tipo_institucional" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Material Institucional</field>
+        </record>
+        <record id="publicacao_tipo_fotografia" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">Fotografia</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_reserva_dia_action">
+            <field name="name">Dias reservados</field>
+            <field name="res_model">ud.reserva.dia</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">calendar,tree,form</field>
+            <field name="domain">[('state', '!=', 'cancelada')]</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_dia_tree">
+            <field name="name">Dias</field>
+            <field name="model">ud.reserva.dia</field>
+            <field name="arch" type="xml">
+                <tree string="Dias">
+                    <field name="espaco_id"/>
+                    <field name="data_inicio"/>
+                    <field name="data_fim"/>
+                    <field name="reserva_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_dia_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.reserva.dia</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="espaco_id" />
+                    <field name="data_inicio" filter_domain="" string="Data de início"/>
+                    <field name="data_fim" filter_domain="" string="Data de fim"/>
+                    <field name="reserva_id" string="Reserva"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Espaço" name="agrupar_espaco" icon="terp-personal" domain="[]" context="{'group_by':'espaco_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_reserva_dia_form">
+            <field name="name">Dia</field>
+            <field name="model">ud.reserva.dia</field>
+            <field name="arch" type="xml">
+                <form string="Dia">
+                    <div class="alert alert-warning">
+                        Para criar uma nova solicitação de reserva use o menu <strong>"Solicitações de reserva"</strong>
+                    </div>
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="espaco_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="espaco_id" domain="[('permite_reserva', '=', True)]"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="data_inicio"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="data_inicio"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="data_fim"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="data_fim"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('reserva_id', '=', False)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="reserva_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="reserva_id" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('reserva_id', '=', False)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="state"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="state" readonly="1"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_reserva_dia_calendar" model="ir.ui.view">
+            <field name="name">Calendário de reserva</field>
+            <field name="model">ud.reserva.dia</field>
+            <field name="arch" type="xml">
+                <calendar date_start="data_inicio" date_stop="data_fim" color="espaco_id" mode="month" quick_add="false">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+    </data>
+</odoo>
