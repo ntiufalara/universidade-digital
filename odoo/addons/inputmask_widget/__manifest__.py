@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Inputmask Widget",
+    'name': "Input mask",
 
     'summary': """
    A Widget to make masks on form fields""",
@@ -95,5 +95,6 @@ Instructions:
     # always loaded
     "data": ['views/assets_templates.xml'],
     "qweb": ['static/src/xml/mask.xml'],
-    'images': ['static/description/main_screenshot.png']
+    'images': ['static/description/main_screenshot.png'],
+    'installable': True,
 }

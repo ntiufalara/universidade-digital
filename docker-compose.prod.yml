@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  web:
+    restart: always
+  db:
+    restart: always

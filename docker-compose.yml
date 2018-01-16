@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - POSTGRES_DB=odoo
+    volumes:
+      - "./db_data/:/var/lib/postgresql/data"
+  web:
+    build: .
+    volumes:
+      - ".:/src"
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
