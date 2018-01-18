@@ -39,7 +39,7 @@ class ProdutoQuantidade(models.Model):
         """
         pass
 
-    @api.onchange('produto')
+    @api.onchange('produto_id')
     def onchenge_produto(self):
         """
         TODO: Atualiza o atributo "estoque" quando de acordo com o produto selecionado

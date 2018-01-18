@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_produto_action">
+            <field name="name">Produto</field>
+            <field name="res_model">ud.almoxarifado.produto</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_categoria": 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Produto
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_tree">
+            <field name="name">Produtos</field>
+            <field name="model">ud.almoxarifado.produto</field>
+            <field name="arch" type="xml">
+                <tree string="Produtos">
+                    <field name="name"/>
+                    <field name="categoria_id"/>
+                    <field name="fabricante_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.almoxarifado.produto</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <field name="categoria_id" filter_domain="" string="Categoria"/>
+                    <field name="almoxarifado_ids" filter_domain="" string="Almoxarifado"/>
+                    <field name="fornecedor_ids" filter_domain="" string="Fornecedores"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Categoria" name="categoria" icon="terp-personal" domain="[]" context="{'group_by':'categoria_id'}"/>
+                        <filter string="Fabricante" name="fabricante" icon="terp-personal" domain="[]" context="{'group_by':'fabricante_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_produto_form">
+            <field name="name">Produto</field>
+            <field name="model">ud.almoxarifado.produto</field>
+            <field name="arch" type="xml">
+                <form string="Produto">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="categoria_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="categoria_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="fabricante_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="fabricante_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Almoxarifados</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="almoxarifado_ids"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Fornecedores</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="fornecedor_ids"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Observações</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="observacao"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

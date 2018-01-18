@@ -15,6 +15,13 @@
         "views/almoxarifado_view.xml",
         "views/fornecedor_view.xml",
         "views/estoque_view.xml",
+        "views/produto_view.xml",
+        "views/estoque_entrada_view.xml",
+        "views/estoque_saida_view.xml",
+        "views/fabricante_view.xml",
+        "views/produto_categoria_view.xml",
+        "views/solicitacao_produto_view.xml",
+        "views/produto_quantidade_view.xml",
         "views/menus.xml",
         # Dados
         # "data/ud_biblioteca_publicacao_tipo_data.xml",

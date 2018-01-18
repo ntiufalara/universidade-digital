@@ -18,7 +18,10 @@ class Estoque(models.Model):
     estoque_min = fields.Integer(u'Estoque mínimo', required=True)
     entrada_ids = fields.One2many('ud.almoxarifado.entrada', 'estoque_id', u'Entrada')
     saida_ids = fields.One2many('ud.almoxarifado.saida', 'estoque_id', u'Saída')
-    almoxarifado_id = fields.Many2one('ud.almoxarifado.almoxarifado', u'Almoxarifado', required=True)
+    campus_id = fields.Many2one('ud.campus', u'Campus', required=True)
+    polo_id = fields.Many2one('ud.polo', u'Polo', required=True, domain="[('campus_id', '=', campus_id)]")
+    almoxarifado_id = fields.Many2one('ud.almoxarifado.almoxarifado', u'Almoxarifado', required=True,
+                                      domain="[('polo_id', '=', polo_id)]")
 
     _sql_constraints = [
         ('produto_unico', 'unique (produto_id)', u'Produto já cadastrado!'),

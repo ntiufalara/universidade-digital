@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_solicitacao_produto_action">
+            <field name="name">Solicitação de produto</field>
+            <field name="res_model">ud.almoxarifado.solicitacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar uma nova Solicitação de produto
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_solicitacao_produto_tree">
+            <field name="name">Solicitações de produto</field>
+            <field name="model">ud.almoxarifado.solicitacao</field>
+            <field name="arch" type="xml">
+                <tree string="Solicitações de produto">
+                    <field name="solicitante_id"/>
+                    <field name="setor_id"/>
+                    <field name="data_hora"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_solicitacao_produto_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.almoxarifado.solicitacao</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="solicitante_id" filter_domain="" string="Solicitante"/>
+                    <field name="setor_id" string="Setor"/>
+                    <field name="state" string="Status"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Setor" icon="terp-personal" domain="[]" context="{'group_by':'setor_id'}"/>
+                        <filter string="Solicitante" icon="terp-personal" domain="[]"
+                                context="{'group_by':'solicitante_id'}"/>
+                        <filter string="Status" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_solicitacao_produto_form">
+            <field name="name">Solicitação de produto</field>
+            <field name="model">ud.almoxarifado.solicitacao</field>
+            <field name="arch" type="xml">
+                <form string="Solicitação de produto">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="solicitante_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="solicitante_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="data_hora"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="data_hora" readonly="1"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="setor_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Produtos</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="produto_ids"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

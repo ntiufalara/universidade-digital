@@ -34,7 +34,7 @@ class Produto(models.Model):
         vals['name'] = vals.get('name').upper()
         # Cria a instancia
         obj = super(Produto, self).create(vals)
-        for almoxarifado in self.almoxarifado_ids:
+        for almoxarifado in obj.almoxarifado_ids:
             self.env['ud.almoxarifado.estoque'].create({
                 'produto_id': obj.id,
                 'estoque_min': 1,
@@ -45,7 +45,7 @@ class Produto(models.Model):
     def write(self, vals):
         obj = super(Produto, self).write(vals)
         estoque_model = self.env['ud.almoxarifado.estoque']
-        for almoxarifado in self.almoxarifado_ids:
+        for almoxarifado in obj.almoxarifado_ids:
             if not estoque_model.search([('almoxarifado_id', '=', almoxarifado.id), ('produto_id', '=', obj.id)]):
                 self.env['ud.almoxarifado.estoque'].create({
                     'produto_id': obj.id,
