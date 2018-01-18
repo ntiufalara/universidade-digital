@@ -3,3 +3,10 @@ import Fornecedor
 import ProdutoCategoria
 import Estoque
 import EstoqueEntrada
+import EstoqueSaida
+import Almoxarifado
+import AlmoxarifadoResponsavel
+import Fabricante
+import ProdutoQuantidade
+import SolicitacaoProduto
+

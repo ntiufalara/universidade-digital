@@ -17,7 +17,7 @@ class SolicitacaoProduto(models.Model):
     name = fields.Char(u'Nome')
     produtos_ids = fields.One2many('ud.almoxarifado.produto.qtd', 'solicitacao_id', string=u'Produtos',
                                    required=True)
-    solicitante_id = fields.Many2one('ud.employee', 'Solicitante', ondelete='restrict')
-    data_hora = fields.datetime(u'Data/hora')
+    solicitante_id = fields.Many2one('res.users', 'Solicitante', ondelete='restrict')
+    data_hora = fields.Datetime(u'Data/hora')
     setor_id = fields.Many2one('ud.setor', 'Setor', required=True)
     state = fields.Selection(_STATE, u"Status")

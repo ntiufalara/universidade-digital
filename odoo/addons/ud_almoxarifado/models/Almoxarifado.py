@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class Almoxarifado(models.Model):
@@ -10,7 +10,19 @@ class Almoxarifado(models.Model):
     _name = 'ud.almoxarifado.almoxarifado'
 
     name = fields.Char(u'Nome')
-    campus_id = fields.Many2one('ud.campus', u'Campus')
-    polo_id = fields.Many2one('ud.polo', u'Polo', domain="[('campus_id', '=', campus_id)]")
-    setor_id = fields.Many2one('ud.setor', u'Setor', domain="[('polo_id', '=', polo_id)]")
+    campus_id = fields.Many2one('ud.campus', u'Campus', required=True)
+    polo_id = fields.Many2one('ud.polo', u'Polo', domain="[('campus_id', '=', campus_id)]", required=True)
+    setor_id = fields.Many2one('ud.setor', u'Setor', domain="[('polo_id', '=', polo_id)]", required=True)
     observacoes = fields.Text(u'Observações')
+
+    @api.model
+    def create(self, vals):
+        """
+        Caso o usuário não escreva um nome, cira um nome tipo: Almoxarifado (setor) (polo)
+        :param vals:
+        :return:
+        """
+        obj = super(Almoxarifado, self).create(vals)
+        if not obj.name:
+            obj.name = 'Almoxarifado {} {}'.format(obj.setor_id.name, obj.polo_id.name)
+        return obj

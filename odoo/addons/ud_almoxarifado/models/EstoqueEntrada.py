@@ -18,3 +18,4 @@ class EstoqueEntrada(models.Model):
         ("devolucao", u"Devolução")
     ], u"Tipo", default='fornecedor')
     estoque_id = fields.Many2one('ud.almoxarifado.estoque', u'Estoque', invisible=True, ondelete='cascade')
+    fornecedor_id = fields.Many2one('ud.almoxarifado.fornecedor', u'Fornecedor')

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_fornecedor_action">
+            <field name="name">Fornecedor</field>
+            <field name="res_model">ud.almoxarifado.fornecedor</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Fornecedor
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_fornecedor_tree">
+            <field name="name">Fornecedores</field>
+            <field name="model">ud.almoxarifado.fornecedor</field>
+            <field name="arch" type="xml">
+                <tree string="Fornecedores">
+                    <field name="name"/>
+                    <field name="cpf_cnpj"/>
+                    <field name="email"/>
+                    <field name="telefone_fixo"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_fornecedor_search">
+            <field name="name">Buscar</field>
+            <field name="model">ud.almoxarifado.fornecedor</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <field name="cpf_cnpj" filter_domain="" string="CPF/CNPJ"/>
+                    <field name="telefone_fixo" filter_domain="" string="Telefone fixo"/>
+                    <field name="celular" filter_domain="" string="Celular"/>
+                    <field name="email" filter_domain="" string="E-mail"/>
+                    <field name="estado" filter_domain="" string="Estado"/>
+                    <field name="cidade" filter_domain="" string="Cidade"/>
+                    <field name="bairro" filter_domain="" string="Bairro"/>
+                    <field name="numero" filter_domain="" string="Numero"/>
+                    <field name="cep" filter_domain="" string="CEP"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_fornecedor_form">
+            <field name="name">Fornecedor</field>
+            <field name="model">ud.almoxarifado.fornecedor</field>
+            <field name="arch" type="xml">
+                <form string="Fornecedor">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Informações de contato</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="name"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="cpf_cnpj"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="cpf_cnpj"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="telefone_fixo"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="telefone_fixo"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="celular"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="celular"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="email"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="email"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Endereço</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="rua"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="rua"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="numero"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="numero"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="bairro"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="bairro"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="cep"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="cep"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="cidade"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="cidade"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="estado"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="estado"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

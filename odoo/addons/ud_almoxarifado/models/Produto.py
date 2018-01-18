@@ -8,14 +8,16 @@ class Produto(models.Model):
     Representa o produto no almoxarifado
     """
     _name = 'ud.almoxarifado.produto'
-    _order = 'produto asc'
+    _order = 'name asc'
 
     name = fields.Char(u'Produto', required=True)
     observacao = fields.Text(u'Observação')
-    categoria_id = fields.Many2one('ud.almoxarifado.categoria', u'Categoria')
-    fabricante_id = fields.Many2one('ud.almoxarifado.fabricante', u'Fabricante')
+    categoria_id = fields.Many2one('ud.almoxarifado.produto.categoria', u'Categoria', required=True)
+    fabricante_id = fields.Many2one('ud.almoxarifado.fabricante', u'Fabricante', required=True)
     almoxarifado_ids = fields.Many2many('ud.almoxarifado.almoxarifado', 'produto_almoxarifados_rel',
-                                        string=u'Almoxarifados')
+                                        string=u'Almoxarifados', required=True)
+    fornecedor_ids = fields.Many2many('ud.almoxarifado.fornecedor', 'produto_fornecedor_rel', string=u'Fornecedores',
+                                      required=True)
 
     _sql_constraints = [
         ('produto_unico', 'unique (name,categoria_id)', u'Produto já cadastrado nessa categoria!'),
@@ -38,4 +40,16 @@ class Produto(models.Model):
                 'estoque_min': 1,
                 'almoxarifado_id': almoxarifado.id
             })
+        return obj
+
+    def write(self, vals):
+        obj = super(Produto, self).write(vals)
+        estoque_model = self.env['ud.almoxarifado.estoque']
+        for almoxarifado in self.almoxarifado_ids:
+            if not estoque_model.search([('almoxarifado_id', '=', almoxarifado.id), ('produto_id', '=', obj.id)]):
+                self.env['ud.almoxarifado.estoque'].create({
+                    'produto_id': obj.id,
+                    'estoque_min': 1,
+                    'almoxarifado_id': almoxarifado.id
+                })
         return obj

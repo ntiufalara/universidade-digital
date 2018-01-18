@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_almoxarifado_action">
+            <field name="name">Almoxarifado</field>
+            <field name="res_model">ud.almoxarifado.almoxarifado</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Almoxarifado
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_almoxarifado_tree">
+            <field name="name">Almoxarifados</field>
+            <field name="model">ud.almoxarifado.almoxarifado</field>
+            <field name="arch" type="xml">
+                <tree string="Almoxarifados">
+                    <field name="name" />
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="setor_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_almoxarifado_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.almoxarifado.almoxarifado</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <field name="campus_id" filter_domain="" string="Campus"/>
+                    <field name="polo_id" filter_domain="" string="Polo"/>
+                    <field name="setor_id" filter_domain="" string="Setor"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_od'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                        <filter string="Setor" icon="terp-personal" domain="[]" context="{'group_by':'setor_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_almoxarifado_form">
+            <field name="name">Almoxarifado</field>
+            <field name="model">ud.almoxarifado.almoxarifado</field>
+            <field name="arch" type="xml">
+                <form string="Almoxarifado">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="name"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Local</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="setor_id"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Observações</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="observacoes"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

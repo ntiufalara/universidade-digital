@@ -12,9 +12,10 @@ class Estoque(models.Model):
 
     name = fields.Char(u'Nome', compute='get_name')
     produto_id = fields.Many2one('ud.almoxarifado.produto', u'Produto', required=True)
+    categoria_id = fields.Many2one('ud.almoxarifado.produto.categoria', u'Categoria', related='produto_id.categoria_id',
+                                   readonly=True)
     quantidade = fields.Integer(u'Quantidade', compute='get_quantidade')
     estoque_min = fields.Integer(u'Estoque mínimo', required=True)
-    fornecedor_id = fields.Many2one('ud.almoxarifado.fornecedor', u'Fornecedor')
     entrada_ids = fields.One2many('ud.almoxarifado.entrada', 'estoque_id', u'Entrada')
     saida_ids = fields.One2many('ud.almoxarifado.saida', 'estoque_id', u'Saída')
     almoxarifado_id = fields.Many2one('ud.almoxarifado.almoxarifado', u'Almoxarifado', required=True)

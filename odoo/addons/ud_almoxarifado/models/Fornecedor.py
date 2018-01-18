@@ -20,6 +20,7 @@ class Fornecedor(models.Model):
     estado = fields.Selection(ud_utils.ESTADOS, u'Estado')
     cidade = fields.Char(u'Cidade')
     bairro = fields.Char(u'Bairro')
+    rua = fields.Char(u'Rua')
     numero = fields.Char(u'Número')
     cep = fields.Char(u'CEP')
 
@@ -31,7 +32,7 @@ class Fornecedor(models.Model):
         Valida o formato e os digitos do CPF/CNPJ
         :return: None
         """
-        if not ud_utils.validar_cpf_cnpj(self.cpf_cnpj):
+        if self.cpf_cnpj and not ud_utils.validar_cpf_cnpj(self.cpf_cnpj):
             raise ValidationError('CPF/CNPJ Inválido')
 
     @api.model

@@ -13,7 +13,7 @@ class ProdutoQuantidade(models.Model):
     produto_id = fields.Many2one('ud.almoxarifado.produto', u'Produto', domain="[('categoria_id','=', categoria_id)]",
                                  required=True, ondelete='cascade')
     quantidade = fields.Integer(u'Quantidade', required=True)
-    categoria_id = fields.Many2one('ud.almoxarifado.categoria', u'Categoria', ondelete='restrict')
+    categoria_id = fields.Many2one('ud.almoxarifado.produto.categoria', u'Categoria', ondelete='restrict')
 
     campus_id = fields.Many2one('ud.campus', u'Campus', required=True)
     polo_id = fields.Many2one('ud.polo', u'Polo', )

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <menuitem id="almoxarifado_root" name="Almoxarifado"/>
+        <menuitem id="almoxarifado_almoxarifado" name="Almoxarifados" parent="almoxarifado_root"
+                  action="ud_almoxarifado_almoxarifado_action" sequence="0"/>
+        <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_root"
+                  action="ud_almoxarifado_estoque_action" sequence="1"/>
+        <menuitem id="almoxarifado_fornecedor" name="Fornecedores" parent="almoxarifado_root"
+                  action="ud_almoxarifado_fornecedor_action" sequence="2"/>
+
+    </data>
+</odoo>
