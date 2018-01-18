@@ -53,22 +53,22 @@ def main(_url, _db, _username, _password):
 
     server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(_url))
 
-    # corrige_autor(server, _db, uid, _password)
+    corrige_autor(server, _db, uid, _password)
     corrigir_tipo(server, _db, uid, _password)
-    # indefid = server.execute(db, uid, password, 'ud.biblioteca.orientador', 'create', {
-    #     'name': 'indefinido'
-    # })
-    #
-    # ''' Adiciona orientador indefinido a todas as publicações sem orientador '''
-    # pub = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [('orientador_ids', '=', False)])
-    # print len(pub)
-    #
-    # server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'write', pub, {
-    #     'orientador_ids': [(4, indefid)]
-    # })
-    # pub = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [('orientador_ids', '=', False)])
-    # print len(pub)
-    #
+
+    indefid = server.execute(db, uid, password, 'ud.biblioteca.orientador', 'create', {
+        'name': 'indefinido'
+    })
+
+    ''' Adiciona orientador indefinido a todas as publicações sem orientador '''
+    pub = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [('orientador_ids', '=', False)])
+    print len(pub)
+
+    server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'write', pub, {
+        'orientador_ids': [(4, indefid)]
+    })
+    pub = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [('orientador_ids', '=', False)])
+    print len(pub)
 
 
 if __name__ == "__main__":

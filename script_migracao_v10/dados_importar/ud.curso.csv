@@ -1,0 +1,26 @@
+polo_id,name,is_active,modalidade
+Arapiraca,ADMINISTRAÇÃO,True,Bacharelado
+Arapiraca,ZOOTECNIA,True,Bacharelado
+Arapiraca,MATEMÁTICA,True,Licenciatura
+Arapiraca,AGRONOMIA,True,Bacharelado
+Arapiraca,ARQUITETURA E URBANISMO,True,Bacharelado
+Arapiraca,LETRAS,True,Licenciatura
+Arapiraca,CIÊNCIAS BIOLÓGICAS,True,Licenciatura
+Arapiraca,FÍSICA,True,Licenciatura
+Arapiraca,QUÍMICA,True,Licenciatura
+Arapiraca,PEDAGOGIA,True,Licenciatura
+Arapiraca,EDUCAÇÃO FÍSICA,True,Bacharelado
+Arapiraca,CIÊNCIA DA COMPUTAÇÃO,True,Bacharelado
+Viçosa,MEDICINA VETERINÁRIA,True,Bacharelado
+Palmeira dos Índios,PSICOLOGIA,True,Bacharelado
+Penedo,ENGENHARIA DE PESCA,True,Bacharelado
+Penedo,TURISMO,True,Bacharelado
+Arapiraca,ENFERMAGEM,True,Bacharelado
+Arapiraca,TESES E DISSERTAÇÕES,True,Especialização
+Palmeira dos Índios,SERVIÇO SOCIAL,True,Bacharelado
+Arapiraca,ADMINISTRAÇÃO PÚBLICA,True,Bacharelado
+Arapiraca,ESPECIALIZAÇÕES,True,Especialização
+Penedo,SISTEMAS DA INFORMAÇÃO,True,Bacharelado
+Penedo,CIÊNCIAS BIOLOGICAS - LICENCIATURA ,True,Licenciatura
+Penedo,ENGENHARIA DE PRODUÇÃO,True,Bacharelado
+Arapiraca,Medicina,True,Bacharelado
