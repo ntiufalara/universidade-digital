@@ -154,9 +154,9 @@ class ud_almoxarifado_solicitacao(osv.osv):
     _rec_name = 'name'
 
     def obter_solicitante(self, cr, uid, c):
-        '''
+        """
         Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
-        '''
+        """
         pessoa = self.pool.get("ud.employee").browse(
                 cr, uid,
                 self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
@@ -168,9 +168,9 @@ class ud_almoxarifado_solicitacao(osv.osv):
                              "Não há pessoa associada a esse usuário".decode("UTF-8"))
 
     def obter_setor(self, cr, uid, c):
-        '''
+        """
         Obtém o id da pessoa associada ao usuário logado e devolve para o campo relacional "solicitante_id"
-        '''
+        """
         pessoa = self.pool.get("ud.employee").browse(
                 cr, uid,
                 self.pool.get("ud.employee").search(cr, uid, [('user_id', '=', uid)], 0)
