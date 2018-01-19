@@ -85,6 +85,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <field name="entrada_ids">
                                         <tree>
+                                            <field name="name"/>
                                             <field name="data_entrada"/>
                                             <field name="solicitacao_id"/>
                                             <field name="observacao"/>
@@ -92,6 +93,59 @@
                                             <field name="quantidade"/>
                                             <field name="tipo"/>
                                         </tree>
+                                        <form string="Entrada">
+                                            <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="name" readonly="1"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="data_entrada"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="data_entrada"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="quantidade"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="quantidade"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label" for="tipo"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="tipo"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group"
+                                                     attrs="{'invisible': [('tipo', '!=', 'fornecedor')]}">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="fornecedor_id"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="fornecedor_id"
+                                                               attrs="{'required': [('tipo', '=', 'fornecedor')]}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group"
+                                                     attrs="{'invisible': [('solicitacao_id', '=', False)]}">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="solicitacao_id"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="solicitacao_id"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-lg-12 form-group">
+                                                    <legend>Observações</legend>
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <field name="observacao"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </field>
                                 </div>
                             </div>
@@ -100,11 +154,50 @@
                                 <div class="col-md-12 col-sm-12">
                                     <field name="saida_ids">
                                         <tree>
+                                            <field name="name"/>
                                             <field name="data_saida"/>
                                             <field name="solicitacao_id"/>
                                             <field name="observacao"/>
                                             <field name="quantidade"/>
                                         </tree>
+                                        <form string="Saída">
+                                            <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="name" readonly="1"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="data_saida"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="data_saida"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="quantidade"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="quantidade"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 form-group"
+                                                     attrs="{'invisible': [('solicitacao_id', '=', False)]}">
+                                                    <label class="col-md-4 col-sm-4 control-label"
+                                                           for="solicitacao_id"></label>
+                                                    <div class="col-md-7 col-sm-7">
+                                                        <field name="solicitacao_id"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-lg-12 form-group">
+                                                    <legend>Observações</legend>
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <field name="observacao"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </field>
                                 </div>
                             </div>

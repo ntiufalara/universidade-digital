@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_remessa_saida_action">
+            <field name="name">Saída de remessa</field>
+            <field name="res_model">ud.almoxarifado.remessa_saida</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar uma nova Saída de remessa
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_remessa_saida_tree">
+            <field name="name">Saídas de remessa</field>
+            <field name="model">ud.almoxarifado.remessa_saida</field>
+            <field name="arch" type="xml">
+                <tree string="Saídas de remessa">
+                    <field name="name"/>
+                    <field name="data_hora"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="almoxarifado_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_remessa_saida_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.almoxarifado.remessa_saida</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name"/>
+                    <field name="data_hora"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="almoxarifado_id"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_id'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                        <filter string="Almoxarifado" icon="terp-personal" domain="[]" context="{'group_by':'almoxarifado_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_remessa_saida_form">
+            <field name="name">Saída de remessa</field>
+            <field name="model">ud.almoxarifado.remessa_saida</field>
+            <field name="arch" type="xml">
+                <form string="Saída de remessa">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="name"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_hora"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_hora"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Local</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="almoxarifado_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="almoxarifado_id"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="col-md-12 col-lg-12 form-group" attrs="{'invisible': [('almoxarifado_id', '=', False)]}">
+                            <legend>Produtos</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="saida_ids" context="{'almoxarifado_id': almoxarifado_id}"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

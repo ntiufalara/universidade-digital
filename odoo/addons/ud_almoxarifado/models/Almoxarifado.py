@@ -14,6 +14,8 @@ class Almoxarifado(models.Model):
     polo_id = fields.Many2one('ud.polo', u'Polo', domain="[('campus_id', '=', campus_id)]", required=True)
     setor_id = fields.Many2one('ud.setor', u'Setor', domain="[('polo_id', '=', polo_id)]", required=True)
     observacoes = fields.Text(u'Observações')
+    responsavel_ids = fields.Many2many('ud.almoxarifado.responsavel', 'almoxarifado_responsavel_rel',
+                                       string=u'Responsáveis')
 
     @api.model
     def create(self, vals):

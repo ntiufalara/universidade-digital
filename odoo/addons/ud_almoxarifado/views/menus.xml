@@ -4,14 +4,21 @@
     <data>
 
         <menuitem id="almoxarifado_root" name="Almoxarifado"/>
-        <menuitem id="almoxarifado_almoxarifado" name="Almoxarifados" parent="almoxarifado_root"
-                  action="ud_almoxarifado_almoxarifado_action" sequence="0"/>
-        <menuitem id="almoxarifado_produto" name="Produtos" parent="almoxarifado_root"
-                  action="ud_almoxarifado_produto_action" sequence="1"/>
-        <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_root"
-                  action="ud_almoxarifado_estoque_action" sequence="2"/>
-        <menuitem id="almoxarifado_fornecedor" name="Fornecedores" parent="almoxarifado_root"
-                  action="ud_almoxarifado_fornecedor_action" sequence="3"/>
+        <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"/>
+
+        <menuitem id="almoxarifado_almoxarifado" name="Gerenciar almoxarifados" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_almoxarifado_action" sequence="1"/>
+        <menuitem id="almoxarifado_produto" name="Produtos" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_produto_action" sequence="2"/>
+        <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_estoque_action" sequence="3"/>
+        <menuitem id="almoxarifado_fornecedor" name="Fornecedores" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_fornecedor_action" sequence="4"/>
+        <menuitem id="almoxarifado_entrada" name="Entrada de estoque" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_remessa_entrada_action"/>
+        <menuitem id="almoxarifado_saida" name="Saída de estoque" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_remessa_saida_action"/>
+
         <menuitem id="almoxarifado_solicitacao_produto" name="Solicitação de produto" parent="almoxarifado_root"
                   action="ud_almoxarifado_solicitacao_produto_action"/>
 

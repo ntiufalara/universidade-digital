@@ -49,14 +49,3 @@ class Estoque(models.Model):
         entradas = sum([entrada.quantidade for entrada in self.entrada_ids])
         saidas = sum([saida.quantidade for saida in self.saida_ids])
         self.quantidade = entradas - saidas
-
-    @api.multi
-    def unlink(self):
-        """
-        Ao apagar o estoque, apagar também o produto
-        :return:
-        """
-        produto_ids = self.produto_id
-        res = super(Estoque, self).unlink()
-        produto_ids.unlink()
-        return res

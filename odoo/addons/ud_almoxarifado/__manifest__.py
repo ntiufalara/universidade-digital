@@ -10,7 +10,7 @@
     "data": [
         # Segurança
         "security/ud_almoxarifado_security.xml",
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
         # Views
         "views/almoxarifado_view.xml",
         "views/fornecedor_view.xml",
@@ -22,6 +22,8 @@
         "views/produto_categoria_view.xml",
         "views/solicitacao_produto_view.xml",
         "views/produto_quantidade_view.xml",
+        "views/remessa_entrada_view.xml",
+        "views/remessa_saida_view.xml",
         "views/menus.xml",
         # Dados
         # "data/ud_biblioteca_publicacao_tipo_data.xml",

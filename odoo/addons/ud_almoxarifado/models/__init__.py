@@ -9,4 +9,6 @@ import AlmoxarifadoResponsavel
 import Fabricante
 import ProdutoQuantidade
 import SolicitacaoProduto
+import RemessaEntrada
+import RemessaSaida
 

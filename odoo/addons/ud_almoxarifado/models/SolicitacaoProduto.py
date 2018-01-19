@@ -9,12 +9,13 @@ class SolicitacaoProduto(models.Model):
     As solicitações reservam o produto, caso aprovado, o produto é registrado em saída
     """
     _name = 'ud.almoxarifado.solicitacao'
+    _order = 'id desc'
 
     _STATE = [("aguardando", "Aguardando Retirada"),
               ("entregue", "Entregue"),
               ("cancelada", "Cancelada")]
 
-    name = fields.Char(u'Nome', compute='get_name')
+    name = fields.Char(u'Código', compute='get_name', readonly=True)
     produto_ids = fields.One2many('ud.almoxarifado.produto.qtd', 'solicitacao_id', string=u'Produtos',
                                   required=True)
     solicitante_id = fields.Many2one('res.users', 'Solicitante', ondelete='restrict', default=lambda self: self.env.uid)
@@ -49,7 +50,7 @@ class SolicitacaoProduto(models.Model):
         saida_model = self.env['ud.almoxarifado.saida']
         obj = super(SolicitacaoProduto, self).create(vals)
         for produto in obj.produto_ids:
-            saida_model.create({
+            saida_model.sudo().create({
                 'quantidade': produto.quantidade,
                 'estoque_id': produto.estoque_id.id,
                 'solicitacao_id': obj.id,
@@ -71,7 +72,7 @@ class SolicitacaoProduto(models.Model):
         """
         entrada_model = self.env['ud.almoxarifado.entrada']
         for produto in self.produto_ids:
-            entrada_model.create({
+            entrada_model.sudo().create({
                 'quantidade': produto.quantidade,
                 'estoque_id': produto.estoque_id.id,
                 'solicitacao_id': self.id,
@@ -88,7 +89,7 @@ class SolicitacaoProduto(models.Model):
         for slc in self:
             entrada_model = self.env['ud.almoxarifado.entrada']
             for produto in slc.produto_ids:
-                entrada_model.create({
+                entrada_model.sudo().create({
                     'quantidade': produto.quantidade,
                     'estoque_id': produto.estoque_id.id,
                     'solicitacao_id': slc.id,
