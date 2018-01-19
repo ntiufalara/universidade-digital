@@ -38,18 +38,22 @@ class Produto(models.Model):
             self.env['ud.almoxarifado.estoque'].create({
                 'produto_id': obj.id,
                 'estoque_min': 1,
-                'almoxarifado_id': almoxarifado.id
+                'almoxarifado_id': almoxarifado.id,
+                'campus_id': almoxarifado.campus_id.id,
+                'polo_id': almoxarifado.polo_id.id
             })
         return obj
 
     def write(self, vals):
-        obj = super(Produto, self).write(vals)
+        result = super(Produto, self).write(vals)
         estoque_model = self.env['ud.almoxarifado.estoque']
-        for almoxarifado in obj.almoxarifado_ids:
-            if not estoque_model.search([('almoxarifado_id', '=', almoxarifado.id), ('produto_id', '=', obj.id)]):
+        for almoxarifado in self.almoxarifado_ids:
+            if not estoque_model.search([('almoxarifado_id', '=', almoxarifado.id), ('produto_id', '=', self.id)]):
                 self.env['ud.almoxarifado.estoque'].create({
-                    'produto_id': obj.id,
+                    'produto_id': self.id,
                     'estoque_min': 1,
-                    'almoxarifado_id': almoxarifado.id
+                    'almoxarifado_id': almoxarifado.id,
+                    'campus_id': almoxarifado.campus_id.id,
+                    'polo_id': almoxarifado.polo_id.id
                 })
-        return obj
+        return result

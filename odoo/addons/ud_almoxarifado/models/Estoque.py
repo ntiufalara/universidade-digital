@@ -24,7 +24,7 @@ class Estoque(models.Model):
                                       domain="[('polo_id', '=', polo_id)]")
 
     _sql_constraints = [
-        ('produto_unico', 'unique (produto_id)', u'Produto já cadastrado!'),
+        ('produto_almoxarifado_unico', 'unique (produto_id, almoxarifado_id)', u'Produto já cadastrado!'),
     ]
 
     @api.one

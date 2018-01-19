@@ -54,6 +54,14 @@
             <field name="model">ud.almoxarifado.solicitacao</field>
             <field name="arch" type="xml">
                 <form string="Solicitação de produto">
+                    <field name="name" invisible="1"/>
+                    <header>
+                        <button name="botao_entregue" states="aguardando" string="Entregue" type="object"
+                                class="oe_highlight" groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
+                        <button name="botao_cancelar" states="aguardando" string="Cancelar" type="object"
+                                groups="ud_almoxarifado.group_ud_almoxarifado_gerente"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="solicitante_id"></label>
@@ -76,7 +84,7 @@
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Produtos</legend>
                             <div class="col-md-12 col-sm-12">
-                                <field name="produto_ids"/>
+                                <field name="produto_ids" attrs="{'readonly': [('name', '!=', False)]}"/>
                             </div>
                         </div>
                     </div>

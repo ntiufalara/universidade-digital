@@ -19,14 +19,12 @@ class SolicitacaoProduto(models.Model):
                                   required=True)
     solicitante_id = fields.Many2one('res.users', 'Solicitante', ondelete='restrict', default=lambda self: self.env.uid)
     data_hora = fields.Datetime(u'Data/hora', default=fields.datetime.now())
-    setor_id = fields.Many2one('ud.setor', 'Setor', required=True, default=lambda self: self.get_setor())
+    setor_id = fields.Many2one('ud.setor', 'Setor solicitante', required=True, default=lambda self: self.get_setor())
     state = fields.Selection(_STATE, u"Status")
 
     @api.one
     def get_name(self):
-        self.name = 'Solicitante: {}; Data: {}; Setor: {}'.format(self.solicitante_id.name,
-                                                                  self.data_hora.strftime('%d/%m/%Y'),
-                                                                  self.setor_id.name)
+        self.name = "ALM_SLC_{}".format(self.id)
 
     def get_setor(self):
         """
@@ -41,21 +39,23 @@ class SolicitacaoProduto(models.Model):
     @api.model
     def create(self, vals):
         """
-        Troca o status por 'aguardando' após criar a solicitação
+        Troca o status por 'aguardando' após criar a solicitação.
+        Adiciona a observação: "Solicitação: ALMXX" a saída criada
         :param vals:
         :return:
         """
         vals['state'] = "aguardando"
-        return super(SolicitacaoProduto, self).create(vals)
 
-    def write(self, vals):
-        """
-        Restaura a quantidade de produtos caso o produto seja removido da lista de produtos
-        TODO: Impl
-        :param vals:
-        :return:
-        """
-        return super(SolicitacaoProduto, self).write(vals)
+        saida_model = self.env['ud.almoxarifado.saida']
+        obj = super(SolicitacaoProduto, self).create(vals)
+        for produto in obj.produto_ids:
+            saida_model.create({
+                'quantidade': produto.quantidade,
+                'estoque_id': produto.estoque_id.id,
+                'solicitacao_id': obj.id,
+                'observacao': 'Nova solicitação'
+            })
+        return obj
 
     def botao_entregue(self):
         """
@@ -66,8 +66,33 @@ class SolicitacaoProduto(models.Model):
 
     def botao_cancelar(self):
         """
-        Cancela a solicitação e restaura as quantidade do estoque
-        TODO: Impl
+        Cancela a solicitação e recoloca os produtos no estoque
         :return:
         """
-        pass
+        entrada_model = self.env['ud.almoxarifado.entrada']
+        for produto in self.produto_ids:
+            entrada_model.create({
+                'quantidade': produto.quantidade,
+                'estoque_id': produto.estoque_id.id,
+                'solicitacao_id': self.id,
+                'observacao': 'Solicitação cancelada',
+                'tipo': 'devolucao'
+            })
+        self.state = 'cancelada'
+
+    def unlink(self):
+        """
+        Antes de apagar uma solicitação, restaura os itens no estoque
+        :return:
+        """
+        for slc in self:
+            entrada_model = self.env['ud.almoxarifado.entrada']
+            for produto in slc.produto_ids:
+                entrada_model.create({
+                    'quantidade': produto.quantidade,
+                    'estoque_id': produto.estoque_id.id,
+                    'solicitacao_id': slc.id,
+                    'observacao': 'Solicitação apagada',
+                    'tipo': 'devolucao'
+                })
+        return super(SolicitacaoProduto, self).unlink()

@@ -79,6 +79,12 @@
                                 <field name="fornecedor_id" attrs="{'required': [('tipo', '=', 'fornecedor')]}"/>
                             </div>
                         </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('solicitacao_id', '=', False)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="solicitacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="solicitacao_id"/>
+                            </div>
+                        </div>
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Observações</legend>
                             <div class="col-md-12 col-sm-12">

@@ -9,7 +9,7 @@
     "depends": ["ud"],
     "data": [
         # Segurança
-        # "security/ud_biblioteca_security.xml",
+        "security/ud_almoxarifado_security.xml",
         # "security/ir.model.access.csv",
         # Views
         "views/almoxarifado_view.xml",

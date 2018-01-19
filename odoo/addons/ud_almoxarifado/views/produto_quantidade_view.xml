@@ -5,7 +5,7 @@
 
         <record model="ir.actions.act_window" id="ud_almoxarifado_produto_quantidade_action">
             <field name="name">Produto</field>
-            <field name="res_model">ud.almoxarifado.produto.quantidade</field>
+            <field name="res_model">ud.almoxarifado.produto.qtd</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
@@ -20,10 +20,10 @@
 
         <record model="ir.ui.view" id="ud_almoxarifado_produto_quantidade_tree">
             <field name="name">Produtos</field>
-            <field name="model">ud.almoxarifado.produto.quantidade</field>
+            <field name="model">ud.almoxarifado.produto.qtd</field>
             <field name="arch" type="xml">
                 <tree string="Produtos">
-                    <field name="produto_id"/>
+                    <field name="estoque_id"/>
                     <field name="quantidade"/>
                     <field name="categoria_id"/>
                 </tree>
@@ -32,7 +32,7 @@
 
         <record model="ir.ui.view" id="ud_almoxarifado_produto_quantidade_search">
             <field name="name">Busca</field>
-            <field name="model">ud.almoxarifado.produto.quantidade</field>
+            <field name="model">ud.almoxarifado.produto.qtd</field>
             <field name="arch" type="xml">
                 <search string="Buscar">
                     <field name="name" filter_domain="" string="Nome"/>
@@ -45,14 +45,50 @@
 
         <record model="ir.ui.view" id="ud_almoxarifado_produto_quantidade_form">
             <field name="name">Produto</field>
-            <field name="model">ud.almoxarifado.produto.quantidade</field>
+            <field name="model">ud.almoxarifado.produto.qtd</field>
             <field name="arch" type="xml">
                 <form string="Produto">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <div class="col-md-6 col-lg-6 form-group">
-                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="name"/>
+                                <field name="campus_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="almoxarifado_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="almoxarifado_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="categoria_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="categoria_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="estoque_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="estoque_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="qtd_estoque"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="qtd_estoque"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="quantidade"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="quantidade"/>
                             </div>
                         </div>
                     </div>

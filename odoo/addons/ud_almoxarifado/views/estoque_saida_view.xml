@@ -26,6 +26,7 @@
                     <field name="estoque_id"/>
                     <field name="data_saida" />
                     <field name="quantidade" />
+                    <field name="solicitacao_id"/>
                 </tree>
             </field>
         </record>
@@ -51,7 +52,7 @@
                 <form string="Saída">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <div class="col-md-6 col-lg-6 form-group">
-                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <label class="col-md-4 col-sm-4 control-label" for="data_saida"></label>
                             <div class="col-md-7 col-sm-7">
                                 <field name="data_saida"/>
                             </div>
@@ -60,6 +61,12 @@
                             <label class="col-md-4 col-sm-4 control-label" for="quantidade"></label>
                             <div class="col-md-7 col-sm-7">
                                 <field name="quantidade"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('solicitacao_id', '=', False)]}">
+                            <label class="col-md-4 col-sm-4 control-label" for="solicitacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="solicitacao_id"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-12 form-group">
