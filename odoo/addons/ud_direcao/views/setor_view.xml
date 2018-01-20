@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="ud_setor_form_inherited">
+            <field name="name">Setor</field>
+            <field name="model">ud.setor</field>
+            <field name="inherit_id" ref="ud.view_setor_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_active']/../.." position="after">
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label class="col-md-4 col-sm-4 control-label" for="emite_portaria"></label>
+                        <div class="col-md-7 col-sm-7">
+                            <field name="emite_portaria"/>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='sigla']/../.." position="after">
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label class="col-md-4 col-sm-4 control-label" for="responsavel_id"></label>
+                        <div class="col-md-7 col-sm-7">
+                            <field name="responsavel_id"/>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

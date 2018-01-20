@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_direcao_portaria_action">
+            <field name="name">Portarias</field>
+            <field name="res_model">ud.direcao.portaria</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_agrupar_campus': 1, 'search_default_agrupar_setor': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para cadastrar uma nova Portaria
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_direcao_portaria_tree">
+            <field name="name">Portarias</field>
+            <field name="model">ud.direcao.portaria</field>
+            <field name="arch" type="xml">
+                <tree string="Portarias">
+                    <field name="nro_portaria"/>
+                    <field name="data"/>
+                    <field name="descricao"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="setor_id"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="anexo" filename="file_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_direcao_portaria_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.direcao.portaria</field>
+            <field name="arch" type="xml">
+                <search string="Busca">
+                    <field name="nro_portaria"/>
+                    <field name="descricao"/>
+                    <field name="data"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="setor_id"/>
+                    <field name="responsavel_id"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" name="agrupar_campus" icon="terp-personal" domain="[]"
+                                context="{'group_by':'campus_id'}"/>
+                        <filter string="Polo" name="agrupar_polo" icon="terp-personal" domain="[]"
+                                context="{'group_by':'polo_id'}"/>
+                        <filter string="Setor" name="agrupar_setor" icon="terp-personal" domain="[]"
+                                context="{'group_by':'setor_id'}"/>
+                        <filter string="Responsável" icon="terp-personal" domain="[]"
+                                context="{'group_by':'responsavel_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_direcao_portaria_form">
+            <field name="name">Nova Portaria</field>
+            <field name="model">ud.direcao.portaria</field>
+            <field name="arch" type="xml">
+                <form string="Nova Portaria">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Local</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_id"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Portaria</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="setor_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="responsavel_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="responsavel_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="setor_destino_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="setor_destino_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="nro_portaria"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="nro_portaria"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data"/>
+                                </div>
+                            </div>
+                            <field name="file_name" invisible="1"/>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="anexo"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="anexo" filename="file_name" class="anexo-field"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Descrição</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="descricao"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
