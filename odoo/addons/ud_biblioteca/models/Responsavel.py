@@ -21,4 +21,4 @@ class Responsavel(models.Model):
     @api.depends('campus_id', 'pessoa_id', 'polo_id')
     def get_name(self):
         polo_name = "--" if not self.polo_id.name else self.polo_id.name
-        self.name = "{}; Campus: {}; Polo: {}".format(self.pessoa_id.name, self.campus_id.name, polo_name)
+        self.name = u"{}; Campus: {}; Polo: {}".format(self.pessoa_id.name, self.campus_id.name, polo_name)
