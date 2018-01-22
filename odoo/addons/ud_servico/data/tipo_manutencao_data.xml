@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="manutencao_equipamento" model="ud.servico.tipo_manutencao">
+            <field name="name">Equipamento</field>
+        </record>
+        <record id="manutencao_predial" model="ud.servico.tipo_manutencao">
+            <field name="name">Predial</field>
+        </record>
+        <record id="manutencao_limpeza" model="ud.servico.tipo_manutencao">
+            <field name="name">Limpeza</field>
+        </record>
+        <record id="movimentacao_de_materiais" model="ud.servico.tipo_manutencao">
+            <field name="name">Movimentação de materiais</field>
+        </record>
+
+    </data>
+</odoo>

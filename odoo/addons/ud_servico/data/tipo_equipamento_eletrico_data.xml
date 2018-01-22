@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="equip_eletrico_refrigerador" model="ud.servico.tipo_equipamento_eletrico">
+            <field name="name">Refrigerador</field>
+        </record>
+        <record id="equip_eletrico_informatica" model="ud.servico.tipo_equipamento_eletrico">
+            <field name="name">Informática</field>
+        </record>
+        <record id="equip_eletrico_outro" model="ud.servico.tipo_equipamento_eletrico">
+            <field name="name">Outro</field>
+        </record>
+
+    </data>
+</odoo>

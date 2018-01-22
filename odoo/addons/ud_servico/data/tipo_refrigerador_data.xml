@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="refrigerador_ar_condicionado" model="ud.servico.tipo_refrigerador">
+            <field name="name">Ar condicionado</field>
+        </record>
+        <record id="refrigerador_outro" model="ud.servico.tipo_refrigerador">
+            <field name="name">Outros (Geladeiras, Bebedouros etc)</field>
+        </record>
+
+    </data>
+</odoo>

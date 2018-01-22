@@ -1,0 +1,5 @@
+import SolicitacaoServico
+import TipoManutencao
+import TipoEquipamento
+import TipoEquipamentoEletrico
+import TipoRefrigerador

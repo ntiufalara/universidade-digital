@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="equipamento_eletrico" model="ud.servico.tipo_equipamento">
+            <field name="name">Elétricos</field>
+        </record>
+        <record id="equipamento_hidraulico" model="ud.servico.tipo_equipamento">
+            <field name="name">Hidráulicos</field>
+        </record>
+
+
+    </data>
+</odoo>
