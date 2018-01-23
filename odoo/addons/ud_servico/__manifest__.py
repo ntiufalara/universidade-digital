@@ -9,7 +9,7 @@
     "depends": ["ud"],
     "data": [
         # Segurança
-        # "security/ud_reserva_security.xml",
+        "security/ud_servico_security.xml",
         # "security/ir.model.access.csv",
         # Views
         # "views/backend/assets.xml",
@@ -23,6 +23,9 @@
         "data/tipo_manutencao_data.xml",
         "data/tipo_equipamento_data.xml",
         "data/tipo_equipamento_eletrico_data.xml",
+        "data/tipo_ar_condicionado_data.xml",
+        "data/tipo_predial_data.xml",
+        "data/tipo_instalacoes_data.xml",
     ],
     "installable": True,
     "application": True,

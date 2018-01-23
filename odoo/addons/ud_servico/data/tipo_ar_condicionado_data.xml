@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="tipo_ar_split" model="ud.servico.tipo_ar">
+            <field name="name">Split</field>
+        </record>
+        <record id="tipo_ar_split" model="ud.servico.tipo_ar">
+            <field name="name">Janela</field>
+        </record>
+
+    </data>
+</odoo>

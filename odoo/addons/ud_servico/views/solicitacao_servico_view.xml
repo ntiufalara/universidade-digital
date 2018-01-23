@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_servico_solicitacao_action">
+            <field name="name">Solicitação de serviço</field>
+            <field name="res_model">ud.servico.solicitacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para criar uma Solicitação de serviço
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_solicitacao_tree">
+            <field name="name">Solicitações de serviço</field>
+            <field name="model">ud.servico.solicitacao</field>
+            <field name="arch" type="xml">
+                <tree string="Solicitações de serviço">
+                    <field name="name"/>
+                    <field name="descricao"/>
+                    <field name="solicitante_id"/>
+                    <field name="tipo_manutencao_id"/>
+                    <field name="state"/>
+                    <field name="data"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_solicitacao_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.servico.solicitacao</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <field name="solicitante_id"/>
+                    <field name="matricula"/>
+                    <field name="setor_id"/>
+                    <field name="email"/>
+                    <field name="telefone"/>
+                    <field name="data"/>
+                    <field name="state"/>
+                    <field name="descricao"/>
+                    <field name="responsavel_id"/>
+                    <field name="data_execucao"/>
+                    <field name="tipo_manutencao_id"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                    <field name="espaco_id"/>
+
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_id'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                        <filter string="Espaço" icon="terp-personal" domain="[]" context="{'group_by':'espaco_id'}"/>
+                        <filter string="Solicitante" icon="terp-personal" domain="[]"
+                                context="{'group_by':'solicitante_id'}"/>
+                        <filter string="Setor solicitante" icon="terp-personal" domain="[]"
+                                context="{'group_by':'setor_id'}"/>
+                        <filter string="Data" icon="terp-personal" domain="[]" context="{'group_by':'data'}"/>
+                        <filter string="Status" name="status" icon="terp-personal" domain="[]"
+                                context="{'group_by':'state'}"/>
+                        <filter string="Data de cancelamento" icon="terp-personal" domain="[]"
+                                context="{'group_by':'data_cancelamento'}"/>
+                        <filter string="Responsável" icon="terp-personal" domain="[]"
+                                context="{'group_by':'responsavel_id'}"/>
+                        <filter string="Previsão de execução" icon="terp-personal" domain="[]"
+                                context="{'group_by':'previsao'}"/>
+                        <filter string="Data de execução" icon="terp-personal" domain="[]"
+                                context="{'group_by':'data_execucao'}"/>
+                        <filter string="Tipo de manutenção" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_manutencao_id'}"/>
+                        <filter string="Tipo de equipamento" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_equipamento_id'}"/>
+                        <filter string="Tipo de equipamento elétrico" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_equipamento_eletrico_id'}"/>
+                        <filter string="Tipo de refrigerador" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_refrigerador_id'}"/>
+                        <filter string="Tipo de ar condicionado" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_ar_condicionado_id'}"/>
+                        <filter string="Tipo de manutenção predial" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_predial_id'}"/>
+                        <filter string="Tipo de instalação predial" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo_instalacoes_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_solicitacao_form">
+            <field name="name">Solicitação de serviço</field>
+            <field name="model">ud.servico.solicitacao</field>
+            <field name="arch" type="xml">
+                <form string="Solicitação de serviço">
+                    <header>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="nova,atribuida,aprovada,execucao,finalizada,cancelada" readonly="1"/>
+                    </header>
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <fieldset>
+                            <legend>Dados do solicitante</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="name" attrs="{'invisible': [('name', '=', False)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="solicitante_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="solicitante_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="matricula"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="matricula" attrs="{'invisible': [('matricula', '=', False)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="setor_id" attrs="{'invisible': [('setor_id', '=', False)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="email"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="email"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="telefone"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="telefone"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="data"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Local</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="espaco_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="espaco_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="detalhes_espaco"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="detalhes_espaco"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

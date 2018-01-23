@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="tipo_instalacoes_eletricas" model="ud.servico.tipo_predial">
+            <field name="name">Elétricas</field>
+        </record>
+        <record id="tipo_instalacoes_hidraulicas" model="ud.servico.tipo_predial">
+            <field name="name">Hidráulicas</field>
+        </record>
+
+    </data>
+</odoo>

@@ -5,6 +5,7 @@ from odoo import models, fields, api
 
 class Perfil(models.Model):
     _name = 'ud.perfil'
+    _order = 'id desc'
 
     name = fields.Char(u'Nome', compute='get_name')
     tipo_id = fields.Many2one('ud.perfil.tipo', u'Tipo', required=True)

@@ -3,11 +3,10 @@
 from odoo import models, fields, api
 
 
-class TipoArCondicionado(models.Model):
+class TipoInstalacoes(models.Model):
     """
     Representa o tipo de ar condicionado a ser selecionado na solicitação de serviço
     """
-    _name = 'ud.servico.tipo_ar'
-    _order = 'name asc'
+    _name = 'ud.servico.tipo_instalacoes'
 
-    name = fields.Char(u'Tipo', required=True)
+    name = fields.Char(u'Instalação', required=True)

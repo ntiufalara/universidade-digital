@@ -22,7 +22,7 @@ class Pessoa(models.Model):
         [('solteiro', u'Solteiro'), ('casado', u'Casado'), ('viuvo', u'Viúvo'), ('divorciado', u'Divorciado')],
         u'Estado Civil', default='solteiro'
     )
-    telefone_fixo = fields.Char(u'Telefone fixo')
+    telefone_fixo = fields.Char(u'Telefone principal')
     celular = fields.Char(u'Celular')
     email = fields.Char(u'E-mail', required=True)
     orgaoexpedidor = fields.Char(u'Orgão Expedidor', size=10, help=u"Sigla: Ex. SSP/SP")

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="tipo_predial_instalacoes" model="ud.servico.tipo_predial">
+            <field name="name">Instalações</field>
+        </record>
+        <record id="tipo_predial_alvenaria" model="ud.servico.tipo_predial">
+            <field name="name">Alvenaria / Esquadrias / Metálicas / Divisórias</field>
+        </record>
+
+    </data>
+</odoo>
