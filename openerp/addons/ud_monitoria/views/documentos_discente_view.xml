@@ -196,7 +196,7 @@
         </record>
 
         <record id="ud_monitoria_horario_tree" model="ir.ui.view">
-            <field name="name">ud.monitoria.horario.form</field>
+            <field name="name">ud.monitoria.horario.tree</field>
             <field name="model">ud.monitoria.horario</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
