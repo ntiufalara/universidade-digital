@@ -36,6 +36,7 @@ class SolicitacaoServico(models.Model):
     tipo_predial_id = fields.Many2one('ud.servico.tipo_predial', u'Predial')
     tipo_instalacoes_id = fields.Many2one('ud.servico.tipo_instalacoes', u'Instalações')
     denominacao = fields.Char(u'Denominação')
+    numero_patrimonio = fields.Char(u'Patrimônimo nº')
     # Local
     campus_id = fields.Many2one('ud.campus', u'Campus', required=True)
     polo_id = fields.Many2one('ud.polo', u'Polo', required=True, domain="[('campus_id', '=', campus_id)]")

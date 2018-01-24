@@ -98,16 +98,28 @@
             <field name="arch" type="xml">
                 <form string="Solicitação de serviço">
                     <header>
+                        <button string="Para Análise" states="nova" type="action" name="ud_solicitacao.atribuir_action0"
+                                groups="base.gerente_os"/>
+                        <button string="Encaminhar para execução" states="atribuida" type="action"
+                                name="ud_solicitacao.aprovar_action0" groups="base.gerente_os,base.responsavel_os"/>
+                        <button string="Executar Solicitação" states="aprovada" type="action"
+                                name="ud_solicitacao.executar_wiz_action" groups="base.gerente_os"/>
+                        <button string="Finalizar Solicitação" states="execucao" type="action"
+                                name="ud_solicitacao.finalizar_wiz_action" groups="base.gerente_os"/>
+                        <button string="Cancelar Solicitação" states="nova" type="action"
+                                name="ud_solicitacao.cancelar_wiz_action"/>
+                        <button string="Cancelar Solicitação" states="atribuida,aprovada,execucao" type="action"
+                                name="ud_solicitacao.cancelar_wiz_action" groups="base.gerente_os"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="nova,atribuida,aprovada,execucao,finalizada,cancelada" readonly="1"/>
                     </header>
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <fieldset>
                             <legend>Dados do solicitante</legend>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('name', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="name"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="name" attrs="{'invisible': [('name', '=', False)]}"/>
+                                    <field name="name"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -116,16 +128,17 @@
                                     <field name="solicitante_id"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('matricula', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="matricula"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="matricula" attrs="{'invisible': [('matricula', '=', False)]}"/>
+                                    <field name="matricula"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('setor_id', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="setor_id"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="setor_id" attrs="{'invisible': [('setor_id', '=', False)]}"/>
+                                    <field name="setor_id"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -171,6 +184,58 @@
                                 <label class="col-md-4 col-sm-4 control-label" for="detalhes_espaco"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="detalhes_espaco"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Serviço</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_manutencao_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_manutencao_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_manutencao_id', '!=', %(manutencao_equipamento)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_equipamento_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_equipamento_id"
+                                           attrs="{'required': [('tipo_manutencao_id', '=', %(manutencao_equipamento)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_equipamento_id', '!=', %(equipamento_eletrico)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label"
+                                       for="tipo_equipamento_eletrico_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_equipamento_eletrico_id"
+                                           attrs="{'required': [('tipo_equipamento_id', '=', %(equipamento_eletrico)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_equipamento_eletrico_id', '!=', %(equip_eletrico_refrigerador)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_refrigerador_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_refrigerador_id"
+                                           attrs="{'required': [('tipo_equipamento_eletrico_id', '=', %(equip_eletrico_refrigerador)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('tipo_refrigerador_id', '!=', %(refrigerador_ar_condicionado)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_ar_condicionado_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_ar_condicionado_id" attrs="{'required': [('tipo_refrigerador_id', '=', %(refrigerador_ar_condicionado)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="denominacao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="denominacao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="numero_patrimonio"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="numero_patrimonio"/>
                                 </div>
                             </div>
                         </fieldset>

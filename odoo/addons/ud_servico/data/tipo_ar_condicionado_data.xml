@@ -6,7 +6,7 @@
         <record id="tipo_ar_split" model="ud.servico.tipo_ar">
             <field name="name">Split</field>
         </record>
-        <record id="tipo_ar_split" model="ud.servico.tipo_ar">
+        <record id="tipo_ar_janela" model="ud.servico.tipo_ar">
             <field name="name">Janela</field>
         </record>
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <menuitem id="ud_servico_root" name="Serviços"/>
+        <menuitem id="ud_servico_solicitacao" name="Solicitações de serviço" parent="ud_servico_root"
+                  action="ud_servico_solicitacao_action"/>
+
+    </data>
+</odoo>
