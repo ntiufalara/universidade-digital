@@ -195,6 +195,7 @@
                                     <field name="tipo_manutencao_id"/>
                                 </div>
                             </div>
+                            <!-- Classificações de equipamentos -->
                             <div class="col-md-6 col-lg-6 form-group"
                                  attrs="{'invisible': [('tipo_manutencao_id', '!=', %(manutencao_equipamento)d)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="tipo_equipamento_id"></label>
@@ -220,22 +221,53 @@
                                            attrs="{'required': [('tipo_equipamento_eletrico_id', '=', %(equip_eletrico_refrigerador)d)]}"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('tipo_refrigerador_id', '!=', %(refrigerador_ar_condicionado)d)]}">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_refrigerador_id', '!=', %(refrigerador_ar_condicionado)d)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="tipo_ar_condicionado_id"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="tipo_ar_condicionado_id" attrs="{'required': [('tipo_refrigerador_id', '=', %(refrigerador_ar_condicionado)d)]}"/>
+                                    <field name="tipo_ar_condicionado_id"
+                                           attrs="{'required': [('tipo_refrigerador_id', '=', %(refrigerador_ar_condicionado)d)]}"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <!-- Classificações de equipamentos - FIM -->
+                            <!-- Classificação de manutenção predial -->
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_manutencao_id', '!=', %(manutencao_predial)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_predial_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_predial_id"
+                                           attrs="{'required': [('tipo_manutencao_id', '=', %(manutencao_predial)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_predial_id', '!=', %(tipo_predial_instalacoes)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="tipo_instalacoes_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="tipo_instalacoes_id"
+                                           attrs="{'required': [('tipo_predial_id', '=', %(tipo_predial_instalacoes)d)]}"/>
+                                </div>
+                            </div>
+                            <!-- Classificação de manutenção predial - FIM -->
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_manutencao_id', '!=', %(movimentacao_de_materiais)d), ('tipo_equipamento_eletrico_id', '!=', %(equip_eletrico_outro)d)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="denominacao"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="denominacao"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_manutencao_id', '!=', %(manutencao_equipamento)d)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="numero_patrimonio"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="numero_patrimonio"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Descrição</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="descricao"/>
                                 </div>
                             </div>
                         </fieldset>

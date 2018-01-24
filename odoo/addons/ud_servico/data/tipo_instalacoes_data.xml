@@ -3,10 +3,10 @@
 <odoo>
     <data>
 
-        <record id="tipo_instalacoes_eletricas" model="ud.servico.tipo_predial">
+        <record id="tipo_instalacoes_eletricas" model="ud.servico.tipo_instalacoes">
             <field name="name">Elétricas</field>
         </record>
-        <record id="tipo_instalacoes_hidraulicas" model="ud.servico.tipo_predial">
+        <record id="tipo_instalacoes_hidraulicas" model="ud.servico.tipo_instalacoes">
             <field name="name">Hidráulicas</field>
         </record>
 
