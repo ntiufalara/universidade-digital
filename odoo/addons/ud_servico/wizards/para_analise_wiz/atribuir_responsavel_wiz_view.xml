@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="atribuir_responsavel_action">
+            <field name="name">Atribuir responsável</field>
+            <field name="res_model">ud.servico.atribuir_responsavel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="atribuir_responsavel_form">
+            <field name="name">Atribuir responsável</field>
+            <field name="model">ud.servico.atribuir_responsavel</field>
+            <field name="arch" type="xml">
+                <form string="Atribuir responsável">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="responsavel_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="responsavel_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Salvar" name="atribuir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

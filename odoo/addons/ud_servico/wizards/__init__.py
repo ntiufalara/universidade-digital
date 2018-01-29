@@ -1,0 +1,1 @@
+import para_analise_wiz

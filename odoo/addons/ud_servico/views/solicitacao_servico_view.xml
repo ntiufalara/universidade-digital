@@ -47,7 +47,7 @@
                     <field name="data"/>
                     <field name="state"/>
                     <field name="descricao"/>
-                    <field name="responsavel_id"/>
+                    <field name="responsavel_analise_id"/>
                     <field name="data_execucao"/>
                     <field name="tipo_manutencao_id"/>
                     <field name="campus_id"/>
@@ -68,7 +68,7 @@
                         <filter string="Data de cancelamento" icon="terp-personal" domain="[]"
                                 context="{'group_by':'data_cancelamento'}"/>
                         <filter string="Responsável" icon="terp-personal" domain="[]"
-                                context="{'group_by':'responsavel_id'}"/>
+                                context="{'group_by':'responsavel_analise_id'}"/>
                         <filter string="Previsão de execução" icon="terp-personal" domain="[]"
                                 context="{'group_by':'previsao'}"/>
                         <filter string="Data de execução" icon="terp-personal" domain="[]"
@@ -98,7 +98,7 @@
             <field name="arch" type="xml">
                 <form string="Solicitação de serviço">
                     <header>
-                        <button string="Para Análise" states="nova" type="action" name="ud_solicitacao.atribuir_action0"
+                        <button string="Para Análise" states="nova" type="action" name="ud_servico.atribuir_responsavel_action"
                                 groups="base.gerente_os"/>
                         <button string="Encaminhar para execução" states="atribuida" type="action"
                                 name="ud_solicitacao.aprovar_action0" groups="base.gerente_os,base.responsavel_os"/>
@@ -144,7 +144,7 @@
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="email"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="email"/>
+                                    <field name="email" readonly="1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -178,6 +178,12 @@
                                 <label class="col-md-4 col-sm-4 control-label" for="espaco_id"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="espaco_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('bloco_id', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="bloco_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="bloco_id" readonly="1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -260,6 +266,57 @@
                                 <label class="col-md-4 col-sm-4 control-label" for="numero_patrimonio"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="numero_patrimonio"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_equipamento_id', '!=', %(equipamento_eletrico)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="marca_equipamento"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="marca_equipamento"
+                                           attrs="{'required': [('tipo_equipamento_id', '=', %(equipamento_eletrico)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('tipo_equipamento_id', '!=', %(equipamento_eletrico)d)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="modelo_equipamento"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="modelo_equipamento" />
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset attrs="{'invisible': [('tipo_manutencao_id', '!=', %(movimentacao_de_materiais)d)]}">
+                            <legend>Destino da movimentação</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="campus_destino_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="campus_destino_id"
+                                           attrs="{'required': [('tipo_manutencao_id', '=', %(movimentacao_de_materiais)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="polo_destino_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="polo_destino_id"
+                                           attrs="{'required': [('tipo_manutencao_id', '=', %(movimentacao_de_materiais)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="espaco_destino_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="espaco_destino_id"
+                                           attrs="{'required': [('tipo_manutencao_id', '=', %(movimentacao_de_materiais)d)]}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('bloco_destino_id', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="bloco_destino_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="bloco_destino_id" readonly="1" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="detalhes_espaco_destino"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="detalhes_espaco_destino" />
                                 </div>
                             </div>
                         </fieldset>

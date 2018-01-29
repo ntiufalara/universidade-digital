@@ -8,14 +8,6 @@
     "author": "NTI UFAL Arapiraca",
     "depends": ["ud"],
     "data": [
-        # Segurança
-        "security/ud_servico_security.xml",
-        # "security/ir.model.access.csv",
-        # Views
-        "views/solicitacao_servico_view.xml",
-        "views/menus.xml",
-        # "wizards/adicionar_dias_wizard_view.xml",
-        # "wizards/cancelamento_reserva_wizard.xml",
         # Dados
         "data/tipo_manutencao_data.xml",
         "data/tipo_equipamento_data.xml",
@@ -24,6 +16,16 @@
         "data/tipo_ar_condicionado_data.xml",
         "data/tipo_predial_data.xml",
         "data/tipo_instalacoes_data.xml",
+        # Segurança
+        "security/ud_servico_security.xml",
+        # "security/ir.model.access.csv",
+        # Views
+        "views/solicitacao_servico_view.xml",
+        "views/menus.xml",
+        # Wizards Views
+        "wizards/para_analise_wiz/atribuir_responsavel_wiz_view.xml"
+        # "wizards/adicionar_dias_wizard_view.xml",
+        # "wizards/cancelamento_reserva_wizard.xml",
     ],
     "installable": True,
     "application": True,

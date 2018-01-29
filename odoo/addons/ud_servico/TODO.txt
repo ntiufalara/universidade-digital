@@ -1,8 +1,7 @@
- - Adiconar marca e modelo a visualização de solicitação
- - Adicionar campus e polo automaticamente de acordo com o setor do usuário
- - Separar solicitação de serviço de ordem de serviço
- - Permitir que o gerente adicione novas informações a ordem de seriço ao encaminhar para a execução
- - Sincronizar estados de execução da ordem de serviço com a solicitação
- - Atribuir responsável à ordem de serviço e não à solicitação
- - Permitir que o responsável veja apenas as ordens de serviço atribuídas a ele
+ - Permitir que o responsável veja apenas as solicitações de serviço atribuídas a ele
+ - Imprimir solicitação (Quando o status da solicitação for anterior a encaminhado para execução)
+ - Imprimir Ordem de serviço quando o status for maior que Encaminhado p/ execução
+ - Adicionar campo para cadastrar informações referentes a segurança no trabalho, de acordo com a lei
  - Montar sistema de envio de e-mails para notificações de mudança de estado em solicitações de serviço
+ - Ao finalizar, permitir que o usuário marque uma caixa "serviço concluído", caso ele não marque, não mude o status
+ - Adicionar nota de texto (Solicitante, gerente e responsável podem criar notas);

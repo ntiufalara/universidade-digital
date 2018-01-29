@@ -6,3 +6,4 @@ import TipoRefrigerador
 import TipoArCondicionado
 import TipoPredial
 import TipoInstalacoes
+import ResponsavelServico
