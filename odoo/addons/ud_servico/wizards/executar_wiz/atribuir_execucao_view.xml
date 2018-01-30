@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="atribuir_execucao_action">
+            <field name="name">Atribuir dados de execução</field>
+            <field name="res_model">ud.servico.atribuir_execucao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="atribuir_execucao_form">
+            <field name="name">Atribuir dados de execução</field>
+            <field name="model">ud.servico.atribuir_execucao</field>
+            <field name="arch" type="xml">
+                <form string="Atribuir dados de execução">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="data_execucao"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="data_execucao"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Descrição do serviço</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="descricao"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Salvar" name="atribuir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="atribuir_previsao_action">
+            <field name="name">Atribuir Previsão</field>
+            <field name="res_model">ud.servico.atribuir_previsao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="atribuir_previsao_form">
+            <field name="name">Atribuir Previsão</field>
+            <field name="model">ud.servico.atribuir_previsao</field>
+            <field name="arch" type="xml">
+                <form string="Atribuir Previsão">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="previsao"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="previsao"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Salvar" name="atribuir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

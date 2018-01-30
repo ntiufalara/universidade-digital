@@ -9,10 +9,12 @@ class AtribuirResponsavel(models.TransientModel):
     """
     _name = 'ud.servico.atribuir_responsavel'
 
-    responsavel_id = fields.Many2one('ud.servico.responsavel', u'Responsável', required=True)
+    responsavel_id = fields.Many2one('ud.servico.responsavel', u'Responsável', required=True,
+                                     domain="['|', ('tipo', '=', 'analise'), ('tipo', '=', 'ambos')]")
 
     def atribuir(self):
-        solicitacao = self.env['ud.servico.solicitacao'].search(self.env.context.get('active_id'))
+        solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
         solicitacao.write({
-            'responsavel_analise_id': self.responsavel_id.id
+            'responsavel_analise_id': self.responsavel_id.id,
+            'state': 'analise'
         })

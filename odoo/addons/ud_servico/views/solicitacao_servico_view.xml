@@ -98,20 +98,22 @@
             <field name="arch" type="xml">
                 <form string="Solicitação de serviço">
                     <header>
-                        <button string="Para Análise" states="nova" type="action" name="ud_servico.atribuir_responsavel_action"
+                        <button string="Para Análise" states="nova" type="action"
+                                name="ud_servico.atribuir_responsavel_action"
                                 groups="base.gerente_os"/>
-                        <button string="Encaminhar para execução" states="atribuida" type="action"
-                                name="ud_solicitacao.aprovar_action0" groups="base.gerente_os,base.responsavel_os"/>
+                        <button string="Encaminhar para execução" states="analise" type="action"
+                                name="ud_servico.atribuir_previsao_action"
+                                groups="base.gerente_os,base.responsavel_os"/>
                         <button string="Executar Solicitação" states="aprovada" type="action"
-                                name="ud_solicitacao.executar_wiz_action" groups="base.gerente_os"/>
+                                name="ud_servico.atribuir_execucao_action" groups="base.gerente_os"/>
                         <button string="Finalizar Solicitação" states="execucao" type="action"
                                 name="ud_solicitacao.finalizar_wiz_action" groups="base.gerente_os"/>
                         <button string="Cancelar Solicitação" states="nova" type="action"
                                 name="ud_solicitacao.cancelar_wiz_action"/>
-                        <button string="Cancelar Solicitação" states="atribuida,aprovada,execucao" type="action"
+                        <button string="Cancelar Solicitação" states="analise,aprovada,execucao" type="action"
                                 name="ud_solicitacao.cancelar_wiz_action" groups="base.gerente_os"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="nova,atribuida,aprovada,execucao,finalizada,cancelada" readonly="1"/>
+                               statusbar_visible="nova,analise,aprovada,execucao,finalizada,cancelada" readonly="1"/>
                     </header>
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <fieldset>
@@ -280,7 +282,23 @@
                                  attrs="{'invisible': [('tipo_equipamento_id', '!=', %(equipamento_eletrico)d)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="modelo_equipamento"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="modelo_equipamento" />
+                                    <field name="modelo_equipamento"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset attrs="{'invisible': [('state', '=', 'nova')]}">
+                            <legend>Dados da Execução</legend>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('responsavel_analise_id', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="responsavel_analise_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="responsavel_analise_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('previsao', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="previsao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="previsao"/>
                                 </div>
                             </div>
                         </fieldset>
@@ -307,16 +325,17 @@
                                            attrs="{'required': [('tipo_manutencao_id', '=', %(movimentacao_de_materiais)d)]}"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('bloco_destino_id', '=', False)]}">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('bloco_destino_id', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="bloco_destino_id"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="bloco_destino_id" readonly="1" />
+                                    <field name="bloco_destino_id" readonly="1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="detalhes_espaco_destino"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="detalhes_espaco_destino" />
+                                    <field name="detalhes_espaco_destino"/>
                                 </div>
                             </div>
                         </fieldset>

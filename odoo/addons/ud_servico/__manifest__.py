@@ -21,9 +21,12 @@
         # "security/ir.model.access.csv",
         # Views
         "views/solicitacao_servico_view.xml",
+        "views/responsavel_servico_view.xml",
         "views/menus.xml",
         # Wizards Views
-        "wizards/para_analise_wiz/atribuir_responsavel_wiz_view.xml"
+        "wizards/para_analise_wiz/atribuir_responsavel_wiz_view.xml",
+        "wizards/para_execucao_wiz/atribuir_previsao_wiz_view.xml",
+        "wizards/executar_wiz/atribuir_execucao_view.xml",
         # "wizards/adicionar_dias_wizard_view.xml",
         # "wizards/cancelamento_reserva_wizard.xml",
     ],

@@ -1,1 +1,3 @@
 import para_analise_wiz
+import para_execucao_wiz
+import executar_wiz
