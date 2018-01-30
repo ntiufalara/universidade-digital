@@ -13,7 +13,7 @@ class AtribuirPrevisao(models.TransientModel):
 
     def atribuir(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
-        solicitacao.write({
+        solicitacao.sudo().write({
             'previsao': self.previsao,
             'state': 'aprovada'
         })

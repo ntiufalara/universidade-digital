@@ -1,3 +1,4 @@
+ - Adicionar responsável por execução ao encaminhar para execução
  - Permitir que o responsável veja apenas as solicitações de serviço atribuídas a ele
  - Imprimir solicitação (Quando o status da solicitação for anterior a encaminhado para execução)
  - Imprimir Ordem de serviço quando o status for maior que Encaminhado p/ execução

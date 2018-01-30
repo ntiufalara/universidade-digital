@@ -14,7 +14,7 @@ class AtribuirExecucao(models.TransientModel):
 
     def atribuir(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
-        solicitacao.write({
+        solicitacao.sudo().write({
             'execucao': self.descricao,
             'data_execucao': self.data_execucao,
             'state': 'execucao',

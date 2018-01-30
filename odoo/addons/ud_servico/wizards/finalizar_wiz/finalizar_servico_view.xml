@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="finalizar_servico_action">
+            <field name="name">Finalizar serviço</field>
+            <field name="res_model">ud.servico.finalizar_servico</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="finalizar_servico_form">
+            <field name="name">Finalizar serviço</field>
+            <field name="model">ud.servico.finalizar_servico</field>
+            <field name="arch" type="xml">
+                <form string="Finalizar serviço">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Descrição do serviço realizado</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="descricao"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Salvar" name="finalizar" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

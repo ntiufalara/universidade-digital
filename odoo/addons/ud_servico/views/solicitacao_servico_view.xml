@@ -107,11 +107,11 @@
                         <button string="Executar Solicitação" states="aprovada" type="action"
                                 name="ud_servico.atribuir_execucao_action" groups="base.gerente_os"/>
                         <button string="Finalizar Solicitação" states="execucao" type="action"
-                                name="ud_solicitacao.finalizar_wiz_action" groups="base.gerente_os"/>
+                                name="ud_servico.finalizar_servico_action" groups="base.gerente_os"/>
                         <button string="Cancelar Solicitação" states="nova" type="action"
-                                name="ud_solicitacao.cancelar_wiz_action"/>
+                                name="ud_servico.finalizar_servico_action"/>
                         <button string="Cancelar Solicitação" states="analise,aprovada,execucao" type="action"
-                                name="ud_solicitacao.cancelar_wiz_action" groups="base.gerente_os"/>
+                                name="ud_servico.finalizar_servico_action" groups="base.gerente_os"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="nova,analise,aprovada,execucao,finalizada,cancelada" readonly="1"/>
                     </header>

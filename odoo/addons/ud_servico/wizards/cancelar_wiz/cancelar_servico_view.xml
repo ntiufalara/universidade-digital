@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="cancelar_servico_action">
+            <field name="name">Cancelar serviço</field>
+            <field name="res_model">ud.servico.cancelar_servico</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>
