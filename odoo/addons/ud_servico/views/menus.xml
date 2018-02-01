@@ -6,6 +6,8 @@
         <menuitem id="ud_servico_root" name="Serviços"/>
         <menuitem id="ud_servico_solicitacao" name="Solicitações de serviço" parent="ud_servico_root"
                   action="ud_servico_solicitacao_action"/>
+        <menuitem id="ud_servico_responsavel" name="Responsável" parent="ud_servico_root"
+                  action="ud_servico_responsavel_action"/>
 
     </data>
 </odoo>

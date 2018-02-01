@@ -301,6 +301,31 @@
                                     <field name="previsao"/>
                                 </div>
                             </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('responsavel_execucao_id', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="responsavel_execucao_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="responsavel_execucao_id"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('data_execucao', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="data_execucao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="data_execucao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('execucao', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="execucao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="execucao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('finalizar', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="finalizar"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="finalizar"/>
+                                </div>
+                            </div>
                         </fieldset>
                         <fieldset attrs="{'invisible': [('tipo_manutencao_id', '!=', %(movimentacao_de_materiais)d)]}">
                             <legend>Destino da movimentação</legend>

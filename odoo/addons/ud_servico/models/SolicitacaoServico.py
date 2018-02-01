@@ -9,6 +9,7 @@ class SolicitacaoServico(models.Model):
     Solicitação para geração de ordem de serviço
     """
     _name = 'ud.servico.solicitacao'
+    _order = 'data desc'
 
     name = fields.Char(u'Código', compute="get_name")
     solicitante_id = fields.Many2one('res.users', u'Solicitante', required=True, default=lambda self: self.env.uid)
@@ -22,8 +23,8 @@ class SolicitacaoServico(models.Model):
     # Valores de execução de serviço e cancelamento
     data_cancelamento = fields.Datetime(u'Data de cancelamento')
     motivo_cancelamento = fields.Text(u'Motivo cancelamento')
-    responsavel_analise_id = fields.Many2one('ud.servico.responsavel', u'Responsável por análise')
-    responsavel_execucao_id = fields.Many2one('ud.servico.responsavel', u'Responsável por execução')
+    responsavel_analise_id = fields.Many2one('ud.servico.responsavel', u'Responsável por análise', ondelete='restrict')
+    responsavel_execucao_id = fields.Many2one('ud.servico.responsavel', u'Responsável por execução', ondelete='restrict')
     previsao = fields.Date(u'Previsão para execução')
     execucao = fields.Text(u'Descrição do serviço')
     data_execucao = fields.Datetime(u'Data/hora execução')

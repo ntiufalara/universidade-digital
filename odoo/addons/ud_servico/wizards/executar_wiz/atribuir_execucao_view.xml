@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-12 form-group">
-                            <legend>Descrição do serviço</legend>
+                            <legend>Descrição do serviço a ser realizado</legend>
                             <div class="col-md-12 col-sm-12">
                                 <field name="descricao"/>
                             </div>
