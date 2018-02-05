@@ -16,12 +16,14 @@
         "data/tipo_ar_condicionado_data.xml",
         "data/tipo_predial_data.xml",
         "data/tipo_instalacoes_data.xml",
+        "data/email_template.xml",
         # Segurança
         "security/ud_servico_security.xml",
         "security/ir.model.access.csv",
         # Views
         "views/solicitacao_servico_view.xml",
         "views/responsavel_servico_view.xml",
+        "views/gerente_servico_view.xml",
         "views/menus.xml",
         # Wizards Views
         "wizards/para_analise_wiz/atribuir_responsavel_wiz_view.xml",

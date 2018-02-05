@@ -9,7 +9,7 @@ class SolicitacaoServico(models.Model):
     Solicitação para geração de ordem de serviço
     """
     _name = 'ud.servico.solicitacao'
-    _description = 'Solicitação de serviço'
+    _description = u'Solicitação de serviço'
     _order = 'data desc'
 
     _inherit = ['mail.thread']
@@ -99,3 +99,8 @@ class SolicitacaoServico(models.Model):
         for papel in self.env.user.perfil_ids:
             return papel.setor_id.polo_id.id
         return False
+
+    @api.model
+    def create(self, vals):
+        self.message_post(u"Nova solicitação de serviço criada.", message_type='email')
+        return super(SolicitacaoServico, self).create(vals)

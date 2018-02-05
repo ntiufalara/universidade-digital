@@ -16,8 +16,10 @@
         <menuitem id="ud_servico_gerenciar_solicitacao_responsavel" name="Gerenciar solicitações" parent="ud_servico_solicitacao_root"
                   action="ud_servico_gerenciar_solicitacao_responsavel_action"
                   groups="base.responsavel_os"  sequence="5"/>
-        <menuitem id="ud_servico_responsavel" name="Responsável" parent="ud_servico_root"
+        <menuitem id="ud_servico_responsavel_menu" name="Responsável" parent="ud_servico_root"
                   action="ud_servico_responsavel_action" groups="base.gerente_os"  sequence="6"/>
+        <menuitem id="ud_servico_gerente_menu" name="Gerente" parent="ud_servico_root"
+                  action="ud_servico_gerente_action" groups="base.admin_ud" sequence="7"/>
 
     </data>
 </odoo>

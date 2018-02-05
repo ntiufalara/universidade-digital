@@ -25,3 +25,10 @@ class ResponsavelAnaliseServico(models.Model):
     @api.one
     def get_name(self):
         self.name = self.responsavel_id.name
+
+    @api.model
+    def create(self, vals):
+        res = super(ResponsavelAnaliseServico, self).create(vals)
+        group_responsavel_servico = self.env.ref('base.responsavel_os')
+        res.responsavel_id.groups_id |= group_responsavel_servico
+        return res

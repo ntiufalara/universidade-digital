@@ -1,0 +1,9 @@
+universidade.digital.notify@gmail.com
+-;Ui||?Q
+smtp.gmail.com
+enable SSL
+465
+
+pop.gmail.com
+enable SSL
+995

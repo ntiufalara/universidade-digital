@@ -7,3 +7,4 @@ import TipoArCondicionado
 import TipoPredial
 import TipoInstalacoes
 import ResponsavelServico
+import GerenteServico

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_servico_gerente_action">
+            <field name="name">Gerente</field>
+            <field name="res_model">ud.servico.gerente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_campus': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Gerente
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_gerente_tree">
+            <field name="name">Gerentes</field>
+            <field name="model">ud.servico.gerente</field>
+            <field name="arch" type="xml">
+                <tree string="Gerentes">
+                    <field name="pessoa_id"/>
+                    <field name="campus_id"/>
+                    <field name="polo_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_gerente_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.servico.gerente</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="pessoa_id" />
+                    <field name="campus_id" />
+                    <field name="polo_id" />
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" name="campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_id'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_servico_gerente_form">
+            <field name="name">Gerente</field>
+            <field name="model">ud.servico.gerente</field>
+            <field name="arch" type="xml">
+                <form string="Gerente">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="pessoa_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="pessoa_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="campus_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
