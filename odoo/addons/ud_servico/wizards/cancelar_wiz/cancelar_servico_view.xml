@@ -11,5 +11,33 @@
             <field name="target">new</field>
         </record>
 
+        <record id="cancelar_servico_form" model="ir.ui.view">
+            <field name="name">Cancelar serviço</field>
+            <field name="model">ud.servico.cancelar_servico</field>
+            <field name="arch" type="xml">
+                <form string="Cancelar serviço">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Motivo do cancelamento</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="motivo"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="data"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="data" readonly="1"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Salvar" name="cancelar" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
     </data>
 </odoo>

@@ -1,8 +1,4 @@
- - Adicionar responsável por execução ao encaminhar para execução
- - Permitir que o responsável veja apenas as solicitações de serviço atribuídas a ele
+ - Montar sistema de envio de e-mails para notificações de mudança de estado em solicitações de serviço
  - Imprimir solicitação (Quando o status da solicitação for anterior a encaminhado para execução)
  - Imprimir Ordem de serviço quando o status for maior que Encaminhado p/ execução
  - Adicionar campo para cadastrar informações referentes a segurança no trabalho, de acordo com a lei
- - Montar sistema de envio de e-mails para notificações de mudança de estado em solicitações de serviço
- - Ao finalizar, permitir que o usuário marque uma caixa "serviço concluído", caso ele não marque, não mude o status
- - Adicionar nota de texto (Solicitante, gerente e responsável podem criar notas);

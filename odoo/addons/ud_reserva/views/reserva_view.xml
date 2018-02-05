@@ -99,6 +99,9 @@
                         <button name="ud_reserva.ud_reserva_cancelamento_reserva_wizard_action" type="action"
                                 string="Cancelar" states="enviada,aprovada,aguardando_aprovacao"
                                 groups="ud_reserva.gerente_reserva"/>
+                        <button name="ud_reserva.ud_reserva_cancelamento_reserva_wizard_action" type="action"
+                                string="Cancelar" states="enviada"
+                                groups="ud_reserva.solicitante_reserva"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="nova,enviada,aguardando_aprovacao,aprovada,cancelada"
                                readonly="1"/>
@@ -110,7 +113,7 @@
                                 <label class="col-md-4 col-sm-4 control-label" for="solicitante_id"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="solicitante_id"
-                                           attrs="{ 'readonly':[('state','in', ('enviada','aprovada','cancelada'))]}"/>
+                                           attrs="{ 'readonly':[('solicitante_id', '!=', False)]}"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -128,7 +131,7 @@
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="data_solicitacao"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="data_solicitacao" attrs="{'readonly':[('state','!=', 'nova')]}"/>
+                                    <field name="data_solicitacao" attrs="{'readonly':[('data_solicitacao','!=', False)]}"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group"

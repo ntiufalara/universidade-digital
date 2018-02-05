@@ -99,7 +99,16 @@ class Reserva(models.Model):
         espacos_solicitacao_ids = []
         for dia in self.dia_ids:
             espacos_solicitacao_ids.append(dia.espaco_id.id)
-        return self.env['ud.espaco'].browse(espacos_solicitacao_ids)
+        espacos = self.env['ud.espaco'].browse(espacos_solicitacao_ids)
+        # Filtra os registros iguais (O recordset do Odoo 10 ainda não implementa um "set", corrigido no Odoo 11)
+        old_ids = []
+
+        def verifica_duplicatas(rec):
+            res = True if rec.id not in old_ids else False
+            old_ids.append(rec.id)
+            return res
+        espacos = espacos.filtered(lambda rec: verifica_duplicatas(rec))
+        return espacos
 
     def verifica_responsavel(self):
         """

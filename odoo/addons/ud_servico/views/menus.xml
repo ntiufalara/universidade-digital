@@ -4,10 +4,20 @@
     <data>
 
         <menuitem id="ud_servico_root" name="Serviços"/>
-        <menuitem id="ud_servico_solicitacao" name="Solicitações de serviço" parent="ud_servico_root"
-                  action="ud_servico_solicitacao_action"/>
+        <menuitem id="ud_servico_solicitacao_root" name="Solicitações de serviço" parent="ud_servico_root" sequence="1"/>
+        <menuitem id="ud_servico_minha_solicitacao" name="Minhas solicitações" parent="ud_servico_solicitacao_root"
+                  action="ud_servico_minha_solicitacao_action"
+                  groups="base.solicitante_os,base.responsavel_os,base.gerente_os"  sequence="2"/>
+        <menuitem id="ud_servico_solicitacao" name="Todas as solicitações" parent="ud_servico_solicitacao_root"
+                  action="ud_servico_solicitacao_action"  sequence="3"/>
+        <menuitem id="ud_servico_gerenciar_solicitacao_gerente" name="Gerenciar solicitações" parent="ud_servico_solicitacao_root"
+                  action="ud_servico_gerenciar_solicitacao_gerente_action"
+                  groups="base.gerente_os"  sequence="4"/>
+        <menuitem id="ud_servico_gerenciar_solicitacao_responsavel" name="Gerenciar solicitações" parent="ud_servico_solicitacao_root"
+                  action="ud_servico_gerenciar_solicitacao_responsavel_action"
+                  groups="base.responsavel_os"  sequence="5"/>
         <menuitem id="ud_servico_responsavel" name="Responsável" parent="ud_servico_root"
-                  action="ud_servico_responsavel_action"/>
+                  action="ud_servico_responsavel_action" groups="base.gerente_os"  sequence="6"/>
 
     </data>
 </odoo>

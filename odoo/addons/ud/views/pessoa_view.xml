@@ -42,7 +42,7 @@
                                     <div class="col-md-6 col-lg-6 form-group">
                                         <label class="col-md-4 col-sm-4 control-label" for="email"></label>
                                         <div class="col-md-7 col-sm-7">
-                                            <field name="email"/>
+                                            <field name="email" required="1"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-6 form-group">

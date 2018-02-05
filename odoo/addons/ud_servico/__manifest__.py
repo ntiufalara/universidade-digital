@@ -6,7 +6,7 @@
     "category": u"Universidade Digital",
     "description": u"""Gerenciamento de solicitações de serviço e ordens de serviço""",
     "author": "NTI UFAL Arapiraca",
-    "depends": ["ud"],
+    "depends": ["ud", 'mail'],
     "data": [
         # Dados
         "data/tipo_manutencao_data.xml",
@@ -18,7 +18,7 @@
         "data/tipo_instalacoes_data.xml",
         # Segurança
         "security/ud_servico_security.xml",
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
         # Views
         "views/solicitacao_servico_view.xml",
         "views/responsavel_servico_view.xml",

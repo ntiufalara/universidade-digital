@@ -49,14 +49,21 @@ class DiaReserva(models.Model):
         Verifica se o intervalo de tempo já está reservado
         :return:
         """
-        inicio = self.search([('data_inicio', '<=', self.data_inicio), ('data_fim', '>=', self.data_inicio),
-                              ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
-                              ('id', '!=', self.id)])
-        fim = self.search([('data_inicio', '<=', self.data_fim), ('data_fim', '>=', self.data_fim),
-                           ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
-                           ('id', '!=', self.id)])
-        if inicio or fim:
-            raise ValidationError('Este horário não está disponível. Há outra reserva neste mesmo horário e espaço.')
+        inicio_fechado = self.search([('data_inicio', '<=', self.data_inicio), ('data_fim', '>=', self.data_inicio),
+                                      ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
+                                      ('id', '!=', self.id)])
+        fim_fechado = self.search([('data_inicio', '<=', self.data_fim), ('data_fim', '>=', self.data_fim),
+                                   ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
+                                   ('id', '!=', self.id)])
+        inicio_aberto = self.search([('data_inicio', '>=', self.data_inicio), ('data_inicio', '<=', self.data_fim),
+                                     ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
+                                     ('id', '!=', self.id)])
+        fim_aberto = self.search([('data_fim', '<=', self.data_fim), ('data_fim', '>=', self.data_inicio),
+                                  ('state', '!=', 'cancelada'), ('espaco_id', '=', self.espaco_id.id),
+                                  ('id', '!=', self.id)])
+        if inicio_fechado or fim_fechado or inicio_aberto or fim_aberto:
+            raise ValidationError('Este horário não está disponível. Há outra reserva neste intervalo de horário'
+                                  ' no mesmo espaço.')
 
     @api.constrains('data_inicio', 'data_fim')
     def valida_dia_reserva(self):

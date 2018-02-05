@@ -12,7 +12,7 @@ class CancelarServico(models.TransientModel):
     motivo = fields.Text(u'Motivo', required=True)
     data = fields.Date(u'Data de cancelamento', required=True, default=fields.datetime.now())
 
-    def atribuir(self):
+    def cancelar(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
         solicitacao.sudo().write({
             'motivo_cancelamento': self.motivo,

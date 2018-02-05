@@ -9,7 +9,10 @@ class SolicitacaoServico(models.Model):
     Solicitação para geração de ordem de serviço
     """
     _name = 'ud.servico.solicitacao'
+    _description = 'Solicitação de serviço'
     _order = 'data desc'
+
+    _inherit = ['mail.thread']
 
     name = fields.Char(u'Código', compute="get_name")
     solicitante_id = fields.Many2one('res.users', u'Solicitante', required=True, default=lambda self: self.env.uid)

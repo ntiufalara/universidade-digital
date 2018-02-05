@@ -2,6 +2,8 @@
 from odoo import models, fields, api
 import utils
 
+# http://www.odoo.com/documentation/10.0/reference/mixins.html
+
 
 class Pessoa(models.Model):
     """
@@ -24,7 +26,7 @@ class Pessoa(models.Model):
     )
     telefone_fixo = fields.Char(u'Telefone principal')
     celular = fields.Char(u'Celular')
-    email = fields.Char(u'E-mail', required=True)
+    email = fields.Char(u'E-mail')
     orgaoexpedidor = fields.Char(u'Orgão Expedidor', size=10, help=u"Sigla: Ex. SSP/SP")
 
     dados = fields.One2many('ud.dados.bancarios', 'pessoa_id', u'Dados Bancários')
@@ -50,7 +52,8 @@ class Pessoa(models.Model):
         :param vals:
         :return:
         """
-        vals['login'] = vals['email']
+        if vals.get('email'):
+            vals['login'] = vals['email']
         obj_set = super(models.Model, self).create(vals)
         usuario_ud_group = self.env.ref('base.usuario_ud')
         obj_set.groups_id |= usuario_ud_group
