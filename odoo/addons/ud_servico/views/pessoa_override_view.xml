@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_pessoa_form_inherited" model="ir.ui.view">
+            <field name="name">Pessoa</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="ud.view_pessoa_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//span[@id='cabecalho']" position="after">
+                    <button string="Atribuir: Gerente de serviço" type="action"
+                            name="ud_servico.ud_servico_gerente_popup_action"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -21,13 +21,14 @@ class SolicitacaoServico(models.Model):
     email = fields.Char(u'E-mail', related='solicitante_id.email')
     telefone = fields.Char(u'Telefone', related='solicitante_id.telefone_fixo')
     data = fields.Datetime(u'Data/hora', readonly=True, default=fields.datetime.now())
-    state = fields.Selection(utils.STATUS, u'Status', default='nova')
+    state = fields.Selection(utils.STATUS, u'Status', default='nova', track_visibility='onchange')
     descricao = fields.Text(u'Descrição', required=True)
     # Valores de execução de serviço e cancelamento
     data_cancelamento = fields.Datetime(u'Data de cancelamento')
     motivo_cancelamento = fields.Text(u'Motivo cancelamento')
     responsavel_analise_id = fields.Many2one('ud.servico.responsavel', u'Responsável por análise', ondelete='restrict')
-    responsavel_execucao_id = fields.Many2one('ud.servico.responsavel', u'Responsável por execução', ondelete='restrict')
+    responsavel_execucao_id = fields.Many2one('ud.servico.responsavel', u'Responsável por execução',
+                                              ondelete='restrict')
     previsao = fields.Date(u'Previsão para execução')
     execucao = fields.Text(u'Descrição do serviço')
     data_execucao = fields.Datetime(u'Data/hora execução')
@@ -102,5 +103,25 @@ class SolicitacaoServico(models.Model):
 
     @api.model
     def create(self, vals):
-        self.message_post(u"Nova solicitação de serviço criada.", message_type='email')
-        return super(SolicitacaoServico, self).create(vals)
+        # Busca o responsável por solicitações de serviço no Campus e Polo e adiciona para seguir a solicitação
+        res = super(SolicitacaoServico, self.with_context(mail_create_nolog=True)).create(vals)
+        # Prioriza o gerente do Polo, caso não exista, adiciona o gerente do campus aos seguidores
+        gerentes = self.env['ud.servico.gerente'].search([('polo_id', '=', res.polo_id.id)])
+        gerentes = self.env['ud.servico.gerente'].search(
+            [('campus_id', '=', res.campus_id.id)]) if not gerentes else gerentes
+        if gerentes:
+            # Se existirem gerentes cadastrados, assina na lista de interesse
+            gerentes_user_ids = [gerente.pessoa_id.id for gerente in gerentes]
+            res.message_subscribe_users(gerentes_user_ids)
+        messagem = u"""
+        <p>Nova solicitação de serviço criada</p>
+        <span><strong>Tipo de manutenção: </strong></span><span>{}</span><br>
+        <span><strong>Espaço: </strong></span><span>{}</span><br>
+        <span><strong>Solicitante: </strong></span><span>{}</span><br>
+        <span><strong>Telefone do solicitante: </strong></span><span>{}</span><br>
+        <span><strong>E-mail do solicitante: </strong></span><span>{}</span><br>
+        <span><strong>Descrição: </strong></span><span>{}</span><br>
+        """.format(res.tipo_manutencao_id.name, res.espaco_id.name, res.solicitante_id.name, res.telefone, res.email,
+                   res.descricao)
+        res.message_post(messagem, message_type='email', subtype='mt_comment')
+        return res

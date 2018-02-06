@@ -24,6 +24,7 @@
         "views/solicitacao_servico_view.xml",
         "views/responsavel_servico_view.xml",
         "views/gerente_servico_view.xml",
+        "views/pessoa_override_view.xml",
         "views/menus.xml",
         # Wizards Views
         "wizards/para_analise_wiz/atribuir_responsavel_wiz_view.xml",

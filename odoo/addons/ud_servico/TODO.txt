@@ -1,6 +1,4 @@
- - Adicionar registro de gerente de serviços
- - Adicionar botões para inclusão fácil no cadastro de pessoas a papéis de gerencia
- - Montar sistema de envio de e-mails para notificações de mudança de estado em solicitações de serviço
+ - Personalizar template de e-mail enviados
  - Imprimir solicitação (Quando o status da solicitação for anterior a encaminhado para execução)
  - Imprimir Ordem de serviço quando o status for maior que Encaminhado p/ execução
  - Adicionar campo para cadastrar informações referentes a segurança no trabalho, de acordo com a lei

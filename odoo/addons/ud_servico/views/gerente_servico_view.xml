@@ -19,6 +19,14 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="ud_servico_gerente_popup_action">
+            <field name="name">Gerente de serviço</field>
+            <field name="res_model">ud.servico.gerente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
         <record model="ir.ui.view" id="ud_servico_gerente_tree">
             <field name="name">Gerentes</field>
             <field name="model">ud.servico.gerente</field>
