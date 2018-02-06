@@ -103,6 +103,12 @@ class SolicitacaoServico(models.Model):
 
     @api.model
     def create(self, vals):
+        """
+        Override: Atribuindo gerente ao acompanhamento da solicitação; Envia e-mail para o Gerente sobre nova
+        solicitação criada.
+        :param vals:
+        :return:
+        """
         # Busca o responsável por solicitações de serviço no Campus e Polo e adiciona para seguir a solicitação
         res = super(SolicitacaoServico, self.with_context(mail_create_nolog=True)).create(vals)
         # Prioriza o gerente do Polo, caso não exista, adiciona o gerente do campus aos seguidores

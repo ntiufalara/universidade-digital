@@ -15,6 +15,7 @@ class AtribuirPrevisao(models.TransientModel):
 
     def atribuir(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
+        solicitacao.message_subscribe_users([self.responsavel_execucao_id.responsavel_id.id])
         solicitacao.sudo().write({
             'previsao': self.previsao,
             'responsavel_execucao_id': self.responsavel_execucao_id.id,
