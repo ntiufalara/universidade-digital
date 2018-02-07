@@ -4,6 +4,7 @@ from odoo import models, fields, api
 from odoo.addons.ud_servico.models import utils
 
 
+# https://segurancadotrabalhonwn.com/como-fazer-ordem-de-servico/
 class SolicitacaoServico(models.Model):
     """
     Solicitação para geração de ordem de serviço
