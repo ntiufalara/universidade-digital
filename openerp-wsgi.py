@@ -26,7 +26,7 @@ conf = openerp.tools.config
 # Path to the OpenERP Addons repository (comma-separated for
 # multiple locations)
 
-conf['addons_path'] = '/home/ud/universidade-digital/openerp/addons'
+conf['addons_path'] = '/home/ud/universidade-digital/openerp/addons/'
 
 # Optional database config if not using local socket
 #conf['db_name'] = 'mycompany'
@@ -44,10 +44,10 @@ application = openerp.service.wsgi_server.application
 # Gunicorn
 #----------------------------------------------------------
 # Standard OpenERP XML-RPC port is 8069
-bind = 'ud.ara'
-pidfile = '.gunicorn.pid'
-workers = 2
-timeout = 240
-max_requests = 2000
+# bind = 'ud.ara'
+# pidfile = '.gunicorn.pid'
+# workers = 2
+# timeout = 240
+# max_requests = 2000
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
