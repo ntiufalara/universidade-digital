@@ -24,6 +24,8 @@ class SolicitacaoServico(models.Model):
     data = fields.Datetime(u'Data/hora', readonly=True, default=fields.datetime.now())
     state = fields.Selection(utils.STATUS, u'Status', default='nova', track_visibility='onchange')
     descricao = fields.Text(u'Descrição', required=True)
+    revisao = fields.Integer(u'Revisão', default=1)
+    nome_gerente = fields.Char(u'Gerente', compute='get_nome_gerente', store=True)
     # Valores de execução de serviço e cancelamento
     data_cancelamento = fields.Datetime(u'Data de cancelamento')
     motivo_cancelamento = fields.Text(u'Motivo cancelamento')
@@ -84,6 +86,7 @@ class SolicitacaoServico(models.Model):
             self.setor_id = papel.setor_id
             break
 
+    @api.one
     def get_campus(self):
         """
         Carrega o Campus atrelado a matricula do usuário por padrão
@@ -93,6 +96,7 @@ class SolicitacaoServico(models.Model):
             return papel.setor_id.polo_id.campus_id.id
         return False
 
+    @api.one
     def get_polo(self):
         """
         Carrega o Polo atrelado a matricula do usuário por padrão
@@ -101,6 +105,23 @@ class SolicitacaoServico(models.Model):
         for papel in self.env.user.perfil_ids:
             return papel.setor_id.polo_id.id
         return False
+
+    @api.one
+    @api.depends('campus_id', 'polo_id')
+    def get_nome_gerente(self):
+        """
+        TODO: Testar
+        Carrega o gerente do local onde a solicitação foi criada
+        :return:
+        """
+        gerente_model = self.env['ud.servico.gerente']
+        # Busca pelo gerente na sequência: Gerente do polo, Gerente do campus
+        gerente = gerente_model.search([
+            ('polo_id', '=', self.polo_id)
+        ])
+        gerente = gerente_model.search([('campus_id', '=', self.campus_id)]) if not gerente else gerente
+        gerente.ensure_one()
+        self.nome_gerente = gerente.name
 
     @api.model
     def create(self, vals):

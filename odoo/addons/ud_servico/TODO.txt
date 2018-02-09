@@ -1,10 +1,6 @@
- - Imprimir solicitação (Quando o status da solicitação for anterior a encaminhado para execução)
- - Imprimir Ordem de serviço quando o status for maior que Encaminhado p/ execução
- - Adicionar assinaturas na impressão
- - Adicionar nome do gerente da ordem de serviço
- - Adicionar número de revisão na ordem de serviço
- - Adicionar campo Observações na execução
  - Adicionar risco de operação ao encaminhar para execução
  - Adicionar campo medidas preventivas
- - Adicionar campo EPI (Equipamentos de proteção individual)
- - Adicionar campo para cadastrar informações referentes a segurança no trabalho, de acordo com a lei
+ - Adicionar campo para EPI (Equipamentos de proteção individual)
+ - Imprimir Ordem de serviço
+ - Adicionar assinaturas na impressão
+ - Adicionar relatórios e gráficos

@@ -339,6 +339,12 @@
                         </fieldset>
                         <fieldset attrs="{'invisible': [('state', '=', 'nova')]}">
                             <legend>Dados da Execução</legend>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="nome_gerente"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="nome_gerente"/>
+                                </div>
+                            </div>
                             <div class="col-md-6 col-lg-6 form-group"
                                  attrs="{'invisible': [('responsavel_analise_id', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="responsavel_analise_id"></label>
