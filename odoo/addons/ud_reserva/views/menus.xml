@@ -3,7 +3,7 @@
 <odoo>
     <data>
 
-        <menuitem id="reserva_root" name="Reserva de espaço"/>
+        <menuitem id="reserva_root" name="Reserva de espaço" web_icon="ud_reserva,static/description/icon.png"/>
         <menuitem id="calendario_reserva" name="Calendário de reserva" parent="reserva_root"
                   action="ud_reserva_dia_action" sequence="0"/>
         <menuitem id="solicitacao_root" name="Solicitações de reserva" parent="reserva_root" sequence="1"/>

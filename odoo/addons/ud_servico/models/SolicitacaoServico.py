@@ -110,7 +110,6 @@ class SolicitacaoServico(models.Model):
     @api.depends('campus_id', 'polo_id')
     def get_nome_gerente(self):
         """
-        TODO: Testar
         Carrega o gerente do local onde a solicitação foi criada
         :return:
         """
@@ -120,8 +119,9 @@ class SolicitacaoServico(models.Model):
             ('polo_id', '=', self.polo_id)
         ])
         gerente = gerente_model.search([('campus_id', '=', self.campus_id)]) if not gerente else gerente
-        gerente.ensure_one()
-        self.nome_gerente = gerente.name
+        if gerente:
+            gerente.ensure_one()
+            self.nome_gerente = gerente.name
 
     @api.model
     def create(self, vals):

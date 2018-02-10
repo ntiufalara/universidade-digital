@@ -41,9 +41,7 @@
                         <div class="navbar-header">
 
                             <a href="#"
-                               class="drawer-toggle navbar-collapse collapse btn btn-default app-drawer-toggle"
-                               accesskey="A"
-                               >
+                               class="drawer-toggle navbar-collapse collapse btn btn-default app-drawer-toggle">
                                 <span class="sr-only">Toggle App Drawer</span>
                                 <i class="fa fa-th fa-lg app-drawer-icon-open" />
                             </a>
@@ -216,7 +214,7 @@
                     <h4 class="app-drawer-panel-title">
                         <a href="#" class="app-drawer-icon-close drawer-toggle">
                             <i class="fa fa-lg fa-chevron-left" />
-                            Apps
+                            Ver site
                         </a>
                     </h4>
                 </div>
@@ -224,13 +222,13 @@
                     <ul class="row list-unstyled oe_application_menu_placeholder"
                         style="display: none;">
                         <li t-foreach="menu_data['children']" t-as="menu"
-                            class="col-xs-6 col-sm-4 col-md-3 col-lg-2 text-center mt16">
+                            class="col-xs-6 col-sm-4 col-md-3 col-lg-3 text-center mt16">
                             <t t-call="web.menu_link">
                                 <t t-set="display_images" t-value="1" />
                             </t>
                         </li>
                         <li id="menu_more_container" class="dropdown" style="display: none;">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mais <b class="caret"></b></a>
                             <ul id="menu_more" class="dropdown-menu"></ul>
                         </li>
                     </ul>

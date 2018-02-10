@@ -3,7 +3,7 @@
 <odoo>
     <data>
 
-        <menuitem id="ud_servico_root" name="Serviços"/>
+        <menuitem id="ud_servico_root" name="Serviços" web_icon="ud_servico,static/description/icon.png"/>
         <menuitem id="ud_servico_solicitacao_root" name="Solicitações de serviço" parent="ud_servico_root" sequence="1"/>
         <menuitem id="ud_servico_minha_solicitacao" name="Minhas solicitações" parent="ud_servico_solicitacao_root"
                   action="ud_servico_minha_solicitacao_action"

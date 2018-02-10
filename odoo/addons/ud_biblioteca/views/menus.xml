@@ -5,7 +5,8 @@
 
         <menuitem name="Repositório Institucional" id="biblioteca_top"
                   sequence="4"
-                  groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"/>
+                  groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"
+                  web_icon="ud_biblioteca,static/description/icon.png"/>
 
         <menuitem string="Publicações" action="ud_biblioteca_publicacao_action"
                   id="cadsatro_publicacao" parent="biblioteca_top"

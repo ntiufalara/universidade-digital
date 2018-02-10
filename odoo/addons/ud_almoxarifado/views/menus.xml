@@ -3,7 +3,7 @@
 <odoo>
     <data>
 
-        <menuitem id="almoxarifado_root" name="Almoxarifado"/>
+        <menuitem id="almoxarifado_root" name="Almoxarifado" web_icon="ud_almoxarifado,static/description/icon.png"/>
         <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"/>
 
         <menuitem id="almoxarifado_almoxarifado" name="Gerenciar almoxarifados" parent="almoxarifado_almoxarifado_top"
