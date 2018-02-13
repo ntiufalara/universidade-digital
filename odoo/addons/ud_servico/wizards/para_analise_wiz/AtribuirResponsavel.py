@@ -14,7 +14,7 @@ class AtribuirResponsavel(models.TransientModel):
 
     def atribuir(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
-        solicitacao.message_subscribe_users([self.responsavel_id.responsavel_id.id])
+        solicitacao.sudo().message_subscribe_users([self.responsavel_id.responsavel_id.id])
         solicitacao.sudo().write({
             'responsavel_analise_id': self.responsavel_id.id,
             'state': 'analise'

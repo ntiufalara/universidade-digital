@@ -14,6 +14,9 @@ class SolicitacaoServico(models.Model):
     _order = 'data desc'
 
     _inherit = ['mail.thread']
+    _track = {
+        'state': lambda self: self.state is not False
+    }
 
     name = fields.Char(u'Código', compute="get_name")
     solicitante_id = fields.Many2one('res.users', u'Solicitante', required=True, default=lambda self: self.env.uid)
@@ -140,7 +143,7 @@ class SolicitacaoServico(models.Model):
         if gerentes:
             # Se existirem gerentes cadastrados, assina na lista de interesse
             gerentes_user_ids = [gerente.pessoa_id.id for gerente in gerentes]
-            res.message_subscribe_users(gerentes_user_ids)
+            res.sudo().message_subscribe_users(gerentes_user_ids)
         messagem = u"""
         <p>Nova solicitação de serviço criada</p>
         <span><strong>Tipo de manutenção: </strong></span><span>{}</span><br>
@@ -151,5 +154,5 @@ class SolicitacaoServico(models.Model):
         <span><strong>Descrição: </strong></span><span>{}</span><br>
         """.format(res.tipo_manutencao_id.name, res.espaco_id.name, res.solicitante_id.name, res.telefone, res.email,
                    res.descricao)
-        res.message_post(messagem, message_type='email', subtype='mt_comment')
+        res.sudo().message_post(messagem, message_type='email', subtype='mt_comment')
         return res
