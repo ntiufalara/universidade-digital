@@ -29,6 +29,10 @@ class SolicitacaoServico(models.Model):
     descricao = fields.Text(u'Descrição', required=True)
     revisao = fields.Integer(u'Revisão', default=1)
     nome_gerente = fields.Char(u'Gerente', compute='get_nome_gerente', store=True)
+    # Segurança no trabalho
+    risco_de_operacao = fields.Text(u'Risco de operação')
+    medidas_preventivas = fields.Text(u'Medidas preventivas')
+    epi_ids = fields.Many2many('ud.servico.epi', 'servico_solicitacao_epi', string=u'EPI')
     # Valores de execução de serviço e cancelamento
     data_cancelamento = fields.Datetime(u'Data de cancelamento')
     motivo_cancelamento = fields.Text(u'Motivo cancelamento')

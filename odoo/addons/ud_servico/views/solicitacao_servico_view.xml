@@ -339,7 +339,8 @@
                         </fieldset>
                         <fieldset attrs="{'invisible': [('state', '=', 'nova')]}">
                             <legend>Dados da Execução</legend>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('nome_gerente', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="nome_gerente"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="nome_gerente"/>
@@ -366,6 +367,26 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('risco_de_operacao', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="risco_de_operacao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="risco_de_operacao"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('medidas_preventivas', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="medidas_preventivas"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="medidas_preventivas"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group" attrs="{'invisible': [('epi_ids', '=', False)]}">
+                                <label class="col-md-4 col-sm-4 control-label" for="epi_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="epi_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group"
                                  attrs="{'invisible': [('data_execucao', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="data_execucao"></label>
                                 <div class="col-md-7 col-sm-7">
@@ -385,7 +406,8 @@
                                     <field name="finalizar"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
+                            <div class="col-md-6 col-lg-6 form-group"
+                                 attrs="{'invisible': [('motivo_cancelamento', '=', False)]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="motivo_cancelamento"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="motivo_cancelamento"/>

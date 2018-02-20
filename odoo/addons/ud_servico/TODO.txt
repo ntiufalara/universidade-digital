@@ -1,6 +1,4 @@
- - Adicionar risco de operação ao encaminhar para execução
- - Adicionar campo medidas preventivas
- - Adicionar campo para EPI (Equipamentos de proteção individual)
+ - Adicionar campo para EPI (Equipamentos de proteção individual) - TESTAR
  - Imprimir Ordem de serviço
  - Adicionar assinaturas na impressão
  - Adicionar relatórios e gráficos
