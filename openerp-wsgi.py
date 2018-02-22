@@ -13,6 +13,7 @@
 #   $ gunicorn openerp:service.wsgi_server.application -c openerp-wsgi.py
 
 import openerp
+import os
 
 #----------------------------------------------------------
 # Common
@@ -26,14 +27,14 @@ conf = openerp.tools.config
 # Path to the OpenERP Addons repository (comma-separated for
 # multiple locations)
 
-conf['addons_path'] = '/home/ud/universidade-digital/openerp/addons/'
+conf['addons_path'] = '/src/openerp/addons/'
 
 # Optional database config if not using local socket
-#conf['db_name'] = 'mycompany'
-#conf['db_host'] = 'localhost'
-#conf['db_user'] = 'foo'
-#conf['db_port'] = 5432
-#conf['db_password'] = 'secret'
+conf['db_name'] = 'ud'
+conf['db_host'] = 'db'
+conf['db_user'] = 'odoo'
+conf['db_port'] = 5432
+conf['db_password'] = 'odoo'
 
 #----------------------------------------------------------
 # Generic WSGI handlers application
