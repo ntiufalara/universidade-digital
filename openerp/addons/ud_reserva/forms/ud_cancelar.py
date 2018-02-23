@@ -1,6 +1,7 @@
 # coding: utf8
 from openerp.osv import fields, osv
 
+
 class cancelar(osv.osv_memory):
     _name = "cancelar"
     _columns = {
