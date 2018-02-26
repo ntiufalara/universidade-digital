@@ -4,7 +4,7 @@
     <data>
 
         <record id="publicacao_tipo_tcc" model="ud.biblioteca.publicacao.tipo">
-            <field name="name">TCC</field>
+            <field name="name">TCC - Trabalho de Conclusão de Curso</field>
         </record>
         <record id="publicacao_tipo_dissertacao" model="ud.biblioteca.publicacao.tipo">
             <field name="name">Dissertação</field>
@@ -13,7 +13,7 @@
             <field name="name">Monografia</field>
         </record>
         <record id="publicacao_tipo_artigo" model="ud.biblioteca.publicacao.tipo">
-            <field name="name">Artigo</field>
+            <field name="name">artigo</field>
         </record>
         <record id="publicacao_tipo_tese" model="ud.biblioteca.publicacao.tipo">
             <field name="name">Tese</field>
@@ -23,6 +23,9 @@
         </record>
         <record id="publicacao_tipo_fotografia" model="ud.biblioteca.publicacao.tipo">
             <field name="name">Fotografia</field>
+        </record>
+        <record id="publicacao_tipo_outros" model="ud.biblioteca.publicacao.tipo">
+            <field name="name">outros</field>
         </record>
 
     </data>

@@ -19,8 +19,8 @@
         'data/ud_curso_modalidade_data.xml',
 
         # Descomentar para adicionar os dados da UFAL Arapiraca
-        'data/ud_estrutura_data.xml',
-        'data/ud_bolsa_data.xml',
+        # 'data/ud_estrutura_data.xml',
+        # 'data/ud_bolsa_data.xml',
 
         # Views
         'views/pessoa_view.xml',

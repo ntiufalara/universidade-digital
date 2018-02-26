@@ -11,4 +11,4 @@ class Setor(models.Model):
     _inherit = 'ud.setor'
 
     emite_portaria = fields.Boolean(u'Emite portaria')
-    responsavel_id = fields.Many2one('res.users', u'Responsável', required=True)
+    responsavel_id = fields.Many2one('res.users', u'Responsável')

@@ -1,3 +1,4 @@
+ - Adicionar novos campos a view: atribuir_execucao_wiz_view.xml
  - Adicionar campo para EPI (Equipamentos de proteção individual) - TESTAR
  - Imprimir Ordem de serviço
  - Adicionar assinaturas na impressão
