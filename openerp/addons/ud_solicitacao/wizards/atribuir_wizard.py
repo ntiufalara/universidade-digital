@@ -11,4 +11,4 @@ class atribuir_wiz (osv.osv_memory):
     def atribuir (self, cr, uid, ids, ctx):
         lt = self.read(cr, uid, ids)[0]
         valores = {'responsavel':lt["responsavel"][0],"state":"atribuida"}
-        self.pool.get("ud.solicitacao").write(cr, uid)
+        self.pool.get("ud.solicitacao").write(cr, uid, ctx["active_ids"], valores)

@@ -32,7 +32,8 @@ def get_banco(cls, cr, browse_record, usuario_id, context=None):
         elif dados_bancarios.ud_conta_id.id == usuario_id:
             return dados_bancarios.id
         raise osv.except_osv(u"Dados Bancários duplicados", u"Não é permitido duplicar dados bancários!")
-    dados = {"banco_id": browse_record.banco_id.id, "agencia": browse_record.agencia, "dv_agencia": browse_record.dv_agencia,
+    dados = {"banco_id": browse_record.banco_id.id, "agencia": browse_record.agencia,
+             "dv_agencia": browse_record.dv_agencia,
              "conta": browse_record.conta, "dv_conta": browse_record.dv_conta, "operacao": browse_record.operacao,
              "ud_conta_id": usuario_id}
     return dados_bancarios_model.create(cr, SUPERUSER_ID, dados, context=context)
@@ -51,7 +52,8 @@ class AdicionarBolsaWizard(osv.TransientModel):
         oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
         res = {}
         for add in self.browse(cr, uid, ids, context):
-            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", add.disciplina_id.disciplina_id.id), ("em_oferta", "=", True)],
+            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", add.disciplina_id.disciplina_id.id),
+                                                   ("em_oferta", "=", True)],
                                          context=context)
             if oferta:
                 res[add.id] = oferta_model.browse(cr, uid, oferta[0], context=context).bolsas_disponiveis
@@ -71,8 +73,10 @@ class AdicionarBolsaWizard(osv.TransientModel):
         "tutor": fields.boolean(u"Tutor?"),
         "status": fields.selection(_STATES, u"Status", required=True),
         "doc_discente_id": fields.many2one("ud.monitoria.documentos.discente", u"Discente", required=True,
-                                             domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
-                                                    "('is_active', '=', True), ('state', '=', status)]"),
+                                           domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
+                                                  "('is_active', '=', True), ('state', '=', status)]"),
+        "dados_bancarios_id": fields.related("doc_discente_id", "dados_bancarios_id", type="many2one",
+                                             relation="ud.dados.bancarios", readonly=True, string=u"Discente"),
         # DADOS BANCÁRIOS
         "banco_id": fields.many2one("ud.banco", u"Banco", ondelete="restrict"),
         "agencia": fields.char(u"Agência", size=4, help=u"Número da Agência"),
@@ -97,7 +101,8 @@ class AdicionarBolsaWizard(osv.TransientModel):
             if context.get("active_model", False) == "ud.monitoria.registro":
                 res["semestre_id"] = context.get("active_id")
             elif context.get("active_model", False) == "ud.monitoria.documentos.discente":
-                doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, context.get("active_id"), context)
+                doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, context.get("active_id"),
+                                                                               context)
                 if doc.state == "bolsista":
                     raise osv.except_osv(u"Discente bolsista", u"O discente já é bolsista")
                 elif not doc.is_active:
@@ -120,14 +125,17 @@ class AdicionarBolsaWizard(osv.TransientModel):
             return {"value": {"disciplina_id": False}}
         return {}
 
-    def onchange_disciplina(self,  cr, uid, ids, disciplina_id, doc_discente_id, context=None):
+    def onchange_disciplina(self, cr, uid, ids, disciplina_id, doc_discente_id, context=None):
         if disciplina_id:
             if doc_discente_id:
-                doc_discente = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id, context)
+                doc_discente = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id,
+                                                                                        context)
                 doc_discente_id = doc_discente_id if doc_discente.disciplina_id.id == disciplina_id else False
-            disciplina_id = self.pool.get("ud.monitoria.disciplina").browse(cr, uid, disciplina_id, context).disciplina_id.id
+            disciplina_id = self.pool.get("ud.monitoria.disciplina").browse(cr, uid, disciplina_id,
+                                                                            context).disciplina_id.id
             oferta_model = self.pool.get("ud.monitoria.oferta.disciplina")
-            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", disciplina_id), ("em_oferta", "=", True)], context=context)
+            oferta = oferta_model.search(cr, uid, [("disciplina_id", "=", disciplina_id), ("em_oferta", "=", True)],
+                                         context=context)
             if oferta:
                 return {
                     "value": {"doc_discente_id": doc_discente_id,
@@ -143,7 +151,8 @@ class AdicionarBolsaWizard(osv.TransientModel):
             vals = {"agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}
             vals.update({"%s_v" % dado: banco.get(dado) for dado in banco.keys()})
             return {"value": vals}
-        return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,"operacao_v": False,
+        return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,
+                          "operacao_v": False,
                           "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}}
 
     def botao_adicionar(self, cr, uid, ids, context=None):
@@ -161,7 +170,8 @@ class AdicionarBolsaWizard(osv.TransientModel):
                         raise osv.except_osv(
                             u"Discente bolsista",
                             u"O discente \"{}\" sob matrícula \"{}\" possui bolsa do tipo: \"{}\"".format(
-                                add.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
+                                add.doc_discente_id.discente_id.pessoa_id.name, matricula,
+                                TIPOS_BOLSA[perfil.tipo_bolsa]
                             )
                         )
                     break
@@ -213,8 +223,8 @@ class TransferirBolsaWizard(osv.TransientModel):
 
         "curso_id_de": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
         "disciplina_id_de": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
-                                         domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_de), "
-                                                "('is_active', '=', True)]"),
+                                            domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_de), "
+                                                   "('is_active', '=', True)]"),
         "tutor_de": fields.boolean(u"Tutor?"),
         "doc_discente_id_de": fields.many2one("ud.monitoria.documentos.discente", u"Discente", required=True,
                                               domain="[('is_active', '=', True), ('state', '=', 'bolsista'), "
@@ -222,8 +232,8 @@ class TransferirBolsaWizard(osv.TransientModel):
 
         "curso_id_para": fields.many2one("ud.curso", u"Curso", required=True, domain="[('is_active', '=', True)]"),
         "disciplina_id_para": fields.many2one("ud.monitoria.disciplina", u"Disciplinas", required=True,
-                                         domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_para), "
-                                                "('is_active', '=', True)]"),
+                                              domain="[('semestre_id', '=', semestre_id), ('curso_id', '=', curso_id_para), "
+                                                     "('is_active', '=', True)]"),
         "tutor_para": fields.boolean(u"Tutor?"),
         "status_para": fields.selection(_STATES, u"Status", required=True),
         "doc_discente_id_para": fields.many2one("ud.monitoria.documentos.discente", u"Discente", required=True,
@@ -276,7 +286,7 @@ class TransferirBolsaWizard(osv.TransientModel):
             return {"value": {"disciplina_id_" + comp: False}}
         return {}
 
-    def onchange_disciplina(self,  cr, uid, ids, comp, disciplina_id, doc_discente_id, context=None):
+    def onchange_disciplina(self, cr, uid, ids, comp, disciplina_id, doc_discente_id, context=None):
         if disciplina_id and doc_discente_id:
             doc_discente = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id, context)
             doc_discente_id = doc_discente_id if doc_discente.disciplina_id.id == disciplina_id else False
@@ -293,7 +303,8 @@ class TransferirBolsaWizard(osv.TransientModel):
             vals = {"agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}
             vals.update({"%s_v" % dado: banco.get(dado) for dado in banco.keys()})
             return {"value": vals}
-        return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,"operacao_v": False,
+        return {"value": {"agencia_v": False, "dv_agencia_v": False, "conta_v": False, "dv_conta_v": False,
+                          "operacao_v": False,
                           "agencia": False, "dv_agencia": False, "conta": False, "dv_conta": False, "operacao": False}}
 
     def botao_transferir(self, cr, uid, ids, context=None):
@@ -349,11 +360,12 @@ class TransferirBolsaWizard(osv.TransientModel):
                 "descricao": u"Transferência de bolsa no valor de R$ %(valor)s do discente %(discente_de)s sob matrícula "
                              u"%(matricula_de)s para o(a) discente \"%(discente_para)s\" sob matrícula"
                              u"\"%(matricula_para)s\"." % {
-                    "valor": valor, "discente_de": transf.doc_discente_id_de.discente_id.pessoa_id.name.upper(),
-                    "matricula_de": perfil_de.matricula,
-                    "discente_para": transf.doc_discente_id_de.discente_id.pessoa_id.name.upper(),
-                    "matricula_para": perfil_de.matricula
-                }
+                                 "valor": valor,
+                                 "discente_de": transf.doc_discente_id_de.discente_id.pessoa_id.name.upper(),
+                                 "matricula_de": perfil_de.matricula,
+                                 "discente_para": transf.doc_discente_id_de.discente_id.pessoa_id.name.upper(),
+                                 "matricula_para": perfil_de.matricula
+                             }
             }
             transf.semestre_id.write({"eventos_ids": [(0, 0, evento)]})
         return True
@@ -371,8 +383,8 @@ class RemoverBolsaWizard(osv.TransientModel):
                                                 "('is_active', '=', True)]"),
         "tutor": fields.boolean(u"Tutor?"),
         "doc_discente_id": fields.many2one("ud.monitoria.documentos.discente", u"Discente", required=True,
-                                             domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
-                                                    "('is_active', '=', True), ('state', '=', 'bolsista')]"),
+                                           domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
+                                                  "('is_active', '=', True), ('state', '=', 'bolsista')]"),
     }
 
     def default_get(self, cr, uid, fields_list, context=None):
@@ -382,7 +394,8 @@ class RemoverBolsaWizard(osv.TransientModel):
             if context.get("active_model", False) == "ud.monitoria.registro":
                 res["semestre_id"] = context.get("active_id")
             elif context.get("active_model", False) == "ud.monitoria.documentos.discente":
-                doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, context.get("active_id"), context)
+                doc = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, context.get("active_id"),
+                                                                               context)
                 if doc.state != "bolsista":
                     raise osv.except_osv(u"Discente não bolsista", u"O discente não é bolsista")
                 elif not doc.is_active:
@@ -404,7 +417,7 @@ class RemoverBolsaWizard(osv.TransientModel):
             return {"value": {"disciplina_id": False}}
         return {}
 
-    def onchange_disciplina(self,  cr, uid, ids, disciplina_id, doc_discente_id, context=None):
+    def onchange_disciplina(self, cr, uid, ids, disciplina_id, doc_discente_id, context=None):
         if disciplina_id and doc_discente_id:
             doc_discente = self.pool.get("ud.monitoria.documentos.discente").browse(cr, uid, doc_discente_id, context)
             doc_discente_id = doc_discente_id if doc_discente.disciplina_id.id == disciplina_id else False
@@ -425,7 +438,8 @@ class RemoverBolsaWizard(osv.TransientModel):
                             u"Categoria de bolsa",
                             u"A categoria de bolsa do discente \"{}\" sob matrícula \"{}\" não é pertencente à "
                             u"monitoria: \"{}\"".format(
-                                rem.doc_discente_id.discente_id.pessoa_id.name, matricula, TIPOS_BOLSA[perfil.tipo_bolsa]
+                                rem.doc_discente_id.discente_id.pessoa_id.name, matricula,
+                                TIPOS_BOLSA[perfil.tipo_bolsa]
                             )
                         )
                     break

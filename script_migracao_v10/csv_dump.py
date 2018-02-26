@@ -60,12 +60,12 @@ def main(_url, _db, _username, _password):
     uid = auth.login(_db, _username, _password)
 
     server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(_url))
-    modules = ['ud']
+    modules = ['ud_biblioteca']
 
     for _module in modules:
         dump_module_data(server, _db, uid, _password, _module)
 
 
 if __name__ == "__main__":
-    url, db, username, password = ['http://localhost:8069', "ud", "admin", "admin@ud&"]
+    url, db, username, password = ['http://localhost:8009', "ud", "admin", "admin@ud&"]
     main(url, db, username, password)

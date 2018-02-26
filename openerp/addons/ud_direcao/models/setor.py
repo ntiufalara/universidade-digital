@@ -13,7 +13,7 @@ class Setor(osv.Model):
 
     _columns = {
         'emite_portaria': fields.boolean('Emite portaria'),
-        'responsavel_id': fields.many2one('ud.employee', u'Responśavel', required=True),
+        'responsavel_id': fields.many2one('ud.employee', u'Responśavel'),
     }
 
 
