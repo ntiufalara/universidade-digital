@@ -12,7 +12,7 @@
                     <field name="emite_portaria" />
                 </xpath>
                 <xpath expr="//field[@name='sigla']" position="after">
-                    <field name="responsavel_id" />
+                    <field name="responsavel_id" required="1"/>
                 </xpath>
             </field>
         </record>
