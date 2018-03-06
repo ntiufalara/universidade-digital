@@ -1,6 +1,7 @@
 # encoding: UTF-8
-
+import logging
 from odoo import models, fields
+_logger = logging.getLogger(__name__)
 
 
 class Anexo(models.Model):
@@ -13,4 +14,33 @@ class Anexo(models.Model):
     name = fields.Char(u'Anexo', required=True)
     arquivo = fields.Binary(u'Arquivo PDF', filter='*.pdf')
     publicacao_id = fields.Many2one('ud.biblioteca.publicacao', u'Publicação')
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização das publicações com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando palavras-chave com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        from odoo.addons.ud.models.utils import url, db, username, password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        anexo_ids = server.execute(db, uid, password, 'ud.biblioteca.anexo', 'search', [('publicacao_id', '!=', False)])
+
+        for anexo_id in anexo_ids:
+            anexo_old = server.execute_kw(db, uid, password, 'ud.biblioteca.anexo', 'read', [anexo_id])
+            anexo_new = self.env['ud.biblioteca.anexo'].search([('name', '=', anexo_old['name'])])
+            if not anexo_new:
+                publicacao = self.env['ud.biblioteca.publicacao'].search([('name', '=', anexo_old['publicacao_id'][1])])
+                self.create({
+                    'name': anexo_old['name'],
+                    'arquivo': anexo_old['arquivo'],
+                    'publicacao_id': publicacao.id
+                })
 

@@ -6,7 +6,7 @@
     "description": u"""Núcleo da aplicação Universidade Digital.""",
     "author": "NTI UFAL Arapiraca",
     "images": [],
-    "depends": ["base", "base_setup", 'inputmask_widget'],
+    "depends": ["base", "base_setup", 'inputmask_widget', 'auth_signup'],
     "init_xml": [],
 
     "data": [
@@ -17,6 +17,7 @@
         'data/ud_perfil_tipo_data.xml',
         'data/ud_perfil_tipo_docente_data.xml',
         'data/ud_curso_modalidade_data.xml',
+        "data/email_template.xml",
 
         # Descomentar para adicionar os dados da UFAL Arapiraca
         # 'data/ud_estrutura_data.xml',

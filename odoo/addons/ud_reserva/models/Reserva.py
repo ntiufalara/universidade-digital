@@ -1,8 +1,14 @@
 # encoding: UTF-8
+import logging
+
+import datetime
+import pytz
 
 from odoo import models, fields, api
 from odoo.addons.ud_reserva.models import utils
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class Reserva(models.Model):
@@ -107,6 +113,7 @@ class Reserva(models.Model):
             res = True if rec.id not in old_ids else False
             old_ids.append(rec.id)
             return res
+
         espacos = espacos.filtered(lambda rec: verifica_duplicatas(rec))
         return espacos
 
@@ -177,3 +184,54 @@ class Reserva(models.Model):
         grupo_gerente = self.env.ref('ud_reserva.gerente_reserva')
         if grupo_gerente in usuario.groups_id and self.solicitante_id != usuario:
             self.verifica_responsavel()
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização das reservas de espaço com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando reservas de espaço com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        from odoo.addons.ud.models.utils import url, db, username, password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        reserva_ids = server.execute(db, uid, password, 'ud.reserva', 'search',
+                                     [('hora_entrada', '>=', datetime.datetime(2018, 01, 01, 0, 0, 0).isoformat()),
+                                      ('state', '!=', 'cancelada')])
+        reservas = server.execute_kw(db, uid, password, 'ud.reserva', 'read', [reserva_ids])
+
+        for reserva in reservas:
+            reserva_obj = self.search([('titulo', '=', reserva['grupo_id'][1])])
+            espaco = self.env['ud.espaco'].search([('name', '=', reserva['espaco_id'][1])])
+            # Caso o espaço não seja encontrado, pule
+            if not espaco:
+                continue
+            # caso a reserva ainda não exista, crie
+            if not reserva_obj:
+                reserva_obj = self.create({
+                    'titulo': reserva['grupo_id'][1],
+                    'descricao': reserva['descricao_evento'] if reserva.get('descricao_evento') else "",
+                    'state': reserva['state'],
+                })
+            # Busca o objeto "dia" para não criar novamente
+            dia_obj = self.env['ud.reserva.dia'].search([
+                ('data_inicio', '=', reserva['hora_entrada']),
+                ('data_fim', '=', reserva['hora_saida']),
+                ('reserva_id', '=', reserva_obj.id),
+                ('espaco_id', '=', espaco.id),
+            ])
+
+            # Cria o dia referente a reserva
+            if not dia_obj:
+                self.env['ud.reserva.dia'].create({
+                    'data_inicio': reserva['hora_entrada'],
+                    'data_fim': reserva['hora_saida'],
+                    'reserva_id': reserva_obj.id,
+                    'espaco_id': espaco.id,
+                })

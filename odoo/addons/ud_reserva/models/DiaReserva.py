@@ -1,6 +1,6 @@
 # encoding: UTF-8
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from odoo import models, fields, api
 from odoo.addons.ud_reserva.models import utils
@@ -71,10 +71,13 @@ class DiaReserva(models.Model):
         Verifica se as datas de início e fim são no mesmo dia
         :return:
         """
-        data_inicio = fields.datetime.strptime(self.data_inicio, '%Y-%m-%d %H:%M:%S').date()
-        data_fim = fields.datetime.strptime(self.data_fim, '%Y-%m-%d %H:%M:%S').date()
-        if data_inicio != data_fim:
-            raise ValidationError('O início e o fim devem ser no mesmo dia')
+        data_inicio = fields.datetime.strptime(self.data_inicio, '%Y-%m-%d %H:%M:%S')
+        data_fim = fields.datetime.strptime(self.data_fim, '%Y-%m-%d %H:%M:%S')
+        if data_inicio.date() != data_fim.date():
+            data_inicio = data_inicio - timedelta(hours=3)
+            data_fim = data_fim - timedelta(hours=3)
+            if data_inicio.date() != data_fim.date():
+                raise ValidationError('O início e o fim devem ser no mesmo dia')
 
     @api.constrains('reserva_id', 'data_inicio', 'data_fim', 'espaco_id')
     def valida_responsavel(self):

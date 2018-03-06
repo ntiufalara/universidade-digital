@@ -16,6 +16,7 @@
         "views/portaria_view.xml",
         "views/menus.xml",
         # Dados
+        "data/load_portarias_openerp7_cron.xml",
     ],
     "installable": True,
     "application": True,

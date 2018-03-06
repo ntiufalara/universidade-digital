@@ -20,6 +20,7 @@
         "wizards/adicionar_dias_wizard_view.xml",
         "wizards/cancelamento_reserva_wizard.xml",
         # Dados
+        "data/load_reserva_openerp7_cron.xml",
     ],
     "installable": True,
     "application": True,

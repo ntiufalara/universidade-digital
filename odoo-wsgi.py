@@ -13,6 +13,7 @@
 #   $ gunicorn odoo:service.wsgi_server.application -c openerp-wsgi.py
 
 import odoo
+from odoo.service.server import ThreadedServer
 
 # ----------------------------------------------------------
 # Common
@@ -33,6 +34,8 @@ conf['db_host'] = 'db'
 conf['db_user'] = 'odoo'
 conf['db_port'] = 5432
 conf['db_password'] = 'odoo'
+conf['max_cron_threads'] = 2
+conf['limit_time_real_cron'] = 0
 
 # ----------------------------------------------------------
 # Generic WSGI handlers application
@@ -40,7 +43,8 @@ conf['db_password'] = 'odoo'
 application = odoo.service.wsgi_server.application
 
 odoo.service.server.load_server_wide_modules()
-
+# Executa as tarefas agendadas
+ThreadedServer(None).cron_spawn()
 # ----------------------------------------------------------
 # Gunicorn
 # ----------------------------------------------------------

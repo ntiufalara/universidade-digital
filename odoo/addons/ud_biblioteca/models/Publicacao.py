@@ -1,5 +1,9 @@
 # encoding: UTF-8
+import logging
+
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class Publicacao(models.Model):
@@ -46,6 +50,8 @@ class Publicacao(models.Model):
         :return:
         """
         result = super(Publicacao, self).read(fields, load)
+        if not fields:
+            fields = []
         if len(self) == 1 and u'__last_update' in fields:
             if self.visualizacoes is not None:
                 self.sudo().visualizacoes = self.sudo().visualizacoes + 1
@@ -96,3 +102,82 @@ class Publicacao(models.Model):
             if obj.admin_campus:
                 return None
             return obj.polo_id.id
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização das publicações com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando publicações com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        from odoo.addons.ud.models.utils import url, db, username, password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            # Se não conectar, saia da função
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        pub_ids = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [])
+        pubs = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao', 'read', [pub_ids])
+
+        # busca os campos relacionais e cria nova publicacao se necessário
+        for pub in pubs:
+            pub_obj = self.search([('name', '=', pub['name'])])
+            if not pub_obj:
+                p_chave_old = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read',
+                                                [pub['palavras_chave_ids']])
+                p_chave_old_names = [p['name'] for p in p_chave_old]
+                p_chave = self.env['ud.biblioteca.p_chave'].search([('name', 'in', p_chave_old_names)])
+                # Caso nem todas as palavras-chave estejam no banco, pula
+                if len(p_chave) != len(p_chave_old_names):
+                    continue
+                # Orientadores
+                orientadores_old = server.execute_kw(db, uid, password, 'ud.biblioteca.orientador', 'read',
+                                                     [pub['orientador_ids']])
+                orientadores_old_names = [o['name'] for o in orientadores_old]
+                orientadores = self.env['ud.biblioteca.publicacao.orientador'].search(
+                    [('nome_orientador', 'in', orientadores_old_names)]
+                )
+                # Caso nem todas os orientadores estejam no banco, pula
+                if len(orientadores) != len(orientadores_old_names):
+                    continue
+                # Coorientadores
+                coorientadores_old = server.execute_kw(db, uid, password, 'ud.biblioteca.orientador', 'read',
+                                                       [pub['coorientador_ids']])
+                coorientadores_old_names = [o['name'] for o in coorientadores_old]
+                coorientadores = self.env['ud.biblioteca.publicacao.orientador'].search(
+                    [('nome_orientador', 'in', coorientadores_old_names)]
+                )
+                # Caso nem todas os orientadores estejam no banco, pula
+                if len(coorientadores) != len(coorientadores_old_names):
+                    continue
+                # Campus, polo e curso
+                campus = self.env['ud.campus'].search([('name', '=', pub['ud_campus_id'][1])])
+                polo = self.env['ud.polo'].search([('name', '=', pub['polo_id'][1])])
+                curso = self.env['ud.curso'].search([('name', '=', pub['curso'][1])])
+                # tipo de publicação
+                tipo = self.env['ud.biblioteca.publicacao.tipo'].search([('name', '=', pub['tipo_id'][1])])
+                # Caso não corresponda, pula
+                if not tipo:
+                    continue
+                # autor
+                autor = self.env['ud.biblioteca.publicacao.autor'].search([('name', '=', pub['autor_id'][1])])
+                # Caso nem todas os orientadores estejam no banco, pula
+                if not autor:
+                    continue
+                obj = self.create({
+                    'name': pub['name'],
+                    'campus_id': campus.id,
+                    'polo_id': polo.id,
+                    'curso_id': curso.id,
+                    'tipo_id': tipo.id,
+                    'autor_id': autor.id,
+                    'ano_pub': pub['ano_pub'],
+                    'autorizar_publicacao': pub['autorizar_publicacao'],
+                })
+                obj.orientador_ids |= orientadores
+                obj.coorientador_ids |= coorientadores
+                obj.palavras_chave_ids |= p_chave

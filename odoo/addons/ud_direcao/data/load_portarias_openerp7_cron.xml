@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="load_portaria_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza as portarias com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.direcao.portaria</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
+    </data>
+</odoo>

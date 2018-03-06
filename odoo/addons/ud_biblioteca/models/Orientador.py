@@ -1,6 +1,7 @@
 # encoding: UTF-8
-
+import logging
 from odoo import models, fields, api
+_logger = logging.getLogger(__name__)
 
 
 class Orientador(models.Model):
@@ -24,3 +25,32 @@ class Orientador(models.Model):
     @api.one
     def get_name(self):
         self.name = u"{} {}".format(self.titulacao_id.sigla, self.nome_orientador) if self.titulacao_id else self.nome_orientador
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização das publicações com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando orientadores com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        from odoo.addons.ud.models.utils import url, db, username, password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        orientador_ids = server.execute(db, uid, password, 'ud.biblioteca.orientador', 'search', [])
+        orientadores = server.execute_kw(db, uid, password, 'ud.biblioteca.orientador', 'read', [orientador_ids])
+
+        for orientador in orientadores:
+            titulacao_obj = None
+            if orientador.get('titulacao_id'):
+                titulacao_obj = self.env['ud.biblioteca.orientador.titulacao'].search([('name', '=', orientador.get('titulacao_id')[1])])
+            if orientador.get('titulacao_id') and not titulacao_obj:
+                continue
+            orientador_obj = self.search([('nome_orientador', '=', orientador['name'])])
+            if not orientador_obj:
+                self.create({'nome_orientador': orientador['name']})
