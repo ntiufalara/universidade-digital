@@ -128,6 +128,7 @@ class Publicacao(models.Model):
         for pub in pubs:
             pub_obj = self.search([('name', '=', pub['name'])])
             if not pub_obj:
+                print(pub)
                 p_chave_old = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read',
                                                 [pub['palavras_chave_ids']])
                 p_chave_old_names = [p['name'] for p in p_chave_old]
