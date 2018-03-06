@@ -23,7 +23,8 @@ class PalavraChave(models.Model):
         _logger.info(u'Sincronizando palavras-chave com o Openerp 7')
         import xmlrpclib
         # Conectando ao servidor externo
-        from odoo.addons.ud.models.utils import url, db, username, password
+        server_oe7 = self.env['ud.server.openerp7'].search([('db', '=', 'ud')])
+        url, db, username, password = server_oe7.url, server_oe7.db, server_oe7.username, server_oe7.password
         try:
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)

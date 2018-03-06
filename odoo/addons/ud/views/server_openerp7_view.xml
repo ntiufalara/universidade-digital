@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="server_openerp7_action">
+            <field name="name">Servidor para sincronização</field>
+            <field name="res_model">ud.server.openerp7</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Servidor para sincronização
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="server_openerp7_tree">
+            <field name="name">Servidores</field>
+            <field name="model">ud.server.openerp7</field>
+            <field name="arch" type="xml">
+                <tree string="Servidores">
+                    <field name="name"/>
+                    <field name="url"/>
+                    <field name="db"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="server_openerp7_form">
+            <field name="name">Servidor</field>
+            <field name="model">ud.server.openerp7</field>
+            <field name="arch" type="xml">
+                <form string="Servidor">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="url"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="url"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="db"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="db"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="username"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="username"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="password"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="password" password="True"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -13,3 +13,4 @@ import PerfilTipoDocente
 import Perfil
 import Bolsa
 import CursoModalidade
+import ServerOpenerp7

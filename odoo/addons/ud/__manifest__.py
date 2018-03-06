@@ -32,6 +32,7 @@
         'views/curso_view.xml',
         'views/espaco_view.xml',
         'views/perfil_view.xml',
+        'views/server_openerp7_view.xml',
         'views/menus.xml',
     ],
     "installable": True,

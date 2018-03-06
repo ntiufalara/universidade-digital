@@ -115,7 +115,3 @@ def validar_cnpj(cnpj):
     if novo != inteiros:
         return False
     return True
-
-
-# Dados para conexão com o Openerp7
-url, db, username, password = ['http://172.19.0.1:8069', "ud", "admin", "admin@ud&"]
