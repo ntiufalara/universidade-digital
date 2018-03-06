@@ -129,8 +129,11 @@ class Publicacao(models.Model):
             pub_obj = self.search([('name', '=', pub['name'])])
             if not pub_obj:
                 print(pub)
+                p_chave = pub.get('palavras_chave_ids')
+                if not p_chave:
+                    p_chave = pub.get('palavras-chave_ids')
                 p_chave_old = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read',
-                                                [pub['palavras_chave_ids']])
+                                                [p_chave])
                 p_chave_old_names = [p['name'] for p in p_chave_old]
                 p_chave = self.env['ud.biblioteca.p_chave'].search([('name', 'in', p_chave_old_names)])
                 # Caso nem todas as palavras-chave estejam no banco, pula

@@ -209,15 +209,16 @@ class Reserva(models.Model):
 
         for reserva in reservas:
             print(reserva)
-            reserva_obj = self.search([('titulo', '=', reserva['grupo_id'][1])])
-            espaco = self.env['ud.espaco'].search([('name', '=', reserva['espaco_id'][1])])
+            reserva_name = reserva['grupo_id'][1] if reserva['grupo_id'] else reserva['titulo']
+            reserva_obj = self.search([('titulo', '=', reserva_name)])
+            espaco = self.env['ud.espaco'].search([('name', '=', reserva_name)])
             # Caso o espaço não seja encontrado, pule
             if not espaco:
                 continue
             # caso a reserva ainda não exista, crie
             if not reserva_obj:
                 reserva_obj = self.create({
-                    'titulo': reserva['grupo_id'][1],
+                    'titulo': reserva_name,
                     'descricao': reserva['descricao_evento'] if reserva.get('descricao_evento') else "",
                     'state': reserva['state'],
                 })
