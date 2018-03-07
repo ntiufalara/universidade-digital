@@ -209,7 +209,7 @@ class Reserva(models.Model):
 
         for reserva in reservas:
             print(reserva)
-            reserva_name = reserva['grupo_id'][1] if reserva['grupo_id'] else reserva['titulo']
+            reserva_name = reserva['grupo_id'][1] if reserva['grupo_id'] else reserva['name']
             reserva_obj = self.search([('titulo', '=', reserva_name)])
             espaco = self.env['ud.espaco'].search([('name', '=', reserva_name)])
             # Caso o espaço não seja encontrado, pule
