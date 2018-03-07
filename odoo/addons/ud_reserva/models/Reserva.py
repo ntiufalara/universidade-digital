@@ -208,7 +208,6 @@ class Reserva(models.Model):
         reservas = server.execute_kw(db, uid, password, 'ud.reserva', 'read', [reserva_ids])
 
         for reserva in reservas:
-            print(reserva)
             reserva_name = reserva['grupo_id'][1] if reserva['grupo_id'] else reserva['name']
             reserva_obj = self.search([('titulo', '=', reserva_name)])
             espaco = self.env['ud.espaco'].search([('name', '=', reserva_name)])

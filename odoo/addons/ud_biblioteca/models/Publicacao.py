@@ -128,7 +128,6 @@ class Publicacao(models.Model):
         for pub in pubs:
             pub_obj = self.search([('name', '=', pub['name'])])
             if not pub_obj:
-                print(pub)
                 p_chave = pub.get('palavras_chave_ids')
                 if not p_chave:
                     p_chave = pub.get('palavras-chave_ids')
