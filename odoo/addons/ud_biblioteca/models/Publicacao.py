@@ -136,7 +136,6 @@ class Publicacao(models.Model):
                 p_chave_old_names = [p['name'] for p in p_chave_old]
                 p_chave = self.env['ud.biblioteca.p_chave'].search([('name', 'in', p_chave_old_names)])
                 # Caso nem todas as palavras-chave estejam no banco, pula
-                print(len(p_chave) != len(p_chave_old_names))
                 if len(p_chave) != len(p_chave_old_names):
                     continue
                 # Orientadores
@@ -147,7 +146,6 @@ class Publicacao(models.Model):
                     [('nome_orientador', 'in', orientadores_old_names)]
                 )
                 # Caso nem todas os orientadores estejam no banco, pula
-                print(len(orientadores) != len(orientadores_old_names))
                 if len(orientadores) != len(orientadores_old_names):
                     continue
                 # Coorientadores
@@ -158,7 +156,6 @@ class Publicacao(models.Model):
                     [('nome_orientador', 'in', coorientadores_old_names)]
                 )
                 # Caso nem todas os orientadores estejam no banco, pula
-                print(len(coorientadores) != len(coorientadores_old_names))
                 if len(coorientadores) != len(coorientadores_old_names):
                     continue
                 # Campus, polo e curso
@@ -168,13 +165,11 @@ class Publicacao(models.Model):
                 # tipo de publicação
                 tipo = self.env['ud.biblioteca.publicacao.tipo'].search([('name', '=', pub['tipo_id'][1])])
                 # Caso não corresponda, pula
-                print(tipo)
                 if not tipo:
                     continue
                 # autor
                 autor = self.env['ud.biblioteca.publicacao.autor'].search([('name', '=', pub['autor_id'][1])])
                 # Caso nem todas os orientadores estejam no banco, pula
-                print(autor)
                 if not autor:
                     continue
                 obj = self.create({
