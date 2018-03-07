@@ -42,6 +42,21 @@ class Publicacao(models.Model):
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
                                 string=u'Áreas do trabalho')
 
+    def name_get(self):
+        """
+        Com nomes muito grandes, mostra apenas uma versão resumida
+        :return:
+        """
+        result = super(Publicacao, self).name_get()
+        result_list = []
+        slice_len = 50
+        for obj in result:
+            obj_list = list(obj)
+            if len(obj_list[1]) > slice_len:
+                obj_list[1] = u'{}...'.format(obj_list[1][:slice_len])
+            result_list.append(obj_list)
+        return result_list
+
     def read(self, fields=None, load='_classic_read'):
         """
         Cria um contador de leituras para a publicação
