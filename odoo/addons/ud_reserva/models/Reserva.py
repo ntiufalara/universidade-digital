@@ -234,9 +234,12 @@ class Reserva(models.Model):
             print(reserva_obj)
             print(dia_obj)
             if not dia_obj:
-                self.env['ud.reserva.dia'].create({
-                    'data_inicio': reserva['hora_entrada'],
-                    'data_fim': reserva['hora_saida'],
-                    'reserva_id': reserva_obj.id,
-                    'espaco_id': espaco.id,
-                })
+                try:
+                    self.env['ud.reserva.dia'].create({
+                        'data_inicio': reserva['hora_entrada'],
+                        'data_fim': reserva['hora_saida'],
+                        'reserva_id': reserva_obj.id,
+                        'espaco_id': espaco.id,
+                    })
+                except:
+                    continue
