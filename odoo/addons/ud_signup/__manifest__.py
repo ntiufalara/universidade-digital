@@ -6,7 +6,7 @@
     "description": u"""Configurações de autenticação da aplicação Universidade Digital.""",
     "author": "NTI UFAL Arapiraca",
     "images": [],
-    "depends": ["base", "base_setup", 'inputmask_widget', 'auth_signup'],
+    "depends": ["base", "base_setup", 'ud', 'auth_signup'],
     "init_xml": [],
 
     "data": [

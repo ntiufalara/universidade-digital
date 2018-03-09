@@ -212,7 +212,6 @@ class Reserva(models.Model):
             reserva_obj = self.search([('titulo', '=', reserva_name)])
             espaco = self.env['ud.espaco'].search([('name', '=', reserva['espaco_id'][1])])
             # Caso o espaço não seja encontrado, pule
-            print(espaco)
             if not espaco:
                 continue
             # caso a reserva ainda não exista, crie
@@ -231,8 +230,6 @@ class Reserva(models.Model):
             ])
 
             # Cria o dia referente a reserva
-            print(reserva_obj)
-            print(dia_obj)
             if not dia_obj:
                 try:
                     self.env['ud.reserva.dia'].create({

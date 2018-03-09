@@ -24,6 +24,6 @@
     "data": [
         'views/assets.xml',
         'views/web.xml',
-        'views/ud_layout.xml',
+        # 'views/ud_layout.xml',
     ],
 }
