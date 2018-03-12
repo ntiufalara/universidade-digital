@@ -8,8 +8,8 @@ services:
       - POSTGRES_USER=odoo
       - POSTGRES_DB=odoo
     volumes:
-      - "./db_data/:/var/lib/postgresql/data"
-      - "./db_backup/:/db_backup/"
+      - "../db_data/:/var/lib/postgresql/data"
+      - "../db_backup/:/db_backup/"
   web:
     build: .
     volumes:
