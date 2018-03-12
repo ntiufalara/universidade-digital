@@ -16,5 +16,6 @@ services:
       - ".:/src"
     ports:
       - "8000:80"
+      - "8069:8069"
     depends_on:
       - db
