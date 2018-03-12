@@ -25,7 +25,7 @@ RUN service apache2 stop
 RUN cp /src/site.conf /etc/apache2/sites-enabled/
 RUN addgroup root www-data
 RUN chmod 775 -R /var/www/ && chown www-data -R /var/www/
-RUN chown -R www-data /src
+RUN chown -R -v www-data /src
 
 # Cron config
 # RUN apt-get install -y cron
