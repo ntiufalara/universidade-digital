@@ -11,7 +11,7 @@ RUN \
           python-werkzeug python-xlwt python-yaml python-imaging \
           python-matplotlib python-unittest2 python-mock python-docutils \
           python-decorator python-requests python-jinja2 python-pypdf python-passlib \
-          python-psutil xvfb libfontconfig wkhtmltopdf
+          python-psutil xvfb libfontconfig1 wkhtmltopdf
 
 RUN apt-get install npm wget -y && npm install -g less n && n lts
 
