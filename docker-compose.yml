@@ -16,7 +16,6 @@ services:
       - ".:/src"
       - "./storage:/root/.local/share/Odoo"
     ports:
-      - "8000:80"
-      - "8069:8069"
+      - "8000:8069"
     depends_on:
       - db
