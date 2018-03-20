@@ -13,7 +13,7 @@
 #   $ gunicorn openerp:service.wsgi_server.application -c openerp-wsgi.py
 
 import openerp
-import os
+from openerp.service import cron
 
 #----------------------------------------------------------
 # Common
@@ -23,7 +23,7 @@ openerp.multi_process = True # Nah!
 # Equivalent of --load command-line option
 openerp.conf.server_wide_modules = ['web']
 conf = openerp.tools.config
-
+cron.start_service()
 # Path to the OpenERP Addons repository (comma-separated for
 # multiple locations)
 

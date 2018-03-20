@@ -60,7 +60,7 @@ def main(_url, _db, _username, _password):
     uid = auth.login(_db, _username, _password)
 
     server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(_url))
-    modules = ['ud_biblioteca']
+    modules = ['ud_direcao']
 
     for _module in modules:
         dump_module_data(server, _db, uid, _password, _module)
