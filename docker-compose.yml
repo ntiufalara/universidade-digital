@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres
+    image: postgres:9.4
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
@@ -14,6 +14,6 @@ services:
     volumes:
       - ".:/src"
     ports:
-      - "8009:80"
+      - "8009:8069"
     depends_on:
       - db
