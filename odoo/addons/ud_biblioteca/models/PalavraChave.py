@@ -15,6 +15,10 @@ class PalavraChave(models.Model):
     publicacao_id = fields.Many2many('ud.biblioteca.publicacao', 'publicacao_p_chave_rel', string=u'Palavras-chave',
                                      ondelete='set null')
 
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', u'Já existe uma palavra-chave de mesmo nome')
+    ]
+
     def load_from_openerp7_cron(self):
         """
         Realiza a sincronização das publicações com o Openerp 7
