@@ -15,7 +15,7 @@
 
         <record id="load_p_chave_openerp7_cron" model="ir.cron">
             <field name="name">Sincroniza as palavras-chave com o servidor openerp7</field>
-            <field name="interval_number">1</field>
+            <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
@@ -25,7 +25,7 @@
 
         <record id="load_orientador_openerp7_cron" model="ir.cron">
             <field name="name">Sincroniza os orientadores com o servidor openerp7</field>
-            <field name="interval_number">1</field>
+            <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
@@ -35,7 +35,7 @@
 
         <record id="load_orientador_titulacao_openerp7_cron" model="ir.cron">
             <field name="name">Sincroniza as titulações com o servidor openerp7</field>
-            <field name="interval_number">1</field>
+            <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
@@ -45,7 +45,7 @@
 
         <record id="load_autor_openerp7_cron" model="ir.cron">
             <field name="name">Sincroniza os autores com o servidor openerp7</field>
-            <field name="interval_number">1</field>
+            <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
