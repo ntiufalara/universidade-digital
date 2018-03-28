@@ -3,7 +3,7 @@
 <odoo>
     <data>
 
-        <menuitem id="ud_direcao_menu_top" name="Direção/Portarias" web_icon="ud_direcao,static/description/icon.png"/>
+        <menuitem id="ud_direcao_menu_top" name="Portarias" web_icon="ud_direcao,static/description/icon.png"/>
         <menuitem id="ud_direcao_menu_portaria" name="Portarias" parent="ud_direcao_menu_top"
                   action="ud_direcao_portaria_action"/>
 

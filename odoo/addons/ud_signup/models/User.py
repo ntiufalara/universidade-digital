@@ -9,4 +9,3 @@ from odoo.loglevels import ustr
 class User(models.Model):
     _name = 'res.users'
     _inherit = 'res.users'
-

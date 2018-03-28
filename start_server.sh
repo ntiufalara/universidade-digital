@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # Apache
 #rm /var/run/apache2/* -rf
