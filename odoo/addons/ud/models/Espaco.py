@@ -22,7 +22,7 @@ class Espaco(models.Model):
         """
         Limpa o campo bloco se o polo não pertencer a ele.
         """
-        campos = ["polo_id"]
+        campos = ["bloco_id"]
         valores = {}
         for campo in campos:
             valores[campo] = ""
