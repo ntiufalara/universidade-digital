@@ -1,3 +1,6 @@
+# Pasta de armazenamento de arquivos do Odoo no Docker
+storage/
+
 # Pasta do Pycharm
 .idea/
 # Pasta do banco de dados (Volume Docker)
