@@ -72,12 +72,14 @@
                                 <field name="fabricante_id"/>
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Almoxarifados</legend>
                             <div class="col-md-12 col-sm-12">
                                 <field name="almoxarifado_ids"/>
                             </div>
                         </div>
+                        -->
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Fornecedores</legend>
                             <div class="col-md-12 col-sm-12">
