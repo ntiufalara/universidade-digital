@@ -31,6 +31,23 @@ class Estoque(models.Model):
     def get_name(self):
         self.name = self.produto_id.name
 
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """
+        Remove a soma do total "estoque_min" na view list padrão (no topo da lista mostra a soma de todas as linhas)
+        :param domain:
+        :param fields:
+        :param groupby:
+        :param offset:
+        :param limit:
+        :param orderby:
+        :param lazy:
+        :return:
+        """
+        if 'estoque_min' in fields:
+            fields.remove('estoque_min')
+        return super(Estoque, self).read_group(domain, fields, groupby, offset, limit, orderby, lazy)
+
     @api.constrains('estoque_min')
     def valida_estoque_min(self):
         """

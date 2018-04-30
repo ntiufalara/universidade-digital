@@ -32,16 +32,7 @@ class Produto(models.Model):
         :return: RecordSet(): Instância do objeto criado
         """
         vals['name'] = vals.get('name').upper()
-        # Cria a instancia
         obj = super(Produto, self).create(vals)
-        for almoxarifado in obj.almoxarifado_ids:
-            self.env['ud.almoxarifado.estoque'].create({
-                'produto_id': obj.id,
-                'estoque_min': 1,
-                'almoxarifado_id': almoxarifado.id,
-                'campus_id': almoxarifado.campus_id.id,
-                'polo_id': almoxarifado.polo_id.id
-            })
         return obj
 
     def write(self, vals):

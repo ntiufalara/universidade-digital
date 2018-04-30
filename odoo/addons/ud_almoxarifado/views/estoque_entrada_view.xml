@@ -67,13 +67,21 @@
                         <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="almoxarifado_id"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="almoxarifado_id" attrs="{'readonly': [('almoxarifado_id', '!=', False)]}"/>
+                                <field name="almoxarifado_id"/>
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="estoque_id"></label>
                             <div class="col-md-7 col-sm-7">
                                 <field name="estoque_id" domain="[('almoxarifado_id', '=', almoxarifado_id)]"/>
+                            </div>
+                        </div>
+                        -->
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="produto_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="produto_id"/>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">

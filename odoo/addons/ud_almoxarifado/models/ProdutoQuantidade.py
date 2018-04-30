@@ -25,7 +25,7 @@ class ProdutoQuantidade(models.Model):
     solicitacao_id = fields.Many2one('ud.almoxarifado.solicitacao', u'Solicitação', invisible=True)
 
     _sql_constraints = [
-        ('produto_solicitacao_uniq', 'unique(solicitacao_id,produto_id)',
+        ('produto_solicitacao_uniq', 'unique(solicitacao_id,estoque_id)',
          u'Não pode solicitar o memo produto na mesma solicitação'),
     ]
 
