@@ -1,6 +1,9 @@
 # Pasta de armazenamento do container Docker
 storage/
 
+# removendo logs do git
+access.log*
+
 # Arquivos de backup de teste da migração
 script_migracao_v10/*.csv
 

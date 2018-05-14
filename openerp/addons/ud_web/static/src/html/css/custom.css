@@ -837,3 +837,14 @@ figure {
 		min-height: 34px;
 	}
 }
+
+@media screen and (max-width: 766px) {
+	.logo-img {
+		height: 25px;
+	}
+
+	#acessar {
+		width: 100%;
+		margin-top: 20px;
+	}
+}

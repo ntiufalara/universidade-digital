@@ -11,17 +11,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- css -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/templates/pace-theme-barber-shop.tmpl.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
     <link rel="stylesheet" href="/ud_web/static/src/html/css/custom.css">
 
+    <link rel="shortcut icon" href="/ud_web/static/src/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/ud_web/static/src/favicon.ico" type="image/x-icon">
+
     <!-- js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.2/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
 </head>
@@ -35,23 +35,26 @@
                     <h1><a href="/"><img class="logo-img" src="/ud_web/static/src/html/img/logo.png"/></a></h1>
                 </div>
             </div><!-- col-md-4 -->
-            <div class="col-md-8 col-sm-7 col-xs-4">
+            <div class="col-md-8 col-sm-7">
                 <nav class="main-nav" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" id="trigger-overlay" class="navbar-toggle">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#mobile-menu" aria-expanded="false">
                             <span class="ion-navicon"></span>
                         </button>
                     </div>
 
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <div class="collapse navbar-collapse" id="mobile-menu">
                         <ul class="nav navbar-nav navbar-right">
-
+                            <li>
+                                <a href="/?db=ud&action=login">
+                                    <button id="acessar" type="button" class="btn btn-primary navbar-btn navbar-right">
+                                        Acesse o
+                                        sistema
+                                    </button>
+                                </a>
+                            </li>
                         </ul>
-                        <a href="/?db=ud&action=login">
-                            <button id="acessar" type="button" class="btn btn-primary navbar-btn navbar-right">Acesse o
-                                sistema
-                            </button>
-                        </a>
                     </div><!-- /.navbar-collapse -->
                 </nav>
 
@@ -61,6 +64,24 @@
 </div>
 
 <div class="content-body container">
+    <!-- Inserção de avisos, usado durante o período de inscrição de monitoria -->
+    {% for aviso in avisos %}
+        <div class="alert alert-info">
+            <div class="row">
+                {% if aviso.imagem %}
+                    <div class="col-sm-2">
+                        <img style="margin: auto;" src="data:image/png;base64, {{ aviso.imagem }}"
+                             alt="{{ aviso.name }}">
+                    </div>
+                {% endif %}
+                <div class="col-sm-10">
+                    <h2>{{ aviso.name }}</h2>
+                    <p>{{ aviso.mensagem }}</p>
+                    <a href="{{ aviso.link }}" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
     <div class="row">
         <div class="col-md-4">
             <a href="/?db=ud">
@@ -148,19 +169,5 @@
         </div>
     </div>
 </footer>
-
-<!-- Mobile Menu -->
-<div class="overlay overlay-hugeinc">
-    <button type="button" class="overlay-close"><span class="ion-ios-close-empty"></span></button>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="full-width.html">Blog</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
-</div>
-
 </body>
 </html>

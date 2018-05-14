@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- AGENDAMENTOS -->
+        <record id="ud_web_aviso_cron" model="ir.cron">
+            <field name="name">Atualiza exibição dos avisos no site externo (UD)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.web.aviso</field>
+            <field name="function">atualiza_exibicao_cron</field>
+        </record>
+
+    </data>
+</openerp>

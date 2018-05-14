@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acesso_ud_campus,acesso_ud_campus,ud.model_ud_campus,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_ud_polo,acesso_ud_polo,ud.model_ud_polo,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_ud_bloco,acesso_ud_bloco,ud.model_ud_bloco,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_ud_curso,acesso_ud_curso,ud.model_ud_curso,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_ud_disciplina,acesso_ud_disciplina,ud.model_ud_disciplina,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_ud_employee,acesso_ud_employee,ud.model_ud_employee,ud_web.group_ud_web_visitante,1,0,1,0
+acesso_ud_perfil,acesso_ud_perfil,ud.model_ud_perfil,ud_web.group_ud_web_visitante,1,0,1,0
+acesso_ud_projeto,acesso_ud_projeto,ud.model_ud_projeto,ud_web.group_ud_web_visitante,1,0,0,0
+acesso_res_partner,acesso_res_partner,base.model_res_partner,ud_web.group_ud_web_visitante,1,1,1,0
+acesso_res_users,acesso_res_users,base.model_res_users,ud_web.group_ud_web_visitante,1,1,1,0
+acesso_resource_resource,acesso_resource_resource,resource.model_resource_resource,ud_web.group_ud_web_visitante,1,1,1,0
+acesso_mail_alias,acesso_mail_alias,mail.model_mail_alias,ud_web.group_ud_web_visitante,1,1,1,1
+acesso_mail_message,acesso_mail_message,mail.model_mail_message,ud_web.group_ud_web_visitante,1,1,1,1
+acesso_mail_group,acesso_mail_group,mail.model_mail_group,ud_web.group_ud_web_visitante,1,1,1,0
