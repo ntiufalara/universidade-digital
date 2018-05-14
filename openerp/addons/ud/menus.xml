@@ -6,7 +6,7 @@
         <menuitem id="menu_point_root" name="Universidade Digital" sequence="0" icon="terp-partner"
                   web_icon="imagens/unidig.jpg"/>
         <menuitem id="menu_nucleo" parent="menu_point_root" name="Núcleo" sequence="1" icon="terp-partner"
-                  groups="base.usuario_ud"/>
+                  groups="base.gerente_espaco_ud,base.admin_ud"/>
         <menuitem id="menu_campus" parent="menu_nucleo" action="ud_campus_action" sequence="2"/>
         <menuitem id="menu_polo" parent="menu_nucleo" action="ud_polo_action" sequence="3"/>
         <menuitem id="menu_curso" parent="menu_nucleo" action="ud_curso_action" sequence="4"/>
