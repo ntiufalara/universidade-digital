@@ -79,7 +79,7 @@ class Banco(osv.osv):
         """
         bancos = dict(_BANCOS)
         return [
-            (banco["id"], bancos[banco["banco"]])
+            (banco["id"], bancos.get(banco["banco"], '%s,%d' % (self._name, banco['id'])))
             for banco in self.read(cr, uid, ids, ["banco"], context=context, load="_classic_write")
             ]
 
@@ -342,7 +342,7 @@ class Curso(osv.osv):
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
               ("v", u"Vespertino"), ("n", u"Noturno"), ]
-    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado"), ('e', 'Especialização')]
+    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado"), ('e', u'Especialização')]
 
     _columns = {
         'name': fields.char(u'Nome', size=40, help=u"Ex.: Ciência da Computação", required=True),
