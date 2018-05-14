@@ -119,7 +119,7 @@ class ud_reserva(osv.osv):
                 novos_valores["hora_saida"] = saida
                 grupo_reserva = [(0, 0, novos_valores)]
                 # Cria e adiciona a rserva ao grupo
-                grupo_obj.write(cr, uid)
+                grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
                 # result = self.create(cr, uid, novos_valores, context)
 
         def replicar_semanal(n, h_entrada, h_saida):
@@ -131,7 +131,7 @@ class ud_reserva(osv.osv):
                 novos_valores["hora_saida"] = saida
                 grupo_reserva = [(0, 0, novos_valores)]
                 # Cria e adiciona a rserva ao grupo
-                grupo_obj.write(cr, uid)
+                grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
                 # result = self.create(cr, uid, novos_valores, context)
                 # print result
 
@@ -145,7 +145,7 @@ class ud_reserva(osv.osv):
                     novos_valores["hora_saida"] = saida
                     grupo_reserva = [(0, 0, novos_valores)]
                     # Cria e adiciona a rserva ao grupo
-                    grupo_obj.write(cr, uid)
+                    grupo_obj.write(cr, uid, [grupo], {'reserva_ids': grupo_reserva})
                     # result = self.create(cr, uid, novos_valores, context)
                     # print result
 

@@ -1,0 +1,4515 @@
+publicacao_id,name,id
+[350],Biotecnologia,1
+[1969],Irrigação,2
+[],Técnicas,4
+[],Computação,9
+[499],Biblioteca,10
+[57],Leite humano,11
+[27],Doação de leite,12
+"[1334, 1341, 518]",Percepção,13
+[34],Cuidadores,14
+"[2085, 679, 4]",Relações familiares,15
+"[1288, 821, 831, 1049, 1086, 1066, 491, 1152, 1287, 727, 1116]",Idosos,16
+"[1550, 683, 5]",Gestante,17
+[5],Prevenção de doenças,18
+"[2071, 2079, 1564, 509]",HIV,19
+"[2073, 1316, 1550, 1563, 1564, 681, 682, 773, 852, 687, 669, 670, 674, 678, 508]",Enfermagem,20
+"[1167, 1448, 1559, 6]",Tuberculose,21
+752,Adesão ao tratamento,22
+[7],Automedicação,23
+"[1895, 1302, 510, 797, 583, 123]",Crianças,24
+[7],Pais-Responsáveis,25
+"[2082, 1391, 844, 788, 35, 909]",Violência contra a mulher,26
+"[2082, 2086, 1195, 1483, 1563, 671, 666, 1033, 120]",Saúde da mulher,27
+"[1175, 1251, 1269, 1559, 569, 66]",Epidemiologia,28
+[291],População indígena,29
+[],Saúde da população indígena,30
+[9],Saúde das populações indígenas,31
+[33],Hipertensão,32
+"[1315, 1536, 1563, 10]",Parto humanizado,33
+"[1550, 671, 81]",Trabalho de parto,34
+"[2023, 1004, 510]",Doenças parasitárias,35
+1008,Higiene,36
+"[1730, 1986, 1037, 1185, 1595, 1557, 706, 783, 675, 676, 680, 689, 1090, 1057, 707, 1149, 741, 1104, 1190, 892, 1099, 918]",Saúde mental,37
+[12],Policiais,38
+"[1557, 1558, 404, 1187]",Ansiedade,39
+[12],Transtorno bipolar,40
+"[1924, 1515, 1517, 1522, 73]",Acidentes de trânsito,41
+"[1515, 1522, 15]",Motocicletas,42
+[13],Consequência de acidente,43
+[13],Capacidade funcional,44
+"[705, 969, 910, 396, 1130, 1075]",Sexualidade,45
+"[2086, 1304, 1315, 670, 756, 78]",Educação em saúde,46
+69,Cuidado pré-natal,47
+[14],Gravidez,48
+[15],Assunção de rsicos,49
+[133],Estudantes,50
+"[1171, 703, 513]",Adolescente,51
+[16],Tecnologia da educação,52
+"[1785, 1799, 1276, 1520, 16]",Promoção da saúde,53
+"[2088, 1603, 1694, 1604, 1522, 1526, 1561, 54]",Depressão,54
+[17],Depressão puerperal,55
+"[1639, 1561, 641, 17]",Suicídio,56
+24,Música,57
+"[2079, 2013, 668, 687, 512]",Cuidados de enfermagem,58
+[24],Terapias complementares,59
+[18],Humanização de assistência,60
+[63],Recém-nascido,61
+[19],Baixo peso ao nascer,62
+[20],Processo de enfermagem,63
+[37],Atenção primária a saúde,64
+81,Enfermeiro,65
+[21],História da enfermagem,66
+[21],Mercado e enfermagem,67
+21,Trabalho-Marxismo,68
+"[1045, 22, 1138]",Saúde da família,69
+[27],Amamentação,70
+[57],Banco de leite humano,71
+[23],Mídia,72
+"[673, 979, 23]",Discurso,73
+[24],Neonatologia,74
+116,Criança ,75
+"[1523, 1565, 25]",Gestação,76
+26,Acidentes por quedas,77
+"[1647, 1840, 2085, 2088, 755, 773, 493]",Idoso ,78
+26,Mortalidade,79
+[68],Aleitamento humano,80
+[27],Unidade de Saúde da Família,81
+[27],Nutrizes,82
+[28],Percepção de crianças,83
+[28],Hospitalização infantil,84
+[66],Doença,85
+"[681, 685, 28]",Saúde ,86
+[48],Fenômenos cronobiológicos,87
+[517],Polícia,88
+"[1208, 641, 107, 1190]",Transtornos mentais,89
+[30],Desinstitucionalização,90
+[30],Tempo de internação,91
+[],Defesa da criança,92
+[31],Defesa da criança e do adolescente,93
+1062,Violência,94
+[97],Ansiedade-estudantes-ensino médio,95
+[33],Urgência,96
+[33],Emergência,97
+[34],Cuidados paliativos,98
+"[1985, 1042, 35]",Violência sexual,99
+[36],Adolescente institucionalizado,100
+284,Saúde do homem,101
+"[1647, 1867, 1331, 1359, 1399, 1526, 1558, 640, 703, 821, 94, 113, 323]",Qualidade de vida,102
+"[609, 666, 676, 688, 939, 1132, 715, 420]",Saúde do trabalhador,103
+39,Prevalência,104
+[39],Parto,105
+[39],Cesário,106
+40,Riscos ocupacionais,107
+[41],Enfermagem-Brasil,108
+[41],Identidade profissional,109
+"[1696, 1992, 1733, 1483, 1379, 1197, 1281, 1392, 1724, 1040, 688, 685, 1128, 507, 729, 1131, 1061, 730, 780, 1071, 723, 724, 1079, 1063]",Capitalismo,110
+[42],Drogas ilícitas,111
+"[1903, 1269, 1560, 641, 823, 828, 652, 1089, 1136, 897, 896, 1096, 1104, 826, 395, 1112, 799, 791]",Saúde pública,112
+"[1942, 1316, 1049, 43, 1152]",Envelhecimento,113
+"[1699, 2035, 1904, 1696, 1992, 1046, 1281, 1178, 1352, 507, 748, 786, 1133, 1129, 801, 916, 1063, 723, 715, 1113]",Trabalho,114
+[44],Precarização,115
+[46],Redução de danos,116
+"[1631, 513, 1145]",Drogas,117
+[45],Agentes Comunitários de Saúde,118
+46,Profissionais da saúde,119
+"[1991, 1178, 677, 1192, 47]",Mulheres,120
+[47],Perfil epidemiológico,121
+[47],Abortamento,122
+47,Maternidade,123
+48,Ansiedade,124
+[291],Alcoolismo,125
+"[2009, 2041, 1602, 1249, 840, 440, 591]",Agricultura familiar,126
+79,Estrela de Alagoas - AL,127
+[49],Agricultores,128
+[49],Comunidade rural,129
+[50],Sexualidade masculina ,130
+[50],Contracepção masculina,131
+"[1809, 1730, 1275, 762, 675, 1060, 740, 797, 1148, 1129, 51, 1074]",Família ,132
+[51],Influência cultural,133
+[51],Mães adolescentes,134
+"[1953, 795, 1082, 797, 121, 638, 113, 911]",Adolescentes ,135
+[55],Bebidas alcoólicas,136
+[53],Desnutrição infantil,137
+[53],Ações do enfermeiro,138
+[55],Trauma,139
+[55],Acidente de trânsito,140
+[54],Cronotipo,141
+[54],Unidade hospitalar,142
+[72],Unidade de Emergência Dr. Daniel Houly,143
+[56],Diagnóstico de enfermagem,144
+"[1520, 1535, 679, 680, 78]",Aleitamento materno,145
+[56],Infecções respiratórias,146
+[57],Doação,147
+[58],Câncer de mama,148
+[58],Mastectomia,149
+[58],Mamoplastia,150
+[59],Traumatismo craniocerebral,151
+[78],Hospitalização,152
+59,Reabilitação,153
+"[1848, 2047, 1647, 1871, 1812, 1979, 1815, 1823, 2068, 1897, 1737, 1742, 1968, 1761, 1722, 1524, 1404, 1480, 1424, 873, 848, 1164, 1176, 467]",Arapiraca,154
+[59],CEMFRA,155
+517,Estresse,156
+61,Diabetes Mellitus,157
+"[678, 964, 98]",Produção científica,158
+[62],Síndrome pré-menstrual,159
+[80],Estudantes de enfermagem,160
+"[1182, 354, 1115]",Universidade Federal de Alagoas,161
+[63],Internação,162
+[63],Unidade de terapia intensiva neonatal - UTIN,163
+[63],Sentimentos-Pais,164
+[65],Revisão integrativa,165
+65,Sociedade,166
+[65],Imagem social,167
+[66],Esquistossomose mansoni,168
+[77],Fatores de risco,169
+[66],Barriga d'água,170
+"[2049, 67, 1068]",Programa Saúde da Família,171
+[],Penedo - AL,172
+"[1580, 1594, 1585, 77]",Penedo/AL,173
+[68],Puérperas,174
+[69],Assistência em enfermagem,175
+[69],União dos Palmares - AL,176
+[70],Morbidade,177
+285,Unidade Básica de Saúde/UBS,178
+[459],Palmeira dos Índios/AL,179
+[71],Pré-natal,180
+[72],Indicadores de qualidade,181
+[457],Infecção hospitalar,182
+[73],Acidentes ocupacionais,183
+[73],Material perfurocortante,184
+[73],Profissionais de Enfermagem,185
+[75],Câncer de próstata,190
+[75],Perfil do paciente,191
+[76],Saúde,192
+[76],Humanização em saúde,193
+[76],Idosos institucionalizados,194
+[76],Saúde e cuidado,195
+[77],Desmame,196
+[77],Desmame precoce,197
+[78],Diarréia,198
+482,Girau do Ponciano/AL,199
+[107],Uso de álcool,200
+[79],Uso de drogas,201
+[128],Fatores socioeconômicos,202
+[80],Bacharelado em enfermagem,203
+[81],Partogra,204
+82,Educação física escolar,205
+82,produção do conhecimento,206
+"[1851, 1964, 1567, 1673, 1050, 1182, 1179, 1048, 1021, 1366, 787, 990, 988, 1146, 1106, 1059, 88, 894, 476, 1063, 1151]",Educação,207
+"[1927, 824, 83]",Ginástica,208
+"[1916, 1302, 1303, 1257, 824, 1023, 396]",Escola,209
+83,Formação humana,210
+"[1857, 1927, 1726, 2036, 1333, 1350, 1616, 1015, 695, 768, 824, 964, 988, 1023, 88, 125, 118]",Educação física,211
+"[1209, 1418, 84, 909]",Relações de gênero,212
+[84],Metodologia crítico-superadora,213
+[85],Déficit de atenção,214
+85,Hiperatividade,215
+[85],Impulsividade,216
+"[1895, 1953, 106, 86, 100, 583]",Índice de massa corporal,217
+"[2071, 1953, 1785, 1681, 766, 765, 1014, 86, 100, 93, 94, 136]",Nível de atividade física,218
+"[1899, 1821, 1785, 2065, 2075, 1681, 1014, 703, 704, 766, 86, 119, 113, 108]",Escolares,219
+"[1899, 2065, 1014, 766, 703, 94, 121]",Estado nutricional,220
+87,Análise descritiva,221
+88,Dança ,222
+89,Nível de estresse,223
+"[1821, 1681, 222, 90, 93]",Exercício físico,224
+[89],Policial civil,225
+"[1400, 1561, 90, 93, 394]",Professores,226
+"[1821, 1895, 1002, 90, 344, 981, 638]",Atividade física,227
+"[2075, 1644, 91, 108]",Flexibilidade,228
+132,Universitários,229
+"[1921, 1467, 92]",Educação do campo,230
+[92],Escola do campo,231
+[95],Alunos trabalhadores,232
+"[653, 124, 123]",Aptidão física,233
+1176,Morfologia,234
+"[1851, 1258, 101]",Alunos,236
+198,Esporte,237
+98,Epistemologia,238
+[99],Síndrome de Down,239
+100,Imagem corporal,240
+105,IMC,241
+134,Perímetro de cintura,242
+"[1700, 1612, 1333, 1248, 1213, 633, 757, 118, 400]",Formação de professores ,243
+[102],Educação física e esporte,244
+[103],Acadêmicas,245
+"[1171, 667, 286]",Composição corporal,246
+[104],Classificação econômica,247
+"[1895, 765, 1262, 387, 981]",Obesidade,248
+[105],SDC,249
+"[2065, 116, 638, 108]",Antropometria,250
+[109],Práticas alimentares,251
+[110],Obesidade em crianças e adolescentes,252
+[119],Estatura,253
+[111],Saúde,254
+[112],Funcionários,255
+[112],Secretaria de Educação - Arapiraca,256
+[112],Saúde,257
+[113],Estilo de vida,258
+[114],Atleta,259
+"[114, 1077, 794, 1102]",Pessoa com deficiência,260
+"[1262, 119, 583]",Coordenação motora,261
+123,Nível socioeconômico,262
+"[1413, 1163, 117]",Desempenho,263
+[120],Ginástica geral,264
+[120],Prática social Gasparin,265
+[120],Formação omnilateral,266
+[121],Gordura corporal,267
+[122],Ensino regular,268
+[122],Ensino em tempo integral,269
+[124],Meninos,270
+[124],Turnos escolares,271
+"[1808, 1282, 1488, 674, 125]",Surdez,272
+"[1692, 1092, 125]",Inclusão escolar,273
+[400],Educação especial,274
+[126],Pré-puberal,275
+[127],Professores de educação física,276
+[130],Nível de conhecimento,277
+[128],Estudante de educação física,278
+[129],Obesidade infantil,279
+[131],Jovens,280
+[131],Questionário Internacional para Atividades Físicas - IPAQ,281
+[133],Atividade física habitual,282
+"[1011, 1463, 387]",Conhecimento popular,283
+[387],Raizeiros,284
+133,Morfologia corporal,285
+"[2027, 1700, 2060, 969, 618, 469, 599]",Ensino médio,286
+[134],Massa corporal,287
+286,Percentual de gordura,288
+[135],Avaliação-Professores,289
+[135],Avaliação da progressão continuada,290
+[136],indicadores sociodemográficos,291
+[137],Governança coorporativa,292
+541,Empresa familiar,293
+[137],Transparência-Gestão,294
+"[1480, 841, 179]",Planejamento,295
+"[2032, 1750, 1754, 1846, 1856, 1968, 1643, 1893, 661, 850, 568, 446]",Sustentabilidade,296
+"[2029, 2044, 1337, 546, 539, 166]",Viabilidade,297
+[138],Indústria de móveis,298
+139,Academia,299
+"[1170, 1501, 546, 537, 575, 1790]",Plano de negócio,300
+"[539, 540, 566, 140, 139]",Negócio,301
+"[1843, 1237, 1325, 1327, 946, 525]",Serviços,302
+320,materiais de construção,303
+"[1327, 557, 141]",Empreendimento,304
+[141],Viabilidade mercadológica,305
+[142],Empreendimento sustentável,306
+142,Reciclagem,307
+142,Resíduos,308
+[142],Lixo eletrônico,309
+[149],Marketing de relacionamento,310
+"[2035, 1228, 1758, 566, 148]",Administração,311
+533,Clientes,312
+143,Economia,313
+[144],Qualidade hospitalar,314
+[144],Satisfação do usuário,315
+[144],Atendimento hospitalar,316
+[182],Hotel,317
+317,Qualidade em serviços,318
+[145],Educação profissional,319
+[146],Cadeia de suprimentos,320
+[183],Logística,321
+[146],Almoxarifado,322
+464,Coleta seletiva,323
+[147],Lixo - Coleta,324
+[148],Clima organizacional,325
+[147],Lixo - Separação,326
+"[1257, 526, 562]",Satisfação,327
+"[1568, 674, 993, 171]",Comunicação,328
+[193],Fidelização,329
+[150],Curso pré-vestibular,330
+[150],Viabilidade técnica,331
+[150],Viabilidade financeira,332
+[151],Tecnocracia,333
+[151],Burocracia,334
+[151],Gestão do ensino superior,335
+151,Administração pública,336
+[152],Poder,337
+[152],Campeonato Brasileiro de Futebol ,338
+[],Campo,339
+[152],Campo de futebol,340
+[153],Suco de laranja,341
+[153],Lançamento de produto,342
+149,Marketing ,343
+[154],Composto de marketing,344
+"[1501, 1341, 154]",Consumidor,345
+[155],Companhia de Saneamento de Alagoas - CASAL,346
+[],Planejamento estrstégico,347
+"[1342, 552, 155]",Planejamento estratégico,348
+155,Saneamento,349
+314,Gestão estratégica,350
+[155],Sociedade de economia mista,351
+"[1170, 1758, 1348, 1971, 544, 559, 551, 550, 537]",Empreendedorismo,352
+[156],Mercado da moda,353
+[],moda,354
+156,Moda,355
+[156],Costura personalizada,356
+[157],Centro de fabricação,357
+[157],Gelados comestíveis,358
+[188],Plano de negócio,359
+[158],Gerenciamento de produtos,360
+[158],Controle de estoque,361
+[158],Posto de combustível,362
+[159],Programa de qualidade,363
+[159],Gestores educacionais,364
+"[801, 715, 159]",Saúde no trabalho,365
+[160],Gestão educacional,366
+[421],Custos,367
+"[1680, 536, 2012]",Organização,368
+[161],Arranjo produtivo local,369
+161,Gestão organizacional,370
+[161],Desenvolvimento social,371
+[162],Cultura organizacional,372
+366,Tecnologia da informação,373
+[],mudança organnizacional,374
+[162],Mudança organizacional,375
+"[1933, 554, 174]",Supermercado,376
+[],Interenção,377
+200,Intervenção,378
+[163],Nível de insatisfação,379
+[163],Nível de satisfação,380
+[164],Administração de recursos humanos,381
+[164],Indústria sucroalcooleira,382
+"[164, 903, 1064]",Recursos humanos,383
+"[542, 549, 552, 165]",Micro e pequena empresa,384
+[165],Desenvolvimento local,385
+"[2041, 1207, 1483, 1210, 817, 840, 842, 513, 795, 1194, 906, 893, 913, 728, 725]",Políticas públicas,386
+166,Estudo,387
+238,Informática,388
+[166],Curso preparatório,389
+[166],Concurso,390
+[167],Análise econômico-financeira,391
+[167],Co-geração de energia,392
+[167],Comercialização,393
+[167],Indústria Canavieira,394
+[195],Créditos de carbono,395
+[168],Instrução Financeira,396
+[168],Educação financeira infantil,397
+168,Comportamento financeiro,398
+[169],Marketing social,399
+[169],Miix social,400
+[169],Impactos sociais,401
+[170],Contabilidade gerencial,402
+[526],Tomada de decisão,403
+[170],Relatórios contábeis,404
+[171],Promoção,405
+[172],Reestruturação administrativa,406
+[172],Mudanças organizacionais,407
+[172],Diagnóstico organizacional,408
+[173],Telefonia móvel,409
+[173],Atendimento personalizado,410
+[173],Diferencial competitivo,411
+174,Ergonomia,412
+[174],Repositores,413
+[407],Condições de trabalho,414
+[175],Pesquisa de marketing,415
+[175],Estratégias de marketing,416
+[],Administração de empresas,417
+[176],Venda e aluguel,418
+[],Jogos de videogame,419
+177,Mercado da música,420
+[177],Forró eletrônico,421
+[177],Negócio-viabilidade,422
+[178],Poder público,423
+"[2058, 1322, 1330, 1332, 1356, 1462, 1351, 1303, 611, 850, 582, 567, 459]",Meio ambiente,424
+"[1861, 1319, 322]",Plano diretor,425
+[179],Educação financeira,426
+[179],Controle financeiro pessoal,427
+[179],Controle financeiro empresarial,428
+[196],Logística empresarial,429
+[180],Armazenagem,430
+[180],Distribuição física,431
+"[1770, 1326, 1576, 1753, 663, 713, 326]",Desenvolvimento sustentável,432
+[181],Recursos renováveis,433
+183,Gestão de estoques,434
+[183],Demanda,435
+[183],Sistema integrado,436
+[183],Logística reversa,437
+[184],Mercado musical,438
+[184],Estúdio,439
+[185],Mercado culinário,440
+[193],Restaurante,441
+186,Economia solidária,442
+[],Empreendimentos solidários,443
+[186],Empreendimentos economicamente solidários,444
+[187],Análise estratégica,445
+[187],"Sorvetes, gelados, etc",446
+[188],Corretores de seguros,447
+[188],Seguros,448
+[189],Veículos,449
+[189],Lava Jato,450
+[189],Veículos - Serviços,451
+[190],Clubes de futebol,452
+[190],Esportes - Administração,453
+[190],Futebol amador,454
+[191],Segmentação de mercado,455
+[317],Prestação de serviços,456
+[191],Qualidade - Ferramentas básicas,457
+[191],Restaurantes,458
+[192],Clube de futebol,459
+[192],Sócio-torcedores,460
+[193],CRM,461
+[194],Artigos esportivos,462
+[194],Análise mercadológica,463
+[195],Indicadores de desempenho financeiro,464
+"[702, 288, 589]",Viabilidade econômica,465
+[196],Distribuição,466
+[196],Localização estratégica,467
+[198],Escolinha de futebol,468
+199,Comportamento do consumidor,469
+[199],Fatores sociais,470
+200,Qualidade no atendimento,471
+[200],Selaria Rodrigues,472
+201,Salão de beleza,473
+201,Campo Alegre/AL,474
+[201],Propaganda,475
+[202],empreendimento popular,476
+"[1863, 1307, 203]",Programa Institucional de Bolsa de Iniciação à Docencia - PIBID,477
+[331],Experimentos,478
+"[2078, 1964, 1773, 1259, 625, 637, 599, 203]",Ensino de física,479
+[204],Propagação de fônons,480
+[204],Cadeia Linear,481
+[204],Sistemas desordenados,482
+238,Softwares educacionais,483
+[205],tecnologias educacionais,484
+[206],Índice morfológico,485
+[206],Limite de carga,486
+[206],Tração animal,487
+[207],Trânsito,488
+[207],Código de trânsito brasileiro,489
+"[1932, 2059, 207]",Leis de Newton,490
+[208],β - caroteno,491
+[],Absorção,492
+[208],Solventes,493
+[208],Espectrofotometria de absorção UV/VIS,494
+[209],Sufactante,495
+[209],Concentração micelar crítica,496
+[439],Condutividade elétrica,497
+[210],Física moderna,498
+[210],Novo currículo,499
+[211],Espectro de permanganato de potássio,500
+[211],Análise da Lei de Beer,501
+[211],Curva de calibração,502
+[212],Materiais granulares,503
+[212],Dinâmica molecular,504
+[212],Estado de equilíbrio,505
+[213],Física,506
+[213],Séries iniciais,507
+[213],Projeto de pesquisa,508
+[394],Educação ,509
+[214],Parâmetros Curriculares Nacionais - PCNs,510
+[215],Transição regular-caótica,511
+[215],Estádio,512
+[215],Método do contorno de paredes,513
+"[2056, 764, 216]",Speckle,514
+[216],Monitoramento - superfícies orgânicas,515
+[216],Luz,516
+[217],Ensino auxiliado por computador,517
+217,Tecnologia educacional,518
+[218],Cristais Líquidos,519
+[218],Anisotropia,520
+[218],Aplicações tecnológicas,521
+219,IHC,522
+219,Interface,523
+[219],Protótipo,524
+[220],Analisador semântico,525
+"[1864, 836, 220]",Sistema FALIBRAS,526
+220,Lógica Fuzzy,527
+[221],Análise qualitativa,528
+[221],VANET,529
+[221],DDoS,530
+[221],Sybil,531
+[222],Autômato,532
+[222],Controle - exercício físico,533
+[223],Árvores de falhas,534
+[223],Confiabilidade,535
+[223],Redes corporativas,536
+[224],Vigilância epidemiológica,537
+[224],BLAST,538
+[224],Grids computacionais,539
+[224],Computação distribuída,540
+[225],Análise de textura,541
+[225],Registro de imagem,542
+[228],Câncer de pulmão,543
+[226],Proxy cache,544
+234,Computação em nuvem,545
+[226],Virtualização - Internet,546
+[227],Sistema de comunicação,547
+[227],Armazenamento de imagens,548
+[227],Auxílio computadorizado,549
+[227],Gestão em Saúde,550
+[227],Unidade de Emergência do Agreste,551
+[228],Nódulo pulmonar,552
+[228],Mapa de conexidade Fuzzy,553
+[229],Descritores de textura,554
+[229],Speckle's,555
+229,Computação gráfica,556
+[230],Computação paralela,557
+[230],Simulação numérica,558
+[230],Príons,559
+[231],Modelagem de processos de negócios,560
+[231],Composição de serviços,561
+[231],Ws-BPEL,562
+[236],Grafics Processing Units - GPUs,563
+[232],Placas gráficas,564
+[232],Imagens - otimização,565
+[233],Redes convergentes,566
+"[2014, 1395, 424]",Modelagem,567
+[233],Rede de computadores,568
+[234],Paas (Plataforma como serviço),569
+[234],Google App Engine (GAE),570
+[234],Windows Azure,571
+[235],Jogo de xadrez,572
+239,Inteligência artificial,573
+[236],Linguagem Python,574
+[236],Linguagem CUDA,575
+[237],Enfisema pulmonar,576
+[237],Segmentação de imagem,577
+[237],Visualização volumétrica,578
+[238],ISA 5.2,579
+[238],Programas de computador,580
+[239],Sistemas multiagentes - SMA,581
+[239],JADE,582
+[240],Derivada,583
+[240],Integral,584
+[240],Curvas algébricas,585
+"[1868, 1915, 280]",Resolução de problemas,586
+[241],Metodologia do ensino-Matemática,587
+[],Ensino-aprendizagem-matemática,588
+242,Geometria diferencial,589
+[242],Teorema de Gauss-Bonnet,590
+[242],Triangulação,591
+[243],Polígonos,592
+[243],Polígonos regulares,593
+[243],Régua,594
+[243],Compasso,595
+270,Geometria,596
+[244],Pitágora,597
+244,Álgebra,598
+[245],Sequência de ensino,599
+[245],Jogos dos discos,600
+"[1399, 1239, 245]",Letramento estatístico,601
+"[1808, 2062, 1773, 1293, 1302, 1258, 1244, 1516, 1304, 1460, 1376, 1453, 1320, 862, 1172, 697, 1247, 645, 408]",Aprendizagem,602
+246,EJA,603
+"[1357, 570, 246]",Metodologia,604
+246,Modelagem matemática,605
+[247],Progressão aritmética,606
+247,Função quadrática,607
+[247],Polinômio de grau n=2,608
+[248],Funções não elementares,609
+[248],Integral aproximada,610
+[248],Quadratura Gaussiana,611
+[249],Aproximação de funções,612
+[263],Interpolação linear,613
+[249],Interpolação quadrática,614
+[263],Interpolação de Lagrange,615
+[250],Espaços métricos completos,616
+[250],Contração,617
+250,Ponto fixo de Banach,618
+"[1215, 1250, 251]",Facebook,619
+"[1248, 265, 1091]",Estágio supervisionado,620
+[252],Princípio da casa dos pombos,621
+[],Desiguladade,622
+[252],Desigualdade,623
+[253],Análise exploratória,624
+[253],Energia elétrica,625
+[253],Uso racional,626
+"[1890, 629, 1220, 270]",Educação matemática,627
+[254],Software educativo,628
+[254],Winplot,629
+"[1851, 2023, 2060, 1479, 1252, 1682, 1215, 1521, 1250, 475]",Ensino-aprendizagem,630
+469,Avaliação de aprendizagem,631
+[280],Ensino ,632
+[256],Polinômio,633
+[256],Automorfismo,634
+[256],Grupo,635
+257,Jogos matemáticos,636
+"[1332, 1600, 865, 1025, 257]",Práticas pedagógicas,637
+[258],Médias,638
+258,Desigualdades,639
+[258],Máximos,640
+[258],Mínimos,641
+[259],Números primos,642
+[259],Criptografia RSA,643
+[],Conguências,644
+[259],Congruências,645
+[260],Sistemas de coordenadas,646
+[260],Mudanças de coordenadas,647
+[261],Triângulo,648
+[261],Lei dos cossenos,649
+[261],Teorema de Herão,650
+"[1842, 2061, 1412, 757, 356]",Ensino de matemática,651
+[262],Abordagens metodológicas,652
+[263],Interpolação de Newton,653
+[263],Polinômio interpolador,654
+[264],Teoria de Galois,655
+"[1863, 1534, 698, 753, 273]",Matemática,656
+[265],Saberes docentes,657
+[266],Estatística,658
+[266],Homem vitruviano,659
+"[1399, 635, 266]",Ambiente computacional,660
+[267],Análise combinatória,661
+[267],Sequência didática,662
+[268],Atividade lúdica,663
+[268],Postura professor,664
+[269],Reprovação,665
+[269],Licenciandos - Matemática,666
+"[2023, 697, 1320, 270]",Jogos,667
+[271],Reticulados algébricos,668
+[271],Homomorfismo canônico,669
+[271],Corpos ciclotônicos,670
+[272],Desmotivação docente,671
+[272],Escolas públicas - Agreste alagoano,672
+[272],Valorização profissional,673
+[272],Mal estar docente,674
+"[785, 1092, 273]",Alunos surdos,675
+[273],Estratégias visuais,676
+[274],Espaços Hausdorff,677
+[274],Espaços compactos,678
+[275],Funções implícitas,679
+[275],Espaço euclidiano,680
+[276],Números de Carmichael,681
+[276],Teorema de Korselt,682
+[276],Indução matemática,683
+[276],Noção científica,684
+[277],Demonstrações matemáticas,685
+[277],Ensino básico,686
+[277],Teoremas,687
+[293],Ponto fixo,688
+[278],Teorema de Peano,689
+279,Equações diferenciais ordinárias,690
+[279],Problema de valor inicial,691
+[280],Materiais manipuláveis,692
+"[1424, 1844, 588, 848, 975, 522]",Planejamento urbano,693
+[522],Gestão urbana ,694
+[281],Instrumentos de planejamento,695
+[282],Quilombo,696
+"[1319, 1443, 282]",Cidade,697
+[283],Alimentação,698
+283,Análise sensorial,699
+[283],Qualidade de ovo,700
+[285],Trabalho de enfermagem ,701
+[285],Gerência de enfermagem,702
+"[667, 765, 1262, 286]",Sobrepeso,703
+[287],Matemática financeira ,704
+287,jogos didáticos ,705
+288,Características de carcaça,706
+[288],Desempenho zootécnico,707
+[289],Máximo divisor comum,708
+[289],Mínimo múltiplo comum,709
+[289],Números reais comensuráveis,710
+[290],Número ,711
+[290],Ensino ,712
+"[1478, 1553, 290]",Experimentação,713
+[290],Simulação,714
+363,Saúde indígena ,715
+"[543, 453, 436]",Germinação,716
+[471],Alelopatia,717
+292,Crescimento ,718
+[292],Manejo florestal,719
+[292],Angico de caroço,720
+[293],Teorema da função inversa,721
+[293],Teorema da função implicita,722
+[293],Demonstração,723
+[294],Codorna -Nutrição,724
+[],Cotunicultura,725
+294,Coturnicultura,726
+[294],Mandioca - Subproduto,727
+[294],Codornas - Alimentação alternativa,728
+[295],Matriz,729
+[295],Sudoku,730
+[696],Transtornos mentais comuns,731
+"[1298, 1370, 1452, 1523, 664, 467]",Etnobotânica,732
+[480],Plantas medicinais,733
+[297],Quilombolas ,734
+[297],"Carrasco (Arapiraca, AL)",735
+[373],Formigas,736
+[298],Antibiótico,737
+[298],Patógeno,738
+[299],Geografia urbana,739
+"[1813, 1628, 1026, 497]",Espaços públicos,740
+[300],Ecodesenvolvimento,741
+300,Desenvolvimento sustentável,742
+"[1968, 1243, 1638, 320]",Arquitetura,743
+[301],Microácaros,744
+[384],Ácaros fitófagos,745
+"[1617, 584, 419]",Controle químico ,746
+[302],Energia - Fontes alternativas,747
+[302],Energia solar,748
+[302],Força eólica,749
+[302],Política energética,750
+[304],Milho - Produtividade,751
+[304],Modelagem agrometeorológica,752
+[303],Artesanato ,753
+[303],Emprego,754
+303,Renda,755
+"[1261, 628, 532]",Produção,756
+"[2064, 1325, 305]",Comércio,757
+[304],Modelo de zona agroecológica,758
+[304],Predição agrícola,759
+304,Balanço hídrico,760
+[305],Comércio varejista,761
+[366],Processo decisório,762
+[306],Qualidade,763
+"[1615, 1725, 536]",Produtividade,764
+"[1744, 688, 575, 306]",Construção civil,765
+[306],Qualidade - Indústria,766
+[306],Produtividade - Indústria,767
+"[1580, 650, 923, 924, 920, 919, 308]",Piscicultura,768
+[307],Agrotóxicos - Exposição,769
+[307],Agrotóxicos - Intoxicação,770
+[932],Baixo São Francisco,771
+[308],Desenvolvimento sustentável,772
+[307],Fumicultura,773
+[307],Biomarcadores,774
+308,Baixo São Francisco (AL),775
+[],Agroindústria,776
+[309],Agroindústria canavieira,777
+[309],Custo industrial,778
+[309],Contabilidade de custo,779
+[309],Administração de empresas,780
+[310],Crematório,781
+[310],Incineração de  corpos,782
+[310],Cremação,783
+[310],Maceió (AL),784
+[311],Gestão cooperativa,785
+329,Cooperativismo,786
+[311],Cooperativas,787
+[312],Marketing - Administração,788
+[312],Estratégias competitivas,789
+"[1836, 2070, 863, 351]",Educação de jovens e adultos,790
+[313],professor,791
+314,Satisfação no trabalho,792
+[314],Análise de conglomerados ,793
+[314],Análise de Clusters,794
+"[1627, 966, 315]",Sistemas de informação,795
+[316],Transporte ,796
+[316],Faturamento ,797
+[316],Empresa de transporte ,798
+[316],Transporte coletivo,799
+[317],Serviços contábeis,800
+"[1299, 639, 418]",Cana-de-açúcar,801
+[318],Diagnóstico de doenças,802
+[319],Carcinicultura,803
+[319],Camarões - Criação,804
+320,Bambu,805
+[321],Relacionamento médico - enfermeiro,806
+[321],Hospital universitário,807
+322,Sustentabilidade urbana ,808
+[322],Mais - valias fundiárias,809
+[486],Habitação popular,810
+[323],Programa de Arrendamento Residencial,811
+"[970, 1314, 324]",Agricultura orgânica,812
+[324],Comercialização agricola,813
+[324],Ambiente institucional,814
+[325],Capoeira ,815
+396,Prática docente,816
+[325],Projeto histórico socialista,817
+[326],Meio ambiente - Metodologia ,818
+[326],Homem,819
+[326],Natureza ,820
+[327],Trabalho e renda ,821
+[327],Qualificação profissional,822
+[327],Paradigma educacional,823
+[328],Filosofia francesa,824
+[328],Mal,825
+[328],Consciência,826
+[328],Liberdade,827
+[328],Razão,828
+[328],Providência divina,829
+[329],Cooperativas agrícolas,830
+[524],Política urbana,831
+[330],Ilhéus - História,832
+"[1830, 1854, 1166, 1353, 1514, 1554, 1219, 633, 634, 596, 331, 630, 1936]",Ensino de química,833
+332,Química orgânica,834
+[332],Materiais didáticos,835
+[332],Aulas expositivas,836
+[332],Visualização tridimensional,837
+[333],Cascas de mandioca,838
+[345],Resíduos sólidos,839
+[333],Macro e micronutrientes,840
+[334],Modelos moleculares físicos,841
+[334],Modelos moleculares virtuais,842
+[334],Estrutura tridimensional de aminoácidos e proteínas,843
+[334],Alunos do nível médio,844
+"[1318, 1456, 756, 877, 991, 335]",Ensino fundamental,845
+[335],Ciência química,846
+[335],Livro de experimentos,847
+[336],Turbeculose,848
+350,Cumarinas,849
+[336],Fármacos,850
+[337],Enaminonas,851
+[337],Farmacologia,852
+[337],Métodos de preparação,853
+338,Síntese,854
+338,Atividade biológica,855
+[339],Analogia,856
+[339],Gases,857
+[340],Deficientes visuais,858
+[340],Termoquímica,859
+"[1312, 882, 341]",Leitura,860
+341,História em quadrinhos,861
+[342],Proposta metodológica,862
+[342],Parâmetros Curriculares Nacionais para o Ensino Médio,863
+[343],Água - Sistema de abastecimento - Arapiraca/AL,864
+[343],Água - consumo humano,865
+[344],Ácidos graxos poliinsaturados,866
+[344],Gorduras Trans,867
+[348],Cianeto,868
+[348],Manipueira,869
+[346],Corpos d'água,870
+[346],Semiárido alagoano,871
+[347],Aspecto sócio científico,872
+347,Ficção científica,873
+[347],Ciência versus religião,874
+928,Impacto ambiental,875
+[349],Ensino inclusivo,876
+353,Química,877
+"[2057, 1166, 400]",Deficiência visual,878
+[349],Tabela periódica,879
+[349],Braille,880
+[350],Produtos naturais,881
+[350],Plantas,882
+[387],Agreste alagoano,883
+[352],Análise granulométrica,884
+"[1969, 1270, 352]",Manejo,885
+"[1571, 1705, 392, 934]",Conservação,886
+[357],Biodiesel,887
+[353],Ensino de 2º série,888
+[354],Alunos de química,889
+[354],Dificuldades e aprendizagem,890
+"[1863, 1454, 991, 355]",Formação inicial,891
+[356],Códigos linguísticos,892
+[358],Turfas,893
+358,Substâncias húmicas,894
+[358],extração em fluxo,895
+[359],Jogo didático,896
+"[1890, 2023, 1293, 359]",Lúdico,897
+[360],Método de amostragem,898
+[360],Comunidade rural do Carrasc,899
+[361],Candomblé,900
+[472],Conhecimento tradicional ,901
+362,Viabilidade da irrigação,902
+362,Bombeamento ,903
+[364],Potencial produtivo,904
+[364],Ostras,905
+[365],Idade de abate,906
+[365],Carcaça,907
+[365],Sexo,908
+[366],Gado - Sistema de produção,909
+[366],Pasto,910
+[366],Recria,911
+366,Terminação,912
+"[1408, 1478, 1403, 479]",Ensino de ciências ,913
+[367],Modelos tridimensionais,914
+"[1612, 1434, 463]",Educação básica ,915
+368,Pesquisa de mercado,916
+[368],Ovinocultura,917
+[368],Qualidade de carne,918
+[369],Parâmetros fisiológicos,919
+378,Ovinos,920
+[369],Temperatura retal,921
+[378],Sombreamento,922
+[378],Pasteio,923
+[369],Extresse,924
+[370],Alimento alternativo,925
+[370],Desempenho positivo,926
+370,Subproduto do arroz,927
+[371],Visitantes florais,928
+[474],Apicultura,929
+[371],Meliponicultura,930
+[777],Leite,931
+[372],Produtor de leite - Perfil,932
+[372],Leite ,933
+372,Bovinocultura,934
+[373],Infecções hospitalares,935
+373,Patógenos,936
+[373],Hospital - bactérias,937
+"[823, 994, 374]",Bovinos leiteiros,938
+[376],Forragem ,939
+"[2040, 2043, 1450, 1369, 1307, 567, 375]",Educação ambiental,940
+"[1458, 1432, 1455, 1386, 1380, 1385, 1388, 858, 988, 375]",Educação infantil,941
+"[1253, 1313, 1319, 1330, 465]",Alagoas,942
+[418],Melhoramento genético,943
+[437],Produção de biomassa,944
+376,Seleção,945
+[387],Fitoterápico,946
+[378],Comportamento ingestivo,947
+[378],Ruminantes,948
+[377],Diabetes,949
+[377],Hipoglicemiantes,950
+[377],Medicina popular,951
+[378],Parâmetros ambientais,952
+[379],Alternativas de avaliação,953
+379,Cavalos,954
+[379],Medidas zoométricas,955
+[393],Ensino de biologia,956
+"[1389, 380, 1273]",Gestão escolar,957
+380,Surdos-Educação,958
+381,Base genética,959
+[381],Cavalos de esteira,960
+381,Quarto de Milha,961
+381,Vaquejada,962
+[382],Sistema cardiovascular-Rato,963
+"[543, 809, 453, 382]",Biometria,964
+[382],Deficiência de proteína - Rato - Patologia,965
+[383],Saúde - Escola pública - Arapiraca,966
+383,Nutrição,967
+[383],Alunos de escola pública,968
+[481],Controle alternativo,969
+[384],Plantas inseticidas,970
+[385],Idoso - Saúde,971
+[385],Maribondo/AL,972
+[385],Idosos - Sociodemografia,973
+[386],Nutrição-Gestantes,974
+[386],Paulo Jacinto/AL,975
+[386],Perfil nutricional de gestantes,976
+"[2086, 1315, 386]",Gestantes,977
+[387],Perda de peso,978
+[387],Raizeiros,979
+"[890, 886, 387]",Feiras livres,980
+[388],Hexapoda,981
+"[1022, 870, 1263, 1267, 391]",Biodiversidade,982
+[388],Lixo urbano,983
+[474],Insetos,984
+[389],Arborização,985
+[389],Espaços públicos urbanos,986
+"[2042, 2052, 2053, 389]",Gestão pública,987
+[389],Fitossanidade,988
+"[2058, 1303, 1332, 390]",Conscientização,989
+"[1479, 653, 657, 787, 403]",Escolas públicas,990
+[391],Coleoptera,991
+[468],Reserva Madeiras,992
+[468],Teotônio Vilela/AL,993
+[392],Recursos naturais,994
+503,Cultura popular,995
+[393],Modelos didáticos,996
+[394],Botânica ,997
+[394],Biologia,998
+[394],Ensino de botânica,999
+[394],Ciências e biologia,1000
+[395],Perfil antropométrico - Mulheres ,1001
+[395],Climatério,1002
+[395],Pós-climatério,1003
+[395],Perfil pressórico,1004
+[395],Perfil glicêmico,1005
+[395],Programa Hiperdia,1006
+396,Orientação Sexual,1007
+[396],aulas de biologia,1008
+[397],Craibeira,1009
+[471],Germinabilidade,1010
+[398],Algas microscópicas,1011
+"[774, 827, 835, 462]",Controle biológico,1012
+[398],Extratos algais,1013
+[402],Entomologia forense,1014
+[399],Histeridae,1015
+[399],Tenebrionidae,1016
+[399],Scarabaeidae,1017
+[401],Aedes aegypit,1018
+"[1637, 1824, 810, 857, 481]",Dengue,1019
+[402],Entomofauna forense,1020
+[402],Região Agreste de Alagoas,1021
+[402],Dipterofauna Necrófaga,1022
+[403],Genética,1023
+[404],Distúrbios circadianos,1024
+404,SNPs,1025
+[404],Clock,1026
+[404],Per2,1027
+[405],Ecologia,1028
+[405],Fitoplâncton,1029
+405,Estuário,1030
+[405],Laguna,1031
+[405],CELMM,1032
+[406],Crimes ambientais,1033
+[406],Tráfico de animais,1034
+[406],Preservação do meio ambiente,1035
+[406],Preservação do meio ambiente,1036
+"[637, 1339, 406]",Escola pública,1037
+[407],Professores ,1038
+470,Recursos didáticos,1039
+[408],Biologia celular,1040
+[409],Interação aluno-aluno,1041
+[409],Sistema circulatório,1042
+[447],Ácaros de solo,1043
+[410],Sacharum officinarum,1044
+[410],Oribatida,1045
+[410],Mesofauna,1046
+[411],Microbiologia clínica,1047
+[411],Resistência bacteriana,1048
+[412],Pau-brasil,1049
+"[1779, 1937, 1645, 455]",Alface,1050
+[413],Percepção,1051
+[414],Equídeos ,1052
+414,Comportamento animal,1053
+[414],Estereotipia,1054
+414,Bem estar animal,1055
+"[883, 1009, 414]",Equinos,1056
+[414],Cavalgadas,1057
+[415],Análise agroindustrial,1058
+[415],Cana-de-açúcar orgânica,1059
+[438],Adubos verdes,1060
+[416],Qualidade do solo,1061
+[416],Cobertura do solo,1062
+[417],Cultivares,1063
+[417],Adubo orgânico,1064
+[417],Fertilização química,1065
+[417],Lactuca sativa,1066
+[418],DNA repetitivo,1067
+[419],Broca gigante,1068
+[419],Praga,1069
+455,Agrotóxicos ,1070
+"[1755, 2049, 1244, 862, 1521, 432]",Avaliação ,1071
+[422],Produção potencial,1072
+[422],Colmo,1073
+[422],Modelos fisiológicos,1074
+[423],Irrigação agrícola,1075
+[423],Irrigação por gotejamento,1076
+"[1816, 1409, 1477, 963, 600, 451]",Evapotranspiração,1077
+[424],Simulação de crescimento,1078
+[424],Irrigação de salvamento,1079
+[425],Tabaco ,1080
+[425],Severidade de doenças ,1081
+[425],Doenças - Quantificação,1082
+[426],Espécie florestal,1083
+"[2029, 776, 1176, 442]",Dormência,1084
+[443],Modelos matemáticos,1085
+[426],Fotossíntese,1086
+[427],Matéria seca,1087
+[428],DNA,1088
+[428],Marcador SSR,1089
+[428],Marcadores moleculares microssatélites,1090
+[438],Leguminosas,1091
+[478],Análise de crescimento,1092
+[455],Hortaliças,1093
+[429],Cultivo agroecológico,1094
+[430],Rabanete,1095
+[482],Composição florística,1096
+[430],Plantas daninhas,1097
+[530],Evotranspiração,1098
+[431],Penman-moteith,1099
+431,Hargreaves-samani,1100
+[432],Vida de prateleira,1101
+[432],Condições de armazenamento,1102
+[433],Ferlilização foliar,1103
+[452],Tomate,1104
+[434],Unha-de-gato,1105
+[434],Àreas degradadas,1106
+[434],Fisiologia da semente,1107
+[435],Torta de filtro,1108
+[435],Fertilizantes,1109
+[435],RB92579,1110
+[436],Condicionador de solo,1111
+[437],Cebolinha,1112
+[437],Adubação verde,1113
+[438],Decomposição,1114
+[438],Massa vegetal,1115
+439,Solo,1116
+"[2063, 1533, 439]",Salinidade,1117
+[439],Fertirrigação,1118
+[439],Crescimento e rendimento,1119
+[440],Dsenvolvimento rural,1120
+"[1646, 1477, 441]",Demanda hídrica,1121
+[],Evotranspiraçãp,1122
+[442],Sementes,1123
+442,Pata de vaca,1124
+442,Temperatura,1125
+[443],Espécies florestais,1126
+[444],Reflorestamento,1127
+[444],Efeito da temperatura,1128
+[445],Feijão-do-mato,1129
+445,Hidrogel,1130
+445,Restrição hídrica,1131
+[446],Manejo do solo,1132
+[446],Análise do solo,1133
+447,Ácaros,1134
+[447],Taxonomia,1135
+[452],Controle de pragas,1136
+[448],Lísimeros de pesagem,1137
+[449],DNA satélite,1138
+[450],Nutrientes ,1139
+[450],Plantas de cobertura,1140
+[451],Calibração,1141
+[451],Análise de funcionamento,1142
+"[1816, 963, 451]",Lisímetros,1143
+[451],Célula de carga,1144
+[452],Entomofauna,1145
+[454],Adubos foliares,1146
+[454],Nutrição foliar,1147
+[454],Lactuva sativa,1148
+455,Coentro,1149
+[455],Agroquímicos,1150
+456,Polimorfismo,1151
+"[610, 616, 456]",Ritmos circadianos,1152
+[456],Cronótipo,1153
+[456],SNP,1154
+[456],Gene - Per2,1155
+[456],PCR-RFLP,1156
+[457],Bactérias patogênicas,1157
+[457],Ácido desoxirribonucleico - Análise,1158
+[458],Potabilidade,1159
+458,Qualidade da água,1160
+[458],Saúde escolar,1161
+[458],Major Izidoro,1162
+[459],Sensibilização,1163
+[459],Escola municipal,1164
+[460],Gram-Positivos,1165
+[460],Colonização nasal,1166
+[460],Resistências,1167
+[460],Enfermeiros,1168
+[460],Bactéria,1169
+[461],Jurema Branca,1170
+"[1909, 1168, 585, 624, 478]",Caatinga,1171
+[462],Entomopatógenos,1172
+[463],Embriologia,1173
+[463],Métodos tridimensionais,1174
+"[2040, 1369, 1462, 464]",Lixo,1175
+[465],Mata Atlântica,1176
+[466],Agentes mutagênicos,1177
+[466],Inseticidas - uso indiscriminado,1178
+[466],Alterações morfológicas,1179
+[466],Bioindicadores,1180
+[472],Especialistas locais,1181
+467,Urbanização,1182
+[468],Lagartos de solo,1183
+468,Fauna,1184
+[468],Latercílios terrestres,1185
+[469],Tecido epitelial,1186
+[470],Replicação do DNA,1187
+"[1950, 621, 1296, 470]",Aprendizagem significativa,1188
+[470],Ferramenta de ensino,1189
+[471],Murici,1190
+[472],Inventário geral,1191
+[474],Própolis vermelha,1192
+[473],Dalbergia ecastophyllum,1193
+[473],Identificação molecular,1194
+[474],Flavonoides,1195
+[474],Exsudados,1196
+[475],Laboratório de ciências biológicas,1197
+475,Aulas práticas,1198
+475,Metodologia de ensino,1199
+"[1771, 1467, 1457, 881, 874, 875, 476]",Livro didático,1200
+[476],Comunidade-prevenção,1201
+[476],Parasitos intestinais,1202
+[477],Enteroparasitas,1203
+[477],Parasitas intestinais,1204
+"[585, 623, 624, 478]",Recuperação,1205
+[478],Imburana-de-cheiro,1206
+479,Paleontologia,1207
+[479],Estratégias pedagógicas,1208
+[480],Espécies vulneráveis,1209
+[480],Uso sustentável,1210
+[480],Extrativismo,1211
+[482],Assentamento Rendeira,1212
+[481],Efeito larvicida,1213
+[481],Extratos vegetais alcoólicos,1214
+[481],Extratos vegetais aquosos,1215
+[481],Folhas de Nim,1216
+[481],Melão de São Caetano,1217
+[482],Vegetação - estrutura,1218
+[482],Variação fisionômica,1219
+[482],Vegetação ribeirinha,1220
+[255],avaliação da aprendizagem,1221
+[255],"ensino, processo de ensino-aprendizagem",1222
+"[1776, 687, 515, 577]",Humanização,1223
+577,Arquitetura hospitalar,1224
+[483],Tratamento humanizado,1225
+[484],Lazer urbano,1226
+484,Áreas centrais,1227
+"[1872, 1436, 1602, 823, 485]",Diagnóstico,1228
+[485],Urbano,1229
+[485],Infraestrutura,1230
+[485],Saúde,1231
+"[1812, 2090, 1317, 813, 845, 524]",Desenvolvimento,1232
+[486],Bioclimatologia,1233
+[486],Desempenho térmico,1234
+539,Projeto,1235
+"[1945, 1840, 1716, 1630, 1525, 1629, 1163, 516]",Conforto térmico,1236
+[487],Academia de atividade física,1237
+"[1754, 2057, 1877, 1780, 1488, 1525, 617, 959, 755, 754, 1271, 499]",Acessibilidade,1238
+[488],Praça Manoel André,1239
+489,Parque Lago da Perucaba,1240
+490,Feira livre,1241
+[490],Configuração urbana,1242
+[491],Desenho arquitetônico,1243
+[491],Conforto humano,1244
+505,Acústica,1245
+"[574, 607, 492]",Igreja,1246
+[492],Catedral ,1247
+[494],Arquitetura popular,1248
+[494],Arquitetura moderna,1249
+[495],Programas computacionais gráficos,1250
+[495],Metodologia projetiva,1251
+[495],Ferramentas projetivas,1252
+[496],Estação intermodal,1253
+"[1422, 663, 851, 496]",Projeto arquitetônico,1254
+[496],Transportes coletivos,1255
+[496],Transportes particulares,1256
+"[1872, 1879, 1946, 1979, 2022, 519]",Mobilidade urbana,1257
+[496],Veículo leve sobre trilhos - VLT,1258
+497,Avaliação pós-ocupação,1259
+497,´Percepção ambiental,1260
+[497],Pessoa - Ambiente,1261
+[498],Espaços urbanos,1262
+498,Bosque das Arapiracas,1263
+[498],Avaliação pós-ocupação - APO,1264
+[499],Anteprojeto arquitetônico,1265
+"[1862, 1398, 754, 755, 499]",Desenho universal,1266
+500,Assentamentos rurais,1267
+500,Tecnologia social,1268
+"[1480, 1223, 500]",Habitação,1269
+[501],Transformações urbanas,1270
+[501],Centro da cidade,1271
+[502],Polução sonora,1272
+[502],Ruído urbano,1273
+917,Violência urbana,1274
+[503],Cultura,1275
+[503],Lugar,1276
+"[1632, 666, 504]",Fumo,1277
+"[1861, 1443, 754, 504]",Urbanismo,1278
+[504],Espacialização,1279
+"[1399, 979, 505]",Sala de aula,1280
+[505],"Universidade Federal de Alagoas - UFAL, Campus de Arapiraca",1281
+[506],Paisagem cultural,1282
+[506],Fotografia,1283
+"[2079, 2085, 507]",Saúde do idoso,1284
+"[1535, 669, 508]",Acolhimento,1285
+"[1757, 508, 1138, 1112]",Atenção básica,1286
+"[2071, 1564, 785, 509]",Aids,1287
+[509],Notificação,1288
+510,Enteroparasitoses,1289
+"[1769, 510, 752]",Profilaxia,1290
+[],Qualidade do ovo,1291
+[465],Reservas de Madeira,1292
+[511],Atenção básica,1293
+[511],PMAQ,1294
+[511],Indicadores de saúde,1295
+"[2020, 1300, 1914, 671, 512]",Mulher,1296
+[512],Sala de parto,1297
+[514],Humanização hospitalar,1298
+[514],Espaços pediátricos,1299
+[515],Doenças infectocontagiosas,1300
+[515],Referência hospitalar,1301
+516,Presídio,1302
+[516],Retrofit,1303
+"[1794, 1846, 1530, 617, 1163, 516]",Arquitetura escolar,1304
+[516],Extensão,1305
+[517],Doenças ocupacionais,1306
+[518],Acadêmicos,1307
+518,Trabalho de Conclusão de Curso - TCC,1308
+[519],Transportes urbanos,1309
+[519],Via pública,1310
+[520],Mapeamento participativo,1311
+[520],Ecozoneamento,1312
+[520],Fitofisionomia,1313
+[521],Anurofauna de solo,1314
+[521],Riqueza faunística,1315
+[521],Distribuição temporal,1316
+[521],Pitfall traps,1317
+[523],ITS,1318
+[523],Código de barras de DNA,1319
+[523],Formiga-cortadeira,1320
+[524],Reestruturação,1321
+[524],Exclusão sócio-espacial,1322
+[525],Gestão ,1323
+[525],Materias,1324
+[526],Processos administrativos,1325
+[526],Mapeamento e análise,1326
+[527],Moradia adequada,1327
+[527],Moradia digna,1328
+"[1945, 1761, 1815, 1840, 1848, 1862, 1629, 1630, 1644, 595, 527]",Habitação de interesse social,1329
+[528],Saúde ocupacional,1330
+[528],Segurança ocupacional,1331
+528,Equipamento de proteção individual - EPI,1332
+[529],Curso de Administração,1333
+[],recursos hídricos,1334
+530,Manejo da irrigação,1335
+[531],Terceira idade,1336
+[531],Endividamento ,1337
+[531],Crédito e consumo,1338
+[532],Materias ,1339
+[532],Processos,1340
+564,Estratégia,1341
+549,E-commerce,1342
+533,Internet,1343
+534,Inovação,1344
+[534],Setor público,1345
+[534],Inclusão digital,1346
+[535],Mapeamento de processos,1347
+[535],Empresa Júnior,1348
+"[1972, 1334, 535]",Gestão de pessoas,1349
+[535],Processos ,1350
+[535],Fluxograma,1351
+1257,Qualidade de vida no trabalho,1352
+536,Bem-estar,1353
+[537],Livraria,1354
+[538],Fungo,1355
+[538],Formigas-cortadeiras,1356
+[540],Produtos musicais,1357
+[541],Processo sucessório,1358
+[541],Sucessão,1359
+[542],Empreendedorismo feminino,1360
+[542],Gestão,1361
+[542],Perfil feminino,1362
+[543],Estádios morfológicos,1363
+[544],Entretenimento,1364
+[544],Casa noturna,1365
+[544],Inclusão de classe,1366
+[544],LGBTs,1367
+[545],Microcrédito,1368
+[545],Micro empreendedor indivividual,1369
+[545],Desenvolvimento empresarial,1370
+[545],Empréstimo,1371
+[546],Lanchonete,1372
+[547],Microempreendedor individual,1373
+[547],Planejamento financeiro pessoal,1374
+[547],Planejamento financeiro profissional,1375
+[548],Educação fiinanceira,1376
+[548],Planejamento financeiro,1377
+[548],Orçamento doméstico,1378
+[549],Comércio eletrônico,1379
+[549],Loja virtual,1380
+[550],Intraempreendedorismo,1381
+[550],Inovação ,1382
+[550],Comportamento,1383
+[551],Suplementos ,1384
+[551],Saúde,1385
+[552],Gestão estratégica de inovação,1386
+[553],Doses de fósforo,1387
+[553],Rendimento,1388
+[554],Gerenciamento,1389
+[554],Controle de Estoques,1390
+[555],"Receitas
+financeiras",1391
+[555], Mercado varejista,1392
+[555],Custo de produção,1393
+556,Plano de negócios,1394
+556, Planejamento Financeiro,1395
+[556], Planejamento Econômico,1396
+[557],Restaurante,1397
+[557],Alimentação,1398
+[558],Transporte Turistico,1399
+[558],Excelêncxia,1400
+[558],Qualidade,1401
+[],Revenda de Comestico,1402
+559,Oportunidade de mercado,1403
+[559],Revenda de comésticos,1404
+[560],Ciências sociais aplicadas,1405
+[560],Gestão internacional,1406
+[560],Ciências sociais,1407
+[561],Análise de mercado,1408
+[561],Pesquisa de mercado,1409
+[],custos e despesas,1410
+[], clima organizacional,1411
+[], satisfação,1412
+[], pesquisa de clima organizacional,1413
+[563], Gestão de pessoas,1414
+[563],Departamento de RH,1415
+[563],Empresas,1416
+[564], Benchmarking,1417
+[564],Gestão,1418
+[565],LGBT,1419
+"[1652, 1916, 565]",Diversidade,1420
+[565],Preconceito,1421
+[566],Conscientização,1422
+[567],Óleo de cozinha,1423
+[567],Reutilização,1424
+[568],Gestão Empresarial,1425
+[568],Setor Sucroalcooleiro,1426
+[569],Quiescentes,1427
+[569],Anamórficos,1428
+[569],Mancha-marrom,1429
+[569],Cactus,1430
+[],gestão de projetos,1431
+[661],cidades inteligentes,1432
+[],plano GQM,1433
+1013,Gestão de projetos,1434
+"[999, 965, 990, 1223, 1221, 1222, 1224, 1238, 570, 1802]",Cidades inteligentes,1435
+[570],Plano GQM,1436
+[571],Cáffalu,1437
+[571],Uniformes profissionais,1438
+[572],Análise e concessão de crédito,1439
+[572],Indicadores econômico-financeiros,1440
+[572],Cooperados pessoa jurídicas,1441
+[],Coopertiva de crédito,1442
+[572],Cooperativa de crédito,1443
+1230,Tamboril,1444
+[573],Estádios germinativos,1445
+[573],Taxa de secagem,1446
+[573],Hidrogel,1447
+[576],Legislação do trabalho,1448
+"[1293, 1453, 698, 993, 839, 576]",Motivação,1449
+[576],Influência teórica,1450
+[577],Pediatria,1451
+[578],História da literatura,1452
+[578],Paraliteratura,1453
+[578],Romance-folhetim,1454
+[578],Teixeira e Sousa,1455
+[579],Teorema espectral,1456
+598,Operadores auto-adjuntos,1457
+[579],Base ortonormal,1458
+[580],Sistemas computacionais,1459
+[580],Mecanismo,1460
+[580],Análise de sensibilidade,1461
+[581],Tecnologia na educação,1462
+[581],Lousa digital,1463
+581,Baixo custo,1464
+"[603, 665, 581, 936]",Usabilidade,1465
+"[1356, 1446, 582]",Práticas educativas,1466
+[582],Ensino privado,1467
+[584],Saccharum officinarum,1468
+[584],Lepidoptera,1469
+[584],Insetofauna,1470
+[585],Angico,1471
+[585],Área degradada,1472
+[586],Cajanus cajan,1473
+"[2063, 586, 614]",Estresse salino,1474
+[586],Mecanismo de tolerância ,1475
+878,Lixiviação,1476
+587,Maranta Arundinaceae L.,1477
+[587],Propagação vegetativa,1478
+[587],Índice de velocidade de emergência,1479
+[588],Mapa climático,1480
+[588],Clima urbano,1481
+[589],Melancia,1482
+1246,Penman-Monteith,1483
+[600],Agrometeorologia,1484
+605,Bagaço de cana,1485
+702,Palma,1486
+702,Silagem,1487
+[590],Termografia,1488
+"[1581, 591, 730]",Desenvolvimento rural ,1489
+"[1643, 1903, 591]",Recursos hídricos,1490
+[592],Cobrições efetivas,1491
+[592],Status nutricional,1492
+592,Verminoses,1493
+[593],Buchada,1494
+[593],Órgãos,1495
+[593],Subprodutos,1496
+[593],Vísceras,1497
+[594],Equações diferencias com atraso,1498
+[594],Transições de fase,1499
+[595],Light Steel Frame,1500
+[595],Estrutura de aço,1501
+595,Déficit habitacional,1502
+[596],Estratégia de leitura,1503
+"[1719, 2017, 2048, 2057, 760, 772, 596]",Formação docente,1504
+[597],Lema de Zorn,1505
+[597],Elementos maximais,1506
+[597],Base de Hamel,1507
+[598],Dimensão finita,1508
+[598],Teorema spectral,1509
+[599],Escolas públicas estaduais - Arapiraca,1510
+[599],Licenciados,1511
+[601],Code Smell,1512
+974,Refatoração,1513
+[601],Qualidade de software,1514
+[601],Análises do desenvolvedor,1515
+[602],Sistema Tutor Inteligente,1516
+[602],Sequenciamento,1517
+[],Lógica Proposocional,1518
+[602],Lógica Proposicional,1519
+[602],Módulo pedagógico,1520
+[],Curriculum,1521
+[602],Modelo estudante,1522
+[603],Site,1523
+1320,Interação,1525
+[604],Gamificação,1526
+[604],Lógica Formal,1527
+[604],Silogismos Categóricos,1528
+[605],Medidas biométricas,1529
+[605],Santa Inês,1530
+606,Momento angular orbital,1531
+[606],Feixes Laguerre-Gauss,1532
+606,Difração,1533
+[606],Grade Fractal,1534
+[607],Museu,1535
+1155,Identidade,1536
+[607],Valores,1537
+[607],Apropriações,1538
+[608],Gênero debate,1539
+[608],Figuras retóricas,1540
+[608],Anáfora,1541
+[608],Paralelismo,1542
+[609],Pesticidas,1543
+[609],Vigilância em saúde,1544
+[609],Registros,1545
+[610],miR-320,1546
+616,Núcleo Supraquiasmático,1547
+[610],Camundongo,1548
+"[1632, 1871, 611]",Preservação,1549
+[611],Ensino Fundamental II,1550
+[612],Marcador molecular,1551
+[612],Conservação genética,1552
+[612],Sequenciamento de nova geração,1553
+"[1652, 1168, 612, 1177, 1227]",SSR,1554
+[612],Ouricuri,1555
+[613],Etnobiologia,1556
+"[1813, 613, 957, 1708]",Rio São Francisco,1557
+[613],Macrófitas,1558
+[614],Crotalaria juncea,1559
+[],crotalaria spctabilis,1560
+[615],Leis de Kepler,1561
+[615],Cálculo diferencial,1562
+[615],Movimento dos planetas,1563
+[616],Genes de referência,1564
+[617],Centro de convenções,1565
+617,Teatro,1566
+[618], Livro didático de física,1567
+[618], Professores de física,1568
+[618]," Escola
+Estadual de Educação Básica Professor José Quintela Cavalcante",1569
+[619],Forrageiras nativas,1570
+[619],Fitossociologia de herbáceas,1571
+[619],Estímulos visuais,1572
+[620],Lógica,1573
+[620],Lógica Temporal,1574
+[621],Tecnologias de Informação e Comunicação,1575
+621,Simulação Computacional,1576
+[621],Simulações PhET,1577
+[],Formação do educador,1578
+[656],Competências,1579
+[],"O professor de Física para o
+novo século",1580
+623,Tabebuia aurea,1581
+623,Caatinga,1582
+[1176],Espécie nativa,1583
+[623],Espécie Nativa,1584
+[624],Degradação,1585
+[625],Dificuldade de aprendizagem,1586
+[626],Capsicum annum,1587
+[626],Adubo nitrogenado,1588
+[626],Adubo fosfatado,1589
+[627],Modelo,1590
+[627], NBR 14724 de 2011,1591
+627, ABNT,1592
+974, LaTeX,1593
+[628], Características corporais,1594
+628,Longevidade,1595
+[628],Zebuíno leiteiro,1596
+950,Laboratório,1597
+"[629, 698, 753, 760]",Ensino e aprendizagem,1598
+[630],Cinema,1599
+[630],Filmes comerciais,1600
+[631],Auto posto,1601
+[632],Privacidade,1602
+[632],VANET,1603
+[632],Ataques Sybil,1604
+[633],Ciências no 9º ano,1605
+[634],Plano de disciplina,1606
+635,Educação estatística,1607
+[635],Cidadania,1608
+[636], Lepidotes de Pernambuco,1609
+[636],Jurássico Superior,1610
+[636],Bacias de Pernambuco,1611
+[637],Alunos surdos,1612
+"[1877, 637, 836, 959]",Libras,1613
+[],Steinenerma gasoli,1614
+[639], Steinernema gaseri,1615
+[639],Heterorhabditis sp,1616
+[639],Controle associado,1617
+[640],Adolescência,1618
+[640],Professor de Educação Física,1619
+[642],Energia nuclear,1620
+[642],Teoria atômica,1621
+[642],Fissão nuclear,1622
+[642],Usinas nucleares,1623
+[642],Combustível nuclear,1624
+[642],Lixo nuclear,1625
+[642],Acidentes  nucleares,1626
+[643],Algebra linear,1627
+649,Espaços métricos,1628
+[643],Análise funcional,1629
+[644],Sequências de Cauchy,1630
+[644],Espaço de Banach,1631
+[645],Concepções em biologia,1632
+[645],Conhecimento científico,1633
+[646],Fungos. Unhas de gato. Microorganismos. Associação.,1634
+[],"tangram,",1635
+[],tangram,1636
+[],área,1637
+[],raciocínio lógico,1638
+[],aprendizado,1639
+[648],Requisitos ,1640
+[648],Target,1641
+[648],Selenium,1642
+[648],JMeter,1643
+[649],O Teorema de Baire,1644
+[],Funções Contínuas,1645
+[649],Funções  Contínuas,1646
+[650],Sistemas Especialistas,1647
+[650],CLIPS,1648
+1329,Python,1649
+[650],PYCLIPS,1650
+[650],Framework Django,1651
+[],áreas,1652
+[],volumes,1653
+[],Geometria Esapcial,1654
+[651],Geometria Espacial,1655
+[651],Integrais,1656
+[1593],Problemas socias,1657
+729,Problemas Sociais,1658
+[652],Processo saúde-doença,1659
+[653],Desempenho aeróbio,1660
+[653],Escolas privadas,1661
+[653],Crianças pré-púberes,1662
+[654],Resistência de planta a inseto,1663
+[654],bicudo-da-cana,1664
+654,Monitoramento,1665
+[654],Fungo  entomopatogênico,1666
+1296,Tecnologias,1667
+[655],Geogebra,1668
+[],Função Polinominal,1669
+[656],Formação do educador ,1670
+[656],Professor de física,1671
+[657],Ensino,1672
+[657],Fracasso escolar,1673
+[658],Álgebra Linear,1674
+[658],Espaços vetoriais,1675
+[658],Polinômio característico,1676
+[658],Norma de uma matriz,1677
+[659],Infectividade,1678
+[],patogenicidade,1679
+[],virulência,1680
+[659],moscas-das-frutas,1681
+[659],Virulência,1682
+[659],Manejo integrado de pragas,1683
+[660],Candomblé em Alagoas,1684
+[660],Terreiro Urbano,1685
+[660],Intervenção Arquitetônica,1686
+[660],Nação Nagô-Xambá,1687
+[661],tecnologia inteligente,1688
+[661],serviços integrados,1689
+[661],infraestruturas integradas,1690
+[1921],Esportes,1691
+[662],Lúdico. Ensino-aprendizagem. Educação Matemática,1692
+[664],Pecuaristas,1693
+[664],Alimentação animal,1694
+[665],Qualidade no trabalho,1695
+[665],Display de status,1696
+[665],Requisitos funcionais,1697
+[665],Arquitetura de sistemas,1698
+[665],Linguagem de programação,1699
+[668],Ferimento e lesões,1700
+[668],Cicatrização de feridas,1701
+[669],Serviços de saúde,1702
+[672],Intoxicação,1703
+[672],Substâncias tóxicas,1704
+[672],Emergências,1705
+[673],Gestão em enfermagem,1706
+[673],Trabalho intelectual,1707
+675,Esquizofrenia,1708
+[676],Absenteísmo,1709
+[677],Comportamento reprodutivo,1710
+[677],Soropositividade para HIV,1711
+[679],Percepção social,1712
+[680],Psicotrópicos,1713
+[682],Necessidades humanas,1714
+[682],Teoria social,1715
+[683],Direito à saúde,1716
+[],Manihot esculenta Crots,1717
+[684],Manihot esculenta Crants,1718
+[684],Herbicida,1719
+[684],Seletividade e Plantas daninhas,1720
+[685],Mulher negra,1721
+[685],Ontologia,1722
+[686],Paternidade,1723
+[686],Humanização e parto,1724
+"[1390, 1592, 1038, 1045, 687, 1295, 1103, 1073, 799]",Sistema Único de Saúde - SUS,1725
+[689],Tentativa de suicídio,1726
+[689],Rede de Atenção Psicossocial,1727
+[],artes visuais,1728
+[],fenomenologia,1729
+"[804, 1160, 1086, 911]",violência familiar,1730
+"[804, 1160, 721]",crime sexual,1731
+"[1727, 1729, 1734]",comportamento humano,1732
+"[1727, 1729, 892]",behaviorismo (psicologia),1733
+"[1150, 894, 898]",psicologia - estudo e ensino,1734
+"[1766, 1984, 694, 1053, 1158, 1194, 1065, 710, 1156]",trabalho infantil,1735
+695,Cultura corporal,1736
+[695],Saúde,1737
+[695],Práxis social,1738
+[696],TDAH,1739
+860,Processo de ensino - aprendizagem,1740
+"[2054, 696, 1124, 1198, 902]",Ensino superior,1741
+[697],Desenvolvimento estratégico,1742
+"[1455, 1456, 698]",Ludicidade,1743
+[698],Gincana,1744
+[699],Feijão-comum,1745
+[699],Molibdênio,1746
+[699],Phaseolus vulgaris L.,1747
+[700],Grafos Eulerianos,1748
+[700],Teoria dos Grafos,1749
+[700],Ponte de Konigsberg,1750
+[701],Escher,1751
+[701],Mosaicos,1752
+[701],Simetrias,1753
+[],Terminsção,1754
+859,Deficiência intelectual,1755
+[707],Centros de Atenção Psicossocial (CAPS),1756
+806,Psicologia - atuação,1757
+708,Homossexualismo,1758
+"[1988, 708, 709]",Adoção por homossexuais,1759
+"[1283, 709, 802, 1097, 1184, 1074, 904]",Adoção,1760
+746,Família,1761
+[710],Menores -  emprego,1762
+[710],Mulher - emprego,1763
+[710],Mulheres - condições sociais,1764
+"[714, 717, 711, 712]",Assistentes sociais - prática profissional ,1765
+"[1986, 1994, 1592, 1195, 1052, 1390, 1157, 801, 1138, 731, 714, 1161, 1073, 1112, 711, 1067, 1154, 712, 732, 1068, 799]",Política de saúde,1766
+[711],Serviço social médico,1767
+"[1592, 1178, 1280, 1276, 1277, 1045, 1044, 1486, 781, 1146, 748, 1120, 1121, 716, 906, 1132, 1064, 792, 1184, 728, 916, 1107, 726, 717, 1074, 1161, 720, 1078, 1137]",Assistentes sociais ,1768
+"[716, 733, 1078]",Serviço social - estudo e ensino,1769
+717,Pobreza - Brasil ,1770
+[718],Direito do trabalho,1771
+[718],Idoso - condições sociais,1772
+[718],Idoso - trabalho,1773
+"[1693, 1694, 1603, 1639, 1279, 1496, 737, 1029, 1084, 1144, 719]",Gestalt-terapia,1774
+[],Psicoterapia.,1775
+"[1768, 1985, 1593, 1082, 795, 907, 720, 904]",Assistência a menores,1776
+[720],"Menores -
+Estatuto legal, leis, etc. - Brasil",1777
+"[1732, 1768, 1048, 1050, 795, 1136, 1188, 1071, 900, 727, 724, 1062, 720, 800, 790]",Política social ,1778
+[721],Direito de famíli,1779
+[722],Serviço social - Educação,1780
+732,Saúde - Educação popular,1781
+723,Neoliberalismo,1782
+724,Classes sociais,1783
+"[1914, 730, 1196, 1118, 724]",Movimentos sociais,1784
+"[1741, 1753, 1188, 1189, 724]",Reforma agrária,1785
+725,"Sistema Único de Assistência
+Social – SUAS",1786
+"[1732, 1180, 1627, 739, 1111, 1198, 1133, 913, 1066, 1070, 907, 911, 1154, 1076, 725, 1067, 904]",Assistência social,1787
+[726],Serviço social - ética profissional ,1788
+[727],"Idosos – Estatuto, leis, etc",1789
+"[1125, 1148, 728]",Direito de família,1790
+[731],Processo de trabalho,1791
+[732],Idosos - Qualidade de vida,1792
+"[1748, 733, 894, 1115]",Ensino superior - Alagoas,1793
+[734],Estágios supervisionados,1794
+[734],Assistente social - Supervisão,1795
+"[1070, 734, 1137]",Serviço social como profissão,1796
+734,Serviço social – Estudo e ensino,1797
+[735],Assistentes sociais - Ética profissional,1798
+[736],Mulheres – Aspectos sociais,1799
+[736],"Direito das
+mulheres",1800
+[],Gestalt.,1801
+"[1604, 1691, 1279, 737, 1147, 1059, 1084, 1144, 719]",Psicoterapias,1802
+"[805, 738, 1041, 1095, 1081, 1093]",Comportamento humano,1803
+[739],Política de assistência social,1804
+892,Psicologia ,1805
+[740],Psicologia sócio-histórica,1806
+"[741, 742, 1094]",Psicologia educacional ,1807
+"[1305, 1135, 1092, 742, 1143, 1102]",Educação inclusiva,1808
+"[1993, 1690, 1728, 1989, 1286, 1496, 1029, 743, 1056]",Psicologia hospitalar,1809
+[744],Lei Maria da Penha,1810
+[744],"Mulheres – condições
+sociais",1811
+[745],Serviço social – ensino,1812
+[745],"Serviço social –
+formação profissional",1813
+[],Negligência familiar,1814
+[746],Legitimação e violação de direitos,1815
+1072,Envelhecimento.,1816
+"[747, 780, 786]",Direito do idoso,1817
+"[747, 781, 843, 1049, 1126, 1120, 1066, 907]",Políticas sociais,1818
+[749],Análise de solo,1819
+[749],Avaliação da fertilidade do solo,1820
+[749],Análise de frequência do solo,1821
+[750],Formação de ,1822
+[750],Experimentos virtuais ,1823
+[750],Estagio supervisionado,1824
+[751],Ácaro predador,1825
+[751],Cocos nucífera ,1826
+[751],Acaricida,1827
+[752],Caprinocultura,1828
+[752],Doenças infecciosas,1829
+[753],Desinteresse dos alunos,1830
+[755],Instituição de Longa Permanência,1831
+756,Agente multiplicador,1832
+[756],Parasitoses,1833
+[757],Olimpíada Brasileira de Matemática ,1834
+[758],Equações Diofantinas,1835
+[758],Algoritmo de Euclides,1836
+[758],Congruência linear,1837
+[759],Contrações,1838
+[760],Laboratório de ensino de matemática,1839
+[761],Redes Ad Hoc veiculares,1840
+[761],VANETs,1841
+[761],Dispositivos móveis,1842
+[761],Segurança no trânsito,1843
+[761],Sistemas de trânsito inteligentes,1844
+[761],Simuladores VANETs,1845
+[],Transtorno de espectro,1846
+[762],Transtorno de espectro autista,1847
+[762],Vivências,1848
+[763],Pleurodira,1849
+[763],cryptodira,1850
+[763],testudines,1851
+[764],Laser,1852
+825,Espalhamento,1853
+764,Interferência,1854
+"[1621, 1720, 1875]",Granulometria,1855
+[764],Granulométrica,1856
+[765],Comportamento alimentar,1857
+[767],Modelagem de crescimento,1858
+[767],RB72579,1859
+[768],Pós-graduação,1860
+[769],Voltametria,1861
+[769],Varredura escalonada,1862
+[769],Processos adsortivos,1863
+[770],Dados abertos,1864
+770,Dados governamentais abertos,1865
+"[1633, 2042, 2052, 2053, 770]",Transparência,1866
+"[1038, 1380, 830, 770, 918, 1073]",Controle social,1867
+[771],Ambiência,1868
+771,Medidas corporais,1869
+[771],Bem estar,1870
+[772],Prática educativa,1871
+[773],Autocuidado,1872
+[773],Doenças crônicas,1873
+[774],Ácaro da necrose,1874
+[774],Ascidae,1875
+[775],Expressão gênica,1876
+[775],Gene de referência,1877
+[775],Saccharum,1878
+[776],Sesbania,1879
+[776],Índices biométricos,1880
+776,Anatomia,1881
+[777],Suplementação,1882
+"[1004, 777, 856]",Morinda citrifolia L. (NONI),1883
+[809],Densidade,1884
+[777],Avaliação físico-química,1885
+[809],Parâmetro,1886
+856,cão,1887
+[779],senil,1888
+[779],alzheimer,1889
+[779],cognição,1890
+[781],Direito previdenciário,1891
+"[1047, 781, 1111, 792]",Previdência social,1892
+[782],Intervenção estatal - Economia,1893
+782,Estado.,1894
+[783],Transtorno mental,1895
+[784],Assédio Moral,1896
+[784],Trabalho -- Aspectos morais e éticos.,1897
+[784],Assédio no ambiente de trabalho,1898
+[],Surdez,1899
+[791],Integração social,1900
+[786],"Direito do
+trabalho",1901
+[788],Direito das mulheres,1902
+[789],Expressão social,1903
+[790],Assistência social – Palmeira dos Índios,1904
+[790],Serviço social - Benefícios,1905
+"[1178, 1333, 1063, 791]",Mercado de trabalho,1906
+[791],Drogas - Abuso,1907
+792,Política social - Brasil,1908
+[793],Ideologia,1909
+[793],Filosofia marxista,1910
+[793],"Gramsci, Antonio, 1891 – 1937",1911
+"[1925, 1282, 1631, 794]",Inclusão social,1912
+[796],"Educação
+ambiental",1913
+[796],Ecologia humana,1914
+896,Psicologia clínica,1915
+"[1808, 1278, 1034, 1212, 1027, 1206, 1208, 1031, 1035, 1043, 1032, 1085, 798, 1187, 1097]",Análise do comportamento,1916
+[799],Cuidados primários de saúde,1917
+[],Sistema ún ico de saúde - Brasil,1918
+[799],Programa de saúde da família,1919
+[800],Família – Aspectos sociais,1920
+[800],"Família – Política
+familiar",1921
+[803],"Idosos – Estatuto legal, leis etc",1922
+[803],"Brasil –
+Estatuto do idoso (2003)",1923
+[810],Situação epidemiológica,1924
+[810],Incidência,1925
+[811],Leitura em voz alta,1926
+[811],Fluência,1927
+[811],Aspectos prosódicos,1928
+[812],Refrigerantes,1929
+812,Metodologias,1930
+[812],Ensino e propostas,1931
+[813],Tempo integral,1932
+[813],Benefícios e oportunidades,1933
+[814],Ambientes virtuais de aprendizagem,1934
+814,Modelagem computacional,1935
+[814],Informática na educação,1936
+[814],Design colaborativo,1937
+[815],Software livre,1938
+[815],Gestão pública municipal,1939
+[816],Reforma administrativa,1940
+[816],Terceiro setor,1941
+[816],Organizações sociais,1942
+[816],Arranjos institucionais,1943
+[816],Marcos regulatórios,1944
+[817],Juventude rural ,1945
+[817],Assentamento Paraná,1946
+[],Produto Interno Bruto,1947
+[818],Investimento,1948
+[],Despesa Pública,1949
+[], Desenvolvimento Regional,1950
+[819],Tipo de estoque,1951
+[819],Farmácia,1952
+[819],Medicamento ,1953
+820,Centro,1954
+[820],Descentralização,1955
+[820],Dispersão Urbana,1956
+[821],Questionário SF-36,1957
+[822],Sociedade Civil,1958
+[],Projetos Sociais,1959
+"[1840, 1016, 1452, 1629, 1753, 822]",Semiárido,1960
+[822],Convivência com a seca,1961
+883,Zoonose,1962
+[823],Brucella sp,1963
+[824],Trabalho pedagógico,1964
+[825],Biospeckle; ,1965
+[825],Interferência;,1966
+[],Espelhamento,1967
+826,Parasitoses intestinais,1968
+[826],Perfil parasitológico,1969
+[827],Armadilha de White,1970
+[827],"Esponja – Controle
+biológico",1971
+[827],Galleria mellonella,1972
+[827],Nematoides entomopatogênicos (NEPs),1973
+828,Ambiente hospitalar,1974
+[828],Vetores patogênicos,1975
+829,Regulação econômica,1976
+"[1910, 830, 829]",Serviço público,1977
+[829],Agência reguladora,1978
+[829],ARSAL,1979
+[830],Participação popular,1980
+[830],Iluminação pública,1981
+[831],Quedas,1982
+[832],Resistência a fugicidas,1983
+[832],Cochliobolus eragrostidis,1984
+[832],Estrobilurinas,1985
+[833],Cavalos de puxar,1986
+[834],Vigor de sementes,1987
+[834],Sementes florestais,1988
+[834], Curva de embebição,1989
+[834],Fisiologia de sementes,1990
+[835],Tomateiro,1991
+[835],Solanaceae,1992
+[836],SGBD,1993
+[836],HSQLDB,1994
+[836],MySQL,1995
+[837], Estudo taxonômico,1996
+[837],Fitoseídeos,1997
+[837],Ciclo de vida,1998
+[837],Mosca-branca,1999
+[838],Recuperação de Informações,2000
+[838],Web crawler,2001
+[838],Scrapy,2002
+[838],Sistema de recuperação de informações,2003
+[839], Prefeitura Municipal de Arapiraca,2004
+[],Teorias Comportamentais,2005
+[840],"Programa de Aquisição de
+Alimentos (PAA)",2006
+1238,Governança,2007
+[],Parcerias público-privadas,2008
+847,Parceria público-privada,2009
+"[1570, 1569, 1576, 1702, 841, 953, 958, 957, 955, 945, 928]",Turismo,2010
+[842],Desenvolvimento ,2011
+"[1602, 842, 2010]",Pecuária,2012
+[842],Bacia leiteira,2013
+[842],Território,2014
+[843],Transferência direta de renda,2015
+"[1207, 843, 1076]",Programa Bolsa Família,2016
+[844],CRAMSV,2017
+844,Divulgação,2018
+[845],Escolaridade,2019
+[845],Conhecimento ,2020
+[846],Orçamento participativo,2021
+[846],Orçamento público,2022
+[846],Participação social,2023
+[847],Alocação de riscos,2024
+[847],Equilíbrio econômico-financeiro,2025
+[848],Plano diretor participativo,2026
+[1905],Estatuto das cidades,2027
+[848],Estatuto da cidade,2028
+[848],Instrumentos urbanísticos,2029
+"[1867, 849, 981]",Bombeiro militar,2030
+[849],Nível habitual de atividade física,2031
+[850],Horta,2032
+[850],Ensino,2033
+[851],Processo projetual,2034
+[851],Método de projeto,2035
+[852],Humanização na assistência,2036
+[852],"Unidade de Terapia
+Intensiva",2037
+[853],Feixes de Mathieu,2038
+[],Defração,2039
+[854],Euler,2040
+[854],Möbius,2041
+[854],Inversion Formula,2042
+[855],Teoria dos números,2043
+1668,Funções aritméticas,2044
+[855],φ de Euler e µ de Möbius,2045
+[856],Dermatomicoses,2046
+[856],Antifungigrama,2047
+[856],Mentha spicata,2048
+[857],Cromatografia,2049
+[857],aedes aegypti,2050
+"[1973, 1387, 862, 864, 865, 866, 875, 882, 858, 998, 1000, 1025, 1169, 1172, 967, 860]",Alfabetização,2051
+"[1387, 861, 862, 863, 864, 865, 866, 858, 875, 881, 882, 998, 1169, 874]",Letramento,2052
+891,Inclusão educacional,2053
+"[860, 864, 882, 1024]",Escrita,2054
+"[1386, 1457, 860]",Oralidade,2055
+861,Literatura infantil,2056
+[861],Alfabetização ,2057
+[863],Ensino público,2058
+[864],Hipossegmentação,2059
+[864],Hipersegmentação,2060
+"[1819, 1420, 865]",Formação continuada,2061
+"[865, 996, 998]",PNAIC,2062
+[866],Contação de histórias,2063
+[866],Formação do leitor,2064
+[867],NoSQL,2065
+[867],REST ,2066
+[867],RDBMS,2067
+[867],Webservice,2068
+[867],Rails,2069
+[868],Cobertura vegetal,2070
+957,Paisagem,2071
+[868],Métodos participativos,2072
+1024,Apagamento,2073
+[869],Variantes urbana e rural,2074
+[869],Mudança linguística,2075
+1263,Zooplâncton,2076
+[871],Horas extras - Controle,2077
+[871],Custos de pessoal - Redução,2078
+872,Segregação,2079
+[872],Espaço urbano,2080
+[872],Fragmentação,2081
+[873],Urbanização de favelas,2082
+874,Gênero tirinha,2083
+[875],Texto,2084
+[876],Ferramentas em nuvem,2085
+[876],Soluções em nuvem,2086
+877,Oralidade e escrita,2087
+[877],Gênero relato pessoal,2088
+[878],Rabanete - Manejo,2089
+[878],Rabanete - Irrigação,2090
+[878],Salinidade da água,2091
+[878],Ambiente protegido - Plantas,2092
+[878],Raphanus sativus L.,2093
+[879],Sistema informatizado,2094
+[879],Espaço físico,2095
+[879],Solicitação de reserva,2096
+[880],Problematização,2097
+[880],Schistosoma mansoni,2098
+[881],Feminilidade,2099
+[881],Performance de gênero,2100
+[881],Identidade da mulher,2101
+[882],Compreensão,2102
+[883],Brucelose equina,2103
+[883],Brucella abortus,2104
+[884],Osteoartrose,2105
+[884],Dor crônica,2106
+[884],Neurolítico,2107
+885,Leishimaniose,2108
+[885],L. chagasi,2109
+[885],Microscopia,2110
+[885],Cães,2111
+[886],Carne suína,2112
+886,Micro-organismos indicadores,2113
+[887],Brucelose,2114
+[887],Brucella abortus,2115
+[887],Cães,2116
+[887],Antígeno acidificado tamponado,2117
+[888],Fígado bovino,2118
+[888],Alterações hepáticas,2119
+889,Matadouro,2120
+[888],São Miguel dos Campos,2121
+[889],Abate de bovino,2122
+[889],Higiene e inspeção,2123
+[890],Carne bovina,2124
+[],Ensino,2125
+[891],Ensino,2126
+"[1057, 1149, 892]",Psiquiatria social ,2127
+"[1090, 892, 918]",Loucura,2128
+"[1747, 1595, 1210, 1091, 1058, 1060, 1083, 1087, 1082, 902, 1510, 893, 1103, 1118, 1094, 1080, 899, 1114]",Psicologia social ,2129
+[893],Psicoterapia em grupo,2130
+[895],Motivação no trabalho,2131
+[895],Desenvolvimento organizacional,2132
+1068,"Estratégia Saúde da Família –
+Alagoas",2133
+[899],Jovens - Relações humanas,2134
+[899],Jogos eletrônicos,2135
+[899],RPG (Jogos de fantasia),2136
+900,Pobreza – Brasil,2137
+[900],"Sistema Único de Assistência Social
+(Brasil)",2138
+[901],Amor,2139
+[901],Afeto (Psicologia),2140
+[],Psicanálise.,2141
+901,Psicanálise,2142
+[901],"Amor –
+Aspectos psicológicos",2143
+902,"Reforma
+universitária",2144
+[902],Sofrimento,2145
+[903],Psicologia do trabalho,2146
+[903],Psicologia organizacional,2147
+[903],"Administração
+de pessoal",2148
+[904],Direitos humanos,2149
+[1190],Doenças mentais,2150
+[907],Beneficio da Prestação Continuada,2151
+[908],Frações contínuas,2152
+[908],Calendário,2153
+[908],Aplicações,2154
+[910],Sexo – Diferenças,2155
+910,Saúde reprodutiva,2156
+[911],Crianças – Maus tratos,2157
+[912],Sindicalismo,2158
+[912],Movimento sindical,2159
+[913],"Direitos
+fundamentais – Criança e adolescente",2160
+[914],Empregados domésticos,2161
+[915],Criança – Saúde e higiene,2162
+1103,"Sistema único de
+saúde (Brasil)",2163
+[915],Indicadores sociais,2164
+[916],Trabalho assalariado,2165
+[917],Política social – Classes sociais,2166
+917,Pobreza,2167
+[917],Estado de direito,2168
+[919],Produto pesqueiro - Conservação,2169
+[919],Tambaqui (Peixe),2170
+[919],Peixe - Comércio,2171
+920,Peixe - Criação ,2172
+"[1711, 924, 926, 920]",Aquicultura,2173
+920,Tilápia (Peixe),2174
+921,Camarão,2175
+[921],Decápode (Crustáceo) ,2176
+[921],Camarão - Pesca artesanal,2177
+[922],Caranguejo - Pesca,2178
+[922],Crustáceo,2179
+"[952, 923, 922]","São Francisco, Rio",2180
+[923],Aquicultura,2181
+[924],Água - Qualidade,2182
+925,Nematoda,2183
+[925],Liminologia ,2184
+"[1787, 941, 926]",Reprodução - Peixes ,2185
+"[1812, 1871, 1319, 927]",Patrimônio,2186
+[927],Interpretação patrimonial,2187
+[927],Roteiros,2188
+927,Educação patrimonial,2189
+942,Enriquecimento orgânico,2190
+"[1871, 1574, 928]",Patrimônio Cultural,2191
+[928],Poxim - Rio,2192
+928,Coruripe (AL),2193
+[],Impacto socio cultrual,2194
+[928],Impacto sociocultural,2195
+[929],Hospitalidade,2196
+[929],Hospitalidade pública,2197
+[930],Carapeba (Peixe),2198
+[930],Captura,2199
+[930],Transporte - Carapeba,2200
+[930],Criação - Carapeba listrada,2201
+[930],Comportamento - Peixe - Carapeba,2202
+[931],Glifosato,2203
+[931],Toxidade,2204
+[932],Composição - Ictiofauna,2205
+[932],Diversidade - Ictiofauna,2206
+[932],Peixes - Região Penedo,2207
+[933],Espécies Nativas,2208
+941,São Francisco - Rio,2209
+[933],Cultivo integrado ,2210
+[933],Densidade de estocagem,2211
+[934],Maçunim,2212
+[934],Praia do Peba - Piaçabuçú(AL) ,2213
+[934],Sobrexplotação,2214
+[],Varáveis limnológicas,2215
+[935],Variáveis limnológicas,2216
+[935],Fósforo,2217
+[935],Densidade de cultivo,2218
+[936],Portais da web,2219
+[936],Secretarias Estaduais de Turismo,2220
+[936],Nordeste - Brasil,2221
+[936],Turismo - Tecnologia da Informação e Comunicação,2222
+[937],Turismo - Piaçabuçú (AL),2223
+[937],Ecoturismo,2224
+[937],Impacto ambiental,2225
+937,Turismo - planejamento,2226
+[938],Piscicultura ornamental,2227
+[938],Criação - Peixes ornamentais,2228
+[938],Peixes - Espécies Tropicais,2229
+[939],Embarcações de pesca,2230
+[],Condições inseguras no trabalaho,2231
+[939],Condições inseguras de trabalho,2232
+[940],Turismo - Políticas públicas,2233
+[940],Turismo - Alagoas,2234
+[941],Maturação sexual,2235
+[941],Carapeba - Peixes,2236
+[942],Impacto,2237
+[942],Estuário,2238
+[942],Bentos,2239
+[942],Ostreicultura,2240
+[],Oceanografia pesqueira - Peixes e crustáceos - Nordeste brasileiro,2241
+[943],Turismo Pedagógico,2242
+943,Educação Patrimonial,2243
+[943],Turismo - Penedo,2244
+1708, Impactos ambientais,2245
+[],Turismo de natureza,2246
+[944],APA de Piaçabuçú,2247
+[944],Turismo Ecológico,2248
+[944],Preservação ambiental,2249
+[945],Hotelaria,2250
+[945],Serviços - Qualidade,2251
+[945],Trabalhador,2252
+[946],Qualidade - Hotelaria,2253
+[946],Percepção - Visitantes,2254
+[946],Pousada,2255
+[947],Piscicultura brasileira,2256
+[947],Characiformes,2257
+[],Marcador molecular,2258
+[],Diversidade genética,2259
+[947],Genoma mitocondrial,2260
+[947],Diversidade genética - Tambaqui,2261
+1707,Piscicultura - Baixo São Francisco,2262
+[948],Peixe ornamental ,2263
+[],Reprodução – Manejo - Acará-Bandeira,2264
+[948],Reprodução – Manejo - Acará Bandeira,2265
+[949],Beneficiamento - Resíduos  de  peixe - Curtimento.,2266
+[949],Compostagem - Análises microbiológicas e físico-químicas - Peixe,2267
+[949],Processamento - Filé de Tilápia,2268
+[950],Recirculação,2269
+[950],Filtração,2270
+[950], Aquaponia,2271
+[951],Escola Pública - Ensino Fundamental,2272
+[951],Educação ambiental - Sensibilização,2273
+[951],Pontal do Peba (AL) - Educação ambiental,2274
+[952],Carapeba listrada - Cresimento,2275
+[952],Predominância de adultos - Peixe,2276
+[952],Alometria negativa,2277
+[953],Praça,2278
+[953],Sociabilidade,2279
+[953],Espaço Público de Lazer,2280
+[954], Educação Patrimonial,2281
+[954], Visitas Técnicas,2282
+[954], Turismo pedagógico.,2283
+955, Sustentabilidade,2284
+955, Segmentação,2285
+[956], Patrimônio Cultural,2286
+[956], Museu.,2287
+[957],Percepção ambiental,2288
+[958],Participação - Planejamento estratégico ,2289
+[958],Empoderamento - Stakeholders,2290
+[958],Alagoas - Turismo,2291
+[959],Surdo,2292
+"[1524, 1916, 959]",Inclusão,2293
+[959],Tecnologia assistiva,2294
+960,Simulador,2295
+[960],Open GL,2296
+[960],Acabamento,2297
+[960],Revestimento,2298
+[961],Automação,2299
+[961],Dispositivo,2300
+961,Residência,2301
+[961],BeagleBone,2302
+[962],Eclodibilidade,2303
+[962],Ovoposição,2304
+[962],Sobrevivência,2305
+[962],Teleógina,2306
+963,Coeficiente de cultivo,2307
+[965],Norma ISO,2308
+[965],Ontologias,2309
+966,Software,2310
+[966],Associação de catadores,2311
+[966],Tecnologia da informação verde,2312
+[967],Dificuldades ortográficas,2313
+[967],Produçoes textuais escritas,2314
+[967],Ensino fundamental 2,2315
+[968],Categorias etnobotânicas,2316
+968,Gêneros ,2317
+[968],Método de amostragem,2318
+[969],Atividades lúdicas,2319
+[970],Alimento orgânica,2320
+[970],Características do consumidor,2321
+"[971, 1028, 1127]",Análise do discurso,2322
+979,Aspectos modais,2323
+[971],Retrato da mulher,2324
+[972],Transmissão de dados,2325
+[972],Rede de energia elétrica,2326
+[972],Interferências,2327
+[972],PLC,2328
+[972],BPL,2329
+[973],Controle,2330
+[973],Internet ,2331
+[973],Cidade inteligente,2332
+[973],Compartilhamento,2333
+[973],Sensores humanos,2334
+[974],Expressões matemáticas,2335
+[],Aterro sanitário,2336
+[976],Análise preditiva,2337
+[976],Análise preditiva em segurança pública,2338
+[977],Arduido,2339
+[977],Estação meteorológica,2340
+[975],Resíduos sólidos urbanos,2341
+[978],Mosquito da dengue,2342
+[978],Inseticida natural,2343
+[980],Produção vegetal,2344
+[980],Adubação organo-mineral,2345
+"[1174, 1231, 980]",Coriandrum sativum L.,2346
+[981],Conhecimento e percepção,2347
+[982],Políticas públicas de esporte,2348
+[982],Fenômeno esportivo,2349
+[982],Realidade e possibilidades,2350
+[983],Período seco / chuvoso,2351
+[983],Blaney-Criddle,2352
+[983],Priestley-Taylor,2353
+[984],Intensidade,2354
+[984],Odor,2355
+[984],Sabor,2356
+[985],Previsão,2357
+[985],Mercado de ações,2358
+[985],Séries temporais,2359
+[985],Bolsa de valores - São Paulo,2360
+[986],Intervenção organizacional,2361
+[986],Gestão participativa,2362
+[987],PST na escola,2363
+[987],Programa Mais Educação,2364
+[987],Categorias pedagógicas,2365
+[988],Jogos e brincadeiras,2366
+[989],Processo de alfabetização,2367
+[989],Língua materna,2368
+[989],Letras e fonemas,2369
+[990],Revisão,2370
+[992],Relação de gênero,2371
+[992],Atletismo,2372
+[993],Endomarketing,2373
+[993],Cliente interno,2374
+[994],Clima,2375
+[995],Ensino de língua materna,2376
+[995],Variante padrão,2377
+[995],Variante não padrão,2378
+[996], Alfabetização,2379
+[996],Professor alfabetizador,2380
+[997],Biodisel,2381
+[997], Química orgânica,2382
+"[1700, 1719, 997]", Ensino de química,2383
+[],Água,2384
+[1000],Narrativas,2385
+[1000], Educação de Jovens e adultos,2386
+[1001],Atributos de qualidade,2387
+[1001], Monitoramento de software,2388
+[1001], Programação orientada a aspectos,2389
+[], Arcabolço de software,2390
+[1001],Arcabolço de software,2391
+1002, Nutrição,2392
+[1002],Escolares,2393
+[1003],Língua Padrão e não Padrão,2394
+1839, Variedade linguística,2395
+[1003], Vidas secas,2396
+[],regionalismo,2397
+[1004],Alho ,2398
+1463,Fitoterápicos ,2399
+1173,Ensino da física,2400
+[1005], Ciência dea tecnologia,2401
+[1005], Cotidiano do Aluno,2402
+[],Estilo de vida,2403
+[],Depuração. Beneficiamento de moluscos bivalves. Alimento seguro. ,2404
+[],Depuração.,2405
+[1006],Beneficiamento de moluscos bivalves,2406
+[1006],Alimento seguro,2407
+[],Depuração (moluscos) - Coruripe - AL.,2408
+[1006],Depuração (moluscos) - Coruripe - AL,2409
+[1007],Programa Monumenta,2410
+[],"Políticas de Turismo e
+Cultura - Penedo - AL",2411
+"[2035, 1186, 1007]",Representação social,2412
+[1007]," Políticas de Turismo e
+Cultura - Penedo - AL.",2413
+[1008],Microorganismos ,2414
+[1009],Plantas Cianogênicas ,2415
+[1010],Ananas comosus,2416
+1635,Variedades,2417
+[1010],Nutrição de planta,2418
+[],Prioridades de consevação,2419
+[1011],Prioridades de conservação,2420
+[1011],Recursos vegetais,2421
+1035,Evolução,2422
+[1012],Identificação molecular,2423
+[1012],trnH-psbA,2424
+1329,Big data,2425
+"[1759, 1512, 1013, 1215, 1214, 1250]",Redes sociais,2426
+[1015],Necessidades do âmbito educacional,2427
+[1015],Produção do conhecimento,2428
+[],Semiàrido,2429
+1016,Tempo,2430
+[],balanço Hidrico,2431
+[1017],Geogebra Beta,2432
+[1017],Interpretação Geométrica,2433
+[1017],Métodos de soluções de sistemas de equações lineares,2434
+[],Expoente critico,2435
+[1018],Expoente Crítico,2436
+[1018],Temperatura Crítica,2437
+[1018],Grupo de Renormalização,2438
+[1019],Construções de tópico,2439
+[1019],Português falado,2440
+[1019],Sintaxe do Português,2441
+1464,Paisagismo,2442
+[],Pé Leve Novo,2443
+[],"Limoeiro de
+Anadia.",2444
+[1021],Ensino,2445
+[1021],Capoeira,2446
+1022,Acarofauna,2447
+[1024],Fala,2448
+[1024],Arquifonema /R/,2449
+1025,Infância,2450
+1026,Limoeiro de Anadia,2451
+[1026],Pé Leve Novo,2452
+[1027],"Distúrbios da
+aprendizagem nas crianças",2453
+[1027],Dislexia,2454
+[1028],Política - Alagoas,2455
+[1030],Desenvolvimento humano,2456
+[1033],Aborto – Legislação,2457
+[1036],Saúde sexual,2458
+[1039],Psicologia - história,2459
+[1041],União estável,2460
+[1043],Neurobiologia,2461
+[1044],Serviço social – formação profissional,2462
+1076,Seguridade social,2463
+1141,Serviço social – história,2464
+[1054],Direito a família,2465
+[1055],Serviço social - orientação profissional,2466
+[1056],"Doentes hospitalizados –
+Psicologia",2467
+[1056],Doentes hospitalizados – Aspectos psicológicos,2468
+[1057],Psicotropicos,2469
+"[1692, 1731, 1058, 1143]",Psicologia escolar,2470
+"[1693, 1206, 1059]",Autismo,2471
+"[1181, 1283, 1060]",Psicologia jurídica,2472
+[1061],"Trabalho – Aspectos
+econômicos",2473
+"[1065, 1158, 1194, 1156]",Direitos das crianças,2474
+[1067],Política social - Saúde,2475
+[1067],Serviço social - História,2476
+1068,Direitos Sociais,2477
+[1069],Inclusão escolar – Deficientes,2478
+1069,Inclusão em educação,2479
+[1071],Renda – Distribuição,2480
+1075,Educação sexual,2481
+[1077],Deficientes - emprego,2482
+[1079],Mercado de trabalho,2483
+[1079],Trabalho informal,2484
+1080,Representação (Filosofia),2485
+[1085],"Alzheimer, Doença de",2486
+[1087],Relação social,2487
+1121,Direitos fundamentais,2488
+[],Criança e adolescentes,2489
+1088,Politicas públicas,2490
+[1089],Psicologia do adolescente,2491
+[1090],Reforma psiquiátrica,2492
+1090,Centro de Atenção Psicossocial (CAPS),2493
+[1091],Psicologia – estudo e ensino,2494
+[1091],Ensino – Orientação profissional,2495
+[1093],"Psicologia
+experimenta",2496
+[1093],Depressão mental,2497
+[1094],Psicologia – História,2498
+[1094],Antropologia educacional,2499
+[1095],Sociedade de consumo,2500
+"[1157, 1096, 1104]",Sistema Único de Saúde (Brasil),2501
+[1096],"Serviço de
+saúde",2502
+1117,Comunicação de massa – Aspectos sociais,2503
+[1098],Radiodifusão comunitária,2504
+[1099],Serviço de saúde mental,2505
+[1100],Reprodução - Siris,2506
+[1100], Desenvolvimento gonadal ,2507
+[1100],Dinâmica reprodutiva - Região Baixo do São Francisco - Rio Piauí,2508
+[1101],Alimentação - Peixes,2509
+[1101],Sazonalidade,2510
+[1101],Baixo São Francisco - Rio Piauí,2511
+[1104],Políticas de saúde,2512
+"[1991, 1281, 1105]",Trabalho feminino,2513
+[1105],Mulheres – Emprego,2514
+[1105],Discriminação do sexo no emprego,2515
+[1106],Violência escolar,2516
+[1108],Assistentes sociais – Formação profissional,2517
+[1108],Serviço social – Pratica profissional,2518
+[1109],Crime contra a mulher,2519
+[1109],Direito penal,2520
+[1109],"Lei Maria da Penha –
+Lei 11.340/2006",2521
+[1110],Mulheres camponesas,2522
+"[1110, 1119, 1188, 1189]",Movimentos sociais rurais,2523
+[1113],Psicologia industrial,2524
+[1113],Trabalho – Aspectos psicológicos,2525
+[1114],Homens - Saúde,2526
+[1115],Identidade – representação social,2527
+[1116],Assistência a velhice,2528
+[1116],Idosos – Assistência em instituições,2529
+[1116],Psicologia social,2530
+[1116],Velhice - Asilos,2531
+1119,Extensão rural,2532
+[1121],Direitos e garantias individuais,2533
+1122,Mulheres – Condições sociais,2534
+1192,Papel sexual,2535
+1123,Homossexualidade - Brasil,2536
+[1123],Sexo e direto,2537
+[1124],Curso de serviço social – Brasil,2538
+[1124],"Serviço social -
+estudo e ensino",2539
+[1125],Assistência a menores - Alagoas,2540
+[],"Assistência
+social",2541
+[1127],Prostituição,2542
+[1128],Contrato social,2543
+[1130],Pedofilia,2544
+[1130],Sexo (psicologia),2545
+[1131],Migração,2546
+[1131],Migração rural,2547
+[1131],Pobreza – Alagoas,2548
+[1132],Saúde e trabalho,2549
+[1134],Agroindustria canavieira - Trabalhadores,2550
+[1139],Assistência à menores,2551
+[1139],"Menores – Estatutos, leis,
+etc",2552
+[1139],Municipalização.,2553
+[1139],Reintegração social,2554
+[1140],Mulheres – Discriminação social,2555
+[1140],"Mercado de trabalho –
+Mulheres",2556
+[1140],"Direito das
+mulheres",2557
+1140,Igualdade,2558
+[1142],Educação – Ensino e aprendizagem,2559
+[1142],Professores e alunos,2560
+[1143],"Down, síndrome de",2561
+[1145],Toxiconomia,2562
+[1146],Política de educação - Brasil,2563
+[1147],Leitura – Psicologia,2564
+[1150],Psicologia - orientação profissional,2565
+"[1748, 1180, 1151]",Assistência estudantil,2566
+[1151],"Política de assistência
+estudantil",2567
+[1153],Deficiência física,2568
+[1153],Benefício da Prestação Continuada – BPC,2569
+[1155],Cultura,2570
+[1155],Xucuru-Kariri – Palmeira dos Índios,2571
+[1156],Reestruturação produtiva,2572
+"[1699, 1497, 1159]",Trabalho - Mulheres,2573
+1159,Divisão do trabalho,2574
+[1159],Mercado de trabalho – Mulheres,2575
+[1159],"Mulheres –
+Discriminação social",2576
+[1184],Adoção de crianças,2577
+[1163],Escolas,2578
+[1163],Bioclimático,2579
+[1164],Política,2580
+[1164],Especulação imobiliária e expansão,2581
+[],físico-territorio,2582
+[1164],Físico-território,2583
+[1165],Sistemas gerenciais,2584
+[1165],Otimização de sistemas,2585
+[],Algoritmo Inteligente,2586
+[1165],Algoritmos Inteligentes,2587
+[1166],Recursos Táteis,2588
+[],Quinase,2589
+[1167],Quinase g,2590
+1167,Docking molecular,2591
+[1168],Extinção,2592
+1227,Umbu,2593
+[1169],Ensino,2594
+[1170],Bicicletas,2595
+[1171],Capacidade cardiorrespiratória,2596
+1172,Surdos,2597
+[],Políticas Educacionais,2598
+[1173],Ferramentas computacionais,2599
+[1173],Modellus,2600
+[1173],Pesquisa Educacional,2601
+[1174],Nutrição mineral,2602
+1231,Densidade populacional,2603
+[1175],Capsicum annum L,2604
+[],esporulação,2605
+[1175],Esporulação,2606
+[1177],Arecaceae,2607
+[1177],NGS,2608
+[1177],Recursos genéticos,2609
+[1179],Evasão escolar - causas,2610
+1181,Maioridade penal,2611
+[1182],Ensino superior – Alagoas,2612
+[1187],Transtorno obsessivo compulsivo,2613
+[1193],Mulheres - saúde e higiene,2614
+[1196],Conflito social,2615
+[],Manguezal - Pontal do Coruripe - AL,2616
+[1199],Parâmetros Abióticos - Manguezal,2617
+[], Matéria Orgânica - Água - Pontal do Coruripe - AL ,2618
+[], Manguezal - Pontal,2619
+[1199],Manguezal - Pontal de Coruripe - AL,2620
+[1199],Matéria Orgânica - Água - Pontal de Coruripe - AL,2621
+[1200], Beneficiamento - Ostras,2622
+[1200], Moluscos - Ostra Crassostrea sp,2623
+[1200], Depuração - Ostras - Molusco,2624
+[1200], Beneficiamento - Barreiras - Coruripe - AL,2625
+[1201], Lazer ,2626
+[1201],Praças,2627
+[1201],Espaços Públicos - Arapiraca - AL,2628
+[1202], Piscicultura  ,2629
+1202,Produção de Alevinos,2630
+[1202],Propagação - Piscicultura ,2631
+[1202],  Manejo de juvenis - Piscicultura ,2632
+[1202],Tanque- rede - Piscicultura,2633
+[1203],Caranguejo-uçá - Manguezal - Coruripe - AL ,2634
+[1203],Manguezal - Rio Coruripe,2635
+[1203],Dinâmica populacional - Caranguejo-uçá,2636
+[1204], Manguezal - Região do Baixo São Francisco  ,2637
+[1204],  Fitosociologia - Manguezal ,2638
+[1204],Produção - Manguezal - Rio São Francisco,2639
+[1205],Ecossistema - Manguezal - DAP     ,2640
+[1205], Fitossociologia - Manguezal  ,2641
+[1205],  Manguezal - Rio Coruripe - AL,2642
+[1209],Exploração sexual,2643
+[1211],Música – história,2644
+[1211],Música - terapia,2645
+1212,Ensino da matemática,2646
+[],TIC; Formação de professores; Competências e atitudes,2647
+[],TIC; Formação de professores; Competências e atitudes,2648
+[],Contextualização da Matemática. Situações problema. Redes sociais. ,2649
+[],Ensino-aprendizagem – Internet – Redes sociais – Facebook ,2650
+[1216],"ENEM, Química, meio ambiente, Ensino Médio.",2651
+[1217],Lagarta-do-cartucho.  Lagarta-da-espiga.  Feromônio sexual. Inimigos naturais,2652
+[1218],Ensino-aprendizagem. Paródia. Química. Musicalidade,2653
+[],TIC. Ensino de Química. Práticas docentes. Aprendizado eletrônico.,2654
+[],"TIC, Webquest, Educação Matemática",2655
+[], Smart Cities,2656
+[],Mobilit; Smart cities,2657
+[1223],Housing,2658
+[],Smart Cities; ,2659
+[],Technology; ,2660
+[],tecnologia;,2661
+[1225], Radiação solar. Câncer de pele. Camada de Ozônio. Filtros solares,2662
+[],"Poema, Interações discursivas, Racismo, Músicas de Chico Cesar ",2663
+[1226],Poema; Interações discursivas; Racismo; Músicas de Chico Cesar ,2664
+[],Umbu;,2665
+[],Filogeografia;,2666
+[],SSR;,2667
+[],cpDNA;,2668
+[1227],Refúgios florestais,2669
+[1228],Controle financeiro;,2670
+[1228], Finanças Pessoais;,2671
+[1229],Dihidropirimidinationas;,2672
+1229,Chalcona;,2673
+[1229],Reação tipo-Biginelli,2674
+[1229], RMN-1H ,2675
+1229,GC-MS,2676
+[1230],Pata-de-vaca,2677
+[1230], Anatomia vegetal,2678
+[1230],IDQ,2679
+[1230],Clorofila,2680
+[1231],Nitrogênio,2681
+[1232],Imagem;,2682
+[1232],Endoscopia,2683
+[1232], Reﬂexos Especulares,2684
+[1232],Preenchimento,2685
+[1233],Bombeamento,2686
+[1233],Ipomoea batatas (batata-doce),2687
+[1234],Sustentabilidade,2688
+1234,Reciclagem,2689
+[],transformação,2690
+[1234], Gestão de produção,2691
+[],materiais,2692
+[1235],Agricultura,2693
+[1235],Culturas agrícolas,2694
+[1235], Perfil da produção agrícola,2695
+[1236],Coriandrum sativum L.,2696
+[1236],arranjo ideal,2697
+[1236], densidade populacional,2698
+[1239], Pesquisa cientifica,2699
+[1239], Sequência de ensino,2700
+[1240], Políticas Habitacionais,2701
+"[1892, 1423, 1240]", Avaliação Pós-Ocupação,2702
+[1240],Habitação de Interesse Social,2703
+[1240],Conjunto Habitacional,2704
+[1241],SIRI,2705
+[1241],dimorfismo sexual,2706
+[1241],alometria,2707
+[1242],Endividamento,2708
+[1242],Educação Financeira,2709
+[1242],Servidores Públicos,2710
+[1243], Autismo Infantil,2711
+[1243], Espaços Assistenciais,2712
+[1243],Estímulos Sensoriais,2713
+[],Língua Portuguesa,2714
+[],Prova Escrita,2715
+1245, Águas subterrâneas,2716
+1245, Agricultura irrigada,2717
+[1245],Poços tubulares,2718
+[1246],Hargreaves e Samani,2719
+[1246], Blaney e Criddle,2720
+[1247],Desatenção,2721
+[1247],Ensino,2722
+[1247],TDCs ,2723
+[1248],ENPEC,2724
+[1248],Concepções Docentes,2725
+[1248], Prática pedagógica,2726
+[1249],Análise de laboratório,2727
+[1249],Comunidades,2728
+[1249],Culturas,2729
+[],Ensino Aprendizagem,2730
+[1251],Cercospora longissima,2731
+[1251], controle químico,2732
+[1252],Produção de texto,2733
+[1252],Marcas da oralidade,2734
+[1253],ciência,2735
+[1253],espaços,2736
+[1253],centros,2737
+[1254],Algoritmo,2738
+[1254],Problema de decisão,2739
+[1254],"P, NP",2740
+[1254],Complexidade,2741
+[1255],Loteamento,2742
+[1255],Segregação Espacial e Social,2743
+[1255],Mapeamento,2744
+[1256],PCNs,2745
+[1256],Capacitação,2746
+[1256], Ensino Fundamental II,2747
+[1257],Expectativa,2748
+[1257],Reconhecimento,2749
+[1258],Indisciplina,2750
+[1259],Conceito de Calor,2751
+[1259], História e Filosofia das Ciências,2752
+[1259], Obstáculos Epistemológicos de Bachelard,2753
+[1259],Natureza da Ciência,2754
+[1260], Etapas da construção,2755
+[1260],obras residenciais,2756
+[1260],acompanhamento de obras,2757
+[1261],Qualidade,2758
+1261,Carta de Controle,2759
+1261,Variabilidade ,2760
+[1262], Estado Nutricional,2761
+[1262],KTK,2762
+[1263],Dinâmica estuarina,2763
+[1264], Fluxo de caixa,2764
+[1264], Pequena empresa,2765
+[1265],Processos de Decisão de Markov,2766
+[1265],Diagrama de Transição,2767
+[1265],PRISM,2768
+[1266],Infraestrutura de redes de computadores,2769
+[1266],Cabeamento estruturado,2770
+1406, Projeto de rede lógica,2771
+[],compostos voláteis,2772
+[],ação antioxidante,2773
+[], sistemas de produção,2774
+[1268],MDC,2775
+[1268],MMC,2776
+1893, Saneamento básico,2777
+[1269],Esquistossomose,2778
+1270,Adubação,2779
+"[1939, 2016, 1270]",Matéria orgânica,2780
+[1270],pH,2781
+[1271],CRAS,2782
+[1271],Serviço de Convivência e Fortalecimento de Vínculos,2783
+[1272],Arachis hypogaea L.,2784
+[],adensamento,2785
+[], rendimento produtivo,2786
+[1273],Ética,2787
+[],Coletivo Escolar,2788
+[],Recursos Tecnológicos,2789
+[1274],Educação dos surdos,2790
+[],vida dos surdos,2791
+1275,Psicologia infantil,2792
+1277,Violência doméstica,2793
+[],Economia agrícola,2794
+[],Serviço social,2795
+[1282],Educação – Brasil,2796
+[1288],Instituições de longa permanência para idosos;,2797
+[1288],Cuidado de enfermagem,2798
+[1289],Ensino de química; Educação de surdos; Língua de sinais,2799
+[1290],Acolhimento,2800
+[1290],Obstetrícia,2801
+[1290],Classificação,2802
+[1290],Maternidades,2803
+[],Fisíca,2804
+[1291],Física,2805
+[1291],Matemática,2806
+"[1291, 1369, 1462]",Interdisciplinaridade,2807
+[1291],Processo educativo,2808
+[1292],Taxas e tributos;,2809
+[1292],Comércio internacional,2810
+[1292],Importação,2811
+[1294],Hemocromatose,2812
+1294,Dieta,2813
+[1294],Álcool,2814
+[1296],Possibilidades,2815
+[1296],Limites,2816
+[1297],Intérprete de língua de sinais. ,2817
+[1297],Recursos imagéticos ,2818
+[1297],Aulas de botânica ,2819
+[1298],Etnopedologia,2820
+[1298],Conhecimento local,2821
+[],Cana-de-acúcar,2822
+[],Indicadores Contabéis,2823
+[1299],Indicadores contábeis,2824
+[1299],Análise das demonstrações,2825
+[1300],Gênero,2826
+[1300],Ciência,2827
+[1300],Androcentrismo,2828
+[1300],Cultura machista,2829
+[1301],Pseudoellimma gallae,2830
+[1301], Paleoictiofauna,2831
+[1301], Pedreira Cimpor,2832
+[1302],Futsal,2833
+[1305],Ensino de surdos,2834
+[1305],Pedagogia Histórico Crítica,2835
+[1305],Psicologia Histórico Cultural,2836
+1629,Santana do Ipanema,2837
+1319,Sertão,2838
+[1307],Método científico,2839
+[1308],Implementação,2840
+[1308],Agenda 21,2841
+[1308],Conferências,2842
+[1309],Benefícios,2843
+[1309],Prejuízos,2844
+[1309],Conflitos organizacionais.,2845
+[1310],Avaliação em pares,2846
+[],Disciplinas em programação,2847
+1310,Disciplinas de programação,2848
+[1310],Ambiente virtual de aprendizagem,2849
+[1311],Antioxidante,2850
+[1311],Cajueiro,2851
+[1311],Organismo humano,2852
+[1311],Radicais livres,2853
+[1312],Mediação,2854
+[1313],Arranjo,2855
+[1313],Stakeholders,2856
+1313,Mandioca,2857
+[],Fibras de côco,2858
+[1314],Fibras de coco,2859
+[1316],Saúde,2860
+[1316],Utilização de Serviços de Saúde,2861
+[1316],Apoio Social,2862
+[1317],Consultoria,2863
+[1318],Ciências,2864
+[1318],Tecnologia,2865
+[1320],Cooperação,2866
+[1320],Construção,2867
+[1321],Sistema de subcobertura,2868
+[1321],Elementos construtivos alternativos,2869
+[1321],Comportamento térmico,2870
+[1321],Dia representativo,2871
+[1322],Educação para a sustentabilidade,2872
+[1322],Ensino de administração,2873
+[1322],Gestão ambiental,2874
+[1323],Aprendizado de máquina,2875
+[1323],Modelagem de jogador,2876
+[1323],Ajuste dinâmico de dificuldade,2877
+[1323],Adaptatividade,2878
+[],Instituição Federal de Ensino Superior (IFES,2879
+[1324],Instituição Federal de Ensino Superior (IFES),2880
+[1324],Professor de ensino superior,2881
+[1324],Gestão universitária,2882
+[1324],Professor-gestor,2883
+[1325],Indústria,2884
+[1326],Tema transversal,2885
+[1326],Educação transformadora,2886
+1601,Produtos,2887
+[1327],Plano,2888
+[1328],Aprendizagem de máquina,2889
+[1328],Rede neural,2890
+[1328],Paralelismo de dados,2891
+[1328],Unidade de processamento gráfico,2892
+[1329],Galáxias em colisão,2893
+[1329],Evolução de galáxias,2894
+[1329],Algoritmo de detecção,2895
+[1330],Conscientização ambiental,2896
+[1331],PVHA,2897
+[1334], Ruptura,2898
+[1334], Ex-funcionários,2899
+[1334],Entrevistas de desligamento,2900
+[1335], Alagoas,2901
+[2090],Banco Mundial,2902
+[1335], Governo,2903
+[1335], Pobreza,2904
+[1335], Subdesenvolvimento,2905
+[1336], Harry Potter,2906
+[1336], Marca,2907
+[1336], Warner ,2908
+[1337], Empreendimento,2909
+[], Viabilidade,2910
+[], Análise,2911
+[1338], Ferramentas didáticas,2912
+[1338], Interações pedagógicas,2913
+[1338],Jogos educativos,2914
+[], Comunidade escolar,2915
+[], Escola pública ,2916
+[], Gestão democrática,2917
+[1340], Peças anatômicas,2918
+[1340], Corpo,2919
+[1340],Práticas pedagógicas.   ,2920
+[],Responsabilidade social,2921
+[], Consumidor,2922
+[], Percepção,2923
+[], Ações sociais,2924
+[], Influência,2925
+[1342],Gestão em clubes de futebol,2926
+[1342],Manchester United,2927
+[],Grêmio Foot Ball Porto Alegrense,2928
+[1342], Grêmio Foot Ball Porto Alegrense,2929
+[],Universidade digital,2930
+[],OpenERP,2931
+[1780],Biblioteca,2932
+[1344],Materiais de apoio,2933
+[1344], Ensino,2934
+[1344], Aprendizagem ,2935
+[1345],Espaços públicos,2936
+[1345],Projeto paisagístico,2937
+[1345],Paisagismo contemporâneo,2938
+[1345], Distrito Pé Leve Novo,2939
+[1345], Limoeiro de Anadia,2940
+"[2040, 1456, 1474, 1893, 1346]", Meio ambiente,2941
+1346, Zona rural,2942
+"[1526, 1557, 1351, 1346]", Docentes,2943
+[], Controle,2944
+[],Controle interno,2945
+[],Processo decisório,2946
+[1348], Plano de negócio,2947
+[],Empreendedorismo,2948
+[1349],Perfis,2949
+[1349],Jogadores,2950
+[1349],Ensino,2951
+[1349],Aprendizagem,2952
+[1350],Gênero,2953
+[],Concepções,2954
+[],Migração interna,2955
+[],Fluxos migratórios,2956
+[],Cana de açúcar,2957
+[],Cortador de cana,2958
+[1353],Experimentação mediante vídeos,2959
+[1353],Linguagem audiovisual,2960
+[1354],Ectotérmicos,2961
+[1354],Variações ambientais,2962
+[1355],Bromeliaceace,2963
+[1355],Araneae,2964
+[1355],Interação ecológica,2965
+[1356],Interdisciplinaridade,2966
+1682,Recurso didático,2967
+[1357], Método tradicional,2968
+[1357], Método inovador,2969
+[1358], Naphthoquinones,2970
+[],Nitrogenados ,2971
+[1358],nitrogenados Compounds,2972
+[1358], Synthesis,2973
+[1359],Estilos de vida,2974
+[1360], Pesquisa experimental,2975
+[1360], Didática,2976
+[1360],Letramento estatístico,2977
+[1360], Virtual,2978
+[1361], prion,2979
+[1361],tempo de incubação,2980
+[1361], tempo de morte,2981
+[1362],Teorema de Cauchy,2982
+[1362], Teorema de Lagrange,2983
+[],Isoformismo de grupos,2984
+[1362], Isomorﬁsmo de Grupos,2985
+[1362],Grupos,2986
+"[1363, 1367, 1470]", Ensino médio,2987
+[1363], Física,2988
+[1363], Simuladores,2989
+[1364], Oscilação,2990
+[1364],Galileu Galilei,2991
+[1364], Ângulos,2992
+[1364], Programa Computacional,2993
+[1365], Atividade recreativa,2994
+1365, Jogo matemático,2995
+[1365], motivação,2996
+[1366],Ambientalização Curricular,2997
+[1366], Ensino Superior,2998
+[1367], Música,2999
+[1367], Biologia,3000
+[1367], Metodologia,3001
+1802, Segurança,3002
+[1368], Congruência modular,3003
+[1368], Criptograﬁa RSA,3004
+[1369],Consumismo,3005
+[1370],Espécies,3006
+[1370], Semiárido,3007
+[1371],: Educação básica,3008
+[1371], Formação continuada,3009
+[1371], Tema transversal,3010
+[1372], Jogo,3011
+[1372], Educação,3012
+[], Aprendizagem ,3013
+[1372], Aprendizagem Significativa,3014
+[1373], Agronegócio,3015
+[],. Bovinocultura,3016
+[1373], Corte,3017
+[1373], Planejamento,3018
+[], Gênero Canção Musical,3019
+[],. Retórica,3020
+[1374], Persuasivos,3021
+[1375], Transformações de Möbius,3022
+[1375],Movimentos simples da esfera,3023
+[1375], Números complexos,3024
+[1375], Funções complexas,3025
+[],: Ensino de história,3026
+[1610], tecnologia,3027
+[], aprendizagem,3028
+[],", blog",3029
+[],integral de lebesgue,3030
+[],integral de henstock-kurzweil,3031
+[],deficiências,3032
+[],teorema da convergência dominada,3033
+[],teorema de Riesz_ Fis,3034
+[],teorema de Riesz- Fisher,3035
+[1376],Blog,3036
+[1378],Língua Brasileira de Sinais,3037
+[1378],Tradução Automática,3038
+[1378],Computação Distribuída,3039
+[1378],Grade Computacional,3040
+[1378],Computação Voluntária,3041
+[1379],Saúde - trabalhador,3042
+[1380],"Segurança
+alimentar",3043
+[],"Qualidade do pescado, comercialização, boas práticas de manipulação, feira.",3044
+[1381],Qualidade do pescado - Psicultura,3045
+1381,Comercialização - Pescados,3046
+[1381],Práticas de Manipulação - Pescados,3047
+[1381],"Feiras - Penedo, Piaçabuçu, Coruripe - AL.",3048
+[1382],Identidade Cultural - Artesãos - Turismo ,3049
+[1382],Desenvolvimento turístico - Região Baixo São Francisco,3050
+[1382]," Foz do São
+Francisco - Piaçabuçu",3051
+[1383],Lazer - Turismo,3052
+[],Perfil do visitante. Prainha de Água Doce.,3053
+[1383],Perfil do visitante,3054
+[1383],Praia do Rio São Francisco - Penedo,3055
+[1384],Beneficiamento - Pescado ,3056
+[1384], Conservação do pescado - Camarão,3057
+[1384],Camarão - Defumação,3058
+[1384],Salmoura - Camarão Espigão,3059
+1432, Desenvolvimento infantil,3060
+1432,Organização do espaço,3061
+[],Concepções dos Professores,3062
+[1388],Brincadeira,3063
+[], Paradigma Democrático e Participativo,3064
+[],Conselho Escolar,3065
+[1389],Fórum Regional de Conselhos Escolares,3066
+[1392],Abandono – Criança,3067
+[1393], Beta-Caroteno,3068
+[1393], Cinética de degradação,3069
+[1393], Espectrofotometria,3070
+[1393], Picos de absorção,3071
+[1393], Comprimento de onda,3072
+[1394],Jejum,3073
+[1394],Ovos,3074
+[1394],Postura,3075
+[1395],Lâmina d’água,3076
+1395,Zea mays L,3077
+[1396],Educação no campo,3078
+[1396], Qualificação docente,3079
+[1396], Práticas pedagógicas,3080
+[1397],Cristal Líquido,3081
+[1397], Propriedades eletro-ópticas,3082
+[1397],Reorientação,3083
+[1398], Acessibilidade,3084
+[1398], Espaços Públicos,3085
+[1398], Arapiraca,3086
+[1400], EJA,3087
+[1400],Ensino de geometria,3088
+[1401],Anacardiaceae,3089
+[1401],cloroplasto,3090
+1624, NGS,3091
+[1401],filogenia,3092
+[1401], híbrido,3093
+[],Gênero Fôlder bancário,3094
+[1402], Persuasão,3095
+"[1929, 1402, 1374]",Retórica,3096
+[], Alfabetização Científica,3097
+[],Concepção Docente,3098
+"[1420, 1454, 1403]", PIBID,3099
+[1404],Coworking,3100
+[], Escritórios,3101
+[1404], Escritórios Compartilhados,3102
+[1404],Arquitetura Coorporativa,3103
+[1405], Momento Angular Orbital,3104
+[1405], Feixes Laguerre-Gauss,3105
+[1406], Cabeamento estruturado,3106
+[1407], Ondas acústicas,3107
+[], Ensaios N˜ao Destrutivos,3108
+[1407], Ensaios não destrutivos,3109
+[1407], Ultrassom,3110
+[1407], Concreto,3111
+[1408], Material didático,3112
+[1408],Avaliação dos Conteúdos,3113
+[1409],Cucumis sativus ,3114
+[1411], Integral de Riemann Generalizada,3115
+[1410], Cônicas,3116
+[1410], Materiais concretos,3117
+[1410], Ensino-aprendizagem,3118
+[],calibre,3119
+[],teoremas fundamentais do cálculo,3120
+[1411],Integrais impróprias,3121
+1411,Calibre,3122
+[1411],Teoremas fundamentais do cálculo,3123
+[1412], Engenharia Didática,3124
+[1412], Material Concreto,3125
+[1412],Geometria Especial,3126
+[1412], Vygotsky,3127
+[1413],Qualidades de ovos,3128
+[],Subprodutos,3129
+[1413],Subproduto,3130
+[1414],Teorema de arzelá,3131
+[1414], Conjunto elementar,3132
+[1414],Sequência de Funções,3133
+[1414],Integral de riemann,3134
+[1416],Integral de Riemann generalizada,3135
+[1415], Sequências,3136
+[1416],Teoremas fundamentais do cálculo,3137
+[1415],Equicontinuidade,3138
+[1416],Integrais impróprias,3139
+[1415],Teorema de Arzelá-Ascoli,3140
+1417,Web semântica,3141
+[1417], Ontologia OWL,3142
+[1418], Modelo androcêntrico,3143
+[1418], Concepções das graduandas,3144
+[1417],Framework protégé,3145
+[1418], Mulher na ciência,3146
+[1417], Educação e software ,3147
+[1418], Questionário,3148
+[1419], Cucumis sativus,3149
+[1419],.Consumo hídrico,3150
+[1419], Evapotranspiração,3151
+[1420],Gestão Pedagógica,3152
+[1421], Cumarinas,3153
+[1421],. Aminoálcoois,3154
+[1421], Síntese,3155
+[1421], Caracterização,3156
+[1422],Centro Cultural,3157
+[1422], Manifestações Artísticas,3158
+[1423],Acessibilidade espacial,3159
+[1423], Edifícios escolares,3160
+[1424],Áreas verdes urbanas,3161
+[1424],Qualidade ambiental,3162
+[1425], Educação Sexual,3163
+[1425], Escola,3164
+[1425],Discentes,3165
+[1426],Cocos nucifera L,3166
+[1426],Broca-do-tronco,3167
+[1426],Rhina,3168
+[1426],Controle mecânico,3169
+[], Imaginação da educação infantil,3170
+[1430],Imaginação,3171
+[1430],Psicologia fenomenológica existencial,3172
+1430,Educação infantil,3173
+[1877],lingua brasileira dos sinais,3174
+[],Computação distribuída,3175
+[],Grade computacional,3176
+[],Computação voluntária,3177
+[1434],Políticas da EJA,3178
+[],Práticas de professores,3179
+[1434],Prática de professores,3180
+1172,Políticas educacionais,3181
+[],Educação escolar indigina,3182
+[1435],Educação escolar indígina,3183
+[1435],História da educação,3184
+[1436],Capriconicultura,3185
+[1437],Fitoterapia,3186
+[1437],Medicina alternativa,3187
+[],Semiarido,3188
+[1437],Semiárido,3189
+[1438],Saúde,3190
+[1438], Poços artesanais,3191
+[1438],Qualidade da água,3192
+[1439], Transesterificação,3193
+[1439],Biodisiel,3194
+[1439],Bolomita,3195
+[],Física,3196
+[1440],Física,3197
+[1440],Mecânica,3198
+[1440],Termodinâmica,3199
+[1441],Gaiola enriquecida,3200
+[1442], Matemática,3201
+[1442], Resolução de Problemas,3202
+1442, Estratégias,3203
+[1443],Praça pública,3204
+[1444],Escoamento superficial,3205
+1444, Agregados,3206
+[1444],Chuva simulada,3207
+[1444],Solos de Alagoas,3208
+[1445],Criação de equídeos,3209
+[1445],Índices corporais,3210
+1446, Sustentabilidade,3211
+[1446],Consciência crítica,3212
+[1447],representações visuais,3213
+[1447], letramento científico,3214
+[1447], cientista,3215
+[1448],Micobactérias,3216
+[1448], Diagnóstico molecular,3217
+1234, Materiais,3218
+1449, Óptica,3219
+[1449], Hidrazonas,3220
+[1450], Educação Infantil,3221
+[1450],Práticas ambientais,3222
+[1471], Análise de similaridade de código,3223
+1587, Ensino de programação,3224
+[1471],SOLO taxonomy,3225
+[],Avaliação automática de código,3226
+[1452], Fitossociologia,3227
+[1452],Saliência Cultural,3228
+[1453], Interações verbais,3229
+[1454],Docência,3230
+"[1825, 2078, 1455]",Literatura,3231
+[], Ensino de Língua Portuguesa,3232
+[1458], Campo Alegre,3233
+1459, História,3234
+[1459], Lixão,3235
+[1460], Recurso didático,3236
+[1460],Ensino,3237
+[1461], Abordagem da EA,3238
+[1461],Transversalidade,3239
+1531, Educação básica,3240
+[1462],Ensino Fundamental I,3241
+[1462], Projetos,3242
+[], Ervas Medicinais,3243
+[1464],Toxicologia,3244
+[1464],Ambiente escolar,3245
+[1465], Escola Quintino Bocaiúva,3246
+1465, História oral,3247
+"[1632, 1743, 2047, 1465]", Memória,3248
+[1466],Estratégias de leitura,3249
+[1466],Motivação leitora,3250
+[1466],Atividades pós-leitura,3251
+[],Política Educacional,3252
+[1468], Modelagem,3253
+[1468],faixa molhada,3254
+[1468], bulbo úmido,3255
+[1469],Dimensionamento da irrigação,3256
+[],modelagem de bulbo,3257
+[1470], Educação em Saúde,3258
+[1470], Parasitoses,3259
+[1471], Avaliação automática de código,3260
+[1472], Espaços públicos urbanos,3261
+1628, Parques urbanos,3262
+[1472],Reestruturação,3263
+[1472],Instrumentos urbanísticos. ,3264
+[1473],Marketing e Propaganda,3265
+[1473],Comportamento dos consumidores,3266
+[1473],Preferências,3267
+[1474], Reciclagem,3268
+[1474], Sensibilização,3269
+[1475], Pecuária,3270
+[1475],. Pastagem,3271
+[1475], Características da carne,3272
+1630,Arquitetura bioclimática,3273
+[1630], Comunidade Mangabeiras,3274
+[1477], Coeficiente de Cultivo,3275
+[1477], Manejo de Irrigação,3276
+[], simulação computacional,3277
+[], ensino de ciências,3278
+[1479],Seleção e Organização,3279
+[1479],Esportes Coletivos,3280
+[1479],Professor,3281
+[],interesse social,3282
+[1480],Regional,3283
+[1480],Interesse social,3284
+1480,Diretrizes,3285
+[],Alice no País das Maravilhas,3286
+[1481],Livros infantis,3287
+[1481], Análise,3288
+[1481], Ilustrações,3289
+[1482],Equações diferenciais não-lineares,3290
+[1482],Equações predador-presa,3291
+[1482], Modelagem matemática,3292
+[1483],Movimento feminista,3293
+[1484],Economia – América Latina,3294
+[1485],Violência sexual - Criança,3295
+[1485],"Violência sexual -
+Adolescente",3296
+[1486],Violência - Idosos,3297
+[1487],Assistencia social,3298
+[1487],"Educação
+inclusiva",3299
+[1488],"Integração
+social",3300
+[1489],Trabalho rural,3301
+[1489],Desemprego - rural,3302
+[1490],Comportamento do Consumidor,3303
+[1490],Turismo,3304
+[1490], Estratégias de Marketing,3305
+[],"Comportamento do Consumidor. Turismo. Estratégias de
+Marketing. Mercado de Artesanato. Penedo-AL.",3306
+[1490],Mercado de Artesanato - Penedo-AL.,3307
+[],Atividade pesqueira ,3308
+[1491],Pesca Artesanal,3309
+[1491],Atividade pesqueira. ,3310
+[1491], Socioeconomia,3311
+[1491], Riscos ocupacionais,3312
+[1491], Condições de trabalho,3313
+[1491],Saúde do trabalhador,3314
+[1492],Memória,3315
+[1492], Identidade Cultural  ,3316
+[],Penedo - Al.,3317
+[1492],Penedo - Turismo,3318
+[1493],Turismo,3319
+[1493],Hospitalidade Pública,3320
+[1493],Mirante de São Gonçalo - Maceió - Al.,3321
+[1493],Mirante - Infraestrutura e acessibilidade ,3322
+[1494],Crustáceo - Siri ,3323
+[1494], Reprodução - Siri ,3324
+[1494],Rio São Francisco - Nordeste do Brasil ,3325
+[1495],Paisagem Urbana,3326
+[1495], Patrimônio,3327
+[1495], Turismo,3328
+[1495], Penedo - Al.,3329
+1752,Bibliometria,3330
+[1498], Progressões aritméticas e geométricas,3331
+[1498], Polinômio,3332
+[1498], Logaritmos,3333
+[1498],"Número binomial.
+",3334
+1533, Beta vulgaris,3335
+1533, Consumo hídrico,3336
+1499, Salinidade,3337
+[], função de produção,3338
+1533,Função de produção,3339
+[],Matemática Financeira,3340
+1514, Contextualização,3341
+[1500], Planilhas eletrônicas,3342
+[1500], Matemática financeira,3343
+[1502], Composição corporal,3344
+[1502], IMC,3345
+1502, Escolares,3346
+[1503], Sequencia didática,3347
+[1503], Soma de Gauss,3348
+[], Progressão aritmética,3349
+[1503],Progressões aritméticas,3350
+"[1647, 1837, 1838, 1892, 1504]", Habitação social,3351
+[1504], Banco Nacional da Habitação,3352
+1504,"Programa Minha Casa, Minha Vida",3353
+[1505], Recurso madeireiro,3354
+[1505], Manejo sustentável,3355
+[1505], Conservação da caatinga,3356
+[1506], Vírus da dengue ,3357
+[1506], NS2B-NS3 protease ,3358
+[1506], Inibidores de protease,3359
+[1507], Acidentes de trânsito,3360
+[1507], Motocicletas,3361
+[1507], Consequências dos acidentes,3362
+1522,Ferimentos e lesões,3363
+[1507], Depressão,3364
+[1508], Teoria de grupos,3365
+[1508], 1º teorema de Sylow,3366
+[1508],2º teorema de Sylow,3367
+[], Drogas,3368
+[1631], Dependentes químicos,3369
+[], Diretrizes,3370
+[], Reabilitação ,3371
+1510,Educação superior,3372
+[1510],"Universidade Federal de Alagoas –
+interiorização",3373
+[1510],Formação acadêmica,3374
+[1513],Annona squamosa L.,3375
+[1513],Maturidade fisiológica,3376
+[1513],Qualidade de sementes,3377
+1517,Consequência de acidentes,3378
+[1516],Ensino,3379
+[1516],Ciências,3380
+[1517],Retorno ao trabalho,3381
+[1518],Gestão de recursos hídricos,3382
+[1518],Nascentes,3383
+[1519],Escolas de tempo integral,3384
+[1519],Categorias de trabalho pedagógico,3385
+[1519],Jogo,3386
+1535,Saúde da criança,3387
+1535,Creches,3388
+[1521],Docente,3389
+1521,Prática pedagógica,3390
+[1522],Consequências dos acidentes,3391
+[1523],Aborto,3392
+1524,Acessibilidade urbana,3393
+[1524],Deficiência,3394
+[1524],Calçadas,3395
+[1525],Residência univsersitária,3396
+1558,Ideação suicida,3397
+[1527],Broca-do-estipe-do-coqueiro,3398
+[1527], Cocoicultura,3399
+[1527], Índices de dispersão,3400
+[1528],Desenvolvimento comunitário,3401
+[1528],Organização social,3402
+[1528],Associativismo,3403
+[1529],Corridas,3404
+[1529],Crianças em idade pré-puberal,3405
+[1529],Características morfológicas,3406
+[1530], Conforto térmico,3407
+1530,Universidade,3408
+[1531],TIC,3409
+[1531],Educador,3410
+[1531],Aluno,3411
+1532, Biometria,3412
+[1532], Germinação,3413
+[1532], Vigor,3414
+[1532], Produção,3415
+[1532], Phaseolus vulgaris L,3416
+[1534],Teoria dos conjuntos,3417
+[1534],TIC's,3418
+[1535],estrutura dos serviços,3419
+[1536], Violência obstétrica,3420
+[1536],Violência institucional,3421
+[1537],Redes P2P,3422
+[1537],Redes complexas ,3423
+[1537],Teoria da informação,3424
+[1538], Transtorno autístico,3425
+[1538],Mães,3426
+[1538],Sobrecarga,3427
+"[1538, 1557, 1561]", Qualidade de vida,3428
+[],Sistemas de informação,3429
+[1627],Engenharia de requisitos,3430
+[1627], Arquitetura de software.,3431
+[1540], Realidade Aamentada,3432
+1626, Autismo,3433
+1626, Tratamento,3434
+1626, Interação social,3435
+[1541], Depressão,3436
+[1541], Qualidade de vida,3437
+[1541], Servidor público,3438
+[1542], Redes complexas,3439
+[1542], Sistemas autônomos,3440
+[1542], Redes livre de escala,3441
+[1543], Reação tipo Biginelli,3442
+[1543],Dihidropirimidinationa,3443
+[1543], RMN ,3444
+[1544], Exercício físico,3445
+1545, Vaquejada,3446
+[1544], Equinos,3447
+[1545],Quarto-de-milha,3448
+[1545], Oferta,3449
+[1546], Idoso,3450
+[1546], Mortalidade,3451
+[1546], Quedas,3452
+[1547], Aleitamento materno,3453
+[1547], Leite humano,3454
+[1547], Percepção,3455
+[1547], Fatores de risco,3456
+[1547], Saúde materno-infantil ,3457
+[1548], Violência contra a mulher,3458
+[1548], Obstetrícia,3459
+[1548], Pessoal da saúde,3460
+[1548], Enfermagem,3461
+1628,Revitalização urbana,3462
+[1628], Arapiraca/AL,3463
+[],Parques urbanos.,3464
+[1550], Humanização,3465
+[1551], História indígena,3466
+[1551], TIC,3467
+[], Habitação de interesse social,3468
+[]," Santana do Ipanema. 
+ ",3469
+"[1836, 1950, 1553]", Ensino de física,3470
+[1553], Relação teoria- prática,3471
+[1553],Construção do conhecimento,3472
+[1554], Produção de vídeos,3473
+1554, Recepção de vídeos,3474
+1554, Audiovisual,3475
+[1555], Estresse,3476
+[1555], Recém-nascido,3477
+[], Unidade de Terapia Intensiva Neonatal ,3478
+[1555], Unidade de terapia intensiva neonatal ,3479
+[1556], Avaliação,3480
+[1556],Questionários,3481
+[1556],Banco de Questões,3482
+[1558],Docente,3483
+[1559], Saúde Pública,3484
+[1559], Perfil epidemiológico,3485
+[1560],Tuberculose Latente,3486
+[1560],Adesão ao tratamento farmacológico,3487
+1565, Uso de drogas,3488
+1565, Redução de Danos,3489
+[1562],Enfermagem – Brasil,3490
+[1563], Trabalho de parto,3491
+[1634],MatLab,3492
+[],Modelagem computacional ,3493
+[1634],Perda de massa ,3494
+[1564],Usuários,3495
+[1564],Saúde,3496
+[1566],Palavras-chave,3497
+[1566], Fissão,3498
+[1566], energia nuclear,3499
+[1566],radiação,3500
+[1567], Cronotipo,3501
+[],cronobiologia,3502
+[1567], Ritmo circadiano,3503
+[1567], Cronobiologia,3504
+[1567],Tempo biológico ,3505
+[], Educação. ,3506
+[1568],Atendimento ao cliente,3507
+[1569], História - Maceió-AL,3508
+[1569],Desenvolvimento turístico - Maceió - Al,3509
+[],"Turismo, Cultura e vulnerabilidade.",3510
+[1570], Cultura ,3511
+[1570],Vulnerabilidade,3512
+[1571], Crustáceo,3513
+[1571],Alimentação ,3514
+[1572], Festival de Cinema,3515
+[1572],Turismo de Eventos,3516
+[1572],Cultura ,3517
+[1572],Penedo - Festival ,3518
+[1573],Turismo ,3519
+[1573],Destinação Turística,3520
+[1573]," Penedo, Alagoas",3521
+[1574],Memória Viva,3522
+[1574],Camartelo - Penedo - Al.,3523
+[1575],Turismo religioso,3524
+[1575],Festa de Frei Damião,3525
+[1575],Turismo - Palmeira dos Índios,3526
+[],Desenvolvimento T,3527
+[1576],Desenvolvimento turístico - Pontal do Peba - Piaçabuçu - Al.,3528
+[1576], Planejamento turístico,3529
+[1577],Planejamento e Desenvolvimento - Turismo ,3530
+[1577],Gestão do Turismo Cultural,3531
+[1577],Programa Monumenta,3532
+[],Programa de Aceleração do Crescimento ,3533
+[1577],Programa de Aceleração do Crescimento – Cidades Históricas,3534
+[1577],Cidades Históricas – Turismo ,3535
+[1578],Empreendedorismo - Plano de negócio,3536
+[1578],  Consultoria – Eventos sociais ,3537
+[1578],Organização de Eventos,3538
+[1578], Turismo de eventos  ,3539
+[1579],Capacidade empresarial,3540
+[1579], Turismo,3541
+[1579], Empreendedorismo ,3542
+[],Meios de hospedagens ,3543
+[1579],Meios de hospedagens e restauração,3544
+[],Conservação - Pescados,3545
+[1580], Conservação - Pescados,3546
+[1581],Turismo rural,3547
+[], Desenvolvimento,3548
+[1582],Região e Regionalização,3549
+[1582], Políticas Públicas,3550
+[1582],Caminhos do São Francisco,3551
+[1583], Agricultura,3552
+[1583],Transição agroecológica,3553
+[1583],Produção de alimentos,3554
+[],Beneficiamento - Pesca ,3555
+[],Conservação do pescado,3556
+[],Camarão ,3557
+[],Salmoura - Pesca,3558
+[1585],Ética da responsabilidade,3559
+[1585],Espaços hierofângicos,3560
+1585,Igrejas,3561
+[1585],Visitatens,3562
+[1586],Visitações - Turismo,3563
+[1586],Pontal do Peba - Piaçabuçu - Al.,3564
+[1586],Segunda residência,3565
+[1587],Sessão de estudo,3566
+[1587],Ambiente integrado de desenvolvimento,3567
+[1587],Análise de log,3568
+[1588],Sequências de números reais,3569
+[1588], Limite de uma sequência,3570
+[1588],Convergência,3571
+[1588], Exemplos,3572
+[1588], Análise Real,3573
+[1589],Direito civil,3574
+[1589],Coabitantes homossexuais,3575
+[1589],Homofobia,3576
+[1590],Política de saúde - Brasil,3577
+[1591],Ciúme – patologia,3578
+[1594],Patrimônio,3579
+[1594],Turismo,3580
+[1594],Educação Patrimonial,3581
+1596, Alimento alternativo,3582
+[1596],Desempenho produtivo,3583
+[1597],Descarte,3584
+[1597],Propriedades leiteiras,3585
+[1597],Vacas,3586
+[1598],Big Data Analytics,3587
+[1598], Modelo de ascendência analítica,3588
+[1598],Previsão de tragédias,3589
+[1598], Análise diagnóstico,3590
+[1598],Análise preditiva ,3591
+[1599],Implantação,3592
+[1599],ERP ,3593
+[1599],Cloud Computing,3594
+[1599],Cloud ERP,3595
+[1600], Lúdico,3596
+[1600],Ciências,3597
+1671,Plano de negócios,3598
+[1602],Produção familiar,3599
+[1605], Aprendizado de matemática,3600
+[1605], Software,3601
+[1605], Ciência da Computação,3602
+[1606], Ensino,3603
+[1606], programação,3604
+[1606], raciocínio lógico,3605
+[1606],Arduino,3606
+[1607], Fotoblastismo,3607
+[1607], Áreas degradadas,3608
+[1607],Cactaceae,3609
+[], Agricultura familiar,3610
+[], Produção familiar ,3611
+[], Arquitetura,3612
+[], Artes,3613
+[1638],Design,3614
+[1611], Sequências repetitivas,3615
+[1610], Educação,3616
+[1610], Língua Estrangeira,3617
+[1611], NGS,3618
+[1610], Inglês,3619
+[1611], Ouricuri,3620
+[1610],Aplicativos Educativos,3621
+1624, C-value,3622
+[1611], RepeatExplorer,3623
+[1612],Licenciatura em química,3624
+[1612],Professor de quimíca,3625
+[1613], Bovinos,3626
+[1613], Peso,3627
+[1613],Idade,3628
+[1613], Carcaça,3629
+[1614],HelpDesk,3630
+[1614], Raciocínio Baseado em Casos,3631
+[1614], RBC,3632
+[1614],Gestão do Conhecimento,3633
+[1615],Arachis hypogaea L.,3634
+[],arranjo de plantio,3635
+[1615],Arranjo de plantio,3636
+1272, Adensamento,3637
+[1616], lutas corporais,3638
+[1617], Manihot esculenta,3639
+[1617], Mecanismo de ação,3640
+[1617],Espécies daninhas,3641
+[1618],Densidade do solo,3642
+[1618],Camada compactada,3643
+[1618],Rotação de culturas,3644
+[1618],Desenvolvimento das culturas,3645
+[1619], Aleloquímico,3646
+[1619], Anadenanthera macrocarpa (Benth.),3647
+[1619], Brenan,3648
+[],Tabebuia Caraiba (Mart.) Bureau,3649
+[1619],Tabebuia Caraiba (Mart.) Bureau,3650
+[1619], Manihot esculenta Crantz,3651
+[1620],Instalações,3652
+[1620],Temperatura corporal,3653
+[1620], Suíno,3654
+[1621],Acidez,3655
+1720,Corretivos,3656
+[1621],Reatividade,3657
+[1621],Alumínio Trocável,3658
+[1621],Latossolos de Alagoas ,3659
+[1622],Teorema de Schur,3660
+[1622],Curvas convexas,3661
+[1623],Força impulsiva,3662
+[1623],Modelo matemático,3663
+[1624], Evolução,3664
+[1624], Umbu,3665
+[1624],Sequência repetitiva,3666
+[1624], Repeat explorer,3667
+[1625],Anatomia foliar,3668
+[1625],Atividade enzimática,3669
+[1625],Composição espectral da luz,3670
+[1625],"Fotomorfogênese, ",3671
+"[1909, 2063, 1625]", Trocas gasosas ,3672
+[], Realidade Aumentada,3673
+[1626],Realidade aumentada,3674
+[1632],Memorial,3675
+[1633],Governo aberto,3676
+[1633],Despesas públicas,3677
+[],Trasparência,3678
+[1635],Zea mays,3679
+[1635],População de plantas,3680
+[1636], Escassez hídrica,3681
+[1636],Lisimetria,3682
+[1636],Daucus carota L ,3683
+[1637],Fator de necrose tumoral - alfa,3684
+[1638],Artes,3685
+1698,Memórias – aspectos sociais,3686
+[],Residencial Brisa do LAgo,3687
+[1642],Parasitóides,3688
+[1642],Predadores,3689
+[1642],Compatibilidade,3690
+[1642],Produtos fitossanitários,3691
+[1643],Semiárido brasileiro,3692
+[1644],Usuário,3693
+[1644],Ocupação,3694
+[1645], Alelopatia,3695
+[1645],Bauhinia forficata,3696
+[1645],Mimosa tenuiflora,3697
+2063,Eruca sativa,3698
+[1646],Lisímetro,3699
+1848,Residencial Brisa do Lago,3700
+[1648], Flutuação,3701
+[1648],Lagarta-do-cartucho,3702
+[1648],Inimigos naturais,3703
+[1648],Cultura crioula,3704
+[1649],Computador como ferramenta de ensino,3705
+[1649],Laboratórios virtuais,3706
+[1649],Ensino de Química,3707
+[1650],Gestão da qualidade,3708
+[1650],Eras da qualidade,3709
+[1650], Qualidade no setor industrial,3710
+[1651], Oryza sativa L,3711
+[1651],Fauna de artrópodes praga,3712
+[1651], Danos diretos,3713
+[1652],Aroeira,3714
+[1653], Serviços,3715
+2007,Assistência técnica,3716
+[1653],Computadores,3717
+[1654], Caprinos,3718
+[1654], Condições áridas,3719
+[1654],Grupos exóticos,3720
+[1654], Medidas biométricas,3721
+1668,Congruência ,3722
+[1668],Símbolo de Legendre,3723
+[1668],Lei de Reciprocidade Quadrática,3724
+[1667],Bovinocultura leiteira,3725
+[1667],Nutrição animal,3726
+[1667],Software na zootecnia,3727
+[1670],Espaçamento,3728
+[1670],Tutoramento,3729
+[1670],Citrullus lanatus (Thunb.),3730
+[1671],Comunicação empresarial,3731
+[1671],Aplicativo para comunicação,3732
+[1672],Anuro,3733
+[1672], Arthropoda,3734
+[1673], Ensino fundamental,3735
+[],Idade escolar,3736
+[1677], Enteroparasitoses,3737
+[1677], Idade escolar,3738
+[1677],Jogo,3739
+[1678], Qualidade,3740
+[1678],Melhorias de implantação do programa 5s ,3741
+[1678],Treinamento,3742
+[1679], Campo Alegre/AL,3743
+[1679],Centro de capacitação profissional,3744
+[1679],Exposições,3745
+[1679],Espaços pedagógicos,3746
+[1680],Insatisfação,3747
+[1682],Celular,3748
+[1683], Ensino médio de Química,3749
+[1683],Educação para a cidadania,3750
+[1683],Condicionantes,3751
+[1684], População em situação de rua ,3752
+[1684],Olhar social,3753
+[1684],Papel social da arquitetura,3754
+[1684],Abrigo,3755
+[1686],Bulbo molhado,3756
+[1686], Gotejamento,3757
+[1686],Milho,3758
+[1687],Qualidade ,3759
+[1687],Atendimento,3760
+1876,Patologia,3761
+[],Estado de conversação,3762
+[1688],Estado de conservação,3763
+[1688],Avaliação de escolas,3764
+[1688],Estruturas escolares,3765
+[1689],Cura ,3766
+[1689],Plantas ,3767
+[1689],Rituais ,3768
+[1695],"Seca – Brasil, Nordeste",3769
+[1696],Terceirização,3770
+[1696],"Trabalho
+informal",3771
+[1697],Morte – Aspectos psicológicos,3772
+[1697],"Doentes -
+Psicologia",3773
+[1700],Relação ensino-aprendizagem,3774
+[1700],Metodologias utilizadas no ensino de Química,3775
+[1701],Aquaponia - Piscicultura ,3776
+[1701],Aquicultura,3777
+[1701],Criação de peixes - Tilápias,3778
+[1701],Sistema de recirculação,3779
+[1702],Casa do Patrimônio - IPHAN ,3780
+[1702], Patrimônio Cultural,3781
+[1702]," Educação Patrimonial - Turismo - Penedo, AL.",3782
+[1703],Camarão-pitu (Macrobrachium carcinus),3783
+[], Manejo alimentar - Carcinicultura,3784
+[1703],Manejo alimentar - Camarão-pitu,3785
+[1703],Crescimento - Camarão-pitu,3786
+[1703],Carcinicultura ,3787
+[1704],Turismo cultural,3788
+[1704],Feira- Livre,3789
+[1704], Desenvolvimento Turístico - Penedo - Al.,3790
+[1705],Museus culturais,3791
+[1706],Tecnologias da Informação e Comunicação – TIC’s,3792
+[1706],Marketing Turístico,3793
+[1706], Penedo-AL,3794
+[1707],Cultivo de Tilápias ,3795
+[],Tanques-rede - Psicultura,3796
+[1707],Tanques-rede - Piscicultura,3797
+[1708],Nematoda (Animal) - Nematofauna,3798
+[1708],Efluentes urbanos,3799
+[1709],Moluscos  bivalves - Maçunim,3800
+[],"Moluscos bivalves, marisqueiras, extração.",3801
+[],Marisqueiras - Pontal do Peba (Al.),3802
+[1709],Marisqueiras - Pontal do Peba (AL),3803
+[1709],Extração - Maçunim,3804
+[1710],Larvicultura - Camarão,3805
+[1710],Salinidade - Água,3806
+[1710],Camarão-Pitú - Macrobrachium Carcinus,3807
+[1711],Produção - Camarão Cinza,3808
+[1711],Camarão Cinza - Litopenaeus vannamei,3809
+[1711], Ambiente Hipersalino,3810
+[1712],Larvicultura,3811
+[1712],Tilápia do Nilo - Oreochromis niloticus ,3812
+[1713],Tilápia do Nilo,3813
+[1713],Produção de Juvenis - Tilápia,3814
+[1713],Sistema Intensivo - Produção - Peixes,3815
+[],Larvicultura ,3816
+[],Alevinos,3817
+[],Tilápia do Nilo (Oreochromis niloticus),3818
+[1715],Arquitetura cênica,3819
+[1715], Manifestações culturais,3820
+[1715],Teatro Popular,3821
+[1716],Residência Acadêmica,3822
+[1717],Acústica de salas,3823
+[1717],Eletroacústica,3824
+[1718],Agência reguladora ,3825
+[1718],Instituto do Meio Ambiente,3826
+[1719], Educação Ambiental,3827
+[1720], pH,3828
+[1721],Minha Casa Minha Vida,3829
+[1721],Oficina Participativa,3830
+[], Arapiraca,3831
+[],Agreste,3832
+[1722], Estratégias Bioclimáticas,3833
+[1722], Agreste,3834
+[1723],Gênero,3835
+[1723],Feminismo,3836
+[], Política de Saúde da Mulher,3837
+[1724],Gênero,3838
+[1724], Escola,3839
+[1724], Desigualdade,3840
+[1725], doses de nitrogênio,3841
+[1726], Motivação,3842
+[1728],Doentes hospitalizados – Psicologia,3843
+[1730],Psiquiatria,3844
+[1733],Precarização do trabalho,3845
+[1741],Assentamento rural,3846
+[1741],Regularização fundiária,3847
+[1737],Ácaros predadores,3848
+[1738],Trombidiformes,3849
+[1738], Cocos nucifera L,3850
+[1738], Arecaceae,3851
+[1738], Manejo integrado de pragas,3852
+[1739],AMBEV,3853
+[1739],Mercado,3854
+[1739],Cerveja,3855
+[1742],Excedente populacional,3856
+[1742],Conjuntos de interesse social,3857
+[1743],Penedo,3858
+[1744],Resíduos de construção e demolição,3859
+[1744],Gestão de resíduos ,3860
+[1745],Neurose obsessiva-compulsiva,3861
+[1746],Taxicomania,3862
+[1746],Drogas – análise - abuso,3863
+[1747],Juventude,3864
+[],Assistência es,3865
+1781,Comunidade ,3866
+1765,Psicologia - prática profissional,3867
+[1750],Energia,3868
+[1750],Energia renovável,3869
+[],Polinização por inseto,3870
+[1751],Polinizadores,3871
+[1751],Compostos voláteis,3872
+[1751],Annonaceae,3873
+[1752],Pesquisa em enfermagem,3874
+[1752],Monografia,3875
+[1753],Qualidade sanitária de sementes,3876
+[1753],Gênero,3877
+[1754], Mobilidade urbana sustentável,3878
+[1754],Eixo comercial,3879
+"[1755, 1782, 2049, 1757]",Política pública,3880
+[1755],PNAD,3881
+[1755],CAPS-AD,3882
+[1756],Administração Pública,3883
+[1756],Perfil do administrador público,3884
+[1756],Formação do administrador público,3885
+[1757],Atendimento médico,3886
+[1757],Satisfação dos usuários,3887
+[],Programa Mais médicos,3888
+[],Programas Mais Médicos,3889
+[1757],Programa Mais Médicos,3890
+[1759],Facebook do governo,3891
+[1759],Sociedade da informação,3892
+[1759],Interação público-gestão,3893
+[1352],Migração interna,3894
+[1352],Fluxo migratório,3895
+[1352],Cana de açúcar,3896
+[1352],Cortador de cana,3897
+[1234],Transformação,3898
+[1335],Banco Mundial,3899
+[],Análise,3900
+[1337],Análise,3901
+[1341],Responsabilidade social,3902
+[1341],Ações sociais,3903
+[1341],Influência,3904
+[1347],Controle,3905
+[1347],Controle interno,3906
+[1347],Processo decisório,3907
+[575],Materiais de construção,3908
+[561],Custos e despesas,3909
+[562],Clima organizacional,3910
+[562],Pesquisa de clima organizacional,3911
+"[1990, 1767, 1764, 1512, 1286, 1284, 1285, 1511, 1039, 805, 1081, 1093]",Behaviorismo (psicologia),3912
+[690],Fenomenologia,3913
+[690],Artes visuais,3914
+[],Planos,3915
+[139],Plano,3916
+[1377],Integral de lebesgue,3917
+[1377],Integral de henstock-kurzweil,3918
+[1377],Deficiências,3919
+[1377],Teorema da convergência dominada,3920
+[1377],Teorema de Riesz-Fisher,3921
+647,Áreas,3922
+[651],Volumes,3923
+[647],Tangram,3924
+[647],Raciocínio lógico,3925
+[647],Aprendizado,3926
+[1148],Síndrome da alienação parental,3927
+[1469],Faixa molhada,3928
+[1469],Modelagem de bulbo,3929
+[614],Crotalaria spctabilis,3930
+[767],Irrigação,3931
+[530],Recursos hídricos,3932
+[600],Irrigação,3933
+[],indefinida,3934
+[745],Ensino a distância,3935
+[453],Irrigação,3936
+[453],Condicionador de solo,3937
+[436],Irrigação,3938
+[979],Professor,3939
+[1761],Condições de habitalidade,3940
+[1761],"Programa Minha casa, minha vida",3941
+[1761],Residencial do Agreste,3942
+[1762],Clima local,3943
+[1762],Eficiência energética,3944
+[],Ave - Criação,3945
+[1763],Ave doméstica,3946
+[1763],Agropecuária,3947
+1767,Comportamento (Psicologia),3948
+[],Prática pro,3949
+[1768],Tráfico humano – crianças,3950
+[1769],Tricomoníase,3951
+[1769],Trichomonas vaginalis,3952
+[1770],Semiárido nordestino,3953
+[1463],Ervas medicinais,3954
+[1351],Concepções,3955
+[818],Desenvolvimento regional,3956
+[818],Despesa pública,3957
+[818],Produto interno bruto,3958
+[822],Projetos sociais,3959
+[839],Teorias comportamentais,3960
+[1273],Coletivo escolar,3961
+[1227],Filogeografia,3962
+[1227],cpDNA,3963
+[1551],Ensino de história,3964
+[1771],Ciências,3965
+[1772],Atividades pedagógicas,3966
+[1772],Proposta arquitetônica,3967
+[1772],Conforto ambiental,3968
+[1775],Imune inato,3969
+[1775],Citocinas,3970
+[1776],Iluminação artificial,3971
+[1776],Luninotécnico,3972
+[1779],Adubos,3973
+[1779],Fertilizantes orgânicos,3974
+[1780],Conforto,3975
+[1781],Policiamento comunitário,3976
+[1781],Segurança pública,3977
+[1244],Prova escrita,3978
+[1244],Língua portuguesa,3979
+[1402],Gênero folder bancário,3980
+[1481],Alice no país das maravilhas,3981
+[1374],Gênero canção musical,3982
+[1003],Regionalismo,3983
+[1389],Paradigma democrático e participativo,3984
+[1389],Conselho escolar,3985
+[1387],Concepções dos professores,3986
+1403,Alfabetização científica,3987
+[1403],Concepção docente,3988
+[1457],Ensino de língua portuguesa,3989
+[1339],Comunidade escolar,3990
+[1339],Gestão democrática,3991
+[1467],Política educacional,3992
+[1782],Economia dos setores populares,3993
+2014,Autômato celular,3994
+[1783],Jogo da vida,3995
+[1784],Área,3996
+[1784],Volume,3997
+[1784],Sólidos de revolução,3998
+[],Princípio de cavalieri,3999
+[1784],Princípio de Cavalieri,4000
+[1784],Teoremas de Pappus,4001
+[1258],Professor,4002
+[1723],Política de saúde da mulher,4003
+[1376],Ensino de história,4004
+[1376],Tecnologia,4005
+[1763],Ave - criação,4006
+[1219],TIC,4007
+[1219],Práticas docentes,4008
+[1219],Aprendizado eletrônico,4009
+[1214],Contextualização da matemática,4010
+[1214],Situações problema,4011
+[1220],TIC ,4012
+[1220],Webquest,4013
+[1213],TIC,4014
+[1213],Competência e atitudes,4015
+[1272],Rendimento produtivo,4016
+[1274],Recursos tecnológicos,4017
+[1274],Vida dos surdos ,4018
+[1267],Compostos voláteis,4019
+[1267],Sistemas de produção,4020
+[],Ação atioxidante,4021
+[1267],Ação antioxididante,4022
+[859],Avaliação da aprendizagem,4023
+[1785],Índice de massa corporal,4024
+[1785],Inatividade física,4025
+[],Diagramas ladder,4026
+[1786],Diagramas de Ladder,4027
+[],Redes de petri,4028
+[1786],Redes de Petri,4029
+[1786],Conversão,4030
+[1787],Camurim ,4031
+[1787],Lagoas costeiras ,4032
+[1790],Cupcake,4033
+[1790],Diet,4034
+[1791],Ordem ,4035
+[1791],Subgrupo,4036
+[1791],Grupo cíclico finito,4037
+[1794],Pedagogia Waldorf,4038
+"[1794, 1846, 1856]",Creche,4039
+[1796],Sequência de Fibonacci,4040
+[1796],Número de Ouro,4041
+[1796],Retângulo Aureo,4042
+[1799],Computação móvel,4043
+[1799],Exercícios físicos ,4044
+[1800],Iluminação natural,4045
+[1800],Salas de  aula,4046
+[1800],Desempenho luminoso,4047
+[1801],Climatologia urbana,4048
+[1801],Planejamento urbano,4049
+[1801],ENVI-met,4050
+[],Smart cities,4051
+[],Tecnologia,4052
+[999],Água,4053
+[999],Water,4054
+[1224],Tecnologia ,4055
+[1224],Technology,4056
+[1221],Health,4057
+[1221],Saúde,4058
+1222,Mobilidade,4059
+[1222],Mobility,4060
+[1238],Government,4061
+[1802],Security,4062
+[],caso do vestido,4064
+[],caso do vestido,4065
+[],caso do vestido,4067
+[],"andrade, carlos drummond de ",4069
+[],"andrade, carlos drummond de ",4070
+[],"andrade, carlos drummond de ",4071
+[],"andrade, carlos drummond de ",4072
+[],"andrade, carlos drummond de ",4073
+[],"andrade, carlos drummond de ",4074
+[],"andrade, carlos drummond de ",4075
+[],"andrade, carlos drummond de ",4076
+[],"andrade, carlos drummond de ",4077
+[],"andrade, carlos drummond de ",4078
+[],educação,4079
+[],educação,4080
+[],educação,4081
+[],educação,4082
+[],educação,4083
+[],educação,4084
+[],educação,4085
+[],educação,4086
+[],educação,4087
+[],educação,4088
+[],educação,4089
+[],educação,4090
+1979,desenho urbano,4092
+[],desenho urbano,4093
+[],desenho urbano,4094
+[],desenho urbano,4095
+[],desenho urbano,4096
+[],desenho urbano,4097
+[],desenho urbano,4098
+[],desenho urbano,4099
+[],desenho urbano,4100
+[],desenho urbano,4101
+[],governança de ti,4103
+[],governança de ti,4104
+[],governança de ti,4106
+[],desenho urbano,4108
+[],desenho urbano,4109
+[],desenho urbano,4110
+[],desenho urbano,4111
+[],desenho urbano,4112
+[],desenho urbano,4113
+[],desenho urbano,4114
+[],desenho urbano,4115
+[],desenho urbano,4116
+[],desenho urbano,4117
+[],desenho urbano,4118
+[],segunda língua,4120
+[],segunda língua,4121
+[],segunda língua,4122
+[],análise do comportamento,4123
+[],análise do comportamento,4124
+[],análise do comportamento,4125
+[],análise do comportamento,4126
+[],análise do comportamento,4127
+[],análise do comportamento,4128
+[],surdez,4131
+[1808],segunda língua,4133
+[],água,4134
+[],adubação ,4135
+[],zea mays l.,4136
+[1809],caso do vestido,4137
+[1813],recomendações projetuais,4138
+[1814],qualidade,4139
+[1814],produção ,4140
+1892,expansão urbana,4141
+[1816],opuntia fícus indica l.,4142
+[1819],professor de matemática,4143
+[1820],compatibilização de projetos,4144
+[1822],leishmania,4145
+[1822],agentes antileishmanias,4146
+[1822],docking molecular,4147
+[1823],cordel,4148
+[1824],docking de fragmento,4149
+[1825],dom quixote,4150
+[1825],melancolia,4151
+[1827],água,4152
+[1829],albiano,4153
+[1829],cretácio inferior,4154
+[1829],paleoictiologia,4155
+[1829],fóssil-lagerstatten,4156
+[1831],azinas,4157
+[1833],gráficos,4158
+[1833],mecânica quântica,4159
+[1833],função de onda,4160
+[1833],densidade de probabilidade,4161
+[1833],energia,4162
+[1836],levantamento bibliográfico,4163
+[1837],tecnologia construtiva,4164
+[1837],concreto celular,4165
+[1837],patologias,4166
+[1838],autoconstrução,4167
+[1839],ensino de português,4168
+[1839],sociolinguística,4169
+[1842],equação de segundo grau,4170
+[1843],estética,4171
+[1844],impacto de vizinhança,4172
+[1844],campus universitário,4173
+[1846],creche universitária,4174
+[1848],planejamento participativo,4175
+[1850],dispersão,4176
+[1850],micro-organismos,4177
+[1850],aerossóis,4178
+[1850],estafilococos,4179
+[1850],infecção cruzada,4180
+[1854],contribuições,4181
+[1854],construção de modelos,4182
+[1855],manejo de água,4183
+[1855],espaçamento de cultivo,4184
+[1855],zea mays l. ,4185
+[1861],zeis,4186
+[1861],assentamentos precários,4187
+[1862],adaptabilidade,4188
+[1864],resolução de ambiguidade,4189
+[1864],redes bayesianas,4190
+[1864],processamento de língua natural,4191
+[1864],análise semântica do português,4192
+[1867],síndrome de burnout,4193
+[1868],equações quadráticas,4194
+[1868],ensino de álgebra,4195
+[1871],sphan,4196
+[1872],transporte público,4197
+[1875],calcário,4198
+[1875],saturação por base,4199
+[1876],pesquisa,4200
+[1877],localização geoespacial,4201
+[1878],dinâmica populacional,4202
+[1878],teorema da existência e unicidade,4203
+[1879],transporte complementar,4204
+[1880],taxonomia solo,4205
+[1880],algoritmos de similaridade,4206
+[1883],curvas planas,4207
+[1883],fórmulas de frenet,4208
+[1883],desigualdade isoperimétrica,4209
+[1884],analogias no ensino de química,4210
+[1884],abstração analógica,4211
+[1884],limitações,4212
+[1884],livros didáticos,4213
+[1885],sólido,4214
+[1885],forças ,4215
+[],vibração,4216
+[1885],brillouin,4217
+[1885],vibrações,4218
+[],segregação aeroespacial,4219
+[1892],segregação socioespacial,4220
+[1893],água cinza,4221
+[1893],reuso de água,4222
+[1897],igreja de são sebastião,4223
+[1897],referência cultural,4224
+[1899],rendimento escolar,4225
+[1904],enfermagem obstétrica,4226
+[1905],plano diretor participativo,4227
+2068,crescimento urbano,4228
+1909,fluorescência - clorofila,4229
+[1908],trocas gasosas - plantas,4230
+[1908],espécies arbóreas,4231
+[1910],governança de ti,4232
+[1910],gerência de ti,4233
+[1913],acaricidas,4234
+[1913],abacaxicultura,4235
+[1914],Direito,4237
+[1914],Luta,4238
+[1914],Desigualdade de gênero,4239
+[1915],Polya,4240
+[1915],Heurística,4241
+[1915],Método,4242
+[1918],Validação social,4243
+[1918],Equilíbrio estável,4244
+[1918],Evolução temporal,4245
+[1921],Trato com o conhecimento,4246
+[1922],Diversidade no conhecimento,4247
+[1922],Materiais didáticos manipuláveis,4248
+[1924],Conceitos físicos,4249
+[1924],Física forense,4250
+[1925],Atleta na escola,4251
+[1925],Política pública de esportes,4252
+[1925],Esporte na escola,4253
+[1927],Paralisia cerebral,4254
+[1927],Abordagem crítico-superadora,4255
+[1927],Exclusão escolar,4256
+[1929],Argumento,4257
+[1929],Artigo de opinião,4258
+[1930],Densidade urbana,4259
+[1930],Vazios urbanos,4260
+[1930],Expansão horizontalizada,4261
+[1931],Aspectos conversacionais,4262
+[1931],Interação face a face,4263
+[1931],Gênero talkshow,4264
+[1932],Oscilador harmônico clássico,4265
+[1932],Oscilações,4266
+[1932],Sistemas lineares,4267
+[1932],Sistemas não lineares,4268
+[1933],Melhorias arquitetônicas,4269
+[1934],Indução finita,4270
+[1934],Axiomas de Peano,4271
+[1934],Inteiros positivo,4272
+[1936],Teatro científico,4273
+[1936],Ensino fundamental de ciências,4274
+[1937],Lactuca sativa L.,4275
+[1937],Ecofisiologia vegetal,4276
+[1939],Extração,4277
+[1942],Centro de convivência,4278
+[1942],Relação intergeracional,4279
+[1944],Aspectos argumentativos,4280
+[1944],Livro didático de língua portuguesa,4281
+[1945],Reformas,4282
+[1946],Ciclovia,4283
+[1946],Centro da cidade - Arapiraca,4284
+[1948],Interdiscursividade,4285
+[1948],Intertextualidade,4286
+[1949],Consumo de energia,4287
+[1949],Tendência,4288
+[1949],Série temporal,4289
+[1949],Estacionaridade,4290
+[1950],Simulações,4291
+[1950],Novas tecnologias,4292
+[1951],Variação sintática,4293
+[1951],Adjunto adverbial ,4294
+[1951],Predicativo,4295
+[1952],Espaços da saudade,4296
+[1952],Jessier Quirino,4297
+[1952],Poesia,4298
+[1954],Teorema de Fermat e Wilson,4299
+[1954],Combinatória,4300
+[1954],Princípio fundamental da contagem,4301
+[1955],Câmara fria,4302
+[1955],Carne ovina,4303
+[1955],Termógrafo,4304
+[1957],Tiny houses,4305
+[1957],Assentamentos precários,4306
+[1960],Linha férrea,4307
+[1960],Reabilitação urbana,4308
+[1962],Fitness,4309
+[1962],Wellness,4310
+[1962],Arquitetura esportiva,4311
+[1962],Instações esportivas,4312
+[1968],Edificações - Arapiraca,4313
+[1969],Allium Fistulosum,4314
+[1970],Adubação química,4315
+[1970],Arachis hypogaea L. ,4316
+[1971],Material de construção - Revenda,4317
+[1972],Seleção e contratação,4318
+[1973],Legenda,4319
+[1973],Ferramenta auxiliar,4320
+[1976],Equações diferenciais,4321
+[1976],Equações diferenciais - Sistemas,4322
+[1979],Rodovia,4323
+2084,Espaço público,4324
+2068,Requalificação urbana,4325
+[1981],Tempos verbais,4326
+[1981],Atemporalidade verbal,4327
+[1982],Obras públicas,4328
+[1982],Compatibilização de projetos,4329
+[1983],Força de radiação acústica,4330
+[1983],Levitação acústica de partículas,4331
+[1983],Transdutor de Langevin,4332
+[1983],Método de elementos finitos,4333
+[1983],COMSOL multi-physics,4334
+[1985],Proteção social,4335
+[1986],Reforma sanitária,4336
+[1991],Economia social,4337
+[1994],Brasil. [Constituição (1988)],4338
+[1995], Tilápia – Piscicultura ,4339
+[1995],Reversão sexual - Peixes ,4340
+[1995],Alevinos – Produção,4341
+[1996],Monumentos Históricos,4342
+[1996], Patrimônio Cultural,4343
+[1996],Educação Patrimonial,4344
+[1996], Turismo – Penedo – Al. ,4345
+[1997],Reprodução - Piscicultura,4346
+[1997], Camurim ,4347
+[1997], Lagoas costeiras ,4348
+[1997], Lagoas - Jequiá - Alagoas,4349
+[],"Comunidade bentônica, Polychaeta – Piscicultura Plataforma Continental – Pernambuco ",4350
+[1998],Comunidade bentônica,4351
+[1998], Polychaeta – Piscicultura ,4352
+[1998], Plataforma Continental – Pernambuco ,4353
+[1999],  Camarão-pitu - Piscicultura ,4354
+[1999],Sexagem -  Camarão-pitu ,4355
+[1999], Comunidades Ribeirinhas – Pesca ,4356
+[1999],Pesca artesanal – Penedo – Alagoas ,4357
+[2000],Recifes de Coral – Substrato consolidado  ,4358
+[2000],Impacto humano ,4359
+[2000], Meiofauna ,4360
+[2000], Litoral Norte de Alagoas - Paripueira,4361
+[2000],Proteção ambiental ,4362
+[2001], Pescadores  Artesanais,4363
+[2001],  Produção  Pesqueira,4364
+[2001],  Perfil Socioeconômico,4365
+[2001], Ordenamento – Piscicultura,4366
+[2001],  Baixo São Francisco,4367
+2004,Nematoda - Pesca,4368
+2004,Plataforma Continental,4369
+[2002],Contaminantes - Meiofauna,4370
+[2002],Granulometria do sedimento - Geologia marítima,4371
+[2002],Pesca - Sul de Alagoas e Sergipe,4372
+[2003],Tilápia do Nilo - Pesca,4373
+[2003],Mulheres - Piscicultura ,4374
+[],"Tilápia do Nilo, Mulheres, Piscicultura, Igreja. ",4375
+[2003], Igreja - Pesca,4376
+[2004],Granulometria - Pesca,4377
+[2004],Derivados do petróleo,4378
+[2005],Tilápia do Nilo,4379
+[2005],Engorda - Pesca,4380
+[2005],Tanque-rede - Pesca,4381
+[],Saúde ,4382
+[2007],Água,4383
+[2008],Instrumento de apoio,4384
+[2008],Aula teórica,4385
+[2009],Irrigação de pastagem,4386
+[2009],Escassez de alimento,4387
+[2010],Estudo de carcaça,4388
+[2010],Gado de corte,4389
+[2010],Rendimento da carcaça,4390
+[2012],Liderança,4391
+[2012],Estilos de liderança,4392
+[2013],Vacinação,4393
+[2013],Efeitos adversos,4394
+[2014],Ferramenta,4395
+[2016],Estabilidade,4396
+[2017],Barreiras atitudinais,4397
+[2018],Zoometria,4398
+[2020],Literatura brasileira,4399
+[2020],Lucíola,4400
+[2020],"Alencar, José, 1829-1877",4401
+[2022],SMTT,4402
+[2022],Gestão de transporte público coletivo,4403
+[2025],Números algébricos,4404
+[2025],Números transcedentes,4405
+[2025],Constante de Liouville,4406
+[2026],Forma canônica de Jordan,4407
+[2026],Sistemas de equações,4408
+[2026],Operadores nilpotentes,4409
+[2027],Matemática escolar,4410
+[2027],Matemática no cotidiano,4411
+[2028],Educação para a saúde,4412
+[2029],Maravilha,4413
+[2030],Sistema tributário,4414
+[2030],Concentração de renda,4415
+[2030],Imposto de renda,4416
+[2031],Portal da transparência,4417
+[2031],Igaci,4418
+[2032],Vale do Rio Doce,4419
+[2034],Sordidina,4420
+[2034],Semioquímicos,4421
+[2034],Moleque-da-Bananeira,4422
+[2034],Musa spp,4423
+[2036],Conteúdos,4424
+[2036],Sistematização,4425
+[2038],Representação semiótica,4426
+[2038],ENEM - Exame Nacional do Ensino Médio,4427
+[2038],Estatística descritiva,4428
+[2038],PCNEM - Parâmetros Currículares Nacional para o Ensino Médio,4429
+[2039],Design racional de fármacos,4430
+[2039],Cisteína protease,4431
+[2041],Programa de Aquisição de Alimentos - PAA,4432
+[2042],Informações,4433
+[2044],Mercado consumidor,4434
+[2047],Patrimônio arquitetônico,4435
+[2047],Patrimônio material,4436
+[2048],Pesquisa em educação,4437
+[2048],Ensino e aprendizagem de biologia,4438
+[2050],Lei de Acesso à Informação,4439
+[2050],Governo eletrônico,4440
+[2050],Transparência pública e portais,4441
+[2052],Acesso à informação,4442
+[2053],Ferramentas de gestão,4443
+[2053],Controle ,4444
+[2054],Evasão escolar,4445
+[2054],Licenciatura em física,4446
+[2056],Espalhamentos,4447
+[2056],Senescência,4448
+[2057],Ensino de ciências e biologia,4449
+[2057],Audiodescrição,4450
+[2058],Instituição de ensino,4451
+[2059],Força elástica,4452
+[2059],Não linearidade,4453
+[2061],Tabuada,4454
+[2061],As quatro operações,4455
+[2062],Registro de representação semiótica,4456
+[2062],Tratamentos,4457
+[2062],Conversões,4458
+[2063],Rúcula,4459
+[2064],Moda íntima,4460
+[2064],Ôculos,4461
+[2064],Relógios,4462
+[2066],Avenida,4463
+[2066],Uso e ocupação,4464
+[2066],Dinâmica espacial urbana,4465
+[2069],Qualidade,4466
+[2069],Processo de projeto,4467
+[2069],Projeto de arquitetura,4468
+[2069],Qualidade do processo,4469
+[2070],"Freire, Paulo",4470
+[2070],Método,4471
+[2071],Saúde,4472
+[2073],Processo de trabalho docente,4473
+[2073],Instrumento de trabalho - Voz,4474
+[2075],Maturação,4475
+[2075],Estágios puberais,4476
+[2077],"Assis, Machado de",4477
+[2077],Conto Alexandrino,4478
+[2077],Crítica científica,4479
+[2079],Transmissão,4480
+[2082],Atenção primária à saúde,4481
+[2086],Parto normal,4482
+[2086],Cesárea,4483
+[2088],Assistência de enfermagem,4484
+[2089],Geoestatística,4485
+[2089],Variabilidade espacial,4486
+[2089],Penetrômetro,4487
+[2090],Teoria neoinstitucionalista,4489

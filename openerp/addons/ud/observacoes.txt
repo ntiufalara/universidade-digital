@@ -1,0 +1,61 @@
+===============
+Não há sentido:
+===============
+    - Deletar "Campus" e "Curso" quando deletar uma pessoa vinculada aos mesmos, o que poderia ser feito era setar null
+      ou restringir a deleção;
+    - Deletar "Perfil"¹ quando deletar "Curso". Acredto que o ideal seria setar null;²
+    - Se "Polo" é parte de "Campus", porquê não deletar "Polo" quando "Campus" for deletado?
+
+=======
+Dúvida:
+=======
+    - É para deletar um "Curso" quando deletar o "Polo" relacionado a ele? Não seria melhor restringir a deleção?
+    - No perfil, caso a pessoa seja um discente, deve ser mostrado o campo de seleção de setor? Visto que um discente
+      possui vínculo com curso.
+
+=================
+Novas Alterações:
+=================
+    - Reorganização do código e de todas as views;
+    - Correção dos métodos de validação de CPF e E-mail. Ambos os métodos validam somente se existir algum valor;
+    - Métodos de validação de RG, telefone e celular movidos para um arquivo sepado por não estarem sendo usados;
+    - Usuário adminstrador do sistema agora será vinculado automaticamente ao grupo de administração do núcleo;
+    - Nome das Classes renomeadas para um padrão recomendado de Orientação a Objetos;³
+    - Correção dos erros que ocorria ao tentar alterar a senha usando a interface de pessoa no núcleo;
+    - Alteração do campo de digitação da nova senha para tipo "password";
+    - Adição de um método de validação da Carga Horária de disciplinas;
+    - Restringir dados bancários de modo que impessa registros duplicados;
+    - Alteração da view de curso para que informações como "Projetos" e link para visualização de perfil de
+      coordenadores fossem visualizados somente pelo administrador do núcleo;
+    - Pesquisa em campos que referenciem "ud.employee" agora permite busca pelo número de matrícula;
+    - Reorganização do arquivo .csv e acesso de leitura dos modelos para o grupo de usuário UD;
+    - Perfil somente pode ser criado usando a interface de "Pessoa" (employee), se for pela interface web, se for a
+      nível de programação, basta colocar no context uma chave com valor "ud_employee" para um valor verdadeiro;
+    - Alteração de Usuários e Pessoas:
+        * Ao criar novas pessoas através do núcleo, um usuário correspondente com login e senha iguais ao CPF sem pontos
+          e traço será criado, além de ser incluído automaticamente do grupo de usuários básicos do UD;
+        * Se tentar criar uma pessoa e existir um usuário com CPF correspondente não vinculado a nenhum outro registro
+          de pessoa, esse usuário será vinculado a pessoa que está sendo criada;
+        * Ao criar usuários pela interface do OpenERP, se o login for um CPF válido, seja com pontos e traço ou não,
+          será criado uma pessoa no núcleo correspondente com nome e CPF iguais ao nome e login do usuário criado;
+        * Ao alterar o nome de uma pessoa através do núcleo, o nome de seu usuário também será alterado;
+        * Ao excluir uma pessoa, seu usuário será exclído junto desde que nas configurações gerais estiver com a opção
+          de deleção em cascata marcada.
+
+=========
+Sugestões
+=========
+    - Alterar o tipo do campo "Carga horária" em disciplina de "char" para "integer";
+    - Falta o campo para número do endereço;
+    - Inpedir que mais de uma pessoa tenha vínculo com o mesmo usuário;
+    - Se o objetivo do campo "papel_setor" em Employee é filtrar por tipo de usuário, então ele não funcionará de
+      maneira correta. Isso porque uma pessoa pode possuir mais de um tipo de vínculo. O melhor a ser feito era
+      sobrescrever o método search e usar os valores do context para filtrar de acordo com a necessidade. Outra boa
+      opção era criar menus distintos que fizesse esse tipo de separação. Isso também ocorre com o campo "matricula".
+
+------------------------
+¹ Modelo voltado para armazenamento das matrículas ou SIAPES e define que tipo de vínculo essa pessoa possui com a
+  Univesidade, tal como Professor ou Aluno.
+² Alterei pra quando deletar "Setor" ou "Projeto" não deletar nenhum "Perfil".
+³ O atributo "_name" permanece com o mesmo valor, isso quer dizer que mesmo que o nome da classe seja alterado, o uso
+  dessas classes não será prejudicado.

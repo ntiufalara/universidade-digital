@@ -60,7 +60,7 @@ class ud_biblioteca_publicacao(osv.osv):
         :return:
         """
         result = super(ud_biblioteca_publicacao, self).read(cr, uid, ids, *args, **kwargs)
-        if len(ids) == 1:
+        if type(ids) is not int and len(ids) == 1:
             for obj in result:
                 if obj.get('visualizacoes') is not None:
                     vals = {'visualizacoes': obj.get('visualizacoes') + 1}

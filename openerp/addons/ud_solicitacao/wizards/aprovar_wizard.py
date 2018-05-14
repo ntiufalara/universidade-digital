@@ -14,4 +14,4 @@ class aprovar_wiz (osv.osv_memory):
     def aprovar (self, cr, uid, ids, ctx):
         lt = self.read(cr, uid, ids)[0]
         valores = {'previsao':lt["previsao"],"state":"aprovada"}
-        self.pool.get("ud.solicitacao").write(cr, uid)
+        self.pool.get("ud.solicitacao").write(cr, uid, ctx["active_ids"], valores)

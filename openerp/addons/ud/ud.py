@@ -530,10 +530,13 @@ class Employee(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
         context = context or {}
-        return [
-            (pessoa.id, pessoa.name + context.get("complemento", {}).get(pessoa.id, ""))
-            for pessoa in self.browse(cr, uid, ids, context)
-        ]
+        res = []
+        for pessoa in self.read(cr, uid, ids, ['id', 'name'], context):
+            if pessoa.get('name'):
+                res.append(
+                    (pessoa.get('id'), pessoa.get('name') + context.get("complemento", {}).get(pessoa.get('id'), ""))
+                )
+        return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         context = context or {}
@@ -610,7 +613,7 @@ class Employee(osv.osv):
                     dados["login"] = pessoa.cpf.replace(".", "").replace("-", "")
                 usuario = usuario or pessoa.user_id.id
                 if usuario and dados:
-                    user_model.write(cr, SUPERUSER_ID)
+                    user_model.write(cr, SUPERUSER_ID, usuario, dados, context)
 
     def _get_default_image(self, cr, uid, context=None):
         """

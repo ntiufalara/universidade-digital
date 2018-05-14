@@ -245,7 +245,7 @@ class mail_message(osv.Model):
 
         # all message have notifications: already set them as (un)read
         if len(notif_ids) == len(msg_ids) or not create_missing:
-            notification_obj.write(cr, uid, context=context)
+            notification_obj.write(cr, uid, notif_ids, {'read': read}, context=context)
             return len(notif_ids)
 
         # some messages do not have notifications: find which one, create notification, update read status
