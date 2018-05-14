@@ -4,10 +4,10 @@ from openerp.osv import osv, fields
 
 
 class AlterarOrientadorWizard(osv.TransientModel):
-    _name = "ud.monitoria.alterar.orientador.wizard"
+    _name = "ud_monitoria.alterar_orientador_wizard"
     _description = u"Alteração de orientador de disciplinas ativas"
 
-    def disciplina_ativa(self, cr, uid, ids, context):
+    def disciplina_ativa(self, cr, uid, ids, context=None):
         """
         Validador para verificar se a disciplina que se deseja fazer a mudança de orientador está ativa.
 
@@ -19,13 +19,12 @@ class AlterarOrientadorWizard(osv.TransientModel):
         return True
 
     _columns = {
-        "disciplina_id": fields.many2one("ud.monitoria.disciplina", u"Disciplina", required=True,
+        "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", required=True,
                                          domain=[("is_active", "=", True)]),
         "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, domain=[("tipo", "=", "p")]),
         "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         string=u"Orientador", readonly=True),
     }
-
     _constraints = [
         (disciplina_ativa, u"Não é permitido alterar orientador de disciplinas inativas", [u"Disciplina"])
     ]
@@ -36,7 +35,7 @@ class AlterarOrientadorWizard(osv.TransientModel):
         Caso o modelo a
         """
         res = super(AlterarOrientadorWizard, self).default_get(cr, uid, fields_list, context)
-        if context.get("active_id", False) and context.get("active_model", False) == "ud.monitoria.disciplina":
+        if context.get("active_id", False) and context.get("active_model", False) == 'ud_monitoria.disciplina':
             res["disciplina_id"] = context["active_id"]
         return res
 
@@ -50,17 +49,17 @@ class AlterarOrientadorWizard(osv.TransientModel):
         context = context or {}
         res = super(AlterarOrientadorWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
         if "perfil_id" in res["fields"]:
-            domain_temp = res["fields"]["perfil_id"].get("domain", [])
-            if isinstance(domain_temp, str):
-                domain_temp = list(eval(domain_temp))
-            if context.get("disciplina_id", False):
+            if context.get("active_id", False) and context.get('active_mode', False) == 'ud_monitoria.disciplina':
+                domain_temp = res["fields"]["perfil_id"].get("domain", [])
+                if isinstance(domain_temp, str):
+                    domain_temp = list(eval(domain_temp))
                 domain = []
                 for d in domain_temp:
                     if d[0] not in ["id", "ud_cursos"]:
                         domain.append(d)
                 del domain_temp
-                disciplina = self.pool.get("ud.monitoria.disciplina").browse(cr, SUPERUSER_ID, context["disciplina_id"])
-                domain += [("id", "!=", disciplina.perfil_id.id), ('ud_cursos', '=', disciplina.curso_id.id)]
+                disciplina = self.pool.get('ud_monitoria.disciplina').browse(cr, SUPERUSER_ID, context["active_id"])
+                domain += [("id", "!=", disciplina.perfil_id.id)]
                 res["fields"]["perfil_id"]["domain"] = domain
         return res
 
@@ -84,7 +83,8 @@ class AlterarOrientadorWizard(osv.TransientModel):
 
         :raise osv.except_osv: Se usuário logado não tiver ou possuir múltiplos vínculos com Perfil do núcleo.
         """
-        doc_orientador_model = self.pool.get("ud.monitoria.documentos.orientador")
+        doc_orientador_model = self.pool.get("ud_monitoria.documentos_orientador")
+        ocorrencia_model = self.pool.get('ud_monitoria.ocorrencia')
         pessoa_model = self.pool.get("ud.employee")
         for alt in self.browse(cr, uid, ids, context):
             responsavel = pessoa_model.search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
@@ -98,27 +98,31 @@ class AlterarOrientadorWizard(osv.TransientModel):
                     u"Multiplos vínculos",
                     u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
                 )
-            doc_orientador_antigo = doc_orientador_model.search(cr, uid, [("disciplina_id", "=", alt.disciplina_id.id),
-                                                                          ("is_active", "=", True)])
-            doc_orientador_antigo = doc_orientador_model.browse(cr, uid, doc_orientador_antigo[0] if doc_orientador_antigo else None)
-            doc_orientador_antigo.write({"is_active": False})
+            doc_orientador_antigo = doc_orientador_model.search(
+                cr, uid, [("disciplina_id", "=", alt.disciplina_id.id), ('perfil_id', '=', alt.disciplina_id.perfil_id.id)]
+            )
+            doc_orientador_antigo = doc_orientador_model.browse(cr, uid, doc_orientador_antigo[0])
+            doc_orientador_antigo.write({'is_active': False})
             alt.disciplina_id.write({"perfil_id": alt.perfil_id.id})
-            doc_orientador = doc_orientador_model.search(cr, uid, [("disciplina_id", "=", alt.disciplina_id.id), ("is_active", "=", False)])
+            doc_orientador = doc_orientador_model.search(
+                cr, uid, [("disciplina_id", "=", alt.disciplina_id.id), ('perfil_id', '=', alt.perfil_id.id)])
             if doc_orientador:
                 doc_orientador_model.browse(cr, uid, doc_orientador[0]).write({"is_active": True})
             else:
                 doc_orientador_model.create(cr, SUPERUSER_ID, {"disciplina_id": alt.disciplina_id.id, "perfil_id": alt.perfil_id.id})
-            evento = {
+            ocorrencia_model.create(cr, SUPERUSER_ID, {
+                'semestre_id': alt.disciplina_id.semestre_id.id,
                 "responsavel_id": responsavel[0],
-                "name": u'Orientador da disciplina de "%s" alterado' % alt.disciplina_id.disciplina_id.name,
+                "name": u'Mudança de orientador da disciplina "%s"' % alt.disciplina_id.disciplina_id.name,
                 "envolvidos_ids": [(6, 0, [doc_orientador_antigo.orientador_id.id, alt.perfil_id.ud_papel_id.id])],
-                "descricao": u'O orientador da disciplina de "%s" foi modificado de "%s" (SIAPE: %s) para "%s" (SIAPE: %s)' % (
-                    alt.disciplina_id.disciplina_id.name,
-                    doc_orientador_antigo.orientador_id.name,
-                    doc_orientador_antigo.perfil_id.matricula,
-                    alt.perfil_id.ud_papel_id.name,
-                    alt.perfil_id.matricula,
-                ),
-            }
-            alt.disciplina_id.semestre_id.write({"eventos_ids": [(0, 0, evento)]})
+                "descricao": u'Mudança de orientador da disciplina "%(disc)s", do curso de "%(curso)s", de "%(ori_a)s" '
+                             u'(SIAPE: %(siape_a)s) para "%(ori)s" (SIAPE: %(siape)s)' % {
+                    'disc': alt.disciplina_id.disciplina_id.name,
+                    'curso': alt.disciplina_id.bolsas_curso_id.curso_id.name,
+                    'ori_a': doc_orientador_antigo.orientador_id.name,
+                    'siape_a': doc_orientador_antigo.perfil_id.matricula,
+                    'ori': alt.perfil_id.ud_papel_id.name,
+                    'siape': alt.perfil_id.matricula,
+                },
+            })
         return True

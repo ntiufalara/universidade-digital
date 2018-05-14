@@ -3,10 +3,10 @@
 <openerp>
     <data>
         <!-- INSCRIÇÃO -->
-        <record model="ir.actions.act_window" id="action_ud_monitoria_inscricao_wizard_form_view">
+        <record model="ir.actions.act_window" id="ud_monitoria_inscricao_wizard_action_view">
             <field name="name">Inscrição</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.inscricao.wizard</field>
+            <field name="res_model">ud_monitoria.inscricao_wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="nodestroy" eval="False"/>
@@ -14,8 +14,8 @@
         </record>
 
         <record model="ir.ui.view" id="ud_monitoria_inscricao_wizard_form_view">
-            <field name="name">ud.monitoria.inscricao.wizard.form</field>
-            <field name="model">ud.monitoria.inscricao.wizard</field>
+            <field name="name">ud_monitoria.inscricao_wizard.form</field>
+            <field name="model">ud_monitoria.inscricao_wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Inscricao" version="7.0">
@@ -23,26 +23,28 @@
                         <field name="nome_cpf"/>
                         <field name="nome_identidade"/>
                         <field name="nome_hist_analitico"/>
+                        <field name="nome_certidao_vinculo"/>
                         <field name="controle"/>
                     </group>
                     <group string="Dados Pessoais" col="4">
-                        <field name="perfil_id" on_change="onchange_perfil(perfil_id,bolsista)" colspan="2"
-                               context="{'operator': '='}"
-                                options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id,bolsista)" colspan="2" context="{'operator': '='}"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
                         <field name="discente_id" colspan="2" options="{'no_open': true}"/>
                         <field name="celular" colspan="2" class="telefone" required="1"
                                attrs="{'invisible': [('controle', 'not in', ['c', 'ce'])], 'required': [('celular', '=', False)]}"/>
-                        <field name="email" colspan="2" widget="email"
+                        <field name="whatsapp" colspan="2" class="telefone"/>
+                        <field name="email" colspan="4" widget="email"
                                attrs="{'invisible': [('controle', 'not in', ['e', 'ce'])], 'required': [('email', '=', False)]}"/>
                     </group>
                     <group string="Anexos" col="4">
                         <field name="cpf" filename="nome_cpf" colspan="4"/>
                         <field name="identidade" filename="nome_identidade" colspan="4"/>
                         <field name="hist_analitico" filename="nome_hist_analitico" colspan="4"/>
+                        <field name="certidao_vinculo" filename="nome_certidao_vinculo" colspan="4"/>
                     </group>
                     <group string="Inscrição" col="4">
                         <field name="processo_seletivo_id" on_change="onchange_processo_seletivo()" options="{'no_open': true}"
-                               readonly="context.get('active_model', False) == 'ud.monitoria.processo.seletivo' and context.get('active_id', False)"/>
+                               readonly="context.get('active_model', False) == 'ud_monitoria.processo_seletivo' and context.get('active_id', False)"/>
                         <field name="modalidade" on_change="onchange_mod_disc(modalidade,disciplinas_ids)"/>
                         <field name="turno"/>
                         <field name="bolsista" on_change="onchange_bolsista(perfil_id,discente_id,bolsista)"/>
@@ -68,7 +70,7 @@
                                    attrs="{'required': [('operacao_v', '==', True)], 'invisible': [('operacao_v', '==', False)]}"/>
                             <p colspan="4">
                                 <b>ATENÇÃO:</b>
-                                O discente deve ser titular da conta. / Contas do tipo poupança não serão aceitas.
+                                O discente deve ser titular da conta. / Contas do tipo poupança e conta fácil não serão aceitas.
                             </p>
                         </group>
                         <group invisible="1">
@@ -81,9 +83,9 @@
                     </group>
                     <group string="Disciplinas(s)" col="4"
                            attrs="{'invisible': ['|', ('processo_seletivo_id', '=', False), ('perfil_id', '=', False)]}">
-                        <field name="disciplinas_ids" nolabel="1"  widget="many2many_tags"
-                               on_change="onchange_mod_disc(modalidade,disciplinas_ids)"
-                               options="{'create_edit': false, 'create': false}" colspan="4"/>
+                        <field name="disciplinas_ids" nolabel="1" widget="many2many_tags"
+                               on_change="onchange_mod_disc(modalidade,disciplinas_ids)" colspan="4"
+                               options="{'create_edit': false, 'create': false, 'no_open': true}"/>
                         <div colspan="4">
                             É importante saber que serão mostradas apenas as disciplinas do curso do discente.
                             <p>Número máximo de disciplinas por modalidade:</p>
@@ -94,7 +96,7 @@
                                     <ul>
                                         <li>Até 3 disciplinas;</li>
                                         <li>
-                                            O tutoror só poderá exercer atividades de tutoria em disciplinas que sejam
+                                            O tutoro só poderá exercer atividades de tutoria em disciplinas que sejam
                                             ofertadas no 1º e/ou 2º períodos da graduação;
                                         </li>
                                         <li>

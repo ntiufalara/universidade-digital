@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+    <data>
+        <!-- PONTUAÇÃO -->
+        <record id="action_ud_monitoria_pontuacao_view" model="ir.actions.act_window">
+            <field name="name">Pontuações</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.pontuacao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_monitoria_pontuacao_tree_view" model="ir.ui.view">
+            <field name="name">ud_monitoria.pontuacao.tree</field>
+            <field name="model">ud_monitoria.pontuacao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Pontuações" create="false" delete="false" editable="bottom">
+                    <field name="criterio_avaliativo_id"/>
+                    <field name="pontuacao"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_pontuacao_form_view" model="ir.ui.view">
+            <field name="name">ud_monitoria.pontuacao.form</field>
+            <field name="model">ud_monitoria.pontuacao</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Pontuação" create="false" delete="false" version="7.0">
+                    <group>
+                        <field name="criterio_avaliativo_id"/>
+                        <field name="pontuacao"/>
+                    </group>
+                    <separator string="Informações Adicionais"/>
+                    <field name="info" nolabel="1"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- PONTUAÇÃO: DISCIPLINA -->
+        <record id="action_ud_monitoria_pontuacoes_disciplina_view" model="ir.actions.act_window">
+            <field name="name">Pontuações de disciplina</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.pontuacoes_disciplina</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="ud_monitoria_pontuacoes_disciplina_tree_view" model="ir.ui.view">
+            <field name="name">ud_monitoria.pontuacoes_disciplina.tree</field>
+            <field name="model">ud_monitoria.pontuacoes_disciplina</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Pontuações de disciplinas" create="false" delete="false">
+                    <field name="disciplina_id"/>
+                    <field name="media"/>
+                    <field name="pontuacoes_ids"/>
+                    <field name="state"/>
+                    <field name="bolsista" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_pontuacoes_disciplina_avaliacao_tree_view" model="ir.ui.view">
+            <field name="name">ud_monitoria.pontuacoes_disciplina.tree</field>
+            <field name="model">ud_monitoria.pontuacoes_disciplina</field>
+            <field name="inherit_id" ref="ud_monitoria_pontuacoes_disciplina_tree_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                    <button name="aprovar" states="analise" string="Aprovar" type="object" icon="gtk-apply"
+                            confirm="Deseja aprovar o discente nessa disciplina?"/>
+                    <button name="aprovar_s_bolsa" string="Aprovar sem bolsa" type="object" icon="terp-dolar_ok!"
+                            attrs="{'invisible': ['|', ('state', '!=', 'analise'), ('bolsista', '=', False)]}"
+                            confirm="Deseja aprovar o discente nessa disciplina como NÃO bolsista?"/>
+                    <button name="reservar" states="analise" string="Cadastro de Reserva" icon="terp-personal+"
+                            type="object" confirm="Deseja selecionar o discente atual para o cadastro de RESERVA?"/>
+                    <button name="reprovar" states="analise" string="Reprovar" type="object"
+                            icon="gtk-cancel" confirm="Deseja rerpovar o discente nessa disciplina?"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_pontuacoes_disciplina_form_view" model="ir.ui.view">
+            <field name="name">ud_monitoria.pontuacoes_disciplina.form</field>
+            <field name="model">ud_monitoria.pontuacoes_disciplina</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Pontuações de disciplina" version="7.0">
+                    <header groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <button name="aprovar" states="analise" string="Aprovar" type="object" icon="gtk-apply" class="oe_highlight"
+                            confirm="Deseja aprovar o discente nessa disciplina?"/>
+                        <button name="aprovar_s_bolsa" string="Aprovar sem bolsa" type="object" icon="terp-dolar_ok!"
+                                attrs="{'invisible': ['|', ('state', '!=', 'analise'), ('bolsista', '=', False)]}"
+                                confirm="Deseja aprovar o discente nessa disciplina como NÃO bolsista?"/>
+                        <button name="reservar" states="analise" string="Cadastro de Reserva" icon="terp-personal+"
+                                type="object" confirm="Deseja selecionar o discente atual para o cadastro de RESERVA?"/>
+                        <button name="reprovar" states="analise" string="Reprovar" type="object"
+                                icon="gtk-cancel" confirm="Deseja rerpovar o discente nessa disciplina?"/>
+                    </header>
+                    <group invisible="1">
+                        <field name="state" readonly="1"/>
+                        <field name="bolsista" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                        <field name="inscricao_id" readonly="1"/>
+                    </group>
+                    <group col="6">
+                        <field name="disciplina_id" colspan="4" readonly="1"/>
+                        <field name="media" colspan="2"/>
+                    </group>
+                    <group string="Pontuações">
+                        <field name="pontuacoes_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'analise')]}"
+                               on_change="onchange_pontuacoes(inscricao_id,pontuacoes_ids)"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- INSCRIÇÃO -->
+        <record id="action_ud_monitoria_inscricao_view" model="ir.actions.act_window">
+            <field name="name">Inscritos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.inscricao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_ud_monitoria_minhas_inscricoes" model="ir.actions.act_window">
+            <field name="name">Minhas Inscrições</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.inscricao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'filtrar_discente': True}</field>
+        </record>
+
+        <record id="action_ud_monitoria_inscricao_orientador" model="ir.actions.act_window">
+            <field name="name">Gerenciar Inscrições</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.inscricao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'filtrar_orientador': True}</field>
+            <field name="help" type="html">
+                <div>
+                    <p>
+                        Inscrições não avaliadas que você seja Orientador de alguma disciplina serão mostradas aqui.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_inscricao_tree" model="ir.ui.view">
+            <field name="name">ud_monitoria.inscricao.tree</field>
+            <field name="model">ud_monitoria.inscricao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Inscrições" create="false" colors="blue:state=='analise'">
+                    <field name="perfil_id"/>
+                    <field name="discente_id"/>
+                    <field name="processo_seletivo_id"/>
+                    <field name="modalidade"/>
+                    <field name="bolsista"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_inscricao_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.inscricao.form</field>
+            <field name="model">ud_monitoria.inscricao</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Inscrição" create="false" version="7.0">
+                    <field name="cpf_nome" invisible="1"/>
+                    <field name="identidade_nome" invisible="1"/>
+                    <field name="hist_analitico_nome" invisible="1"/>
+                    <header>
+                        <field name="state" widget="statusbar" states="analise,concluido"/>
+                    </header>
+                    <group string="Dados Pessoais" col="4">
+                        <field name="perfil_id" readonly="1" colspan="2"/>
+                        <field name="discente_id" colspan="2"
+                               context="{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}"/>
+                        <field name="celular" colspan="2"/>
+                        <field name="whatsapp" colspan="2"/>
+                        <field name="telefone_fixo" colspan="2"/>
+                        <field name="email" colspan="2"/>
+                        <field name="curso_id" colspan="2"/>
+                        <field name="hist_analitico" readonly="1" colspan="2" filename="hist_analitico_nome"/>
+                        <field name="cpf" readonly="1" colspan="2" filename="cpf_nome"/>
+                        <field name="identidade" readonly="1" colspan="2" filename="identidade_nome"/>
+                    </group>
+                    <group string="Dados da Inscrição" col="4">
+                        <field name="processo_seletivo_id" readonly="1"/>
+                        <field name="modalidade" readonly="1"/>
+                        <field name="turno" readonly="1"/>
+                        <field name="bolsista" readonly="1"/>
+                        <field name="dados_bancarios_id" readonly="1" options="{'no_open': true}" colspan="4"
+                               attrs="{'invisible': [('bolsista', '=', False)],'required': [('bolsista', '=', True)]}"/>
+                    </group>
+                    <group string="Disciplinas / Pontuações">
+                        <field name="pontuacoes_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'analise')]}"/>
+                    </group>
+                    <div attrs="{'invisible': [('state', '=', 'concluido')]}"
+                         groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <strong>Obs.:</strong>
+                        Para alterar a pontuação da disciplina, no modo edição, clique na linha da pontuação da
+                        disciplina desejada. Quando alterar, a média da tabela será atualizada após salvar a inscrição.
+                    </div>
+                    <group string="Informações Adicionais" attrs="{'invisible': [('info', '=', False)]}">
+                        <field name="info" nolabel="1" placeholder="Informações complementares"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_inscricao_coordenador_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.inscricao.coordenador.form</field>
+            <field name="model">ud_monitoria.inscricao</field>
+            <field name="inherit_id" ref="ud_monitoria_inscricao_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="hist_analitico" position="attributes">
+                    <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
+                </field>
+                <field name="cpf" position="attributes">
+                    <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
+                </field>
+                <field name="identidade" position="attributes">
+                    <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

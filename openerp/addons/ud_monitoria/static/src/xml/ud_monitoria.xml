@@ -6,11 +6,35 @@
             <t t-if="!widget.get('effective_readonly')">
                 <script>
                     try {
-                        $("input[type='time']").mask("00:00", {clearIfNotMatch: true})
+                        $("input#<t t-raw="widget.id_for_label"/>").mask("00:00", {clearIfNotMatch: true})
                     } catch (e) {}
                 </script>
                 <input type="time"
-                       placeholder="00:00"
+                       placeholder="widget.node.attrs.placeholder"
+                       t-att-id="widget.id_for_label"
+                       t-att-tabindex="widget.node.attrs.tabindex"
+                       t-att-autofocus="widget.node.attrs.autofocus"
+                />
+                <img class="oe_field_translate oe_input_icon" t-if="widget.field.translate" t-att-src='_s + "/web/static/src/img/icons/terp-translate.png"' width="16" height="16" border="0"/>
+            </t>
+            <t t-if="widget.get('effective_readonly')">
+                <span class="oe_form_char_content"></span>
+            </t>
+        </span>
+    </t>
+
+    <t t-name="semestre">
+        <span t-att-class="'oe_form_field '+widget.widget_class" t-att-style="widget.node.attrs.style">
+            <t t-if="!widget.get('effective_readonly')">
+                <script>
+                    try {
+                        $("input#<t t-raw="widget.id_for_label"/>").mask("0000.0", {clearIfNotMatch: true})
+                    } catch (e) {}
+                </script>
+                <input type="text"
+                       maxlength="6"
+                       pattern="20[0-9]{2}\\.[12]"
+                       t-att-placeholder="widget.node.attrs.placeholder"
                        t-att-id="widget.id_for_label"
                        t-att-tabindex="widget.node.attrs.tabindex"
                        t-att-autofocus="widget.node.attrs.autofocus"

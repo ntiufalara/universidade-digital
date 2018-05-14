@@ -1,5 +1,6 @@
 import adicional
+import coordenacao
 import processo_seletivo
-import registro
-import documentos_discente
-import documentos_orientador
+import inscricao
+import discente
+import orientador

@@ -2,18 +2,18 @@
 
 <openerp>
     <data>
-        <record id="ud_monitoria_alterar_orientador_wizard_action" model="ir.actions.act_window">
+        <record id="action_ud_monitoria_alterar_orientador_wizard" model="ir.actions.act_window">
             <field name="name">Alterar Orientador</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.alterar.orientador.wizard</field>
+            <field name="res_model">ud_monitoria.alterar_orientador_wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
 
         <record id="ud_monitoria_alterar_orientador_wizard_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.alterar.orientador.wizard.form</field>
-            <field name="model">ud.monitoria.alterar.orientador.wizard</field>
+            <field name="name">ud_monitoria.alterar_orientador_wizard.form</field>
+            <field name="model">ud_monitoria.alterar_orientador_wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Alterarção" version="7.0">

@@ -3,72 +3,78 @@
 <openerp>
     <data>
         <!-- DOCUMENTOS ORIENTADOR -->
-        <record id="ud_monitoria_documentos_orientador_action" model="ir.actions.act_window">
+        <record id="action_ud_monitoria_documentos_orientador" model="ir.actions.act_window">
             <field name="name">Documentos</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.documentos.orientador</field>
+            <field name="res_model">ud_monitoria.documentos_orientador</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"filtrar_orientador": True}</field>
         </record>
 
-        <record id="ud_monitoria_documentos_orientador_coordenacao_action" model="ir.actions.act_window">
+        <record id="action_ud_monitoria_documentos_orientador_coordenacao" model="ir.actions.act_window">
             <field name="name">Documentos/Orientadores</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.documentos.orientador</field>
+            <field name="res_model">ud_monitoria.documentos_orientador</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <record id="ud_monitoria_documentos_orientador_tree" model="ir.ui.view">
-            <field name="name">ud.monitoria.documentos.orientador.form</field>
-            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="name">ud_monitoria.documentos_orientador.form</field>
+            <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Documentos" create="false" colors="blue:is_active==True">
-                    <field name="declaracao_nome" invisible="1"/>
-                    <field name="certificado_nome" invisible="1"/>
                     <field name="disciplina_id"/>
+                    <field name="curso_id"/>
                     <field name="orientador_id"/>
-                    <field name="declaracao" filename="declaracao_nome"/>
-                    <field name="certificado" filename="certificado_nome"/>
+                    <field name="semestre_id"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
         </record>
 
         <record id="ud_monitoria_documentos_orientador_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.documentos.orientador.form</field>
-            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="name">ud_monitoria.documentos_orientador.form</field>
+            <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Documento" version="7.0" create="false" delete="false">
+                    <field name="perfil_id" invisible="1"/>
                     <field name="declaracao_nome" invisible="1"/>
                     <field name="certificado_nome" invisible="1"/>
                     <group col="4">
-                        <field name="disciplina_id" colspan="4" readonly="1"/>
-                        <field name="declaracao" colspan="2" filename="declaracao_nome" readonly="1"/>
-                        <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"/>
+                        <field name="disciplina_id" colspan="2" readonly="1"
+                               context="{'form_view_ref': 'ud_monitoria.ud_monitoria_disciplina_orientador_form'}"/>
+                        <field name="curso_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="declaracao" colspan="2" filename="declaracao_nome" readonly="1"
+                               attrs="{'invisible': [('declaracao', '=', False)]}"/>
+                        <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"
+                               attrs="{'invisible': [('certificado', '=', False)]}"/>
                     </group>
                     <div>
-                        <strong>Importante:</strong> Para gerenciar a disciplina e seus monitores e tutores clique no
-                        link disponível em disciplina e, se for o caso, edite-a.
+                        <strong>Importante:</strong> É necessário acessar o link no campo "Disciplina" para visualizar
+                        seus monitores e tutores.
                     </div>
                 </form>
             </field>
         </record>
 
         <record id="ud_monitoria_documentos_orientador_coordenador_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.documentos.orientador.coordenador.form</field>
-            <field name="model">ud.monitoria.documentos.orientador</field>
+            <field name="name">ud_monitoria.documentos_orientador.coordenador.form</field>
+            <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_orientador_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <field name="declaracao" position="attributes">
-                    <attribute name="readonly"></attribute>
+                    <attribute name="readonly"/>
+                    <attribute name="attrs"/>
                 </field>
                 <field name="certificado" position="attributes">
-                    <attribute name="readonly"></attribute>
+                    <attribute name="readonly"/>
+                    <attribute name="attrs"/>
                 </field>
             </field>
         </record>

@@ -5,56 +5,46 @@
         <!--  MENU LATERAL -->
         <menuitem id="ud_monitoria_lateral" name="Monitoria" parent="ud.menu_point_root" groups="base.usuario_ud"/>
 
-
         <!--  MENU LATERAL: Menus Internos -->
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_processo_seletivo_menu"
-                  action="action_ud_monitoria_processo_seletivo_tree_view" sequence="0"/>
-
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_solicitacao_disciplina_menu"
-                  action="action_ud_monitoria_solicitacao_disciplina_tree_view" sequence="1"
+                  action="action_ud_monitoria_processo_seletivo_view" sequence="1"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_minhas_inscricoes_menu"
+                  action="action_ud_monitoria_minhas_inscricoes" sequence="3"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_liberacao_disciplina" sequence="5"
+                  action="action_ud_monitoria_bolsas_curso_liberacao_disciplina_view"
                   groups="group_ud_monitoria_coord_disciplina,group_ud_monitoria_administrador"/>
-
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="2"
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_solicitacao_disciplina_menu"
+                  action="action_ud_monitoria_demanda_view" sequence="7"
+                  groups="group_ud_monitoria_coord_disciplina,group_ud_monitoria_administrador"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_horarios_menu" name="Monitores/Tutores"
+                  action="action_ud_monitoria_horarios_discente" sequence="9"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="11"
                   groups="group_ud_monitoria_coordenador,group_ud_monitoria_administrador"/>
-
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_orientadores_menu" name="Orientador" sequence="3"
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_menu" name="Discente" sequence="13"
+                  groups="group_ud_monitoria_monitor"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_orientador_menu" name="Orientador" sequence="15"
                   groups="group_ud_monitoria_orientador"/>
 
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discentes_menu" name="Discente" sequence="4"
-                  groups="group_ud_monitoria_monitor"/>
-
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_horarios_discente_menu" name="Monitores/Tutores"
-                  action="ud_monitoria_horarios_discente_action" sequence="5"/>
-
-
         <!-- Menu Interno Coordenação -->
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_registro_menu" name="Registros Semestrais"
-                  action="action_ud_monitoria_registro_tree_view" sequence="0"/>
-
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_registro_menu" name="Semestres"
+                  action="ud_monitoria_semestre_action_view" sequence="1"/>
         <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_inscritos_menu" name="Inscrições"
-                  action="action_ud_monitoria_inscricao_tree_view" sequence="2"/>
-
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_disciplina_menu" name="Disciplinas"
-                  action="ud_monitoria_disciplina_action" sequence="3"/>
-
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_discente_menu" name="Discentes/Documentos"
-                  action="ud_monitoria_documentos_discente_coordenador_action" sequence="4"/>
-
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_orientador_menu" name="Orientadores/Documentos"
-                  action="ud_monitoria_documentos_orientador_coordenacao_action" sequence="5"/>
-
+                  action="action_ud_monitoria_inscricao_view" sequence="3"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_disciplina_ativa_menu"
+                  action="action_ud_monitoria_disciplina_ativa" sequence="5"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_discente_coordenacao_menu"
+                  action="action_ud_monitoria_documentos_discente_coordenador" sequence="7"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_documentos_orientador_coordenacao_menu"
+                  action="action_ud_monitoria_documentos_orientador_coordenacao" sequence="9"/>
 
         <!-- Menu Interno Discente -->
-        <menuitem parent="ud_monitoria_discentes_menu" id="ud_monitoria_documentos_discente_menu" name="Documentos"
-                  action="ud_monitoria_documentos_discente_action" sequence="1"/>
-
+        <menuitem parent="ud_monitoria_discente_menu" id="ud_monitoria_documentos_discente_menu"
+                  action="action_ud_monitoria_documentos_discente" sequence="1"/>
 
         <!-- Menu Interno Orientador -->
-        <menuitem parent="ud_monitoria_orientadores_menu" id="ud_monitoria_documentos_orientador_menu" name="Documentos"
-                  action="ud_monitoria_documentos_orientador_action" sequence="1"/>
-
-        <menuitem parent="ud_monitoria_orientadores_menu" id="ud_monitoria_gerenciar_inscritos_menu"
-                  name="Gerenciar Inscrições"
-                  action="action_ud_monitoria_inscricao_gerencia_orientador_tree_view" sequence="2"/>
+        <menuitem parent="ud_monitoria_orientador_menu" id="ud_monitoria_documentos_orientador_menu" sequence="1"
+                  action="action_ud_monitoria_documentos_orientador"/>
+        <menuitem parent="ud_monitoria_orientador_menu" id="ud_monitoria_gerenciar_inscritos_menu" sequence="3"
+                  action="action_ud_monitoria_inscricao_orientador"/>
     </data>
 </openerp>

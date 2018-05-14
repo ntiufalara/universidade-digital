@@ -5,15 +5,15 @@
         <record id="ud_monitoria_desligamento_wizard_action" model="ir.actions.act_window">
             <field name="name">Desligamento</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">ud.monitoria.desligamento.wizard</field>
+            <field name="res_model">ud_monitoria.desligamento_wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
 
         <record id="ud_monitoria_desligamento_wizard_form" model="ir.ui.view">
-            <field name="name">ud.monitoria.desligamento.wizard.form</field>
-            <field name="model">ud.monitoria.desligamento.wizard</field>
+            <field name="name">ud_monitoria.desligamento_wizard.form</field>
+            <field name="model">ud_monitoria.desligamento_wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Desligamento" version="7.0">

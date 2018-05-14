@@ -4,22 +4,22 @@ from datetime import datetime
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from util import get_ud_pessoa_id, data_hoje
 
 
 class Curso(osv.Model):
     _name = "ud.curso"
     _description = u"Extensão de Curso (UD)"
     _inherit = "ud.curso"
-
     _columns = {
         "coord_monitoria_id": fields.many2one("ud.employee", u"Coordenador de Monitoria"),
     }
-
     _sql_constraints = [
         ("coord_monitoria_unico", "unique(coord_monitoria_id)",
          u"Uma pessoa pode ser coordenador de monitoria de apenas 1 curso."),
     ]
 
+    # Métodos sobrescritos
     def create(self, cr, uid, vals, context=None):
         """
         === Extensão do método osv.Model.create
@@ -91,97 +91,145 @@ class Curso(osv.Model):
         return True
 
 
-class Disciplina(osv.Model):
-    _name = "ud.monitoria.disciplina"
-    _description = u"Disciplinas de monitoria (UD)"
-    
+class DisciplinaMonitoria(osv.Model):
+    _name = 'ud_monitoria.disciplina'
+    _description = u'Disciplinas de monitoria (UD)'
+    _order = 'disciplina_id'
+
+    # Métodos para campos funcionais
+    def get_dados_bolsas(self, cr, uid, ids, campo, args, context=None):
+        """
+        Calcula o número de bolsas utilizadas e disponiveis para uso.
+
+        :return: {ID_MODELO: {'disponiveis': QTD_BOLSAS_DISPONIVEIS, 'utilizadas': QTD_BOLSAS_UTILIZADAS}}
+        """
+        res = {}
+        doc_discente = self.pool.get('ud_monitoria.documentos_discente')
+        for disc in self.browse(cr, uid, ids, context):
+            utilizadas = doc_discente.search_count(
+                cr, SUPERUSER_ID, context=context,
+                args=[('disciplina_id', '=', disc.id), ('state', '=', 'bolsista'), ('is_active', '=', True)]
+            )
+            res[disc.id] = {
+                'bolsas_disponiveis': disc.bolsas - utilizadas,
+                'bolsas_utilizadas': utilizadas,
+            }
+        return res
+
     def get_discentes(self, cr, uid, ids, campo, args, context=None):
         """
         Busca todos os discentes e separa-os em um dicionário de acordo com seu status e seu campo correspondente.
         """
-        doc_model = self.pool.get("ud.monitoria.documentos.discente")
+        doc_model = self.pool.get("ud_monitoria.documentos_discente")
         res = {}
         for disc_id in ids:
             res[disc_id] = {
-                "bolsista_ids": doc_model.search(cr, uid, [("disciplina_id", "=", disc_id), ("state", "=", "bolsista")], context=context),
-                "n_bolsista_ids": doc_model.search(cr, uid, [("disciplina_id", "=", disc_id), ("state", "=", "n_bolsista")], context=context),
-                "reserva_ids": doc_model.search(cr, uid, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context),
-                "desligado_ids": doc_model.search(cr, uid, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context),
+                "bolsista_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "bolsista")], context=context),
+                "n_bolsista_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "n_bolsista")], context=context),
+                "reserva_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context),
+                "desligado_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context),
             }
         return res
 
-    def valida_datas(self, cr, uid, ids, context=None):
+    def update_bolsas_utilizadas(self, cr, uid, ids, context=None):
         """
-        Valida se a data inicial ocorre antes ou é igual a final.
-        """
-        for disc in self.browse(cr, uid, ids, context=context):
-            if datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT) >= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT):
-                return False
-        return True
+        Busca os ids de BolsasDisciplinas quando o campo state de DocumentosDiscente é atualizado, não é igual a
+        'reserva' e o semestre correspondente está ativo.
 
-    def valida_disciplina_ps(self, cr, uid, ids, context=None):
+        :return: Lista de ids de Bolsas de Disciplinas a serem atualizadas.
         """
-        Verifica a validade para as disciplinas duplicadas em um processo seletivo.
-        """
-        for disc in self.browse(cr, uid, ids, context=context):
-            args = [("curso_id", "=", disc.curso_id.id), ("disciplina_id", "=", disc.disciplina_id.id),
-                    ("id", "!=", disc.id), ("processo_seletivo_id", "=", disc.processo_seletivo_id.id)]
-            if self.search_count(cr, uid, args, context) > 0:
-                return False
-        return True
+        if self._name == 'ud_monitoria.disciplina' or not ids:
+            return ids
+        disc_model = self.pool.get('ud_monitoria.disciplina')
+        dd_model = self.pool.get('ud_monitoria.documentos_discente')
+        sm_model = self.pool.get('ud_monitoria.semestre')
+        bc_model = self.pool.get('ud_monitoria.bolsas_curso')
+        sql = '''
+        SELECT
+            disc.id
+        FROM
+            %(disc)s disc
+            INNER JOIN %(doc)s doc ON (disc.id = doc.disciplina_id)
+                INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
+                    INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
+        WHERE
+            sm.is_active = true AND doc.id in (%(ids)s) AND doc.state != 'reserva';
+        ''' % {
+            'disc': disc_model._table, 'doc': dd_model._table, 'sm': sm_model._table, 'bc': bc_model._table,
+            'ids': str(ids).lstrip('([').rstrip(')],').replace('L', '')
+        }
+        cr.execute(sql)
+        res = cr.fetchall()
+        if res:
+            return [linha[0] for linha in res]
+        return []
 
     _columns = {
-        "id": fields.integer("ID", readonly=True, invisible=True),
-        "curso_id": fields.many2one("ud.curso", u"Curso", required=True, ondelete="restrict",
-                                    domain=[('is_active','=',True)]),
-        "disciplina_id": fields.many2one("ud.disciplina", u"Disciplinas", required=True, ondelete="restrict",
-                                         domain="[('ud_disc_id','=',curso_id)]"),
-        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, ondelete="restrict",
-                                     domain="[('tipo', '=', 'p'), ('ud_cursos', '=', curso_id)]",
-                                     help=u"SIAPE do professor Orientador"),
-        "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
-                                        string=u"Orientador", readonly=True),
-        "data_inicial": fields.date(u"Data Inicial", required=True),
-        "data_final": fields.date(u"Data Final", required=True),
-        "bolsas": fields.integer(u"Bolsas disponíveis", help=u"Número de bolsas que serão disponibilizadas para a disciplina"),
-        "monitor_s_bolsa": fields.integer(u"Vagas sem bolsa (Monitor)"),
-        "tutor_s_bolsa": fields.integer(u"Vagas sem bolsa (Tutor)"),
-        "processo_seletivo_id": fields.many2one("ud.monitoria.processo.seletivo", u"Processo Seletivo",
-                                                ondelete="cascade"),
-        "semestre_id": fields.related("processo_seletivo_id", "semestre_id", type="many2one", string=u"Semestre",
-                                      relation="ud.monitoria.registro", readonly=True),
-        "bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud.monitoria.documentos.discente",
-                                        string=u"Bolsistas", multi="_discentes"),
-        "n_bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud.monitoria.documentos.discente",
-                                          string=u"Não Bolsistas", multi="_discentes"),
-        "reserva_ids": fields.function(get_discentes, type="many2many", relation="ud.monitoria.documentos.discente",
-                                       string=u"Cadastro de Reserva", multi="_discentes"),
-        "desligado_ids": fields.function(get_discentes, type="many2many", relation="ud.monitoria.documentos.discente",
-                                         string=u"Cadastro de Reserva", multi="_discentes"),
-        "is_active": fields.boolean(u"Ativo", readonly=True),
-    }
+        'id': fields.integer('ID', readonly=True, invisible=True),
+        'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, ondelete='cascade'),
+        'semestre_id': fields.related('bolsas_curso_id', 'semestre_id', type='many2one', string=u'Semestre',
+                                      relation='ud_monitoria.semestre', readonly=True),
+        'disciplina_id': fields.many2one('ud.disciplina', u'Disciplina', required=True, ondelete='restrict'),
+        'bolsas': fields.integer(u'Bolsas', required=True, help=u'Número de bolsas distribuídas'),
+        'bolsas_utilizadas': fields.function(
+            get_dados_bolsas, type='integer', string=u'Bolsas utilizadas', multi='bolsas_disciplina_monitoria',
+            store={
+                'ud_monitoria.documentos_discente': (update_bolsas_utilizadas, ['state'], 9),
+                'ud_monitoria.disciplina': (lambda cls, cr, uid, ids, ctx=None: ids, ['bolsas'], 9),
+            }
+        ),
+        'bolsas_disponiveis': fields.function(
+            get_dados_bolsas, type='integer', string=u'Bolsas disponíveis', multi='bolsas_disciplina_monitoria',
+            store={
+                'ud_monitoria.documentos_discente': (update_bolsas_utilizadas, ['state'], 9),
+                'ud_monitoria.disciplina': (lambda cls, cr, uid, ids, ctx=None: ids, ['bolsas'], 9),
+            }
+        ),
+        'monitor_s_bolsa': fields.integer(u'Vagas sem bolsa (Monitor)', required=True),
+        'tutor_s_bolsa': fields.integer(u'Vagas sem bolsa (Tutor)', required=True),
+        'perfil_id': fields.many2one('ud.perfil', u'SIAPE', required=True, ondelete='restrict',
+                                     domain=[('tipo', '=', 'p')], help=u'SIAPE do professor Orientador'),
+        'orientador_id': fields.related('perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee',
+                                        string=u'Orientador', readonly=True),
+        'data_inicial': fields.date(u'Data Inicial', required=True),
+        'data_final': fields.date(u'Data Final', required=True),
+        'is_active': fields.boolean(u'Ativo'),
+        "bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
+                                        string=u"Bolsistas", multi="disciplina_monitoria_discentes"),
+        "n_bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
+                                          string=u"Não Bolsistas", multi="disciplina_monitoria_discentes"),
+        "reserva_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
+                                       string=u"Cadastro de Reserva", multi="disciplina_monitoria_discentes"),
+        "desligado_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
+                                         string=u"Cadastro de Reserva", multi="disciplina_monitoria_discentes"),
 
-    _defaults = {
-        "is_active": True,
     }
-    
     _constraints = [
-        (valida_datas, u"A data inicial da disciplina deve ocorrer antes da final", [u"Data Inicial e Data Final"]),
-        (valida_disciplina_ps, u"Não é permitido duplicar disciplinas em um mesmo processo seletivo", [u"Disciplinas"]),
+        (lambda cls, *args, **kwargs: cls.valida_datas(*args, **kwargs),
+         u'A data inicial deve ocorrer antes da data final.', [u'Data inicial e Data final']),
+        (lambda cls, *args, **kwargs: cls.valida_bolsas(*args, **kwargs),
+         u'O total de bolsas das disciplinas não pode ultrapassar a quatidade máxima definida em seu curso.', [u'Bolsas']),
+        (lambda cls, *args, **kwargs: cls.valida_bolsas_utilizadas(*args, **kwargs),
+         u'O número de bolsas não pode ser menor que o número de bolsas utilizadas.', [u'Bolsas utilizadas']),
+        (lambda cls, *args, **kwargs: cls.valida_disciplina(*args, **kwargs),
+         u'A disciplina deve pertencer ao curso selecionado.', [u'Disciplina']),
+        (lambda cls, *args, **kwargs: cls.valida_valor_negativo(*args, **kwargs),
+         u'Valor negativo não é permitido em bolsas, vagas de tutores e monitores.', [u'Bolsas e Vagas (Monitor/Tutor)']),
+    ]
+    _sql_constraints = [
+        ('bolsas_curso_disciplina_unique', 'unique(bolsas_curso_id, disciplina_id)',
+         u'Não é permitido duplicar disciplinas.')
     ]
 
-    _sql_constraints = [
-        ("disciplina_processo_seletivo_unica", "unique(disciplina_id,processo_seletivo_id)",
-         u"Essa disciplina já possui vínculo com o processo seletivo especificado."),
-    ]
-    
+    # Métodos sobrescritos
     def name_get(self, cr, uid, ids, context=None):
         """
         === Sobrescrita do método osv.Model.name_get
         As informações de visualização desse modelo em campos many2one será o nome da disciplina do núcleo.
         """
-        return [(disc.id, disc.disciplina_id.name) for disc in self.browse(cr, uid, ids, context=context)]
-    
+        return [(disc.id, '%s (%s)' % (disc.disciplina_id.name, disc.disciplina_id.codigo)) for disc in
+                self.browse(cr, uid, ids, context=context)]
+
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         """
         === Sobrescrita do método osv.Model.name_search
@@ -191,10 +239,10 @@ class Disciplina(osv.Model):
         if not isinstance(args, (list, tuple)):
             args = []
         if not (name == '' and operator == 'ilike'):
-            disciplinas_ids = self.pool.get("ud.disciplina").search(cr, uid, [("name", operator, name)], context=context)
-            args += [("disciplina_id", "in", disciplinas_ids)]
-        ids = self.search(cr, uid, args, limit=limit, context=context)
-        return self.name_get(cr, uid, ids, context)
+            args += [("disciplina_id", "in", self.pool.get("ud.disciplina").search(
+                cr, SUPERUSER_ID, ['|', ("name", operator, name), ('codigo', operator, name)]
+            ))]
+        return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
     def default_get(self, cr, uid, fields_list, context=None):
         """
@@ -203,21 +251,23 @@ class Disciplina(osv.Model):
         de monitoria de algum curso.
         """
         context = context or {}
-        res = super(Disciplina, self).default_get(cr, uid, fields_list, context)
-        if context.get("filtro_coord_disciplina", False):
+        res = super(DisciplinaMonitoria, self).default_get(cr, uid, fields_list, context)
+        if context.get("coordenador_monitoria_curso", False):
             if not context.get("semestre_id", False):
                 return res
-            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
-            if pessoas:
-                cs = self.pool.get("ud.curso").search(cr, uid, [("coord_monitoria_id", "in", pessoas)], context=context)
-                if not cs:
+            pessoa_id = get_ud_pessoa_id(self, cr, uid)
+            if pessoa_id:
+                curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)],
+                                                             context=context)
+                if not curso_ids:
                     return res
-                cs = cs[0]
-                registro = self.pool.get("ud.monitoria.registro").browse(cr, uid, context["semestre_id"], context)
-                for dist in registro.distribuicao_bolsas_ids:
-                    if dist.curso_id.id == cs:
-                        res["curso_id"] = cs
-                        break
+                curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(
+                    cr, SUPERUSER_ID, [('semestre_id', '=', context["semestre_id"]), ('curso_id', 'in', curso_ids)],
+                    context=context
+                )
+                if not curso_ids:
+                    return res
+                res["bolsas_curso_id"] = curso_ids[0]
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
@@ -229,31 +279,35 @@ class Disciplina(osv.Model):
         de monitoria.
         """
         context = context or {}
-        res = super(Disciplina, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        domain_temp = res["fields"]["curso_id"].get("domain", [])
-        if isinstance(domain_temp, str):
-            domain_temp = list(eval(domain_temp))
-        domain = []
-        for d in domain_temp:
-            if d[0] != "id":
-                domain.append(d)
-        del domain_temp
-        cursos = []
-        if context.get("semestre_id", None):
-            bolsas_distribuidas = self.pool.get("ud.monitoria.registro").browse(
-                cr, SUPERUSER_ID, context.get("semestre_id", None), context
-            ).distribuicao_bolsas_ids
-            for dist in bolsas_distribuidas:
-                cursos.append(dist.curso_id.id)
-            if context.get("filtro_coord_disciplina", False):
-                pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)],
-                                                              context=context)
-                if pessoas:
-                    cursos = self.pool.get("ud.curso").search(
-                        cr, uid, [("id", "=", cursos), ("coord_monitoria_id", "in", pessoas)], context=context
-                    )
-        domain += [("id", "in", cursos)]
-        res["fields"]["curso_id"]["domain"] = domain
+        res = super(DisciplinaMonitoria, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        if 'bolsas_curso_id' in res["fields"]:
+            domain_temp = res["fields"]["bolsas_curso_id"].get("domain", [])
+            if isinstance(domain_temp, str):
+                domain_temp = list(eval(domain_temp))
+            domain = []
+            for d in domain_temp:
+                if d[0] != "id":
+                    domain.append(d)
+            del domain_temp
+            if context.get("semestre_id", None):
+                domain.append(('semestre_id', '=', context['semestre_id']))
+                if context.get('coordenador_monitoria_curso', False):
+                    domain.append(('curso_id', 'in', self.pool.get('ud.curso').search(
+                        cr, uid, [("coord_monitoria_id", "=", get_ud_pessoa_id(self, cr, uid))]
+                    )))
+            res["fields"]["bolsas_curso_id"]["domain"] = domain
+        if 'curso_id' in context and 'disciplina_id' in res['fields']:
+            domain_temp = res["fields"]["disciplina_id"].get("domain", [])
+            if isinstance(domain_temp, str):
+                domain_temp = list(eval(domain_temp))
+            domain = []
+            for d in domain_temp:
+                if d[0] != "id":
+                    domain.append(d)
+            del domain_temp
+            res["fields"]["disciplina_id"]['domain'] = domain + [
+                ('id', 'in', self.pool.get('ud.disciplina').search(cr, SUPERUSER_ID, [('ud_disc_id', '=', context['curso_id'])]))
+            ]
         return res
 
     def create(self, cr, uid, vals, context=None):
@@ -263,14 +317,22 @@ class Disciplina(osv.Model):
 
         :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
         """
-        res = super(Disciplina, self).create(cr, uid, vals, context)
+        if vals.get('data_final', False):
+            hoje = data_hoje(self, cr)
+            if datetime.strptime(vals['data_final'], DEFAULT_SERVER_DATE_FORMAT).date() < hoje:
+                vals['is_active'] = False
+        elif vals.get('data_inicial', False):
+            hoje = data_hoje(self, cr)
+            if datetime.strptime(vals['data_inicial'], DEFAULT_SERVER_DATE_FORMAT).date() <= hoje:
+                vals['is_active'] = True
+        res = super(DisciplinaMonitoria, self).create(cr, uid, vals, context)
         disciplina = self.browse(cr, uid, res, context)
         group = self.pool.get("ir.model.data").get_object(
             cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
         )
         if not disciplina.orientador_id.user_id:
-            raise osv.except_osv("Usuário não encontrado",
-                                 "O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
+            raise osv.except_osv(u"Usuário não encontrado",
+                                 u"O registro de \"%s\" no núcleo não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
         group.write({"users": [(4, disciplina.orientador_id.user_id.id)]})
         return res
 
@@ -281,16 +343,24 @@ class Disciplina(osv.Model):
 
         :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
         """
-        super(Disciplina, self).write(cr, uid, ids, vals, context)
-        if "orientador_id" in vals or "siape" in vals:
+        if vals.get('data_final', False):
+            hoje = data_hoje(self, cr)
+            if datetime.strptime(vals['data_final'], DEFAULT_SERVER_DATE_FORMAT).date() < hoje:
+                vals['is_active'] = False
+        elif vals.get('data_inicial', False):
+            hoje = data_hoje(self, cr)
+            if datetime.strptime(vals['data_inicial'], DEFAULT_SERVER_DATE_FORMAT).date() <= hoje:
+                vals['is_active'] = True
+        super(DisciplinaMonitoria, self).write(cr, uid, ids, vals, context)
+        if "perfil_id" in vals:
             group = self.pool.get("ir.model.data").get_object(
                 cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
             )
             add = []
             for disciplina in self.browse(cr, uid, ids if isinstance(ids, (list, tuple)) else [ids], context):
                 if not disciplina.orientador_id.user_id:
-                    raise osv.except_osv("Usuário não encontrado",
-                                         "O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
+                    raise osv.except_osv(u"Usuário não encontrado",
+                                         u"O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
                 add.append((4, disciplina.orientador_id.user_id.id))
             group.write({"users": add})
         return True
@@ -301,28 +371,119 @@ class Disciplina(osv.Model):
         Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
         monitoria do curso correspondente.
         """
-        if (context or {}).get("filtro_coord_disciplina", False):
-            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
-            if not pessoas:
+        if (context or {}).get("coordenador_monitoria_curso", False):
+            pessoa_id = get_ud_pessoa_id(self, cr, uid)
+            if not pessoa_id:
                 return []
-            cursos = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "in", pessoas)])
-            args = (args or []) + [("curso_id", "in", cursos)]
-        return super(Disciplina, self).search(cr, uid, args, offset, limit, order, context, count)
+            curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
+            curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
+                                                                          [('curso_id', 'in', curso_ids)])
+            args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
+        return super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
 
-    def atualiza_status_cron(self, cr, uid, context=None):
+    # Validadores
+    def valida_datas(self, cr, uid, ids, context=None):
         """
-        Método de atualização do status da disciplina caso essa tenha sua data de finalização tenha sido ultrapassada
-        usando o modelo "ir.cron".
+        Valida se a data inicial ocorre antes ou é igual a final.
         """
-        disc = self.search(cr, uid, [("data_final", "<", datetime.utcnow().strftime("%Y-%m-%d")),
-                                     ("is_active", "=", True)])
-        if disc:
-            self.write(cr, SUPERUSER_ID, disc, {"is_active": False}, context)
+        for disc in self.browse(cr, uid, ids, context=context):
+            if datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT) >= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT):
+                return False
         return True
 
+    def valida_valor_negativo(self, cr, uid, ids, context=None):
+        for disc in self.browse(cr, uid, ids, context):
+            if disc.bolsas < 0 or disc.monitor_s_bolsa < 0 or disc.tutor_s_bolsa < 0:
+                return False
+        return True
+
+    def valida_bolsas(self, cr, uid, ids, context=None):
+        """
+        Verifica se o total de bolsas das disciplinas ultrapassa o máximo de bolsas de seu curso.
+
+        :return: True, se não utrapassa, False, caso contrário.
+        """
+        for disc in self.browse(cr, uid, ids, context):
+            bolsas = 0
+            for outra_disc in disc.bolsas_curso_id.disciplina_ids:
+                if outra_disc.id != disc.id:
+                    bolsas += outra_disc.bolsas
+            if disc.bolsas_curso_id.bolsas < (bolsas + disc.bolsas):
+                return False
+        return True
+
+    def valida_bolsas_utilizadas(self, cr, uid, ids, context=None):
+        """
+        Verifica se o número de bolsas é maior ou igual ao número de bolsas utilizadas.
+
+        :return: True, se satisfazer o critério, False, caso contrário.
+        """
+        for disc in self.browse(cr, uid, ids, context):
+            if disc.bolsas < disc.bolsas_utilizadas:
+                return False
+        return True
+
+    def valida_disciplina(self, cr, uid, ids, context=None):
+        for disc in self.browse(cr, uid, ids, context):
+            if disc.bolsas_curso_id.curso_id.id != disc.disciplina_id.ud_disc_id.id:
+                return False
+        return True
+
+    # Método agendado para ser executado periodicamente (ir.cron)
+    def atualiza_status_cron(self, cr, uid, context=None):
+        """
+        Habilita ou desabilita a disciplina de acordo com sua data inicial e final. Documentos de discentes ativos
+        vinculados à disciplinas inativas também ficarão inativos.
+        """
+        hoje = data_hoje(self, cr)
+        disciplina_model = self.pool.get('ud_monitoria.disciplina')
+        doc_disc_model = self.pool.get('ud_monitoria.documentos_discente')
+        # Busca disciplinas inativas quando deveriam está ativas.
+        cr.execute('''
+        SELECT
+            disc.id
+        FROM
+            %(disc)s disc
+        WHERE
+            (disc.data_inicial <= %(hj)s AND disc.data_final >= %(hj)s) = true
+            AND disc.is_active = false;
+        ''' % {'disc': disciplina_model, 'hj': hoje})
+        disciplina_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': True}, context)
+
+        # Busca disciplinas ativas quando deveriam está inativas.
+        cr.execute('''
+        SELECT
+            disc.id
+        FROM
+            %(disc)s disc
+        WHERE
+            (disc.data_inicial <= %(hj)s AND disc.data_final >= %(hj)s) = false
+            AND disc.is_active = true;
+        ''' % {'disc': disciplina_model, 'hj': hoje})
+        disciplina_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': False}, context)
+
+        # Busca os documentos de discentes que estão ativos quando sua disciplina está inativa.
+        cr.execute('''
+        SELECT
+            doc.id
+        FROM
+            %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+        WHERE
+            disc.is_active = false AND doc.is_active = true;
+        ''' % {'doc': doc_disc_model, 'disc': disciplina_model, 'hj': hoje})
+        doc_disc_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': False})
+        return True
+
+    # Ações após alteração de valor na view
     def onchange_curso(self, cr, uid, ids, curso_id, context=None):
-        return {"value": {"disciplina_id": False, "perfil_id": False},
-                "domain": {"perfil_id": [("ud_cursos", "=", curso_id), ("tipo", "=", "p")]}}
+        res = {'value': {'disciplina_id': False, 'bolsas': 0}}
+        if curso_id:
+            res['domain'] = {
+                'disciplina_id': [
+                    ('ud_disc_id', '=', self.pool.get('ud_monitoria.bolsas_curso').browse(cr, SUPERUSER_ID, curso_id).curso_id.id)
+                ]
+            }
+        return res
 
     def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
         """
@@ -333,7 +494,3 @@ class Disciplina(osv.Model):
                 cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
             ).get("ud_papel_id")}}
         return {"value": {"orientador_id": False}}
-
-    def bolsas_disponiveis(self, cr, uid, id_, context=None, *args, **kwargs):
-        disciplina = self.browse(cr, uid, id_ if not isinstance(id_, (list, tuple)) else id_[0], context)
-        return disciplina.bolsas - len(disciplina.bolsista_ids)
