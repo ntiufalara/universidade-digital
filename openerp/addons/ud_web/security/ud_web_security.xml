@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+    <data>
+        <record model="ir.module.category" id="module_category_ud_web">
+            <field name="name">Site Externo (UD)</field>
+        </record>
+
+        <record id="group_ud_web_visitante" model="res.groups">
+            <field name="name">Visitante</field>
+            <field name="category_id" ref="module_category_ud_web"/>
+            <field name="comment">O usuário Anonymous deve ser adicionado a esse grupo para que o site funcione
+                corretamente
+            </field>
+        </record>
+
+    </data>
+</openerp>

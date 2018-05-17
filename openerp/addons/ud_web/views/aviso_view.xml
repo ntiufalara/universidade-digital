@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_web_aviso_action">
+            <field name="name">Aviso</field>
+            <field name="res_model">ud.web.aviso</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Aviso ao site principal
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_web_aviso_tree">
+            <field name="name">Avisos</field>
+            <field name="model">ud.web.aviso</field>
+            <field name="arch" type="xml">
+                <tree string="Avisos">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_web_aviso_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.web.aviso</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" filter_domain="" string="Nome"/>
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="" icon="terp-personal" domain="[]" context="{'group_by':''}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_web_aviso_form">
+            <field name="name">Aviso</field>
+            <field name="model">ud.web.aviso</field>
+            <field name="arch" type="xml">
+                <form string="Aviso" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="imagem" />
+                                <field name="link" />
+                                <field name="exibindo" />
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Mensagem">
+                                <field name="mensagem" nolabel="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Agendar">
+                                <field name="inicio_exibicao" />
+                                <field name="fim_exibicao" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

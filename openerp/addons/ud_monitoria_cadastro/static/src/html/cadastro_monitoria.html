@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Universidade Digital</title>
+
+    <!--fonte-->
+    <!--http://demo.themewagon.com/preview/black-n-white-clean-responsive-blog-template-->
+
+    <!-- meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="/ud_web/static/src/html/css/custom.css">
+
+    <link rel="shortcut icon" href="/ud_web/static/src/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/ud_web/static/src/favicon.ico" type="image/x-icon">
+
+    <!-- js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+    <script src="/ud_monitoria_cadastro/static/src/js/cadastro_monitoria.js"></script>
+    <script src="/ud_web/static/lib/mask/jquery.mask.min.js"></script>
+
+    <style>
+        #site-header {
+            border-bottom: none;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header id="site-header">
+        <div class="row">
+            <div class="col-md-4 col-sm-5 col-xs-8">
+                <div class="logo">
+                    <h1><a href="/"><img class="logo-img" src="/ud_web/static/src/html/img/logo.png"/></a></h1>
+                </div>
+            </div><!-- col-md-4 -->
+            <div class="col-md-8 col-sm-7">
+                <nav class="main-nav" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#mobile-menu" aria-expanded="false">
+                            <span class="ion-navicon"></span>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="mobile-menu">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="/?db=ud&action=login">
+                                    <button id="acessar" type="button" class="btn btn-primary navbar-btn navbar-right">
+                                        Acesse o
+                                        sistema
+                                    </button>
+                                </a>
+                            </li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </nav>
+
+            </div><!-- col-md-8 -->
+        </div>
+    </header>
+</div>
+
+<div class="content-body container">
+    <form class="form-horizontal" method="post">
+        <fieldset>
+            <!-- Form Name -->
+            <legend>
+                <h3>Cadastro para monitoria/tutoria</h3>
+            </legend>
+
+            <!-- Text input-->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="nome_completo">Nome completo</label>
+                <div class="col-md-8">
+                    <input id="nome_completo" name="nome_completo" class="form-control input-md"
+                           value="{{ values.nome_completo }}">
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="matricula">Matrícula</label>
+                <div class="col-md-8">
+                    <input id="matricula" name="matricula" class="form-control input-md" value="{{ values.matricula }}">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="cpf">CPF</label>
+                <div class="col-md-8">
+                    <input id="cpf" name="cpf" class="form-control input-md" value="{{ values.cpf }}">
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="rg">RG</label>
+                <div class="col-md-8">
+                    <input id="rg" name="rg" class="form-control input-md" value="{{ values.rg }}">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="email">E-mail</label>
+                <div class="col-md-8">
+                    <input id="email" name="email" class="form-control input-md" value="{{ values.email }}">
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="celular">Celular (Whatsapp)</label>
+                <div class="col-md-8">
+                    <input id="celular" name="celular" class="form-control input-md"
+                           placeholder="Usado para criação de grupo de monitoria" value="{{ values.celular }}">
+                </div>
+            </div>
+
+            <!-- Password input-->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="outro_telefone">Outro telefone</label>
+                <div class="col-md-8">
+                    <input id="outro_telefone" name="outro_telefone" class="form-control input-md"
+                           value="{{ values.outro_telefone }}">
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="campus">Campus</label>
+                <div class="col-md-8">
+                    <select id="campus" name="campus" class="form-control">
+                        <option></option>
+                        {% for campus in campi %}
+                            <option value="{{ campus.id }}">{{ campus.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="polo">Polo</label>
+                <div class="col-md-8">
+                    <select id="polo" name="polo" class="form-control">
+                        <option></option>
+                        {% for polo in polos %}
+                            <option value="{{ polo.id }}">{{ polo.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="curso">Curso</label>
+                <div class="col-md-8">
+                    <select id="curso" name="curso" class="form-control">
+                        <option></option>
+                        {% for curso in cursos %}
+                            <option value="{{ curso.id }}">{{ curso.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Password input-->
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="senha">Senha</label>
+                <div class="col-md-8">
+                    <input id="senha" name="senha" type="password" class="form-control input-md"
+                           placeholder="Mais de 8 digitos, números e letras">
+                </div>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="col-md-4 control-label" for="confirma_senha">Confirmar senha</label>
+                <div class="col-md-8">
+                    <input id="confirma_senha" name="confirma_senha" type="password" class="form-control input-md">
+                </div>
+            </div>
+
+            {% if erro %}
+                <div class="alert alert-warning col-xs-12">
+                    {{ erro }}
+                </div>
+            {% endif %}
+
+            <!-- Button (Double) -->
+            <div class="form-group col-sm-12">
+                <div class="col-sm-offset-6 col-sm-3">
+                    <button class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+</div>
+
+<footer id="site-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 copyright">
+                <div class="col-md-4">
+                    <img class="footer-logo" src="/ud_web/static/src/html/img/ufal_logo_small.png"/>
+                    <img class="footer-logo" src="/ud_web/static/src/html/img/nti_logo.png"/>
+                </div>
+                <p class="col-md-6 text-left">
+                    <a href="http://arapiraca.ufal.br"><span>&copy; Universidade Federal de Alagoas - Campus Arapiraca </span></a><br/>
+                    <span>Núcleo de tecnologia da informação - NTI Arapiraca</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+{% if sucesso %}
+    <!-- Modal -->
+    <div class="modal fade" id="sucessoModal" tabindex="-1" role="dialog" aria-labelledby="sucessoModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="sucessoModalLabel">Salvo com sucesso</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Para continuar com o processo de inscrição é preciso fazer login no sistema.</p>
+                    <p>Ao clicar em <strong>Entrar agora</strong> abaixo, você verá a página inicial do sistema <strong>Universidade
+                        Digital</strong>, clique no botão vermelho no canto superior direito. <strong>Acessar o sistema</strong></p>
+                    <div class="alert alert-success">
+                        <h4>IMPORTANTE!</h4>
+                        <p>Seu nome de usuário é seu <strong>CPF</strong> e senha é a mesma cadastrada anteriormente.</p>
+                    </div>
+                    <div class="col-xs-12">
+                        <img style="width: 100%;" src="/ud_monitoria_cadastro/static/src/img/acessar_o_sistema.png">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="/?db=ud&action=login" class="btn btn-primary">Entrar agora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

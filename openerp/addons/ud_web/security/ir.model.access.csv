@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acesso_ud_aviso,acesso_ud_aviso,ud_web.model_ud_web_aviso,ud_web.group_ud_web_visitante,1,0,0,0

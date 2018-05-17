@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<openerp>
+    <data>
+
+        <menuitem id="ud_web_site" name="Site externo" parent="base.menu_administration"/>
+        <menuitem id="ud_web_aviso" name="Avisos" parent="ud_web_site" action="ud_web_aviso_action"/>
+
+    </data>
+</openerp>
