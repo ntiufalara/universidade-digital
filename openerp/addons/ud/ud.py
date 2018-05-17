@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 import re
 from openerp import SUPERUSER_ID
 from openerp.modules.module import get_module_resource
@@ -363,11 +363,13 @@ class Disciplina(osv.osv):
     """
     _name = 'ud.disciplina'
     _description = u'Disciplina'
+    _order = 'perido, codigo'
 
     _columns = {
         'codigo': fields.char(u'Código', size=15, required=True),
-        'name': fields.char(u'Nome', size=40, required=True),
+        'name': fields.char(u'Nome', size=120, required=True),
         'ch': fields.integer(u'Carga Horária', size=10, required=True),
+        'periodo': fields.integer(u'Período', required=True),
         'descricao': fields.text(u'Descrição'),
         'ud_disc_id': fields.many2one('ud.curso', u'Curso', ondelete='cascade', invisible=True),
     }
@@ -571,7 +573,7 @@ class Employee(osv.osv):
     def unlink(self, cr, uid, ids, context=None):
         if ConfiguracaoUsuarioUD.get_exclusao_cascata(self, cr, uid, context):
             usuarios = [
-                pessoa.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.user_id.id != SUPERUSER_ID
+                pessoa.resource_id.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.resource_id.user_id.id != SUPERUSER_ID
             ]
             self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
         return super(Employee, self).unlink(cr, uid, ids, context=context)
@@ -587,7 +589,7 @@ class Employee(osv.osv):
         for pessoa in self.browse(cr, uid, ids, context):
             criado = False
             usuario = False
-            if not pessoa.user_id:
+            if not pessoa.resource_id.user_id:
                 if pessoa.cpf and ConfiguracaoUsuarioUD.get_criar_login_cpf(self, cr, uid, context):
                     login = pessoa.cpf.replace(".", "").replace("-", "")
                     usuario = user_model.search(cr, SUPERUSER_ID, [("login", "=", login)], context=context)
@@ -611,7 +613,7 @@ class Employee(osv.osv):
                     dados["name"] = vals["name"]
                 if vals.get("cpf", False) and ConfiguracaoUsuarioUD.get_atualizar_login_cpf(self, cr, uid, context):
                     dados["login"] = pessoa.cpf.replace(".", "").replace("-", "")
-                usuario = usuario or pessoa.user_id.id
+                usuario = usuario or pessoa.resource_id.user_id.id
                 if usuario and dados:
                     user_model.write(cr, SUPERUSER_ID, usuario, dados, context)
 

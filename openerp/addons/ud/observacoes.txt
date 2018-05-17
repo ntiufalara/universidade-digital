@@ -42,6 +42,12 @@ Novas Alterações:
         * Ao excluir uma pessoa, seu usuário será exclído junto desde que nas configurações gerais estiver com a opção
           de deleção em cascata marcada.
 
+==> 17/05/2018
+    - Modificação de disciplina:
+        * Tamanho do campo 'name' aumentado de 40 para 120;
+        * Campo 'periodo' adicionado;
+        * Ordenação por período e código.
+
 =========
 Sugestões
 =========

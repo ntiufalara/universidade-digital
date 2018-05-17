@@ -131,7 +131,7 @@ class UsuarioUD(osv.Model):
             pessoa = pessoa_model.search(cr, SUPERUSER_ID, [("cpf", "=", cpf)])
             if pessoa:
                 pessoa = pessoa_model.browse(cr, SUPERUSER_ID, pessoa[0], context)
-                if pessoa.user_id:
+                if pessoa.resource_id.user_id:
                     raise osv.except_osv(u"Usuário existente",
                                          u"Existe uma uma pessoa com o CPF informado com vínculo com outro usuário.")
         res = super(UsuarioUD, self).create(cr, uid, vals, context)
@@ -187,7 +187,7 @@ class UsuarioUD(osv.Model):
                     dados = {}
                     if "name" in vals:
                         dados["name"] = vals["name"]
-                    if not pessoa.user_id:
+                    if not pessoa.resource_id.user_id:
                         dados["user_id"] = ids[0]
                         pessoa.write(dados)
                         group = self.pool.get("ir.model.data").get_object(
