@@ -279,10 +279,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Disciplina" version="7.0">
-                    <group col="4">
-                        <field name="codigo" colspan="2" placeholder="Código da disciplina"/>
-                        <field name="name" colspan="2" placeholder="Nome da disciplina"/>
-                        <field name="ch" colspan="2" placeholder="CH"/>
+                    <group col="12">
+                        <field name="codigo" colspan="6" placeholder="Código da disciplina"/>
+                        <field name="name" colspan="6" placeholder="Nome da disciplina"/>
+                        <field name="periodo" colspan="4"/>
+                        <field name="ch" colspan="4" placeholder="CH"/>
                     </group>
                     <group string="Descrição">
                         <field name="descricao" nolabel="1"/>
@@ -299,6 +300,7 @@
                 <tree string="Disciplina">
                     <field name="codigo"/>
                     <field name="name"/>
+                    <field name="periodo"/>
                     <field name="ch"/>
                     <field name="descricao"/>
                 </tree>
@@ -661,14 +663,17 @@
                             <group string="Outras informações">
                                 <group>
                                     <field name="rua"/>
-                                    <field name="cidade"/>
+                                    <field name="numero"/>
                                     <field name="bairro"/>
+                                    <field name="cidade"/>
                                     <field name="estado"/>
                                 </group>
                                 <group>
-                                    <field name="work_phone" class="work_phone"/>
+                                    <field name="work_phone" class="telefone"/>
                                     <field name="mobile_phone" class="telefone" required="1"/>
+                                    <field name="celular_2" class="telefone"/>
                                     <field name="work_email" widget="email" required="1"/>
+                                    <field name="email_2" widget="email"/>
                                     <field name="curriculo_lattes_link" widget="url"/>
                                 </group>
                             </group>

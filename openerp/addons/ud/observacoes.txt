@@ -43,10 +43,13 @@ Novas Alterações:
           de deleção em cascata marcada.
 
 ==> 17/05/2018
-    - Modificação de disciplina:
+    - Disciplina:
         * Tamanho do campo 'name' aumentado de 40 para 120;
         * Campo 'periodo' adicionado;
-        * Ordenação por período e código.
+        * Ordenação por período e código;
+        * Restrição para códigos duplicados em disciplinas de mesmo curso.
+     - Curso:
+        * Inclusão da modalidade "Licenciatura Plena".
 
 =========
 Sugestões

@@ -342,7 +342,7 @@ class Curso(osv.osv):
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
               ("v", u"Vespertino"), ("n", u"Noturno"), ]
-    _MODALIDADE = [("l", u"Licenciatura"), ("b", u"Bacharelado"), ('e', u'Especialização')]
+    _MODALIDADE = [("l", u"Licenciatura"), ("lp", u"Licenciatura Plena"), ("b", u"Bacharelado"), ('e', u'Especialização')]
 
     _columns = {
         'name': fields.char(u'Nome', size=40, help=u"Ex.: Ciência da Computação", required=True),
@@ -363,7 +363,7 @@ class Disciplina(osv.osv):
     """
     _name = 'ud.disciplina'
     _description = u'Disciplina'
-    _order = 'perido, codigo'
+    _order = 'codigo'
 
     _columns = {
         'codigo': fields.char(u'Código', size=15, required=True),
@@ -373,15 +373,25 @@ class Disciplina(osv.osv):
         'descricao': fields.text(u'Descrição'),
         'ud_disc_id': fields.many2one('ud.curso', u'Curso', ondelete='cascade', invisible=True),
     }
-
+    _sql_constraints = [
+        ('cod_curso_unique', 'unique(codigo,ud_disc_id)', u'Não é permitido duplicar códigos.')
+    ]
     _constraints = [
         (lambda cls, *args, **kwargs: cls.valida_ch(*args, **kwargs),
          u"Carga horária não possui um número válido", [u"Carga Horária"]),
+        (lambda cls, *args, **kwargs: cls.valida_periodo(*args, **kwargs),
+         u"Período deve ser maior que 0", [u"Período"]),
     ]
 
     def valida_ch(self, cr, uid, ids, context=None):
         for disc in self.browse(cr, uid, ids, context):
             if disc.ch < 1:
+                return False
+        return True
+
+    def valida_periodo(self, cr, uid, ids, context=None):
+        for disc in self.browse(cr, uid, ids, context):
+            if disc.periodo < 1:
                 return False
         return True
 
@@ -492,7 +502,9 @@ class Employee(osv.osv):
         ),
         'work_phone': fields.char(u'Telefone Fixo', size=32),
         'mobile_phone': fields.char(u'Celular', size=32),
+        'celular_2': fields.char(u'Celular 2', size=15, help=u'Celular secundário'),
         'work_email': fields.char(u'E-mail', size=240),
+        'email_2': fields.char(u'E-mail 2', size=240, help=u'E-mail secundário'),
         'notes': fields.text(u'Notas'),
         'photo': fields.binary(u'Foto'),
         # Adicionados por mim
