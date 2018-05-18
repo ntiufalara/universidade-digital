@@ -363,7 +363,7 @@ class Disciplina(osv.osv):
     """
     _name = 'ud.disciplina'
     _description = u'Disciplina'
-    _order = 'codigo'
+    _order = 'periodo, codigo'
 
     _columns = {
         'codigo': fields.char(u'Código', size=15, required=True),
@@ -382,6 +382,9 @@ class Disciplina(osv.osv):
         (lambda cls, *args, **kwargs: cls.valida_periodo(*args, **kwargs),
          u"Período deve ser maior que 0", [u"Período"]),
     ]
+    _defaults = {
+        'periodo': -1,
+    }
 
     def valida_ch(self, cr, uid, ids, context=None):
         for disc in self.browse(cr, uid, ids, context):
