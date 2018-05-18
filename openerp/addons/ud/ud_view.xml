@@ -280,10 +280,10 @@
             <field name="arch" type="xml">
                 <form string="Disciplina" version="7.0">
                     <group col="12">
-                        <field name="codigo" colspan="6" placeholder="Código da disciplina"/>
-                        <field name="name" colspan="6" placeholder="Nome da disciplina"/>
-                        <field name="periodo" colspan="4"/>
-                        <field name="ch" colspan="4" placeholder="CH"/>
+                        <field name="codigo" colspan="3" placeholder="Código da disciplina"/>
+                        <field name="name" colspan="9" placeholder="Nome da disciplina"/>
+                        <field name="periodo" colspan="6"/>
+                        <field name="ch" colspan="6" placeholder="CH"/>
                     </group>
                     <group string="Descrição">
                         <field name="descricao" nolabel="1"/>
