@@ -1,6 +1,9 @@
 # Pasta de armazenamento de arquivos do Odoo no Docker
 storage/
 
+# ignorando arquivos de log
+access.log*
+
 # Pasta do Pycharm
 .idea/
 # Pasta do banco de dados (Volume Docker)

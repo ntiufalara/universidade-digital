@@ -15,6 +15,11 @@ class AtribuirResponsavel(models.TransientModel):
     def atribuir(self):
         solicitacao = self.env['ud.servico.solicitacao'].browse(self.env.context.get('active_id'))
         solicitacao.sudo().message_subscribe_users([self.responsavel_id.responsavel_id.id])
+        messagem = u"""
+                <p>Sua solicitação está em análise</p>
+                <span><strong>Responsável por análise: </strong></span><span>{}</span><br>
+                """.format(self.responsavel_id.name)
+        solicitacao.message_post(messagem, message_type='email', subtype='mt_comment')
         solicitacao.sudo().write({
             'responsavel_analise_id': self.responsavel_id.id,
             'state': 'analise'
