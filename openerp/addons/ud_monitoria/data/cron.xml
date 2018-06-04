@@ -14,17 +14,5 @@
             <field name="model">ud_monitoria.processo_seletivo</field>
             <field name="function">atualiza_status_cron</field>
         </record>
-
-        <record id="ud_monitoria_disciplina_status_cron" model="ir.cron">
-            <field name="name">Atualizar status da disciplina (UD)</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="nextcall" eval="(DateTime.utcnow() + timedelta(1)).strftime('%Y-%m-%d 03:00:00')"/>
-            <field name="numbercall">-1</field>
-            <field name="priority">4</field>
-            <field name="doall" eval="True"/>
-            <field name="model">ud_monitoria.disciplina</field>
-            <field name="function">atualiza_status_cron</field>
-        </record>
     </data>
 </openerp>

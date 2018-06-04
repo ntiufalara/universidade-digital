@@ -105,20 +105,28 @@ class InscricaoWizard(osv.TransientModel):
                           'agencia': False, 'dv_agencia': False, 'conta': False, 'dv_conta': False, 'operacao': False}}
 
     def onchange_mod_disc(self, cr, uid, ids, modalidade, disciplinas_ids, context=None):
-        if disciplinas_ids:
-            if modalidade == 'monitor' and len(disciplinas_ids[0][2]) > 1:
-                return {'value': {'disciplinas_ids': [disciplinas_ids[0][2][0]]},
-                        'warning': {'title': u'Alerta',
-                                    'message': u'É permitido selecionar somente 1 disciplina para "Monitoria".'}}
-            elif modalidade == 'tutor' and len(disciplinas_ids[0][2]) > 3:
-                return {'value': {'disciplinas_ids': disciplinas_ids[0][2][:3]},
-                        'warning': {'title': u'Alerta',
-                                    'message': u'É permitido selecionar no máximo 3 disciplinas para "Tutoria".'}}
-#             elif not modalidade:
-#                 return {"value": {"disciplinas_ids": []},
-#                         "warning": {"title": u"Modalidade",
-#                                     "message": u"Modalidade não selecionada"}}
-        return {}
+        res = {}
+        if modalidade == 'monitor':
+            res['domain'] = {'disciplinas_ids': []}
+            if disciplinas_ids and len(disciplinas_ids[0][2]) > 1:
+                res['value'] = {'disciplinas_ids': [disciplinas_ids[0][2][0]]}
+                res['warning'] = {'title': u'Alerta',
+                                  'message': u'É permitido selecionar somente 1 disciplina para "Monitoria".'}
+        elif modalidade == 'tutor':
+            discs_ids = self.pool.get('ud.disciplina').search(cr, SUPERUSER_ID, [('periodo', 'in', [1, 2])])
+            res['domain'] = {'disciplinas_ids': [('disciplina_id', 'in', discs_ids)]}
+            if disciplinas_ids:
+                if len(disciplinas_ids[0][2]) > 3:
+                    res['warning'] = {'title': u'Alerta',
+                                      'message': u'É permitido selecionar no máximo 3 disciplinas para "Tutoria".'}
+                disciplinas_ids = self.pool.get('ud_monitoria.disciplina_ps').search(
+                    cr, uid, [('id', 'in', disciplinas_ids[0][2]), ('disciplina_id', 'in', discs_ids)], limit=3
+                )
+                res['value'] = {'disciplinas_ids': disciplinas_ids}
+        elif not modalidade:
+            res['domain'] = {'disciplinas_ids': [('id', '=', False)]}
+            res['value'] = {'disciplinas_ids': []}
+        return res
 
     def onchange_processo_seletivo(self, cr, uid, ids, context=None):
         return {"value": {"disciplinas_ids": []}}

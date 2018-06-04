@@ -13,12 +13,12 @@ regex_hora = compile("^[0-2][0-9]:[0-5][0-9]$")
 class DocumentosDiscente(osv.Model):
     _name = 'ud_monitoria.documentos_discente'
     _description = u'Documentos de monitoria do discente (UD)'
-    _order = 'is_active desc, disciplina_id, state, tutor'  # TODO: Verificar essa ordenação
+    _order = 'disciplina_id, state, tutor'  # TODO: Verificar essa ordenação
     _STATES = [('reserva', u'Cadastro de Reserva'), ('n_bolsista', u'Não Bolsista'),
                ('bolsista', u'Bolsista'), ('desligado', u'Desligado(a)')]
 
     # Métodos para campos funcionais
-    def calcula_ch(self, cr, uid, ids, campo, args, context=None):
+    def get_ch(self, cr, uid, ids, campo, args, context=None):
         """
         Calcula a carga horária total que o discente atribuiu em seus horários de atendimento.
         """
@@ -44,7 +44,7 @@ class DocumentosDiscente(osv.Model):
             )
         return res
 
-    def frequencia_controle(self, cr, uid, ids, campo, args, context=None):
+    def get_frequencia_controle(self, cr, uid, ids, campo, args, context=None):
         """
         Define se o discente pode adicionar novas frequências.
         """
@@ -58,7 +58,15 @@ class DocumentosDiscente(osv.Model):
                 res[doc.id] = False
         return res
 
-    def horas_alteradas(self, cr, uid, ids, context=None):
+    def get_is_active(self, cr, uid, ids, campo, args, context):
+        hoje = data_hoje(self, cr)
+        res = {}
+        for doc in self.browse(cr, uid, ids, context):
+            res[doc.id] = (datetime.strptime(doc.disciplina_id.data_inicial, DEFAULT_SERVER_DATE_FORMAT).date() <= hoje
+                          <= datetime.strptime(doc.disciplina_id.data_final, DEFAULT_SERVER_DATE_FORMAT).date())
+        return res
+
+    def update_ch(self, cr, uid, ids, context=None):
         """
         Define quais documentos deverão ter sua carga horária atualizada.
         """
@@ -78,29 +86,26 @@ class DocumentosDiscente(osv.Model):
                                       relation='ud_monitoria.semestre', string=u'Semestre', ondelete='restrict'),
         'curso_id': fields.related('disciplina_id', 'bolsas_curso_id', type='many2one', string=u'Curso',
                                    relation='ud_monitoria.bolsas_curso', ondelete='restrict'),
-        'orientador_id': fields.related('disciplina_id', 'orientador_id', type='many2one', relation='ud.employee', string=u'Orientador'),
+        'orientador_ids': fields.related('disciplina_id', 'orientador_ids', relation='ud_monitoria.documentos_orientador',
+                                         type='one2many', string=u'Orientadores'),
         'frequencia_ids': fields.one2many('ud_monitoria.frequencia', 'documentos_id', u'Frequências'),
         'declaracao': fields.binary(u'Declaração'),
         'certificado': fields.binary(u'Certificado'),
         'relatorio': fields.binary(u'Relatório Final'),
         'horario_ids': fields.one2many('ud_monitoria.horario', 'documento_id', u'Horários'),
-        'ch': fields.function(calcula_ch, type='char', string=u'Carga horária', help=u'Carga horária total', store={
-            'ud_monitoria.horario': (horas_alteradas, ['hora_i', 'hora_f'], 10),
-            # 'ud_monitoria.documentos_discente': (lambda *args, **kwargs: args[3], ['horario_ids'], 10),
+        'ch': fields.function(get_ch, type='char', string=u'Carga horária', help=u'Carga horária total', store={
+            'ud_monitoria.horario': (update_ch, ['hora_i', 'hora_f'], 10),
         }),
         'informacao': fields.text(u'Informações'),
         'state': fields.selection(_STATES, u'Status', required=True),
-        'is_active': fields.boolean('Ativo?'),
+        'is_active': fields.function(get_is_active, type='boolean', string='Ativo?'),
         # Campos de Controle
-        'frequencia_controle': fields.function(frequencia_controle, type='boolean', string=u'Controle'),
+        'frequencia_controle': fields.function(get_frequencia_controle, type='boolean', string=u'Controle'),
         'certificado_nome': fields.char(u'Nome Certificado'),
         'declaracao_nome': fields.char(u'Nome Declaração'),
     }
-    _defaults = {
-        'is_active': True,
-    }
     _sql_constraints = [
-        ('disciplina_discente_unico', 'unique(disciplina_id,discente_id)',
+        ('disciplina_discente_unico', 'unique(disciplina_id,perfil_id)',
          u'Não é permitido vincular a mesma disciplina de um semestre para o mesmo discente.')
     ]
     _constraints = [
@@ -144,8 +149,7 @@ class DocumentosDiscente(osv.Model):
             insc = self.pool.get("ud_monitoria.inscricao").browse(cr, uid, vals.pop("inscricao_id"), context)
             vals["dados_bancarios_id"] = insc.dados_bancarios_id.id
         res = super(DocumentosDiscente, self).create(cr, uid, vals, context)
-        if vals.get('is_active', False):
-            self.add_grupo_monitor(cr, uid, res, context)
+        self.add_grupo_monitor(cr, uid, res, context)
         return res
 
     def unlink(self, cr, uid, ids, context=None):
@@ -172,26 +176,53 @@ class DocumentosDiscente(osv.Model):
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         """
         === Extensão do método osv.Model.search
-        Se utilizado o valor "filtrar_discente" em context, filtra os documentos do discente.
+        São definidos os seguintes filtros, caso existam em 'context':
+            - filtrar_discente: filtra os documentos do discente a partir do usuário logado;
+            - documentos_ativos: filtra todos os documentos que estão ativos.
+
+        Obs.: Enquanto a disciplina correspondente estiver ativa, o documento também estará.
         """
-        if (context or {}).get("filtrar_discente", False):
-            pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], context=context)
+        if (context or {}).get('filtrar_discente', False):
+            pessoas = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], context=context)
             if not pessoas:
                 return []
-            perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, [("ud_papel_id", "in", pessoas)], context=context)
-            args = (args or []) + [("perfil_id", "in", perfis)]
-        return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
+            perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', 'in', pessoas)], context=context)
+            args = (args or []) + [('perfil_id', 'in', perfis)]
+        res = super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
+        if (context or {}).get('documentos_ativos', False) and res:
+            cr.execute('''
+            SELECT
+                doc.id
+            FROM
+                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+            WHERE
+                doc.id in (%(ids)s)
+                AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
+            ''' % {
+                'doc': self._table, 'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT),
+                'ids': str(res).lstrip('[(').rstrip(']),').replace('L', ''),
+            })
+            return map(lambda v: v[0], cr.fetchall())
+        return res
 
     # Validadores
     def valida_vagas_bolsista(self, cr, uid, ids, context=None):
         """
         Verifica se há vagas para novos discentes bolsistas.
         """
+        disc = self.pool.get('ud_monitoria.disciplina')._table
         for doc in self.browse(cr, uid, ids, context):
-            if doc.is_active and doc.state == "bolsista":
-                args = [('id', '!=', doc.id), ("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True),
-                        ("state", "=", "bolsista")]
-                qtd = self.search_count(cr, uid, args, context=context)
+            if doc.state == "bolsista":
+                cr.execute('''
+                SELECT
+                    COUNT(doc.id)
+                FROM
+                    %s doc INNER JOIN %s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    doc.id != %d AND doc.state = 'bolsisa' AND disc.id = %d;
+                ''' % (self._table, disc, doc.id, doc.disciplina_id.id))
+                qtd = cr.fetchone()[0]
                 if doc.disciplina_id.bolsas <= qtd:
                     return False
         return True
@@ -200,12 +231,29 @@ class DocumentosDiscente(osv.Model):
         """
         Verifica se há vagas para novos discentes não bolsistas.
         """
+        disc = self.pool.get('ud_monitoria.disciplina')._table
         for doc in self.browse(cr, uid, ids, context):
-            if doc.is_active and doc.state == "n_bolsista":
-                args = [('id', '!=', doc.id), ("disciplina_id", "=", doc.disciplina_id.id), ("is_active", "=", True),
-                        ("state", "=", "n_bolsista")]
-                monitores = self.search_count(cr, uid, args + [("tutor", "=", False)], context=context)
-                tutores = self.search_count(cr, uid, args + [("tutor", "=", True)], context=context)
+            if doc.state == "n_bolsista":
+                # Número de monitores para a disciplina
+                cr.execute('''
+                SELECT
+                    COUNT(doc.id)
+                FROM
+                    %s doc INNER JOIN %s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    doc.id != %d AND doc.state = 'n_bolsista' AND doc.tutor = false AND disc.id = %d;
+                ''' % (self._table, disc, doc.id, doc.disciplina_id.id))
+                monitores = cr.fetchone()[0]
+                # Número de tutores para a disciplina
+                cr.execute('''
+                SELECT
+                    COUNT(doc.id)
+                FROM
+                    %s doc INNER JOIN %s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    doc.id != %d AND doc.state = 'n_bolsista' AND doc.tutor = true AND disc.id = %d;
+                ''' % (self._table, disc, doc.id, doc.disciplina_id.id))
+                tutores = cr.fetchone()[0]
                 if doc.disciplina_id.monitor_s_bolsa <= monitores or doc.disciplina_id.tutor_s_bolsa <= tutores:
                     return False
         return True
@@ -273,109 +321,40 @@ class DocumentosDiscente(osv.Model):
                     group.write({"users": [(3, doc.discente_id.user_id.id)]})
 
     # Ações de Botões
-    def habilitar(self, cr, uid, ids, context=None):
-        for doc in self.browse(cr, uid, ids, context):
-            if doc.state in ['reserva', 'desligado']:
-                raise osv.except_osv(
-                    u'Ação Indisponível',
-                    u'Documentos no cadastro de reserva ou desligados não podem ser habilitados por essa função.'
-                )
-            if not doc.disciplina_id.is_active:
-                raise osv.except_osv(
-                    u'Ação Indisponível', u'Somente é possível habilitar esse documento se sua disciplina estiver ativa.'
-                )
-        return self.write(cr, uid, ids, {'is_active': True})
-
-    def desabilitar(self, cr, uid, ids, context=None):
-        """
-        Inativa o documento do discente.
-
-        :raise osv.except_osv: Se disciplina ainda ativa; Se documento ativo e não possui frequências, relatórios, uma
-                               das frequências ainda está em análise ou não há uma frequência aceita para os meses
-                               correspondentes.
-        """
-        for doc in self.browse(cr, uid, ids, context):
-            if doc.disciplina_id.is_active:
-                raise osv.except_osv(u"Ação Indisponível",
-                                     u"O documento não pode ser desabilitado enquanto a disciplina estiver ativa.")
-            if doc.is_active:
-                freqs = {}
-                if len(doc.frequencia_ids) == 0:
-                    raise osv.except_osv(
-                        u"Ação Indisponível",
-                        u"Não é possível finalizar o documento enquanto não houver ao menos uma frequência."
-                    )
-                if len(doc.relatorio_ids) == 0:
-                    raise osv.except_osv(
-                        u"Ação Indisponível",
-                        u"Não é possível finalizar o documento enquanto não houver ao menos um relatório."
-                    )
-                for freq in doc.frequencia_ids:
-                    if freq.state == "analise":
-                        raise osv.except_osv(u"Ação Indisponível", u"Você não pode finalizar documentos enquanto houver"
-                                                                   u" frequências em análise.")
-                    freqs[freq.mes] = freqs[freq.mes] or freq.state == "aceito"
-                if not all(freqs.values()):
-                    raise osv.except_osv(u"Ação Indisponível", u"Você não pode finalizar documentos enquanto não houver"
-                                                               u" ao menos uma frequência aceita para cada mês")
-        return self.write(cr, uid, ids, {"is_active": False})
-
     def reserva_para_bolsista(self, cr, uid, ids, context=None):
         """
-        Muda o status do documento do discente de reserva para bolsista habilitando o registro. O registro
-        do orientador será criado se não existir.
+        Muda o status do documento do discente de reserva para bolsista.
 
-        :raise osv.except_osv: Caso sua disciplina esteja inativa ou caso haja algum documento com status diferente de
-                               "reserva".
+        :raise osv.except_osv: Caso o documento esteja inativo ou com status diferente de "reserva".
         """
         if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ("state", "=", "reserva")], context):
             raise osv.except_osv(
-                u"O discente deve está no cadastro de reserva",
-                u"Esse recuros pode ser utilzado apenas em registros de discentes no cadastro de reserva"
+                u'O discente deve está no cadastro de reserva',
+                u'Não é possível realizar essa ação se o discente não estiver no cadastro de reserva.'
             )
-        doc_orientador_model = self.pool.get("ud_monitoria.documentos_orientador")
         for doc in self.browse(cr, uid, ids, context):
-            if not doc.disciplina_id.is_active:
-                raise osv.except_osv(u"Ação Indisponível",
-                                     u"Não é possível retirar um discente do cadastro de reserva se sua disciplina está inativa.")
-            doc_orientador = doc_orientador_model.search_count(cr, uid, [("disciplina_id", "=", doc.disciplina_id.id)])
-            if not doc_orientador:
-                doc_orientador_model.create(cr, SUPERUSER_ID, {
-                    "disciplina_id": doc.disciplina_id.id, 'perfil_id': doc.disciplina_id.perfil_id.id
-                }, context)
-            doc_orientador = doc_orientador_model.search_count(cr, uid, [("id", "in", doc_orientador), ('is_active', '=', False)])
-            if doc_orientador:
-                doc_orientador_model.write(cr, SUPERUSER_ID, doc_orientador, {'is_active': True})
-        return self.write(cr, uid, ids, {"state": 'bolsista', 'is_active': True}, context)
+            if not doc.is_active:
+                raise osv.except_osv(u'Ação Indisponível',
+                                     u'Não é possível retirar um discente do cadastro de reserva se sua disciplina está inativa.')
+        return self.write(cr, uid, ids, {"state": 'bolsista'}, context)
 
     def reserva_para_n_bolsista(self, cr, uid, ids, context=None):
         """
-        Retira do cadastro de reserva, muda o status para "Não bolsista" e habilida o documento do discente. O registro
-        do orientador será criado se não existir.
+        Retira do cadastro de reserva, muda o status para "Não bolsista".
 
-        :raise osv.except_osv: Caso sua disciplina esteja inativa ou caso haja algum documento com status diferente de
-                               "reserva".
+        :raise osv.except_osv: Caso o documento esteja inativo ou com status diferente de "reserva".
         """
         ids = list(set(ids))
         if len(set(ids)) != self.search_count(cr, uid, [("id", "in", ids), ("state", "=", "reserva")], context):
             raise osv.except_osv(
-                u"O discente deve está no cadastro de reserva",
-                u"Esse recuros pode ser utilzado apenas em registros de discentes no cadastro de reserva"
+                u'O discente deve está no cadastro de reserva',
+                u'Não é possível realizar essa ação se o discente não estiver no cadastro de reserva.'
             )
-        doc_orientador_model = self.pool.get("ud_monitoria.documentos_orientador")
         for doc in self.browse(cr, uid, ids, context):
-            if not doc.disciplina_id.is_active:
+            if not doc.is_active:
                 raise osv.except_osv(u"Ação Indisponível",
                                      u"Não é possível retirar um discente do cadastro de reserva se sua disciplina está inativa.")
-            doc_orientador = doc_orientador_model.search_count(cr, uid, [("disciplina_id", "=", doc.disciplina_id.id)])
-            if not doc_orientador:
-                doc_orientador_model.create(cr, SUPERUSER_ID, {
-                    "disciplina_id": doc.disciplina_id.id, 'perfil_id': doc.disciplina_id.perfil_id.id
-                }, context)
-            doc_orientador = doc_orientador_model.search_count(cr, uid, [("id", "in", doc_orientador), ('is_active', '=', False)])
-            if doc_orientador:
-                doc_orientador_model.write(cr, SUPERUSER_ID, doc_orientador, {'is_active': True})
-        return self.write(cr, uid, ids, {"state": 'n_bolsista', 'is_active': True}, context)
+        return self.write(cr, uid, ids, {"state": 'n_bolsista'}, context)
 
 
 class Horario(osv.Model):

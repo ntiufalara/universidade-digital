@@ -4,8 +4,8 @@ from re import compile
 
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
-from util import get_ud_pessoa_id
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from util import get_ud_pessoa_id, data_hoje
 
 
 class Semestre(osv.Model):
@@ -46,14 +46,15 @@ class Semestre(osv.Model):
                         INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
         WHERE
             sm.id in (%(ids)s)
-        ORDER BY disc.is_active DESC, cur.name, ud_disc.name;
+        ORDER BY (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') DESC, cur.name, ud_disc.name;
         ''' % {
             'disc': self.pool.get('ud_monitoria.disciplina')._table,
             'ud_disc': self.pool.get('ud.disciplina')._table,
             'bc': self.pool.get('ud_monitoria.bolsas_curso')._table,
             'cur': self.pool.get('ud.curso')._table,
             'sm': self._table,
-            'ids': str(ids).lstrip('[)').rstrip(']),').replace('L', '')
+            'ids': str(ids).lstrip('[)').rstrip(']),').replace('L', ''),
+            'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
         }
         res = {}
         cr.execute(sql)

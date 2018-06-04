@@ -171,14 +171,32 @@ class PontuacoesDisciplina(osv.Model):
         """
         context = context or {}
         res = super(PontuacoesDisciplina, self).search(cr, uid, args, offset, limit, order, context, count)
-        if context.get("filtrar_orientador", False):
-            employee = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=1)
-            if employee:
-                return [
-                    p_disc.id for p_disc in self.browse(cr, uid, res, context)
-                    if p_disc.disciplina_id.orientador_id.id == employee[0]
-                ]
-            return []
+        if context.get("filtrar_orientador", False) and res:
+            cr.execute('''
+            SELECT
+                pont.id
+            FROM
+                %(pont)s pont INNER JOIN %(disc_ps)s disc_ps ON (pont.disciplina_id = disc_ps.id)
+                    INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
+                        INNER JOIN %(doc_o)s doc_o ON (disc.id = doc_o.disciplina_id)
+                            INNER JOIN %(per)s per ON (doc_o.perfil_id = per.id)
+                                INNER JOIN %(pes)s pes ON (per.ud_papel_id = pes.id)
+                                    INNER JOIN %(res)s res ON (pes.resource_id = res.id)
+            WHERE
+                pont.id in (%(ids)s) AND res.user_id = %(uid)s AND doc_o.is_active = true
+            ORDER BY  pont.disciplina_id;
+            ''' % {
+                'pont': self._table,
+                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'doc_o': self.pool.get('ud_monitoria.documentos_orientador')._table,
+                'per': self.pool.get('ud.perfil')._table,
+                'pes': self.pool.get('ud.employee')._table,
+                'res': self.pool.get('resource.resource')._table,
+                'ids': str(res).lstrip('([').rstrip(')],').replace('L', ''),
+                'uid': str(uid)
+            })
+            return map(lambda l: l[0], cr.fetchall())
         return res
 
     # Métodos executados ao modificar valor de campo na view
@@ -269,7 +287,7 @@ class PontuacoesDisciplina(osv.Model):
                     }, context=context)
                     state = "bolsista"
             self.novo_doc_discente(cr, pont, state, context)
-            self.doc_orientador(cr, pont, context)
+            # self.doc_orientador(cr, pont, context)
         self.write(cr, uid, ids, {"state": "aprovado"}, context=context)
         return True
         # return self.conf_view(cr, uid, res_id, context)
@@ -301,7 +319,7 @@ class PontuacoesDisciplina(osv.Model):
             if insc.info:
                 info = u"%s\n%s" % (insc.info, info)
             insc.write({"info": info})
-            self.novo_doc_discente(cr, pont, "reserva", context=context, ativo=False)
+            self.novo_doc_discente(cr, pont, "reserva", context=context)
         self.write(cr, uid, ids, {"state": "reserva", 'is_active': False}, context=context)
         return True
         # return self.conf_view(cr, uid, res_id, context)
@@ -340,7 +358,7 @@ class PontuacoesDisciplina(osv.Model):
             }
             doc_orientador.create(cr, SUPERUSER_ID, dados, context)
 
-    def novo_doc_discente(self, cr, pontuacao_disc, state, ativo=True, context=None):
+    def novo_doc_discente(self, cr, pontuacao_disc, state, context=None):
         """
         Cria um novo documento de discente ativo ou não, depende dos parâmetros.
 
@@ -355,7 +373,6 @@ class PontuacoesDisciplina(osv.Model):
             'disciplina_id':pontuacao_disc.disciplina_id.disc_monit_id.id,
             'tutor': True if pontuacao_disc.inscricao_id.modalidade == 'tutor' else False,
             'state': state,
-            "is_active": ativo
         }
         return self.pool.get('ud_monitoria.documentos_discente').create(cr, SUPERUSER_ID, dados, context)
 
@@ -369,7 +386,6 @@ class PontuacoesDisciplina(osv.Model):
             "name": u"Gerenciamento de Inscrições",
             "view_type": "form",
             "view_mode": "form",
-            # "view_id": False,
             "res_model": "ud_monitoria.inscricao",
             "view_id": form_id,
             "type": "ir.actions.act_window",
@@ -500,11 +516,22 @@ class Inscricao(osv.Model):
                                                            context=context)
             pontuacoes_model = self.pool.get("ud_monitoria.pontuacoes_disciplina")
             pontuacoes = pontuacoes_model.search(cr, uid, [("inscricao_id", "in", res)], context=context)
-            return list(
-                set([pont.inscricao_id.id
-                     for pont in pontuacoes_model.browse(cr, uid, pontuacoes, context)
-                     if pont.disciplina_id.perfil_id.id in perfis])
-            )
+            if not pontuacoes:
+                return []
+            cr.execute('''
+            SELECT
+                DISTINCT insc.id
+            FROM
+                %(insc)s insc INNER JOIN %(pont)s pont ON (insc.id = pont.inscricao_id)
+            WHERE
+                pont.id in (%(ids)s);
+            ''' % {
+                'insc': self._table,
+                'pont': pontuacoes_model._table,
+                'ids': str(pontuacoes).lstrip('([').rstrip(')],').replace('L', '')
+            })
+            res = map(lambda l: l[0], cr.fetchall())
+            return res
         return res
 
     # Validadores

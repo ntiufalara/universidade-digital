@@ -9,13 +9,13 @@ class DocumentosOrientador(osv.Model):
     _order = "is_active desc"
 
     _columns = {
-        "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", required=True, ondelete="restrict"),
+        "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", ondelete="cascade"),
         "curso_id": fields.related("disciplina_id", "bolsas_curso_id", type="many2one", relation="ud_monitoria.bolsas_curso",
                                    readonly=True, string=u"Curso"),
         "semestre_id": fields.related("disciplina_id", "bolsas_curso_id", "semestre_id", type="many2one",
                                       relation="ud_monitoria.semestre",
                                       readonly=True, string=u"Semestre"),
-        "perfil_id": fields.many2one("ud.perfil", u"Perfil", required=True, ondelete="restrict"),
+        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, ondelete="restrict", domain="[('tipo', '=', 'p')]"),
         "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         readonly=True, string=u"Orientador"),
         "declaracao_nome": fields.char(u"Declaração (Nome)"),
@@ -47,8 +47,7 @@ class DocumentosOrientador(osv.Model):
         """
         pessoas = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("name", operator, name)], context=context)
         perfis = self.pool.get("ud.perfil").search(cr, SUPERUSER_ID, ['|', ("matricula", operator, name), ("ud_papel_id", "in", pessoas)], context=context)
-        discipinas = self.pool.get('ud_monitoria.disciplina_ps').search(cr, uid, [("perfil_id", "=", perfis)], context=context)
-        args = [("disciplina_id", "in", discipinas)] + (args or [])
+        args = [("perfil_id", "in", perfis)] + (args or [])
         ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
@@ -57,8 +56,6 @@ class DocumentosOrientador(osv.Model):
         === Extensão do método osv.Model.create
         Se perfil de orientador não for informado, esse é vinculado ao da disciplina do documento.
         """
-        if "perfil_id" not in vals and vals.get("disciplina_id", None):
-            vals["perfil_id"] = self.pool.get('ud_monitoria.disciplina_ps').browse(cr, uid, vals.get("disciplina_id")).perfil_id.id
         res = super(DocumentosOrientador, self).create(cr, uid, vals, context)
         self.add_grupo_orientador(cr, uid, res, context)
         return res
@@ -157,3 +154,63 @@ class DocumentosOrientador(osv.Model):
                 perfis = perfil_model.search(cr, SUPERUSER_ID, [('ud_papel_id', '=', doc.orientador_id.id)])
                 if not self.search_count(cr, SUPERUSER_ID, [('perfil_id', 'in', perfis)]):
                     group.write({"users": [(3, doc.orientador_id.user_id.id)]})
+
+    # Métodos executados após mudança do valor de algum campo
+    def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
+        """
+        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
+        """
+        if perfil_id:
+            return {"value": {"orientador_id": self.pool.get("ud.perfil").read(
+                cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
+            ).get("ud_papel_id")}}
+        return {"value": {"orientador_id": False}}
+
+    # Método para botões na view
+    def ativar(self, cr, uid, ids, context=None):
+        cr.execute(
+            '''
+            SELECT EXISTS(
+                SELECT
+                    doc.id
+                FROM
+                  %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                  doc.id in (%(ids)s) AND disc.is_active = false
+            );
+            ''' % {
+                'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),
+                'doc': self._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table
+            }
+        )
+        if cr.fetchone()[0]:
+            raise osv.except_osv(
+                u'Ação indisponível',
+                u'Não é possível reativar o vínculo do orientador enquanto a disciplina estiver inativa.'
+            )
+        return self.write(cr, uid, ids, {'is_active': True}, context)
+
+    def desativar(self, cr, uid, ids, context=None):
+        cr.execute(
+            '''
+            SELECT EXISTS(
+                SELECT
+                    doc.id
+                FROM
+                    %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    doc.id in (%(ids)s) AND disc.is_active = false
+            );
+            ''' % {
+                'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),
+                'doc': self._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table
+            }
+        )
+        if cr.fetchone()[0]:
+            raise osv.except_osv(
+                u'Ação indisponível',
+                u'Não é possível desativar o vínculo do orientador enquanto a disciplina estiver inativa.'
+            )
+        return self.write(cr, uid, ids, {'is_active': False}, context)

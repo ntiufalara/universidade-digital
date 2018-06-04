@@ -4,7 +4,7 @@
     <data>
         <!-- BOLSAS DE CURSO -->
         <record id="action_ud_monitoria_bolsas_curso_liberacao_disciplina_view" model="ir.actions.act_window">
-            <field name="name">Liberação de disciplinas</field>
+            <field name="name">Liberação de Disciplinas</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.bolsas_curso</field>
             <field name="view_type">form</field>
@@ -37,7 +37,7 @@
                     <field name="id" invisible="1"/>
                     <field name="curso_id"/>
                     <field name="semestre_id" invisible="not context.get('coordenador_monitoria_curso', True)"/>
-                    <field name="bolsas"/>
+                    <field name="bolsas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="distribuidas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="disponiveis" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="is_active"/>
@@ -58,11 +58,12 @@
                         <field name="curso_id" colspan="4" attrs="{'readonly': [('id', '!=', False)]}"
                                options="{'create_edit': false, 'create': false}"/>
                     </group>
-                    <group string="Informações de bolsas" col="8">
+                    <group string="Informações de bolsas" col="8"
+                           groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                         <field name="bolsas" colspan="4" readonly="1" string="Total"/>
-                        <field name="distribuidas" colspan="4" string="Distribuídas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
-                        <field name="utilizadas" colspan="4" string="Utilizadas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
-                        <field name="disponiveis" colspan="4" string="Disponíveis" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                        <field name="distribuidas" colspan="4" string="Distribuídas"/>
+                        <field name="utilizadas" colspan="4" string="Utilizadas"/>
+                        <field name="disponiveis" colspan="4" string="Disponíveis"/>
                     </group>
                     <group string="Disciplinas">
                         <field name="disciplina_ids" nolabel="1"
@@ -72,7 +73,7 @@
                                 <field name="bolsas"/>
                                 <field name="bolsas_utilizadas"/>
                                 <field name="bolsas_disponiveis"/>
-                                <field name="is_active" invisible="1"/>
+                                <field name="is_active"/>
                             </tree>
                         </field>
                     </group>

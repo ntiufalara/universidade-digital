@@ -9,7 +9,6 @@
             <field name="res_model">ud_monitoria.inscricao_wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="nodestroy" eval="False"/>
             <field name="target">new</field>
         </record>
 
@@ -84,10 +83,10 @@
                     <group string="Disciplinas(s)" col="4"
                            attrs="{'invisible': ['|', ('processo_seletivo_id', '=', False), ('perfil_id', '=', False)]}">
                         <field name="disciplinas_ids" nolabel="1" widget="many2many_tags"
+                               domain="[('id', '=', False)]"
                                on_change="onchange_mod_disc(modalidade,disciplinas_ids)" colspan="4"
                                options="{'create_edit': false, 'create': false, 'no_open': true}"/>
                         <div colspan="4">
-                            É importante saber que serão mostradas apenas as disciplinas do curso do discente.
                             <p>Número máximo de disciplinas por modalidade:</p>
                             <ul>
                                 <li>Monitoria: 1 disciplina;</li>
@@ -96,7 +95,7 @@
                                     <ul>
                                         <li>Até 3 disciplinas;</li>
                                         <li>
-                                            O tutoro só poderá exercer atividades de tutoria em disciplinas que sejam
+                                            O tutor somente poderá exercer atividades de tutoria em disciplinas que sejam
                                             ofertadas no 1º e/ou 2º períodos da graduação;
                                         </li>
                                         <li>

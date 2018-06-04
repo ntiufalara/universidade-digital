@@ -2,6 +2,8 @@
 from openerp import SUPERUSER_ID
 from openerp.osv import osv, fields
 from openerp.addons.ud.ud import _TIPOS_BOLSA
+from ..models.util import data_hoje, DEFAULT_SERVER_DATE_FORMAT
+
 
 TIPOS_BOLSA = dict(_TIPOS_BOLSA)
 
@@ -51,8 +53,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
         'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=True, readonly=True,
                                        domain=[('is_active', '=', True)]),
         'curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, domain="[('semestre_id', '=', semestre_id)]"),
-        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True,
-                                         domain="[('bolsas_curso_id', '=', curso_id), ('is_active', '=', True)]"),
+        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True),
         'bolsas': fields.integer(u'Bolsas disponíveis', help=u'Número de bolsas disponíveis para a disciplina'),
         'valor_bolsa': fields.float(u'Bolsa (R$)'),
         'tutor': fields.boolean(u'Tutor?'),
@@ -97,6 +98,14 @@ class AdicionarBolsaWizard(osv.TransientModel):
                 res['tutor'] = doc.tutor
                 res['status'] = doc.state
                 res['doc_discente_id'] = doc.id
+        return res
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        res = super(AdicionarBolsaWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        if 'disciplina_id' in res['fields']:
+            res['fields']['disciplina_id']['domain'] = "[('bolsas_curso_id', '=', curso_id), ('data_inicial', '<=', '%(hj)s'), ('data_final', '>=', '%(hj)s')]" % {
+                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            }
         return res
 
     def onchange_curso(self, cr, uid, ids, semestre_id, curso_id, disciplina_id, context=None):
@@ -182,7 +191,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
             dados_bancarios = add.dados_bancarios_id.id
             if not dados_bancarios:
                 dados_bancarios = get_banco(self, cr, add, add.doc_discente_id.discente_id.id, context)
-            dados = {'state': 'bolsista', 'is_active': True}
+            dados = {'state': 'bolsista'}
             if dados_bancarios:
                 dados['dados_bancarios_id'] = dados_bancarios
             reserva = add.doc_discente_id.state == 'reserva'
@@ -216,17 +225,15 @@ class TransferirBolsaWizard(osv.TransientModel):
         # Bolsa Origem
         'curso_id_de': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True,
                                        domain="[('semestre_id', '=', semestre_id)]"),
-        'disciplina_id_de': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True,
-                                            domain="[('bolsas_curso_id', '=', curso_id_de), ('is_active', '=', True)]"),
+        'disciplina_id_de': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True),
         "tutor_de": fields.boolean(u"Tutor?"),
         "doc_discente_id_de": fields.many2one("ud_monitoria.documentos_discente", u"Discente", required=True,
-                                              domain="[('is_active', '=', True), ('state', '=', 'bolsista'), "
-                                                     "('disciplina_id', '=', disciplina_id_de), ('tutor', '=', tutor_de)]"),
+                                              domain="[('disciplina_id', '=', disciplina_id_de),"
+                                                     "('state', '=', 'bolsista'), ('tutor', '=', tutor_de)]"),
         # Bolsa Destino
         'curso_id_para': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True,
                                          domain="[('semestre_id', '=', semestre_id)]"),
-        'disciplina_id_para': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True,
-                                            domain="[('bolsas_curso_id', '=', curso_id_para), ('is_active', '=', True)]"),
+        'disciplina_id_para': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True),
         "tutor_para": fields.boolean(u"Tutor?"),
         "status_para": fields.selection(_STATES, u"Status", required=True),
         "doc_discente_id_para": fields.many2one("ud_monitoria.documentos_discente", u"Discente", required=True,
@@ -266,6 +273,18 @@ class TransferirBolsaWizard(osv.TransientModel):
                 res["tutor_de"] = doc.tutor
                 res["status_de"] = doc.state
                 res["doc_discente_id_de"] = doc.id
+        return res
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        res = super(TransferirBolsaWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        if 'disciplina_id_de' in res['fields']:
+            res['fields']['disciplina_id_de']['domain'] = "[('bolsas_curso_id', '=', curso_id_de), ('data_inicial', '<=', '%(hj)s'), ('data_final', '>=', '%(hj)s')]" % {
+                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            }
+        if 'disciplina_id_para' in res['fields']:
+            res['fields']['disciplina_id_para']['domain'] = "[('bolsas_curso_id', '=', curso_id_para), ('data_inicial', '<=', '%(hj)s'), ('data_final', '>=', '%(hj)s')]" % {
+                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            }
         return res
 
     def onchange_curso(self, cr, uid, ids, comp, semestre_id, curso_id, disciplina_id, context=None):
@@ -329,7 +348,7 @@ class TransferirBolsaWizard(osv.TransientModel):
             })
             reserva = transf.doc_discente_id_para.state == 'reserva'
             transf.doc_discente_id_de.write({"state": "n_bolsista"})
-            transf.doc_discente_id_para.write({"state": "bolsista", "is_active": True})
+            transf.doc_discente_id_para.write({"state": 'bolsista'})
             get_banco(self, cr, transf, transf.doc_discente_id_para.discente_id.id, context)
             self.pool.get('ud_monitoria.ocorrencia').create(cr, SUPERUSER_ID, {
                 'semestre_id': transf.semestre_id.id,
@@ -359,12 +378,11 @@ class RemoverBolsaWizard(osv.TransientModel):
                                        domain=[('is_active', '=', True)]),
         'curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True,
                                     domain="[('semestre_id', '=', semestre_id)]"),
-        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True,
-                                         domain="[('bolsas_curso_id', '=', curso_id), ('is_active', '=', True)]"),
+        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True),
         "tutor": fields.boolean(u"Tutor?"),
         "doc_discente_id": fields.many2one("ud_monitoria.documentos_discente", u"Discente", required=True,
                                              domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
-                                                    "('is_active', '=', True), ('state', '=', 'bolsista')]"),
+                                                    "('state', '=', 'bolsista')]"),
     }
 
     def default_get(self, cr, uid, fields_list, context=None):
@@ -385,6 +403,14 @@ class RemoverBolsaWizard(osv.TransientModel):
                 res["disciplina_id"] = doc.disciplina_id.id
                 res["tutor"] = doc.tutor
                 res["doc_discente_id"] = doc.id
+        return res
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        res = super(RemoverBolsaWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        if 'disciplina_id' in res['fields']:
+            res['fields']['disciplina_id']['domain'] = "[('bolsas_curso_id', '=', curso_id), ('data_inicial', '<=', '%(hj)s'), ('data_final', '>=', '%(hj)s')]" % {
+                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            }
         return res
 
     def onchange_curso(self, cr, uid, ids, semestre_id, curso_id, disciplina_id, context=None):

@@ -23,9 +23,29 @@ class DesligamentoWizard(osv.TransientModel):
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         context = context or {}
         if context.get("active_id", False) and context.get("active_model", False) == "ud_monitoria.documentos_discente":
-            doc = self.pool.get("ud_monitoria.documentos_discente").browse(cr, uid, context["active_id"], context)
+            doc = self.pool.get("ud_monitoria.documentos_discente").read(cr, uid, context["active_id"], ['disciplina_id'], context, '_classic_write')
             grupos = "ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-            if getattr(doc.orientador_id.user_id, "id", False) != uid and not self.user_has_groups(cr, uid, grupos):
+            cr.execute('''
+            SELECT EXISTS(
+                SELECT
+                    doc_o.id
+                FROM
+                    %(doc_o)s doc_o INNER JOIN %(disc)s disc ON (doc_o.disciplina_id = disc.id)
+                        INNER JOIN %(per)s per ON (doc_o.perfil_id = per.id)
+                            INNER JOIN %(pes)s pes ON (per.ud_papel_id = pes.id)
+                                INNER JOIN %(res)s res ON (pes.resource_id = res.id)
+                WHERE
+                    res.user_id = %(uid)s AND disc.id = %(id)s
+            );''' % {
+                'doc_o': self.pool.get('ud_monitoria.documentos_orientador')._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'per': self.pool.get('ud.perfil')._table,
+                'pes': self.pool.get('ud.employee')._table,
+                'res': self.pool.get('resource.resource')._table,
+                'uid': '%d' % uid,
+                'id': '%d' % doc['disciplina_id']
+            })
+            if not cr.fetchone()[0] and not self.user_has_groups(cr, uid, grupos):
                 raise except_orm(u"Acesso Negado",
                                  u"Você precisa ser orientador do discente atual ou ser Coordenador de Monitoria.")
         return super(DesligamentoWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)

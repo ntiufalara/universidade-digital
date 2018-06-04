@@ -22,7 +22,7 @@
 
 {
     "name": "Monitoria (UD)",
-    "version": "1.0",
+    "version": "1.1",
     "category": u"Universidade Digital",
     "summary": u"Gerenciamento de Monitores e Tutores",
     "licence": "AGPLv3",
@@ -40,7 +40,7 @@ Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, su
         "wizards/inscricao_wizard_view.xml",
         "wizards/desligamento_wizard_view.xml",
         # "wizards/relatorio_wizard_view.xml",
-        "wizards/alteracao_orientador_view.xml",
+        # "wizards/alteracao_orientador_view.xml",
         # Views
         "views/adicional_view.xml",
         "views/coordenacao_view.xml",

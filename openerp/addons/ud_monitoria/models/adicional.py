@@ -105,11 +105,22 @@ class DisciplinaMonitoria(osv.Model):
         """
         res = {}
         doc_discente = self.pool.get('ud_monitoria.documentos_discente')
+        hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
         for disc in self.browse(cr, uid, ids, context):
-            utilizadas = doc_discente.search_count(
-                cr, SUPERUSER_ID, context=context,
-                args=[('disciplina_id', '=', disc.id), ('state', '=', 'bolsista'), ('is_active', '=', True)]
-            )
+            cr.execute('''
+            SELECT
+                COUNT(doc.id)
+            FROM
+                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+            WHERE
+                (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
+                AND doc.state = 'bolsista'
+            ''' % {
+                'doc': doc_discente._table,
+                'disc': self._table,
+                'hj': hoje
+            })
+            utilizadas = cr.fetchone()[0]
             res[disc.id] = {
                 'bolsas_disponiveis': disc.bolsas - utilizadas,
                 'bolsas_utilizadas': utilizadas,
@@ -129,6 +140,13 @@ class DisciplinaMonitoria(osv.Model):
                 "reserva_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context),
                 "desligado_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context),
             }
+        return res
+
+    def get_is_active(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        hoje = data_hoje(self, cr)
+        for disc in self.browse(cr, uid, ids, context):
+            res[disc.id] = datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT).date() <= hoje <= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT).date()
         return res
 
     def update_bolsas_utilizadas(self, cr, uid, ids, context=None):
@@ -187,13 +205,10 @@ class DisciplinaMonitoria(osv.Model):
         ),
         'monitor_s_bolsa': fields.integer(u'Vagas sem bolsa (Monitor)', required=True),
         'tutor_s_bolsa': fields.integer(u'Vagas sem bolsa (Tutor)', required=True),
-        'perfil_id': fields.many2one('ud.perfil', u'SIAPE', required=True, ondelete='restrict',
-                                     domain=[('tipo', '=', 'p')], help=u'SIAPE do professor Orientador'),
-        'orientador_id': fields.related('perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee',
-                                        string=u'Orientador', readonly=True),
         'data_inicial': fields.date(u'Data Inicial', required=True),
         'data_final': fields.date(u'Data Final', required=True),
-        'is_active': fields.boolean(u'Ativo'),
+        'is_active': fields.function(get_is_active, type='boolean', string=u'Ativo'),
+        'orientador_ids': fields.one2many('ud_monitoria.documentos_orientador', 'disciplina_id', u'Orientadores'),
         "bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
                                         string=u"Bolsistas", multi="disciplina_monitoria_discentes"),
         "n_bolsista_ids": fields.function(get_discentes, type="many2many", relation="ud_monitoria.documentos_discente",
@@ -215,6 +230,8 @@ class DisciplinaMonitoria(osv.Model):
          u'A disciplina deve pertencer ao curso selecionado.', [u'Disciplina']),
         (lambda cls, *args, **kwargs: cls.valida_valor_negativo(*args, **kwargs),
          u'Valor negativo não é permitido em bolsas, vagas de tutores e monitores.', [u'Bolsas e Vagas (Monitor/Tutor)']),
+        (lambda cls, *args, **kwargs: cls.valida_orientadores(*args, **kwargs),
+         u'Deve ser definido ao menos um orientador para a disciplina.', [u'Orientadores']),
     ]
     _sql_constraints = [
         ('bolsas_curso_disciplina_unique', 'unique(bolsas_curso_id, disciplina_id)',
@@ -310,61 +327,6 @@ class DisciplinaMonitoria(osv.Model):
             ]
         return res
 
-    def create(self, cr, uid, vals, context=None):
-        """
-        === Extensão do método osv.Model.create
-        Adiciona orientador ao grupo de segurança correspondente.
-
-        :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
-        """
-        if vals.get('data_final', False):
-            hoje = data_hoje(self, cr)
-            if datetime.strptime(vals['data_final'], DEFAULT_SERVER_DATE_FORMAT).date() < hoje:
-                vals['is_active'] = False
-        elif vals.get('data_inicial', False):
-            hoje = data_hoje(self, cr)
-            if datetime.strptime(vals['data_inicial'], DEFAULT_SERVER_DATE_FORMAT).date() <= hoje:
-                vals['is_active'] = True
-        res = super(DisciplinaMonitoria, self).create(cr, uid, vals, context)
-        disciplina = self.browse(cr, uid, res, context)
-        group = self.pool.get("ir.model.data").get_object(
-            cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
-        )
-        if not disciplina.orientador_id.user_id:
-            raise osv.except_osv(u"Usuário não encontrado",
-                                 u"O registro de \"%s\" no núcleo não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
-        group.write({"users": [(4, disciplina.orientador_id.user_id.id)]})
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        """
-        === Extensão do método osv.Model.write
-        Se orientador for modificado, adiciona-o ao grupo de segurança correspondente.
-
-        :raise osv.except_osv: Caso o perfil de orientador não esteja vinculado a um usuário.
-        """
-        if vals.get('data_final', False):
-            hoje = data_hoje(self, cr)
-            if datetime.strptime(vals['data_final'], DEFAULT_SERVER_DATE_FORMAT).date() < hoje:
-                vals['is_active'] = False
-        elif vals.get('data_inicial', False):
-            hoje = data_hoje(self, cr)
-            if datetime.strptime(vals['data_inicial'], DEFAULT_SERVER_DATE_FORMAT).date() <= hoje:
-                vals['is_active'] = True
-        super(DisciplinaMonitoria, self).write(cr, uid, ids, vals, context)
-        if "perfil_id" in vals:
-            group = self.pool.get("ir.model.data").get_object(
-                cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
-            )
-            add = []
-            for disciplina in self.browse(cr, uid, ids if isinstance(ids, (list, tuple)) else [ids], context):
-                if not disciplina.orientador_id.user_id:
-                    raise osv.except_osv(u"Usuário não encontrado",
-                                         u"O registro de \"%s\" no núcle o não está vinculado a um usuário (login)." % disciplina.orientador_id.name)
-                add.append((4, disciplina.orientador_id.user_id.id))
-            group.write({"users": add})
-        return True
-
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         """
         === Extensão do método osv.Model.search
@@ -379,7 +341,34 @@ class DisciplinaMonitoria(osv.Model):
             curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
                                                                           [('curso_id', 'in', curso_ids)])
             args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
+        if (context or {}).get("disciplina_ativa", False):
+            hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            args = (args or []) + [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
         return super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
+
+    def unlink(self, cr, uid, ids, context=None):
+        ids = ids if isinstance(ids, (list, tuple)) else [ids]
+        cr.execute('''
+        SELECT EXISTS(
+            SELECT
+                doc.id
+            FROM
+                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+            WHERE
+                disc.id in (%(ids)s)
+                AND (doc.declaracao is not null OR doc.certificado is not null)
+        );
+        ''' % {
+            'doc': self.pool.get('ud_monitoria.documentos_orientador')._table,
+            'disc': self._table,
+            'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', '')
+        })
+        if cr.fetchall()[0][0]:
+            raise osv.except_osv(
+                u'Erro ao excluir a disciplina',
+                u'Não é possível excluir disciplinas quando há orientadores com documentos anexados.'
+            )
+        return super(DisciplinaMonitoria, self).unlink(cr, uid, ids, context)
 
     # Validadores
     def valida_datas(self, cr, uid, ids, context=None):
@@ -424,54 +413,21 @@ class DisciplinaMonitoria(osv.Model):
         return True
 
     def valida_disciplina(self, cr, uid, ids, context=None):
+        """
+        Verifica se a disciplina pertence ao curso selecionado.
+        """
         for disc in self.browse(cr, uid, ids, context):
             if disc.bolsas_curso_id.curso_id.id != disc.disciplina_id.ud_disc_id.id:
                 return False
         return True
 
-    # Método agendado para ser executado periodicamente (ir.cron)
-    def atualiza_status_cron(self, cr, uid, context=None):
+    def valida_orientadores(self, cr, uid, ids, context=None):
         """
-        Habilita ou desabilita a disciplina de acordo com sua data inicial e final. Documentos de discentes ativos
-        vinculados à disciplinas inativas também ficarão inativos.
+        Verifica se a disciplina contém ao menos um orientador.
         """
-        hoje = data_hoje(self, cr)
-        disciplina_model = self.pool.get('ud_monitoria.disciplina')
-        doc_disc_model = self.pool.get('ud_monitoria.documentos_discente')
-        # Busca disciplinas inativas quando deveriam está ativas.
-        cr.execute('''
-        SELECT
-            disc.id
-        FROM
-            %(disc)s disc
-        WHERE
-            (disc.data_inicial <= %(hj)s AND disc.data_final >= %(hj)s) = true
-            AND disc.is_active = false;
-        ''' % {'disc': disciplina_model, 'hj': hoje})
-        disciplina_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': True}, context)
-
-        # Busca disciplinas ativas quando deveriam está inativas.
-        cr.execute('''
-        SELECT
-            disc.id
-        FROM
-            %(disc)s disc
-        WHERE
-            (disc.data_inicial <= %(hj)s AND disc.data_final >= %(hj)s) = false
-            AND disc.is_active = true;
-        ''' % {'disc': disciplina_model, 'hj': hoje})
-        disciplina_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': False}, context)
-
-        # Busca os documentos de discentes que estão ativos quando sua disciplina está inativa.
-        cr.execute('''
-        SELECT
-            doc.id
-        FROM
-            %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
-        WHERE
-            disc.is_active = false AND doc.is_active = true;
-        ''' % {'doc': doc_disc_model, 'disc': disciplina_model, 'hj': hoje})
-        doc_disc_model.write(cr, SUPERUSER_ID, map(lambda v: v[0], cr.fetchall()), {'is_active': False})
+        for disc in self.browse(cr, uid, ids, context):
+            if not disc.orientador_ids:
+                return False
         return True
 
     # Ações após alteração de valor na view
@@ -484,13 +440,3 @@ class DisciplinaMonitoria(osv.Model):
                 ]
             }
         return res
-
-    def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
-        """
-        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
-        """
-        if perfil_id:
-            return {"value": {"orientador_id": self.pool.get("ud.perfil").read(
-                cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
-            ).get("ud_papel_id")}}
-        return {"value": {"orientador_id": False}}

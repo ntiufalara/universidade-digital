@@ -161,8 +161,7 @@ class DisciplinaPS(osv.Model):
             disciplina = self.pool.get('ud_monitoria.disciplina').browse(cr, SUPERUSER_ID, disciplina_id)
             return {'value': {
                 'bolsas_curso_id': disciplina.bolsas_curso_id.id,
-                'perfil_id': disciplina.perfil_id.id,
-                'orientador_id': disciplina.orientador_id.id,
+                'orientador_ids': [doc.id for doc in disciplina.orientador_ids],
                 'data_inicial': disciplina.data_inicial,
                 'data_final': disciplina.data_inicial,
                 'semestre_id': disciplina.semestre_id.id,

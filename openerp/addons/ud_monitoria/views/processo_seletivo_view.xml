@@ -11,7 +11,6 @@
                 <tree string="Disciplinas" colors="blue:is_active==True">
                     <field name="disc_monit_id"/>
                     <field name="bolsas_curso_id"/>
-                    <field name="orientador_id"/>
                     <field name="data_inicial"/>
                     <field name="data_final"/>
                     <field name="is_active" invisible="1"/>
@@ -34,19 +33,20 @@
                     </group>
                     <group string="Detalhes" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
-                        <field name="perfil_id" colspan="2" readonly="1" options="{'no_open': true}"/>
-                        <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="data_inicial" colspan="2" readonly="1"/>
                         <field name="data_final" colspan="2" readonly="1"/>
                         <field name="semestre_id" colspan="2" readonly="1"/>
                         <field name="bolsas_disponiveis" colspan="2" readonly="1"/>
                         <field name="monitor_s_bolsa" colspan="2" readonly="1"/>
                         <field name="tutor_s_bolsa" colspan="2" readonly="1"/>
-                        <div colspan="4">
-                            <strong>Atenção:</strong> A quantidade de bolsas da disciplina reduzirá a medida que novos
-                            bolsistas forem definidos.
-                        </div>
                     </group>
+                    <group string="Orientadores" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
+                        <field name="orientador_ids" nolabel="1" readonly="1" widget="many2many_tags"/>
+                    </group>
+                    <div attrs="{'invisible': [('disc_monit_id', '=', False)]}">
+                        <strong>Atenção:</strong> A quantidade de bolsas da disciplina reduzirá a medida que novos
+                        bolsistas forem definidos.
+                    </div>
                 </form>
             </field>
         </record>
@@ -332,7 +332,6 @@
                             <tree string="Disciplinas">
                                 <field name="disc_monit_id"/>
                                 <field name="bolsas_curso_id"/>
-                                <field name="orientador_id"/>
                                 <field name="data_inicial"/>
                                 <field name="data_final"/>
                             </tree>
@@ -340,7 +339,9 @@
                     </group>
                     <div>
                         <strong>Atenção:</strong> Antes de solicitar uma disciplina, primeiro é necessário realizar sua
-                        liberação.
+                        liberação no menu
+                        <button name="%(action_ud_monitoria_bolsas_curso_liberacao_disciplina_view)d" type="action"
+                                string="Liberação de Disciplinas" class="oe_link"/>.
                     </div>
                 </form>
             </field>
@@ -357,8 +358,10 @@
             <field name="help" type="html">
                 <div>
                     <p>
-                        Será possível solicitar disciplinas quando existir algum processo seletivo em fase de demanda,
-                        que é definido pela Coordenação de Monitoria.
+                        Será possível solicitar disciplinas quando existirem processos seletivos em fase de demanda.
+                    </p>
+                    <p>
+                        <strong>Obs.:</strong> Estarão disponíveis as disciplinas que tiverem sido liberadas para o semestre.
                     </p>
                 </div>
             </field>

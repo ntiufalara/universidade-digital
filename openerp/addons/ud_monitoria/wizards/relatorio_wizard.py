@@ -3,11 +3,11 @@ from openerp.osv import osv, fields
 
 
 class RelatorioWizard(osv.TransientModel):
-    _name = "ud.monitoria.relatorio.wizard"
+    _name = "ud_monitoria.relatorio.wizard"
     _description = u"Anexo de parecer de relatório (UD)"
 
     _columns = {
-        "relatorio_id": fields.many2one("ud.monitoria.relatorio", u"Relatório", ondelete="cascade", required=True),
+        "relatorio_id": fields.many2one("ud_monitoria.relatorio", u"Relatório", ondelete="cascade", required=True),
         "parecer_nome": fields.char(u"Nome Parecer", help=u"Parecer do Professor Orientador"),
         "parecer": fields.binary(u"Parecer", required=True, help=u"Parecer do Professor Orientador"),
         "info": fields.text(u"Informações", help=u"Informações Adicionais"),
@@ -16,8 +16,8 @@ class RelatorioWizard(osv.TransientModel):
     def default_get(self, cr, uid, fields_list, context=None):
         res = super(RelatorioWizard, self).default_get(cr, uid, fields_list, context)
         context = context or {}
-        if context.get("active_id", False) and context.get("active_model", False) == "ud.monitoria.relatorio":
-            relatorio = self.pool.get("ud.monitoria.relatorio").browse(cr, uid, context["active_id"], context)
+        if context.get("active_id", False) and context.get("active_model", False) == "ud_monitoria.relatorio":
+            relatorio = self.pool.get("ud_monitoria.relatorio").browse(cr, uid, context["active_id"], context)
             if relatorio.state != "analise":
                 raise osv.except_osv(u"Acesso Negado", u"Você não pode alterar registros que não estejam em análise.")
             usuario = relatorio.documentos_id.disciplina_id.orientador_id.user_id
