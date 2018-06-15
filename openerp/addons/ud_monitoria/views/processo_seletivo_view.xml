@@ -13,6 +13,7 @@
                     <field name="bolsas_curso_id"/>
                     <field name="data_inicial"/>
                     <field name="data_final"/>
+                    <field name="orientador_id"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -32,21 +33,33 @@
                                options="{'no_open': true, 'create': false, 'create_edit': false, 'm2o_dialog': false}"/>
                     </group>
                     <group string="Detalhes" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
+                        <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
                         <field name="data_inicial" colspan="2" readonly="1"/>
                         <field name="data_final" colspan="2" readonly="1"/>
-                        <field name="semestre_id" colspan="2" readonly="1"/>
-                        <field name="bolsas_disponiveis" colspan="2" readonly="1"/>
-                        <field name="monitor_s_bolsa" colspan="2" readonly="1"/>
-                        <field name="tutor_s_bolsa" colspan="2" readonly="1"/>
+                        <field name="tutoria" colspan="2" readonly="1"/>
+                        <field name="perfil_id" colspan="2" readonly="1" options="{'no_open': true}"
+                               groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                        <field name="orientador_id" colspan="4" readonly="1" options="{'no_open': true}"/>
                     </group>
-                    <group string="Orientadores" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
-                        <field name="orientador_ids" nolabel="1" readonly="1" widget="many2many_tags"/>
+                    <group string="Vagas" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
+                        <field name="bolsistas" colspan="2" readonly="1"/>
+                        <field name="colaboradores" colspan="2" readonly="1"/>
                     </group>
-                    <div attrs="{'invisible': [('disc_monit_id', '=', False)]}">
-                        <strong>Atenção:</strong> A quantidade de bolsas da disciplina reduzirá a medida que novos
-                        bolsistas forem definidos.
-                    </div>
+                    <group string="Informações de Bolsas" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}"
+                           groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <field name="bolsas_utilizadas" colspan="2"/>
+                        <field name="bolsas_disponiveis" colspan="2"/>
+                    </group>
+                    <group string="Disciplinas"  attrs="{'invisible': [('disc_monit_id', '=', False)]}">
+                        <field name="disciplina_ids" nolabel="1" readonly="1" options="{'no_open': true}">
+                            <tree string="Disciplina">
+                                <field name="codigo"/>
+                                <field name="name"/>
+                                <field name="periodo"/>
+                            </tree>
+                        </field>
+                    </group>
                 </form>
             </field>
         </record>
@@ -188,7 +201,7 @@
             <field name="arch" type="xml">
                 <form string="Processo Seletivo" version="7.0" edit="false">
                     <header>
-                        <button name="%(ud_monitoria_inscricao_wizard_action_view)d" type="action"
+                        <button name="%(action_ud_monitoria_inscricao_discente_view)d" type="action"
                                 string="Inscrever" states="andamento" class="oe_highlight"/>
                         <field name="state" widget="statusbar" states="novo,andamento,encerrado" statusbar_visible="novo,andamento,encerrado"/>
                     </header>
@@ -277,7 +290,8 @@
                             <tree create="false" delete="false">
                                 <field name="perfil_id"/>
                                 <field name="discente_id"/>
-                                <field name="modalidade"/>
+                                <field name="disciplina_id"/>
+                                <field name="tutoria"/>
                                 <field name="bolsista"/>
                                 <field name="state"/>
                             </tree>
@@ -328,14 +342,8 @@
                         <field name="semestre_id" readonly="1" colspan="2"/>
                     </group>
                     <group string="Disciplinas">
-                        <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id, 'coordenador_monitoria_curso': True}">
-                            <tree string="Disciplinas">
-                                <field name="disc_monit_id"/>
-                                <field name="bolsas_curso_id"/>
-                                <field name="data_inicial"/>
-                                <field name="data_final"/>
-                            </tree>
-                        </field>
+                        <field name="disciplinas_ids" nolabel="1"
+                               context="{'semestre_id': semestre_id, 'coordenador_monitoria_curso': True}"/>
                     </group>
                     <div>
                         <strong>Atenção:</strong> Antes de solicitar uma disciplina, primeiro é necessário realizar sua

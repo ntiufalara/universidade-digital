@@ -258,6 +258,40 @@ class DocumentosDiscente(osv.Model):
                     return False
         return True
 
+    def valida_monitor(self, cr, uid, ids, context=None):
+        """
+        Verifica se o discente possui vínculo de monitoria com mais de uma disciplina para o mesmo semestre.
+        """
+        cr.execute('''
+        SELECT EXISTS(
+            SELECT
+                doc.id
+            FROM
+                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                    INNER JOIN %(curso)s curso ON (disc.bolsas_curso_id = curso.id)
+                        INNER JOIN %(sem)s sem ON (curso.semestre_id = sem.id)
+            WHERE
+                doc.id in (%(ids)s)
+                AND doc.tutor = false AND doc.state in ('n_bolsista', 'bolsista')
+                AND (SELECT EXISTS(
+                    SELECT
+                        doc2.id
+                    FROM
+                         %(doc)s doc2 INNER JOIN %(disc)s disc2 ON (doc2.disciplina_id = disc2.id)
+                            INNER JOIN %(curso)s curso2 ON (disc2.bolsas_curso_id = curso2.id)
+                                INNER JOIN %(sem)s sem2 ON (curso2.semestre_id = sem2.id)
+                    WHERE
+                        doc2.id != doc.id AND doc2.tutor = false AND doc2.state in ('n_bolsista', 'bolsista')
+                        AND doc2.perfil_id
+                )) = true
+        )
+        ''' % {
+            'doc': self._table,
+            'disc': self.pool.get('ud_monitoria.disciplina')._table,
+            'curso': self.pool.get('ud_monitoria.bolsas_curso')._table,
+            'sem': self.pool.get('ud_monitoria.semestre')._table,
+        })
+
     # Métodos de manipulação do grupo de segurança
     def add_grupo_monitor(self, cr, uid, ids, context=None):
         """

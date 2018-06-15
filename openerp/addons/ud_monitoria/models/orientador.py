@@ -9,15 +9,15 @@ class DocumentosOrientador(osv.Model):
     _order = "is_active desc"
 
     _columns = {
-        "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", ondelete="cascade"),
+        "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", ondelete="restrict"),
         "curso_id": fields.related("disciplina_id", "bolsas_curso_id", type="many2one", relation="ud_monitoria.bolsas_curso",
                                    readonly=True, string=u"Curso"),
         "semestre_id": fields.related("disciplina_id", "bolsas_curso_id", "semestre_id", type="many2one",
-                                      relation="ud_monitoria.semestre",
-                                      readonly=True, string=u"Semestre"),
-        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True, ondelete="restrict", domain="[('tipo', '=', 'p')]"),
-        "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
+                                      relation="ud_monitoria.semestre", readonly=True, string=u"Semestre"),
+        "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True),
+        "orientador_id": fields.related('disciplina_id', "perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         readonly=True, string=u"Orientador"),
+
         "declaracao_nome": fields.char(u"Declaração (Nome)"),
         "declaracao": fields.binary(u"Declaração", help=u"Declaração de Participação de Banca"),
         "certificado_nome": fields.char(u"Certificado (Nome)"),
@@ -155,17 +155,6 @@ class DocumentosOrientador(osv.Model):
                 if not self.search_count(cr, SUPERUSER_ID, [('perfil_id', 'in', perfis)]):
                     group.write({"users": [(3, doc.orientador_id.user_id.id)]})
 
-    # Métodos executados após mudança do valor de algum campo
-    def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
-        """
-        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
-        """
-        if perfil_id:
-            return {"value": {"orientador_id": self.pool.get("ud.perfil").read(
-                cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
-            ).get("ud_papel_id")}}
-        return {"value": {"orientador_id": False}}
-
     # Método para botões na view
     def ativar(self, cr, uid, ids, context=None):
         cr.execute(
@@ -176,12 +165,13 @@ class DocumentosOrientador(osv.Model):
                 FROM
                   %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
                 WHERE
-                  doc.id in (%(ids)s) AND disc.is_active = false
+                  doc.id in (%(ids)s) AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
             );
             ''' % {
                 'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),
                 'doc': self._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'hj': ''
             }
         )
         if cr.fetchone()[0]:
@@ -200,7 +190,7 @@ class DocumentosOrientador(osv.Model):
                 FROM
                     %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
                 WHERE
-                    doc.id in (%(ids)s) AND disc.is_active = false
+                    doc.id in (%(ids)s) AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
             );
             ''' % {
                 'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),

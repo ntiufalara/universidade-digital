@@ -7,7 +7,7 @@ access_ud_monitoria_usuario_disciplina_ps,Usuário: ud_monitoria.disciplina_ps,u
 access_ud_monitoria_usuario_criterio_avaliativo,Usuário: ud_monitoria.criterio.avaliativo,ud_monitoria.model_ud_monitoria_criterio_avaliativo,base.usuario_ud,1,0,0,0
 access_ud_monitoria_usuario_anexo,Usuário: ud_monitoria.anexo,ud_monitoria.model_ud_monitoria_anexo,base.usuario_ud,1,0,0,0
 access_ud_monitoria_usuario_inscricao,Usuário: ud_monitoria.inscricao,ud_monitoria.model_ud_monitoria_inscricao,base.usuario_ud,1,0,1,0
-access_ud_monitoria_usuario_pontuacao,Usuário: ud_monitoria.pontuacao,ud_monitoria.model_ud_monitoria_pontuacao,base.usuario_ud,1,0,0,0
+access_ud_monitoria_usuario_pontuacao,Usuário: ud_monitoria.pontuacao,ud_monitoria.model_ud_monitoria_pontuacao,base.usuario_ud,1,0,1,0
 access_ud_monitoria_usuario_pontuacoes_disciplina,Usuário: ud_monitoria.pontuacoes.disciplina,ud_monitoria.model_ud_monitoria_pontuacoes_disciplina,base.usuario_ud,1,0,0,0
 access_ud_monitoria_usuario_documentos_discente,Usuário: ud_monitoria.documentos_discente,ud_monitoria.model_ud_monitoria_documentos_discente,base.usuario_ud,1,0,0,0
 access_ud_monitoria_usuario_horario,Usuário: ud_monitoria.horario,ud_monitoria.model_ud_monitoria_horario,base.usuario_ud,1,0,0,0

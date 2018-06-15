@@ -135,7 +135,7 @@ class InscricaoWizard(osv.TransientModel):
     def _get_banco(self, cr, inscricao, context=None):
         """
         Busca um registro bancário da pessoa relacionada à inscrição. Se existir, retorna o registro. Se não, verifica
-        se há outros, se não houver, cria um novo vinculado à pessoa. Se não, uma excessão é lançada.
+        se há outros, se não houver, cria um novo vinculado à pessoa. Se não, uma exceção é lançada.
 
         :return: ID dos dados bancários.
         """

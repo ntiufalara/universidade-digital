@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import datetime
+from re import finditer
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -94,7 +95,7 @@ class DisciplinaPS(osv.Model):
     _order = 'disc_monit_id'
     _columns = {
         'id': fields.integer('ID', readonly=True, invisible=True),
-        'disc_monit_id': fields.many2one('ud_monitoria.disciplina', u'Disciplina', required=True, ondelete='restrict'),
+        'disc_monit_id': fields.many2one('ud_monitoria.disciplina', u'Disciplina(s)', required=True, ondelete='restrict'),
         'processo_seletivo_id': fields.many2one('ud_monitoria.processo_seletivo', u'Processo Seletivo', ondelete='cascade')
     }
     _sql_constraints = [
@@ -104,46 +105,79 @@ class DisciplinaPS(osv.Model):
 
     # Métodos sobrescritos
     def name_get(self, cr, uid, ids, context=None):
-        return [
-            (disc.id, '%s - %s' % (disc.disciplina_id.name, disc.disciplina_id.ud_disc_id.name))
-            for disc in self.browse(cr, uid, ids, context)
-        ]
+        """
+        === Sobrescrita do método osv.Model.name_get
+        As informações de visualização desse modelo em campos many2one será o nome da disciplina do núcleo.
+        """
+        res = []
+        for disc in self.browse(cr, uid, ids, context=context):
+            res.append((disc.id, ' / '.join(map(lambda d: '%s (%s)' % (d.name, d.codigo), disc.disciplina_ids))))
+        return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-        if not isinstance(args, (list, tuple)):
+        """
+        === Sobrescrita do método osv.Model.name_search
+        Ao realizar pesquisas em campos many2one para esse modelo, os dados inseridos serão utilizados para pesquisar a
+        discplina no núcleo e fazer referência com o modelo atual.
+        """
+        if not args:
             args = []
-        args += [("disciplina_id", "in", self.pool.get("ud.disciplina").search(cr, SUPERUSER_ID, [("name", operator, name)]))]
+        elif isinstance(args, tuple):
+            args = list(args)
+        if name:
+            condicoes = "disc.name ilike '%%%(n)s%%' OR disc.codigo ilike '%%%(n)s%%'" %  {'n': name}
+            for disc in finditer('(?P<nome>\w+(?:\s+\w+)*)\s*(?:\((?P<cod>\w+)\))?', name):
+                condicoes += " OR disc.name ilike '%%%s%%'" % disc.group('nome')
+                if disc.group('cod'):
+                    condicoes += " OR disc.codigo ilike '%%%s%%'" % disc.group('cod')
+
+            cr.execute('''
+            SELECT
+                disc_ps.id
+            FROM
+                %(disc_ps)s disc_ps INNER JOIN  %(disc_m)s disc_m ON (disc_ps.disc_monit_id = disc_m.id)
+                    INNER JOIN ud_monitoria_disciplinas_rel disc_rel ON (disc_m.id = disc_rel.disc_monitoria)
+                        INNER JOIN %(disc)s disc ON (disc_rel.disciplina_ud = disc.id)
+            WHERE
+                %(condicoes)s;
+            ''' % {
+                'disc_m': self._table,
+                'disc': self.pool.get('ud.disciplina')._table,
+                'condicoes': condicoes
+            })
+            args += [('id', 'in', map(lambda l: l[0], cr.fetchall()))]
         return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        """
-        === Extensão do método osv.Model.search
-        Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
-        monitoria do curso correspondente.
-        """
-        if (context or {}).get("coordenador_monitoria_curso", False):
-            pessoa_id = get_ud_pessoa_id(self, cr, uid)
-            if not pessoa_id:
-                return []
-            curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
-            curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
-                                                                          [('curso_id', 'in', curso_ids)])
-            args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
-        return super(DisciplinaPS, self).search(cr, uid, args, offset, limit, order, context, count)
-
+    #
+    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+    #     if not isinstance(args, (list, tuple)):
+    #         args = []
+    #     args += [("disciplina_id", "in", self.pool.get("ud.disciplina").search(cr, SUPERUSER_ID, [("name", operator, name)]))]
+    #     return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
+    #
+    # def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+    #     """
+    #     === Extensão do método osv.Model.search
+    #     Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
+    #     monitoria do curso correspondente.
+    #     """
+    #     if (context or {}).get("coordenador_monitoria_curso", False):
+    #         pessoa_id = get_ud_pessoa_id(self, cr, uid)
+    #         if not pessoa_id:
+    #             return []
+    #         curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
+    #         curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
+    #                                                                       [('curso_id', 'in', curso_ids)])
+    #         args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
+    #     return super(DisciplinaPS, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         res = super(DisciplinaPS, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
         context = context or {}
         if 'disc_monit_id' in res['fields']:
-            domain_temp = res["fields"]["disc_monit_id"].get("domain", [])
-            if isinstance(domain_temp, str):
-                domain_temp = list(eval(domain_temp))
-            domain = []
-            for d in domain_temp:
-                if d[0] != "id":
-                    domain.append(d)
-            del domain_temp
+            domain = res["fields"]["disc_monit_id"].get("domain", [])
+            if isinstance(domain, str):
+                domain = list(eval(domain))
             if context.get('coordenador_monitoria_curso'):
                 pessoa_id = get_ud_pessoa_id(self, cr, uid)
                 if pessoa_id:
@@ -161,13 +195,15 @@ class DisciplinaPS(osv.Model):
             disciplina = self.pool.get('ud_monitoria.disciplina').browse(cr, SUPERUSER_ID, disciplina_id)
             return {'value': {
                 'bolsas_curso_id': disciplina.bolsas_curso_id.id,
-                'orientador_ids': [doc.id for doc in disciplina.orientador_ids],
+                'perfil_id': disciplina.perfil_id.id,
+                'orientador_id': disciplina.orientador_id.id,
                 'data_inicial': disciplina.data_inicial,
                 'data_final': disciplina.data_inicial,
                 'semestre_id': disciplina.semestre_id.id,
                 'bolsas_disponiveis': disciplina.bolsas_disponiveis,
-                'monitor_s_bolsa': disciplina.monitor_s_bolsa,
-                'tutor_s_bolsa': disciplina.tutor_s_bolsa,
+                'bolsistas': disciplina.bolsistas,
+                'colaboradores': disciplina.colaboradores,
+                'disciplina_ids': [disc.id for disc in disciplina.disciplina_ids],
             }}
         return {}
 

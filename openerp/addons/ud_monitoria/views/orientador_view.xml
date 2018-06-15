@@ -25,7 +25,7 @@
             <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Documentos" create="false" colors="blue:is_active==True">
+                <tree string="Documentos" colors="blue:is_active==True">
                     <field name="disciplina_id"/>
                     <field name="curso_id"/>
                     <field name="perfil_id" groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
@@ -41,26 +41,14 @@
             <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Documento" version="7.0" create="false" delete="false">
+                <form string="Documento" version="7.0" delete="false">
                     <field name="id" invisible="1"/>
-                    <group col="4">
-                        <field name="perfil_id" colspan="2" readonly="1" on_change="onchange_perfil(perfil_id)"
-                               groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
-                        <field name="orientador_id" colspan="2" readonly="1"
+                    <group name="info" col="4">
+                        <field name="orientador_id" colspan="4" readonly="1"
                                options="{'no_open': true, 'create_edit': false, 'create': false}"/>
                         <field name="disciplina_id" colspan="2" readonly="1" options="{'no_open': true}" context="{'somente_leitura': True}"/>
                         <field name="curso_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
-                    </group>
-                    <group string="Documentos" col="4" attrs="{'invisible': ['|', ('declaracao', '=', False), ('certificado', '=', False)]}"
-                           groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                        <field name="declaracao_nome" invisible="1"/>
-                        <field name="certificado_nome" invisible="1"/>
-                        <field name="declaracao" colspan="2" filename="declaracao_nome" readonly="1"
-                               attrs="{'invisible': [('declaracao', '=', False)]}"/>
-                        <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"
-                               attrs="{'invisible': [('certificado', '=', False)]}"/>
                     </group>
                 </form>
             </field>
@@ -70,18 +58,35 @@
             <field name="name">ud_monitoria.documentos_orientador.orientador.form</field>
             <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_orientador_form"/>
-            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'), ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_orientador'),ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <field name="disciplina_id" position="attributes">
                     <attribute name="options"/>
                 </field>
+                <field name="orientador_id" position="before">
+                    <field name="perfil_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                </field>
+                <field name="orientador_id" position="attributes">
+                    <attribute name="colspan">2</attribute>
+                </field>
+                <xpath expr="//group[@name='info']" position="after">
+                    <group string="Documentos" col="4"
+                           attrs="{'invisible': ['|', ('declaracao', '=', False), ('certificado', '=', False)]}">
+                        <field name="declaracao_nome" invisible="1"/>
+                        <field name="certificado_nome" invisible="1"/>
+                        <field name="declaracao" colspan="2" filename="declaracao_nome" readonly="1"
+                               attrs="{'invisible': [('declaracao', '=', False)]}"/>
+                        <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"
+                               attrs="{'invisible': [('certificado', '=', False)]}"/>
+                    </group>
+                </xpath>
             </field>
         </record>
 
         <record id="ud_monitoria_documentos_orientador_coordenador_form" model="ir.ui.view">
             <field name="name">ud_monitoria.documentos_orientador.coordenador.form</field>
             <field name="model">ud_monitoria.documentos_orientador</field>
-            <field name="inherit_id" ref="ud_monitoria_documentos_orientador_form"/>
+            <field name="inherit_id" ref="ud_monitoria_documentos_orientador_orientador_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <field name="id" position="before">
@@ -96,8 +101,10 @@
                     </header>
                 </field>
                 <field name="perfil_id" position="attributes">
-                    <attribute name="readonly"/>
+                    <attribute name="readonly">not context.get('criar', False)</attribute>
+                    <attribute name="on_change">onchange_perfil(perfil_id)</attribute>
                     <attribute name="attrs">{'readonly': [('id', '!=', False)]}</attribute>
+                    <attribute name="options">{'create_edit': false, 'create': false, 'm2o_dialog': false}</attribute>
                 </field>
                 <xpath expr="//group[@string='Documentos']" position="attributes">
                     <attribute name="attrs"/>

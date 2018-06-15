@@ -307,7 +307,7 @@ class BolsasCurso(osv.Model):
         for bc in self.browse(cr, uid, ids, context):
             res[bc.id] = {'utilizadas': 0, 'disponiveis': bc.bolsas, 'distribuidas': 0}
             for disc in bc.disciplina_ids:
-                res[bc.id]['distribuidas'] += disc.bolsas
+                res[bc.id]['distribuidas'] += disc.bolsistas
                 res[bc.id]['utilizadas'] += disc.bolsas_utilizadas
                 res[bc.id]['disponiveis'] -= disc.bolsas_utilizadas
         return res
@@ -318,11 +318,11 @@ class BolsasCurso(osv.Model):
         'is_active': fields.related("curso_id", "is_active", type="boolean", string=u"Curso Ativo?", readonly=True,
                                     help=u"Identifica se atualmente o curso está ativo ou não"),
         'bolsas': fields.integer(u"Bolsas", required=True, help=u"Número de bolsas disponibilizadas para o curso"),
-        'utilizadas': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas Utilizadas",
+        'utilizadas': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas utilizadas",
                                       multi='bolsas_curso', help=u"Número de bolsas com vínculo com discentes"),
-        'disponiveis': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas disponíveis",
+        'disponiveis': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas sem uso",
                                        multi='bolsas_curso', help=u"Bolsas disponíveis para novos bolsistas"),
-        'distribuidas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas Distribuidas',
+        'distribuidas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas distribuidas',
                                         multi='bolsas_curso', help=u'Número de bolsas distribuídas entre disciplinas'),
         'disciplina_ids': fields.one2many('ud_monitoria.disciplina', 'bolsas_curso_id', u'Disciplinas'),
         'semestre_id': fields.many2one("ud_monitoria.semestre", u"Semestre", ondelete="cascade", domain=[('is_active', '=', True)]),

@@ -32,15 +32,13 @@ Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, su
     "author": u"Cloves Oliveira",
     "data": [
         # Dados Iniciais
-        "data/cron.xml",
+        # "data/cron.xml",
         "security/ud_monitoria_security.xml",
         "security/ir.model.access.csv",
         # Wizards
         "wizards/alteracao_bolsas_wizard_view.xml",
         "wizards/inscricao_wizard_view.xml",
         "wizards/desligamento_wizard_view.xml",
-        # "wizards/relatorio_wizard_view.xml",
-        # "wizards/alteracao_orientador_view.xml",
         # Views
         "views/adicional_view.xml",
         "views/coordenacao_view.xml",

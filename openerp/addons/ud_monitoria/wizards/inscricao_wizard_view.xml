@@ -107,8 +107,7 @@
                         </div>
                     </group>
                     <footer>
-                        <button name="botao_inscrever" string="Inscrever" type="object" class="oe_highlight"
-                                confirm="Deseja confirmar a inscrição?"/>
+                        <button name="botao_inscrever" string="Inscrever" type="object" class="oe_highlight"/>
                         ou
                         <button string="Cancelar" class="oe_link" special="cancel"/>
                     </footer>

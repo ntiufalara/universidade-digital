@@ -82,11 +82,13 @@
             <field name="model">ud_monitoria.disciplina</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Disciplinas" create="false" delete="false" colors="blue:is_active==True">
-                    <field name="disciplina_id"/>
+                <tree string="Disciplinas" colors="blue:is_active==True">
+                    <field name="disciplina_ids"/>
                     <field name="bolsas_curso_id"/>
-                    <field name="data_inicial"/>
-                    <field name="data_final"/>
+                    <field name="orientador_id"/>
+                    <field name="tutoria"/>
+                    <field name="bolsistas"/>
+                    <field name="colaboradores"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -98,26 +100,38 @@
             <field name="type">form</field>
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
-                <form string="Disciplinas" version="7.0" create="false">
+                <form string="Disciplinas" version="7.0">
                     <field name="id" invisible="1"/>
                     <field name="is_active" invisible="1"/>
                     <group col="4">
-                        <field name="bolsas_curso_id" on_change="onchange_curso(bolsas_curso_id)"
-                               attrs="{'readonly': [('id', '!=', False)]}" colspan="2" options="{'no_open': true}"/>
-                        <field name="disciplina_id" attrs="{'readonly': [('id', '!=', False)]}" colspan="2" options="{'no_open': true}"/>
+                        <field name="bolsas_curso_id" readonly="1" colspan="2" options="{'no_open': true}"/>
+                        <field name="semestre_id" colspan="2" options="{'no_open': true}"/>
                         <field name="data_inicial" colspan="2" readonly="context.get('somente_leitura', False)"/>
                         <field name="data_final" colspan="2" readonly="context.get('somente_leitura', False)"/>
-                        <field name="semestre_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="bolsas" colspan="2" readonly="context.get('somente_leitura', False)"
+                        <field name="perfil_id" colspan="2" options="{'no_open': true}" on_change="onchange_perfil(perfil_id)"
+                               attrs="{'readonly': [('id', '!=', False)]}"
                                groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
-                        <field name="bolsas_utilizadas" colspan="2"/>
-                        <field name="bolsas_disponiveis" colspan="2"
-                               groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
-                        <field name="monitor_s_bolsa" colspan="2" readonly="context.get('somente_leitura', False)"/>
-                        <field name="tutor_s_bolsa" colspan="2" readonly="context.get('somente_leitura', False)"/>
+                        <field name="tutoria" colspan="2" on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)"/>
+                        <field name="orientador_id" colspan="4" readonly="1"/>
                     </group>
-                    <group string="Orientadores">
-                        <field name="orientador_ids" nolabel="1"/>
+                    <group string="Vagas" col="4">
+                        <field name="bolsistas" colspan="2" readonly="context.get('somente_leitura', False)"/>
+                        <field name="colaboradores" colspan="2" readonly="context.get('somente_leitura', False)"/>
+                    </group>
+                    <group string="Informações de Bolsas" col="4"
+                           groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <field name="bolsas_utilizadas" colspan="2"/>
+                        <field name="bolsas_disponiveis" colspan="2"/>
+                    </group>
+                    <group string="Disciplinas">
+                        <field name="disciplina_ids" nolabel="1" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"
+                               on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)">
+                            <tree string="Disciplina">
+                                <field name="codigo"/>
+                                <field name="name"/>
+                                <field name="periodo"/>
+                            </tree>
+                        </field>
                     </group>
                     <group string="Discentes" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                            attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])]), ('n_bolsista_ids', '=', [(6, False, [])]), ('reserva_ids', '=', [(6, False, [])]), ('desligado_ids', '=', [(6, False, [])])]}">
@@ -140,89 +154,5 @@
             </field>
         </record>
 
-        <record id="ud_monitoria_disciplina_orientador_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.disciplina.orientador.form</field>
-            <field name="model">ud_monitoria.disciplina</field>
-            <field name="type">form</field>
-            <field name="priority" eval="20"/>
-            <field name="arch" type="xml">
-                <form string="Disciplinas" version="7.0" create="false" edit="false" delete="false">
-                    <group col="4">
-                        <field name="bolsas_curso_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="disciplina_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="data_inicial" colspan="2"/>
-                        <field name="data_final" colspan="2"/>
-                        <field name="semestre_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="bolsas" colspan="2"/>
-                        <field name="bolsas_utilizadas" colspan="2"/>
-                        <field name="bolsas_disponiveis" colspan="2"/>
-                        <field name="monitor_s_bolsa" colspan="2"/>
-                        <field name="tutor_s_bolsa" colspan="2"/>
-                    </group>
-                    <group string="Orientadores">
-                        <field name="orientador_ids" nolabel="1"
-                               context="{'tree_view_ref': 'ud_monitoria.ud_monitoria_documentos_orientador_disciplina_tree', 'form_view_ref': 'ud_monitoria.ud_monitoria_documentos_orientador_disciplina_form'}"/>
-                    </group>
-                    <group string="Discentes" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])]), ('n_bolsista_ids', '=', [(6, False, [])]), ('reserva_ids', '=', [(6, False, [])]), ('desligado_ids', '=', [(6, False, [])])]}">
-                        <notebook>
-                            <page string="Bolsistas" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])])]}">
-                                <field name="bolsista_ids" nolabel="1"/>
-                            </page>
-                            <page string="Não bolsistas" attrs="{'invisible': [('n_bolsista_ids', '=', [(6, False, [])])]}">
-                                <field name="n_bolsista_ids" nolabel="1"/>
-                            </page>
-                            <page string="Em reserva" attrs="{'invisible': [('reserva_ids', '=', [(6, False, [])])]}">
-                                <field name="reserva_ids" nolabel="1"/>
-                            </page>
-                            <page string="Desligados" attrs="{'invisible': [('desligado_ids', '=', [(6, False, [])])]}">
-                                <field name="desligado_ids" nolabel="1"/>
-                            </page>
-                        </notebook>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record id="ud_monitoria_disciplina_sem_curso_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.disciplina.form</field>
-            <field name="model">ud_monitoria.disciplina</field>
-            <field name="type">form</field>
-            <field name="priority" eval="15"/>
-            <field name="arch" type="xml">
-                <form string="Disciplinas" version="7.0">
-                    <field name="id" invisible="1"/>
-                    <field name="is_active" invisible="1"/>
-                    <group col="4">
-                        <field name="disciplina_id" colspan="4" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="data_inicial" colspan="2"/>
-                        <field name="data_final" colspan="2"/>
-                        <field name="monitor_s_bolsa" colspan="2"/>
-                        <field name="tutor_s_bolsa" colspan="2"/>
-                        <field name="bolsas" colspan="2"/>
-                    </group>
-                    <group string="Orientadores">
-                        <field name="orientador_ids" nolabel="1"
-                               context="{'tree_view_ref': 'ud_monitoria.ud_monitoria_documentos_orientador_disciplina_tree', 'form_view_ref': 'ud_monitoria.ud_monitoria_documentos_orientador_disciplina_form'}"/>
-                    </group>
-                    <group string="Discentes" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                           attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])]), ('n_bolsista_ids', '=', [(6, False, [])]), ('reserva_ids', '=', [(6, False, [])]), ('desligado_ids', '=', [(6, False, [])])]}">
-                        <notebook>
-                            <page string="Bolsistas" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])])]}">
-                                <field name="bolsista_ids" nolabel="1"/>
-                            </page>
-                            <page string="Não bolsistas" attrs="{'invisible': [('n_bolsista_ids', '=', [(6, False, [])])]}">
-                                <field name="n_bolsista_ids" nolabel="1"/>
-                            </page>
-                            <page string="Em reserva" attrs="{'invisible': [('reserva_ids', '=', [(6, False, [])])]}">
-                                <field name="reserva_ids" nolabel="1"/>
-                            </page>
-                            <page string="Desligados" attrs="{'invisible': [('desligado_ids', '=', [(6, False, [])])]}">
-                                <field name="desligado_ids" nolabel="1"/>
-                            </page>
-                        </notebook>
-                    </group>
-                </form>
-            </field>
-        </record>
     </data>
 </openerp>
