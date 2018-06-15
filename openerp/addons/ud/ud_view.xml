@@ -477,7 +477,7 @@
         </record>
 
         <!-- DADOS BANCÁRIOS -->
-        <record model="ir.actions.act_window" id="action_ud_dados_bancarios_tree_view">
+        <record id="action_ud_dados_bancarios_tree_view" model="ir.actions.act_window">
             <field name="name">Dados Bancários</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud.dados.bancarios</field>
@@ -485,7 +485,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record model="ir.ui.view" id="ud_dados_bancarios_tree_view">
+        <record id="ud_dados_bancarios_tree_view" model="ir.ui.view">
             <field name="name">ud.dados.bancarios.tree</field>
             <field name="model">ud.dados.bancarios</field>
             <field name="type">tree</field>
@@ -501,9 +501,10 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="ud_dados_bancarios_form_view">
+        <record id="ud_dados_bancarios_form_view" model="ir.ui.view">
             <field name="name">ud.dados.bancarios.form</field>
             <field name="model">ud.dados.bancarios</field>
+            <field name="priority" eval="10"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Dados Bancários" version="7.0">
@@ -537,7 +538,46 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_ud_banco_tree_view">
+        <record id="ud_dados_bancarios_usuario_form" model="ir.ui.view">
+            <field name="name">ud.dados.bancarios.usuario.form</field>
+            <field name="model">ud.dados.bancarios</field>
+            <field name="priority" eval="15"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Dados Bancários" version="7.0">
+                    <label for="ud_conta_id"/>
+                    <field name="ud_conta_id" readonly="1" options="{'no_open': true}"/>
+                    <label for="banco_id"/>
+                    <field name="banco_id" on_change="onchange_banco(banco_id)" placeholder="Seleção do Banco"
+                           options="{'no_open': true}"/>
+                    <group col="4" attrs="{'invisible': [('banco_id', '==', False)]}">
+                        <group col="8" colspan="2">
+                            <field name="agencia" colspan="6" placeholder="Nº da agência bancária"
+                                   attrs="{'required': [('agencia_v', '==', True)], 'invisible': [('agencia_v', '==', False)]}"/>
+                            <field name="dv_agencia" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                   attrs="{'required': [('dv_agencia_v', '==', True)], 'invisible': [('dv_agencia_v', '==', False)]}"/>
+                        </group>
+                        <group col="8" colspan="2">
+                            <field name="conta" colspan="6" placeholder="Nº da conta bancária"
+                                   attrs="{'required': [('conta_v', '==', True)], 'invisible': [('conta_v', '==', False)]}"/>
+                            <field name="dv_conta" nolabel="1" colspan="2" placeholder="Díg. verif."
+                                   attrs="{'required': [('dv_conta_v', '==', True)], 'invisible': [('dv_conta_v', '==', False)]}"/>
+                        </group>
+                        <field name="operacao" colspan="2" placeholder="Nº da Operação"
+                               attrs="{'required': [('operacao_v', '==', True)], 'invisible': [('operacao_v', '==', False)]}"/>
+                    </group>
+                    <group invisible="1">
+                        <field name="agencia_v"/>
+                        <field name="dv_agencia_v"/>
+                        <field name="conta_v"/>
+                        <field name="dv_conta_v"/>
+                        <field name="operacao_v"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ud_banco_tree_view" model="ir.actions.act_window">
             <field name="name">Bancos</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud.banco</field>
@@ -545,7 +585,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record model="ir.ui.view" id="ud_banco_tree_view">
+        <record id="ud_banco_tree_view" model="ir.ui.view">
             <field name="name">ud.banco.tree</field>
             <field name="model">ud.banco</field>
             <field name="type">tree</field>
@@ -561,7 +601,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="ud_banco_form_view">
+        <record id="ud_banco_form_view" model="ir.ui.view">
             <field name="name">ud.banco.form</field>
             <field name="model">ud.banco</field>
             <field name="type">form</field>

@@ -3,7 +3,7 @@
 import re
 from openerp import SUPERUSER_ID
 from openerp.modules.module import get_module_resource
-from openerp.osv import osv, fields
+from openerp.osv import osv, orm, fields
 import openerp.tools as tools
 
 from usuario.usuario import ConfiguracaoUsuarioUD
@@ -111,7 +111,7 @@ class DadosBancarios(osv.osv):
         "conta": fields.char(u"Conta", size=10, help=u"Número da Conta"),
         "dv_conta": fields.char(u"DV Conta", size=1, help=u"Dígito verificador da Conta"),
         "operacao": fields.char(u"Operação", size=3, help=u"Tipo de conta"),
-        "ud_conta_id": fields.many2one("ud.employee", u"Proprietário", invisible=True, ondelete="cascade"),
+        "ud_conta_id": fields.many2one("ud.employee", u"Proprietário", ondelete="cascade"),
 
         "agencia_v": fields.related("banco_id", "agencia", type="boolean", invisible=True, readonly=True),
         "dv_agencia_v": fields.related("banco_id", "dv_agencia", type="boolean", invisible=True, readonly=True),
@@ -181,6 +181,18 @@ class DadosBancarios(osv.osv):
             args.append(("operacao", "=", op.group("op")))
         ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
+
+    def default_get(self, cr, uid, fields_list, context=None):
+        res = super(DadosBancarios, self).default_get(cr, uid, fields_list, context)
+        if (context or {}).get('define_usuario', False):
+            pessoa_id = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
+            if not pessoa_id:
+                raise orm.except_orm(
+                    u'Ação não permitida',
+                    u'O usuário atual não possui registro no núcleo.'
+                )
+            res['ud_conta_id'] = pessoa_id[0]
+        return res
 
     def valida_dados(self, cr, uid, ids, context=None):
         for dados in self.browse(cr, uid, ids, context):
