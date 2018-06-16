@@ -40,13 +40,12 @@ class Semestre(osv.Model):
         SELECT
             sm.id, disc.id
         FROM
-            %(disc)s disc INNER JOIN %(ud_disc)s ud_disc ON (disc.disciplina_id = ud_disc.id)
-                INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
-                    INNER JOIN %(cur)s cur ON (bc.curso_id = cur.id)
-                        INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
+            %(disc)s disc INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
+                INNER JOIN %(cur)s cur ON (bc.curso_id = cur.id)
+                    INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
         WHERE
             sm.id in (%(ids)s)
-        ORDER BY (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') DESC, cur.name, ud_disc.name;
+        ORDER BY (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') DESC, cur.name;
         ''' % {
             'disc': self.pool.get('ud_monitoria.disciplina')._table,
             'ud_disc': self.pool.get('ud.disciplina')._table,
@@ -65,7 +64,6 @@ class Semestre(osv.Model):
             else:
                 res[sm] = [disc]
         return res
-
 
     def update_bolsas_curso(self, cr, uid, ids, context=None):
         """
