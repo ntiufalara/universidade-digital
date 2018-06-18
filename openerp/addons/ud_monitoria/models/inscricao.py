@@ -155,8 +155,9 @@ class Inscricao(osv.Model):
         'processo_seletivo_id': fields.many2one('ud_monitoria.processo_seletivo', u'Processo Seletivo', required=True,
                                                 ondelete='restrict'),
         'tutoria': fields.boolean(u'Tutoria?'),
+        'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, ondelete='restrict'),
         'disciplina_id': fields.many2one('ud_monitoria.disciplina_ps', u'Disciplina(s)', required=True, ondelete='restrict',
-                                         domain='[("processo_seletivo_id", "=", processo_seletivo_id), ("tutoria", "=", tutoria)]'),
+                                         domain='[("processo_seletivo_id", "=", processo_seletivo_id), ("bolsas_curso_id", "=", bolsas_curso_id), ("tutoria", "=", tutoria)]'),
         'pontuacoes_ids': fields.one2many('ud_monitoria.pontuacao', 'inscricao_id', u'Pontuações', readonly=True),
         'media': fields.function(
             calcula_media, type='float', string=u'Média',
@@ -429,17 +430,25 @@ class Inscricao(osv.Model):
 
     def acao(self, cr, uid, ids, context=None):
         """
-        Apenas para garantir que
+        Apenas para ser vir como botão.
         :param cr:
         :param uid:
         :param ids:
         :param context:
         :return:
         """
-
         return True
 
     # Ações ao atualizar campos
+    def onchage_processo_seletivo(self, cr, uid, ids, ps, context=None):
+        res = {'value': {'bolsas_curso_id': False, 'disciplina_id': False}}
+        if ps:
+            semestre = self.pool.get('ud_monitoria.processo_seletivo').read(
+                cr, SUPERUSER_ID, ps, ['semestre_id'], load='_classic_write'
+            )['semestre_id']
+            res['domain'] = {'bolsas_curso_id': [('semestre_id', '=', semestre)]}
+        return res
+
     def onchange_perfil_ou_bolsista(self, cr, uid, ids, perfil_id, bolsista, context=None):
         res = {'value': {'discente_id': False, 'curso_id': False, 'celular': False,
                'email': False, 'telefone_fixo': False, 'dados_bancarios_id': False}}

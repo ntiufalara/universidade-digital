@@ -142,6 +142,7 @@ class DisciplinaPS(osv.Model):
                 %(condicoes)s;
             ''' % {
                 'disc_m': self._table,
+                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
                 'disc': self.pool.get('ud.disciplina')._table,
                 'condicoes': condicoes
             })

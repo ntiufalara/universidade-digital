@@ -57,8 +57,7 @@ class Semestre(osv.Model):
         }
         res = {}
         cr.execute(sql)
-        r = cr.fetchall()
-        for sm, disc in (r or []):
+        for sm, disc in cr.fetchall():
             if sm in res:
                 res[sm].append(disc)
             else:
@@ -155,7 +154,12 @@ class Semestre(osv.Model):
                 for bc in self.browse(cr, uid, id).bolsas_curso_ids if bc.curso_id.is_active
             ]
         })
-        return super(Semestre, self).copy(cr, uid, id, default, context)
+        if context is None:
+            context = {}
+        context = context.copy()
+        data = self.copy_data(cr, uid, id, default, context)
+        new_id = self.create(cr, uid, data, context)
+        return new_id
 
     # Valores Padrão
     def semestre_disponivel(self, cr, uid, context=None, semestre=None):
