@@ -149,7 +149,11 @@
                                                 type="object" confirm="Essa ação atualizará o status dos processos seletivos."/>
                                         para atualizar manualmente o status dos processos seletivos do semestre atual;
                                     </li>
-
+                                    <li>
+                                        <button name="%(ud_monitoria.action_ud_monitoria_disciplinas_para_ps_wizard)d" string="Clicar aqui"
+                                                   class="oe_link" type="action"/>
+                                        adicionar disciplinas a um processo seletivo em demanda.
+                                    </li>
                                 </ul>
                             </group>
                         </page>
