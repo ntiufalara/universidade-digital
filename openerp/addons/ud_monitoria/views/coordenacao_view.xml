@@ -115,9 +115,6 @@
             <field name="arch" type="xml">
                 <form string="Semestre" version="7.0">
                     <header groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                        <button name="atualizar_status_processos_seletivos" string="Processos Seletivos: Status"
-                                type="object" attrs="{'invisible': ['|', ('id', '=', False), ('is_active', '=', False)]}"
-                                help="Atualização manual do status dos processos seletivos do atual semestre."/>
                         <button name="desativar_registro" string="Finalizar" type="object"
                                 confirm="Realmente deseja finalizar registro atual?"
                                 help="Finaliza o registro desse semestre."
@@ -145,6 +142,20 @@
                               attrs="{'invisible': ['|', ('id', '=', False), ('bolsas_curso_ids', '=', False)]}">
                             <field name="processos_seletivos_ids" attrs="{'readonly': [('is_active', '=', False)]}"
                                    context="{'semestre_id': id}"/>
+                            <group string="Ações" attrs="{'invisible': ['|', ('id', '=', False), ('is_active', '=', False)]}">
+                                <ul>
+                                    <li>
+                                        <button name="atualizar_status_processos_seletivos" string="Clique aqui" class="oe_link"
+                                                type="object" confirm="Essa ação atualizará o status dos processos seletivos."/>
+                                        para atualizar manualmente o status dos processos seletivos do semestre atual;
+                                    </li>
+                                    <li>
+                                        <button name="%(ud_monitoria.action_ud_monitoria_disciplinas_para_ps_wizard)d" string="Clicar aqui"
+                                                   class="oe_link" type="action"/>
+                                        adicionar disciplinas a um processo seletivo em demanda.
+                                    </li>
+                                </ul>
+                            </group>
                         </page>
                         <page string="Distribuição de Bolsas" groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                             <field name="bolsas_curso_ids" attrs="{'readonly': [('is_active', '=', False)]}">

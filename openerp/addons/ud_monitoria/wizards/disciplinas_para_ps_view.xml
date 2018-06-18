@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="action_ud_monitoria_disciplinas_para_ps_wizard" model="ir.actions.act_window">
+            <field name="name">Adição de disciplinas (PS)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.disciplinas_para_ps_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_disciplinas_para_ps_wizard_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.disciplinas_para_ps_wizard.form</field>
+            <field name="model">ud_monitoria.disciplinas_para_ps_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Adição de disciplinas (PS)" version="7.0">
+                    <group>
+                        <field name="semestre_id" widget="selection" on_change="onchange_semestre()"/>
+                        <field name="processo_seletivo_id" widget="selection"/>
+                        <field name="todas"/>
+                        <field name="bolsas_curso_id" attrs="{'invisible': [('todas', '=', True)]}"
+                               options="{'no_open': true, 'create_edit': false}"/>
+                    </group>
+                    <footer>
+                        <button name="adicionar" string="Adicionar" class="oe_highlight" type="object"/>
+                        Ou
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>
