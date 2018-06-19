@@ -118,10 +118,11 @@
                         <field name="disciplina_id" colspan="2" readonly="1"/>
                         <field name="tutoria" colspan="2" readonly="1"/>
                         <field name="bolsista" colspan="2" readonly="1"/>
-                        <field name="dados_bancarios_id" options="{'no_open': true}" colspan="4" readonly="1"/>
+                        <field name="dados_bancarios_id" options="{'no_open': true}" colspan="2" readonly="1"/>
                     </group>
-                    <group string="Pontuações">
-                        <field name="pontuacoes_ids" nolabel="1" readonly="1"/>
+                    <group string="Pontuações" col="4">
+                        <field name="pontuacoes_ids" nolabel="1" on_change="onchange_pontuacoes(pontuacoes_ids)" colspan="4" readonly="1"/>
+                        <field name="media" colspan="4"/>
                     </group>
                     <group string="Outras Informações" attrs="{'invisible': [('info', '=', False)]}">
                         <field name="info" nolabel="1" readonly="1"/>
@@ -169,7 +170,7 @@
                                attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="dados_bancarios_id" colspan="2"
                                context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'define_usuario': True}"
-                               attrs="{'invisible': [('bolsista', '=', False)], 'required': [('bolsista', '=', True)], 'readonly': ['|', ('discente_id', '=', False), ('id', '!=', False)]}"/>
+                               attrs="{'invisible': [('bolsista', '=', False)], 'readonly': ['|', ('discente_id', '=', False), ('id', '!=', False)]}"/>
                     </group>
                     <footer>
                         <button name="acao" string="Inscrever" type="object" class="oe_highlight"/>

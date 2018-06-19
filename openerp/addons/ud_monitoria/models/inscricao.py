@@ -472,3 +472,33 @@ class Inscricao(osv.Model):
 
     def onchange_tutoria(self, cr, uid, ids, context=None):
         return {'value': {'disciplina_id': False}}
+
+    def onchange_pontuacoes(self, cr, uid, ids, pontuacoes, context=None):
+        tipo_media = self.browse(cr, uid, ids[0]).processo_seletivo_id.tipo_media
+        pontuacao_model = self.pool.get('ud_monitoria.pontuacao')
+        if tipo_media == 'a':
+            soma = total = 0
+            for pont in pontuacoes:
+                total += 1
+                if pont[0] == 1:
+                    soma += pont[-1]['pontuacao']
+                elif pont[0] == 4:
+                    soma += pontuacao_model.read(cr, uid, pont[1], ['pontuacao'], load='_classic_write')['pontuacao']
+                else:
+                    return {'warning': {'title': u'Ação inválida',
+                                        'message': u'É permitido apenas atualzia a pontuação dos critérios avaliativos.'}}
+            return {'value': {'media': total and round(soma / total, 2) or 0}}
+        elif tipo_media == 'p':
+            soma = pesos = 0
+            for pont in pontuacoes:
+                pontuacao = pontuacao_model.browse(cr, uid, pont[1])
+                pesos += pontuacao.criterio_avaliativo_id.peso
+                if pont[0] == 1:
+                    soma += pont[-1]['pontuacao'] * pontuacao.criterio_avaliativo_id.peso
+                elif pont[0] == 4:
+                    soma += pontuacao.pontuacao * pontuacao.criterio_avaliativo_id.peso
+                else:
+                    return {'warning': {'title': u'Ação inválida',
+                                        'message': u'É permitido apenas atualzia a pontuação dos critérios avaliativos.'}}
+            return {'value': {'media': pesos and round(soma / pesos, 2) or 0}}
+        return {}
