@@ -63,6 +63,8 @@ class CadastroMonitoria(http.Controller):
                     'groups_id': [[5], [4, grupo_monitor]]
                 })
 
+                _logger.info(u'Usuário cadastrado')
+
                 pessoa = Pessoa.create({
                     'name': kwargs.get('nome_completo'),
                     'cpf': kwargs.get('cpf'),
@@ -72,6 +74,8 @@ class CadastroMonitoria(http.Controller):
                     'work_phone': kwargs.get('outro_telefone'),
                     'user_id': usuario
                 })
+
+                _logger.info(u'Pessoa cadastrado')
 
                 Perfil.create({
                     'tipo': 'a',
@@ -95,29 +99,29 @@ class CadastroMonitoria(http.Controller):
                 _logger.error(e.__str__())
                 return template.render({
                     'campi': campi,
-                    'erro': "Aconteceu um erro inesperado, por favor, entre em contato com o NTI para mais informações",
+                    'erro': u"Aconteceu um erro inesperado, por favor, entre em contato com o NTI para mais informações",
                     'values': kwargs
                 })
 
     def validate(self, data):
         for campo in self.campos:
             if not data.get(campo):
-                raise ValueError("O campo: {} é obrigatório".format(campo.capitalize().replace('_', ' ')))
+                raise ValueError(u"O campo: {} é obrigatório".format(campo.capitalize().replace('_', ' ')))
         # verificando nome completo
         if len(data.get('nome_completo').split(' ')) < 2:
-            raise ValueError('O nome completo precisa ter mais de uma palavra.')
+            raise ValueError(u'O nome completo precisa ter mais de uma palavra.')
 
         # valida CPF
         Utils.validar_cpf(data.get('cpf').decode('UTF-8').replace('.', '').replace('-', ''))
         data['login'] = data.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
         # valida o número de telefone
         if len(data.get('celular')) < 11:
-            raise ValueError('Verifique se o número de celular está correto e tente novamente')
+            raise ValueError(u'Verifique se o número de celular está correto e tente novamente')
         if data.get('outro_telefone') and len(data.get('outro_telefone')) < 10:
-            raise ValueError('Verifique se o número no campo "Outro telefone" está correto e tente novamente')
+            raise ValueError(u'Verifique se o número no campo "Outro telefone" está correto e tente novamente')
         # valida senhas
         if data.get('senha') != data.get('confirma_senha'):
-            raise ValueError('A confirmação de senha não confere, a senha e a confirmação deve ser iguais')
+            raise ValueError(u'A confirmação de senha não confere, a senha e a confirmação deve ser iguais')
         Utils.validate_password(data.get('senha'))
 
 
