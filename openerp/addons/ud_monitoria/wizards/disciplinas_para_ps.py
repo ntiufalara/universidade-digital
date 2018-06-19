@@ -23,9 +23,6 @@ class DisciplinasParaPsWizard(osv.TransientModel):
         res['todas'] = True
         return res
 
-    def onchange_semestre(self, cr, uid, ids, context=None):
-        return {'value': {'processo_seletivo_id': False, 'bolsas_curso_id': False}}
-
     # Ação
     def adicionar(self, cr, uid, ids, context=None):
         disciplina_model = self.pool.get('ud_monitoria.disciplina')

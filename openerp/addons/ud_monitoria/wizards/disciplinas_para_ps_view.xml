@@ -18,8 +18,8 @@
             <field name="arch" type="xml">
                 <form string="Adição de disciplinas (PS)" version="7.0">
                     <group>
-                        <field name="semestre_id" widget="selection" on_change="onchange_semestre()"/>
-                        <field name="processo_seletivo_id" widget="selection"/>
+                        <field name="semestre_id" readonly="1" options="{'no_open': true}"/>
+                        <field name="processo_seletivo_id"/>
                         <field name="todas"/>
                         <field name="bolsas_curso_id" attrs="{'invisible': [('todas', '=', True)]}"
                                options="{'no_open': true, 'create_edit': false}"/>
