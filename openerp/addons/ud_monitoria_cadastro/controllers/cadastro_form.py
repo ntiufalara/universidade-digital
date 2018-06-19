@@ -18,7 +18,7 @@ class CadastroMonitoria(http.Controller):
 
     # Os mesmos campos disponníveis no formulário, para validação
     campos = ['nome_completo', 'matricula', 'cpf', 'rg', 'email', 'celular', 'campus', 'polo',
-              'curso', 'senha','confirma_senha']
+              'curso', 'senha', 'confirma_senha']
 
     template_dir = join(dirname(dirname(__file__)), 'static', 'src', 'html')
     jinja2_env = jinja2.Environment(
@@ -55,6 +55,7 @@ class CadastroMonitoria(http.Controller):
                 ir_model_obj = req.session.model('ir.model.data')
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
                 grupo_monitor = grupo_monitor_recs and grupo_monitor_recs[1] or False
+                _logger.info(u'Carregando...')
                 usuario = User.create({
                     'email': kwargs.get('email'),
                     'login': kwargs.get('login'),
@@ -96,10 +97,11 @@ class CadastroMonitoria(http.Controller):
                     'values': kwargs
                 })
             except Exception as e:
-                _logger.error(e.__str__())
+                _logger.error(e)
                 return template.render({
                     'campi': campi,
-                    'erro': u"Aconteceu um erro inesperado, por favor, entre em contato com o NTI para mais informações",
+                    'erro': u"Aconteceu um erro inesperado, por favor, entre em contato com o NTI do Campus Arapiraca "
+                            u"para mais informações. marcos.neto@nti.ufal.br",
                     'values': kwargs
                 })
 
