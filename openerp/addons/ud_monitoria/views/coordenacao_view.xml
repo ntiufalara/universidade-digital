@@ -154,6 +154,11 @@
                                                    class="oe_link" type="action"/>
                                         adicionar disciplinas a um processo seletivo em demanda.
                                     </li>
+                                    <li groups="ud_monitoria.group_ud_monitoria_administrador">
+                                        <button name="inserir_cursos_inscricoes" type="object" string="Clique aqui" class="oe_link"/>
+                                        para corrigir a adicionar o curso que falta em algumas inscrições.
+                                        <strong>(RECURSO TEMPORÁRIO)</strong>
+                                    </li>
                                 </ul>
                             </group>
                         </page>

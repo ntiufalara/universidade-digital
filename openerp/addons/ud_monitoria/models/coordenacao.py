@@ -247,6 +247,13 @@ class Semestre(osv.Model):
         cr.execute(sql % {'status': 'encerrado', 'condicao': "data_fim < '%(hj)s'" % {'hj': hoje}})
         return True
 
+    def inserir_cursos_inscricoes(self, cr, uid, ids, context=None):
+        inscricao_model = self.pool.get('ud_monitoria.inscricao')
+        inscricoes = inscricao_model.search(cr, uid, [('bolsas_curso_id', '=', False)])
+        for inscricao in inscricao_model.browse(cr, uid, inscricoes):
+            inscricao.write({'bolsas_curso_id': inscricao.disciplina_id.bolsas_curso_id.id})
+        return True
+
 
 class Ocorrencia(osv.Model):
     _name = "ud_monitoria.ocorrencia"
