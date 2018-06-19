@@ -30,40 +30,6 @@ class Semestre(osv.Model):
             res[semestre.id]['bolsas_n_distribuidas'] = semestre.max_bolsas - res[semestre.id]['bolsas_distribuidas']
         return res
 
-    def get_disciplinas(self, cr, uid, ids, campo, args, context=None):
-        """
-        Busca todas as disciplinas do semestre.
-        """
-        if not ids:
-            return {}
-        sql = '''
-        SELECT
-            sm.id, disc.id
-        FROM
-            %(disc)s disc INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
-                INNER JOIN %(cur)s cur ON (bc.curso_id = cur.id)
-                    INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
-        WHERE
-            sm.id in (%(ids)s)
-        ORDER BY (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') DESC, cur.name;
-        ''' % {
-            'disc': self.pool.get('ud_monitoria.disciplina')._table,
-            'ud_disc': self.pool.get('ud.disciplina')._table,
-            'bc': self.pool.get('ud_monitoria.bolsas_curso')._table,
-            'cur': self.pool.get('ud.curso')._table,
-            'sm': self._table,
-            'ids': str(ids).lstrip('[)').rstrip(']),').replace('L', ''),
-            'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
-        }
-        res = {}
-        cr.execute(sql)
-        for sm, disc in cr.fetchall():
-            if sm in res:
-                res[sm].append(disc)
-            else:
-                res[sm] = [disc]
-        return res
-
     def update_bolsas_curso(self, cr, uid, ids, context=None):
         """
         Busca os ids dos semestres que serão atualizados baseado nos ids informados de BolsasCurso.
@@ -102,7 +68,7 @@ class Semestre(osv.Model):
                                                multi=True, help=u"Bolsas distribuidas entre os cursos"),
         "bolsas_n_distribuidas": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas não Distribuidas",
                                                  multi=True, help=u"Bolsas não distribuidas entre os cursos"),
-        "bolsas_disponiveis": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas Disponíveis",
+        "bolsas_disponiveis": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas não utilizadas",
                                               multi=True, help=u"Bolsas disponíveis para novos bolsistas"),
         "is_active": fields.boolean(u"Ativo", readonly=True),
         "data_i_frequencia": fields.date(u"Envio de Frequência", required=True, help=u"Próxima data para submissão da frequências"),
@@ -113,7 +79,6 @@ class Semestre(osv.Model):
                                                    u"Processos Seletivos"),
         "ocorrencias_ids": fields.one2many("ud_monitoria.ocorrencia", "semestre_id", u"Ocorrências semestrais",
                                            help=u"Registro de ocorrências do semestre"),
-        'disciplinas_ids': fields.function(get_disciplinas, type='one2many', relation='ud_monitoria.disciplina', string=u'Disciplinas'),
     }
     _constraints = [
         (lambda cls, *args, **kwargs: cls.valida_intervalo_frequencia(*args, **kwargs),

@@ -121,6 +121,9 @@
                                 attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}"/>
                         <button name="ativar_registro" string="Reativar" type="object" groups="ud_monitoria.group_ud_monitoria_administrador"
                                 attrs="{'invisible': ['|', ('is_active', '=', True), ('id', '=', False)]}"/>
+                        <button name="%(ud_monitoria.action_ud_monitoria_disciplina)d" type="action" string="Disciplinas"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                                context="{'disciplinas_semestre': True}" attrs="{'invisible': [('id', '=', False)]}"/>
                     </header>
                     <field name="id"/>
                     <group col="4">
@@ -133,7 +136,7 @@
                     </group>
                     <group string="Informações de Bolsas" col="4">
                         <field name="max_bolsas" colspan="2" string="Total" attrs="{'readonly': [('is_active', '=', False)]}"/>
-                        <field name="bolsas_disponiveis" colspan="2" string="Disponíveis"/>
+                        <field name="bolsas_disponiveis" colspan="2" string="Não utilizadas"/>
                         <field name="bolsas_distribuidas" colspan="2" string="Distribuídas"/>
                         <field name="bolsas_n_distribuidas" colspan="2" string="Não Distribuídas"/>
                     </group>
@@ -179,10 +182,6 @@
                                         attrs="{'invisible': [('id', '=', False)]}"
                                         string="Mais detalhes"/>
                             </div>
-                        </page>
-                        <page string="Disciplinas" attrs="{'invisible': [('id', '=', False)]}"
-                              groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                            <field name="disciplinas_ids" nolabel="1"/>
                         </page>
                         <page string="Ocorrências" attrs="{'invisible': [('id', '=', False)]}"
                               groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">

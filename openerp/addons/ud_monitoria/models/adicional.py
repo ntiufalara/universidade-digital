@@ -352,7 +352,8 @@ class DisciplinaMonitoria(osv.Model):
         Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
         monitoria do curso correspondente.
         """
-        if (context or {}).get("coordenador_monitoria_curso", False):
+        context = context or {}
+        if context.get("coordenador_monitoria_curso", False):
             pessoa_id = get_ud_pessoa_id(self, cr, uid)
             if not pessoa_id:
                 return []
@@ -360,9 +361,28 @@ class DisciplinaMonitoria(osv.Model):
             curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
                                                                           [('curso_id', 'in', curso_ids)])
             args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
-        if (context or {}).get("disciplina_ativa", False):
+        if context.get("disciplina_ativa", False):
             hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
             args = (args or []) + [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
+        if context.get('disciplinas_semestre', False):
+            semestre = context.get('semestre_id', context['active_id'] if context.get('active_model', False) == 'ud_monitoria.semestre' else False)
+            if not semestre:
+                return []
+            res = super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
+            cr.execute('''
+            SELECT
+                disc.id
+            FROM
+                %(disc)s disc INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
+            WHERE
+                disc.id in (%(ids)s) and bc.semestre_id = %(id)s;
+            ''' % {
+                'disc': self._table,
+                'bc': self.pool.get('ud_monitoria.bolsas_curso')._table,
+                'ids': str(res).lstrip('[(').rstrip(']),').replace('L', ''),
+                'id': semestre,
+            })
+            return map(lambda l: l[0], cr.fetchall())
         return super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def unlink(self, cr, uid, ids, context=None):

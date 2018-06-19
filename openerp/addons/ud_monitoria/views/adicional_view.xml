@@ -68,6 +68,14 @@
         </record>
 
         <!-- DISCIPLINA -->
+        <record id="action_ud_monitoria_disciplina" model="ir.actions.act_window">
+            <field name="name">Disciplinas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.disciplina</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="action_ud_monitoria_disciplina_ativa" model="ir.actions.act_window">
             <field name="name">Disciplinas Ativas</field>
             <field name="type">ir.actions.act_window</field>
