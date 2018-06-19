@@ -51,37 +51,6 @@ class DocumentosOrientador(osv.Model):
         ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
 
-    def create(self, cr, uid, vals, context=None):
-        """
-        === Extensão do método osv.Model.create
-        Se perfil de orientador não for informado, esse é vinculado ao da disciplina do documento.
-        """
-        res = super(DocumentosOrientador, self).create(cr, uid, vals, context)
-        self.add_grupo_orientador(cr, uid, res, context)
-        return res
-
-    def write(self, cr, uid, ids, vals, context=None):
-        """
-        === Extensão do método osv.Model.write
-        Adiciona orientador ao grupo de segurança se disciplina for modificada.
-        """
-        super(DocumentosOrientador, self).write(cr, uid, ids, vals, context)
-        if "disciplina_id" in vals:
-            self.add_grupo_orientador(cr, uid, ids, context)
-        return True
-
-    def unlink(self, cr, uid, ids, context=None):
-        """
-        === Extensão do método osv.Model.unlink
-        Se orientador não tiver mais vínculos com outros documentos, remove-o do grupo de segurança.
-        """
-        try:
-            self.remove_grupo_orientador(cr, uid, ids, context=None)
-            return super(DocumentosOrientador, self).unlink(cr, uid, ids, context)
-        except:
-            self.add_grupo_orientador(cr, uid, ids, context)
-            raise
-
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         """
         === Extensão do método osv.Model.search
@@ -96,7 +65,7 @@ class DocumentosOrientador(osv.Model):
             args = (args or []) + [("perfil_id", "in", perfis)]
         return super(DocumentosOrientador, self).search(cr, uid, args, offset, limit, order, context, count)
 
-    # Métodos para adição e remoção do grupo de segurança
+    # Métodos para adição do grupo de segurança
     def add_grupo_orientador(self, cr, uid, ids, context=None):
         """
         Adiciona um orientandor no grupo de permissões
@@ -111,49 +80,9 @@ class DocumentosOrientador(osv.Model):
         for doc in self.browse(cr, uid, ids, context):
             if not doc.orientador_id.user_id:
                 raise osv.except_osv(
-                    "Usuário não encontrado",
-                    "O registro no núcleo do atual orientador não possui login de usuário.")
+                    u"Usuário não encontrado",
+                    u"O registro no núcleo do atual orientador não possui login de usuário.")
             group.write({"users": [(4, doc.orientador_id.user_id.id)]})
-
-    def remove_grupo_orientador(self, cr, uid, ids=None, perfis=None, context=None):
-        """
-        Remove um orientador de disciplina do grupo de permissões se não tiver mais nenhum vínculo com disciplinas.
-
-        :raise osv.except_osv: Se perfil do mesmo não tiver um usuário.
-        """
-        group = self.pool.get("ir.model.data").get_object(
-            cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_orientador", context
-        )
-        perfil_model = self.pool.get('ud.perfil')
-        if perfis:
-            sql = '''
-            SELECT
-                usu.id
-            FROM
-                %(per)s per LEFT JOIN %(doc)s doc ON (doc.perfil_id = per.id)
-                    INNER JOIN %(pes)s pes ON (per.ud_papel_id = pes.id)
-                        INNER JOIN %(res)s res ON (pes.resource_id = res.id)
-                            INNER JOIN %(usu)s usu ON (res.user_id = usu.id)
-            WHERE
-                per.id in (%(perfis)s) AND doc.id is null;
-            ''' % {
-                'doc': self._table,
-                'per': perfil_model._table,
-                'pes': self.pool.get('ud.employee')._table,
-                'res': self.pool.get('resource.resource')._table,
-                'usu': self.pool.get('res.users')._table,
-                'perfis': str(perfis).lstrip('([').rstrip(']),').replace('L', '')
-            }
-            cr.execute(sql)
-            res = cr.fetchall()
-            if res:
-                for usuario in res:
-                    group.write({"users": [(3, usuario[0])]})
-        if ids:
-            for doc in self.browse(cr, uid, ids, context):
-                perfis = perfil_model.search(cr, SUPERUSER_ID, [('ud_papel_id', '=', doc.orientador_id.id)])
-                if not self.search_count(cr, SUPERUSER_ID, [('perfil_id', 'in', perfis)]):
-                    group.write({"users": [(3, doc.orientador_id.user_id.id)]})
 
     # Método para botões na view
     def ativar(self, cr, uid, ids, context=None):

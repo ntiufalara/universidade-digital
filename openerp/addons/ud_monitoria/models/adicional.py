@@ -266,6 +266,55 @@ class DisciplinaMonitoria(osv.Model):
             args += [('id', 'in', map(lambda l: l[0], cr.fetchall()))]
         return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
+    def create(self, cr, uid, vals, context=None):
+        res = super(DisciplinaMonitoria, self).create(cr, uid, vals, context)
+        self.add_grupo_orientador(cr, uid, [res], context)
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        orientadores = None
+        if 'perfil_id' in vals:
+            if isinstance(ids, (int, long)):
+                ids = [ids]
+            orientadores = [disc['perfil_id'] for disc in self.read(cr, uid, ids, ['perfil_id'], load='_classic_write')]
+        super(DisciplinaMonitoria, self).write(cr, uid, vals, context)
+        if orientadores:
+            self.remove_grupo_orientador(cr, uid, perfis=orientadores, context=context)
+            self.add_grupo_orientador(cr, uid, ids, context)
+        return True
+
+    def unlink(self, cr, uid, ids, context=None):
+        """
+        Impede que a disciplina seja deleta caso o orientador possua algum documento. Verifica e remove do grupo de
+        segurança se não houver mais vínculo com disciplinas.
+        """
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        cr.execute('''
+                SELECT EXISTS(
+                    SELECT
+                        doc.id
+                    FROM
+                        %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                    WHERE
+                        disc.id in (%(ids)s)
+                        AND (doc.declaracao is not null OR doc.certificado is not null)
+                );
+                ''' % {
+            'doc': self.pool.get('ud_monitoria.documentos_orientador')._table,
+            'disc': self._table,
+            'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', '')
+        })
+        if cr.fetchone()[0]:
+            raise orm.except_orm(
+                u'Exclusão não permitida!',
+                u'Não é possível excluir disciplinas quando seu orientador possui algum documento anexado.'
+            )
+        perfis = [disc['perfil_id'] for disc in self.read(cr, uid, ids, ['perfil_id'], load='_classic_write')]
+        super(DisciplinaMonitoria, self).unlink(cr, uid, ids, context)
+        self.remove_grupo_orientador(cr, uid, perfis=perfis, context=context)
+        return True
+
     def default_get(self, cr, uid, fields_list, context=None):
         """
         === Extensão do método osv.Model.default_get
@@ -385,32 +434,73 @@ class DisciplinaMonitoria(osv.Model):
             return map(lambda l: l[0], cr.fetchall())
         return super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
 
-    def unlink(self, cr, uid, ids, context=None):
+    # Adição e remoção do grupo de segurança
+    def add_grupo_orientador(self, cr, uid, ids, context=None):
         """
-        Verifica se o orientador da disciplina possui algum documento anexado. Se existir, uma exceção é lançada.
+        Adiciona um orientandor no grupo de permissões.
+
+        :raise orm.except_orm: Se perfil do orientador não possuir vínculo com algum usuário.
         """
-        ids = ids if isinstance(ids, (list, tuple)) else [ids]
-        cr.execute('''
-        SELECT EXISTS(
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        group = self.pool.get('ir.model.data').get_object(
+            cr, SUPERUSER_ID, 'ud_monitoria', 'group_ud_monitoria_orientador', context
+        )
+        for disc in self.browse(cr, uid, ids, context):
+            if not disc.orientador_id.user_id:
+                if disc.orientador_id.cpf:
+                    comp = '(CPF: %s)' % disc.orientador_id.cpf
+                else:
+                    comp = '(SIAPE: %s)' % disc.perfil_id.matricula
+                raise orm.except_orm(
+                    u'Usuário não encontrado',
+                    u'O(a) orientador(a) "%s" %s não possui login de usuário.' % (disc.orientador_id.name, comp)
+                )
+            group.write({'users': [(4, disc.orientador_id.user_id.id)]})
+
+    def remove_grupo_orientador(self, cr, uid, ids=None, perfis=None, context=None):
+        """
+        Remove um orientador do grupo de permissões se não tiver mais nenhum vínculo com disciplinas.
+        """
+        group = self.pool.get('ir.model.data').get_object(
+            cr, SUPERUSER_ID, 'ud_monitoria', 'group_ud_monitoria_orientador', context
+        )
+        perfil_model = self.pool.get('ud.perfil')
+        if perfis:
+            sql = '''
             SELECT
-                doc.id
+                usu.id
             FROM
-                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                %(per)s per LEFT JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                    INNER JOIN %(pes)s pes ON (per.ud_papel_id = pes.id)
+                        INNER JOIN %(res)s res ON (pes.resource_id = res.id)
+                            INNER JOIN %(usu)s usu ON (res.user_id = usu.id)
             WHERE
-                disc.id in (%(ids)s)
-                AND (doc.declaracao is not null OR doc.certificado is not null)
-        );
-        ''' % {
-            'doc': self.pool.get('ud_monitoria.documentos_orientador')._table,
-            'disc': self._table,
-            'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', '')
-        })
-        if cr.fetchone()[0]:
-            raise orm.except_orm(
-                u'Exclusão não permitida!',
-                u'Não é possível excluir disciplinas quando seu orientador possui algum documento anexado.'
-            )
-        return super(DisciplinaMonitoria, self).unlink(cr, uid, ids, context)
+                per.id in (%(perfis)s) AND disc.id is null;
+            ''' % {
+                'disc': self._table,
+                'per': perfil_model._table,
+                'pes': self.pool.get('ud.employee')._table,
+                'res': self.pool.get('resource.resource')._table,
+                'usu': self.pool.get('res.users')._table,
+                'perfis': str(perfis).lstrip('([').rstrip(']),').replace('L', '')
+            }
+            cr.execute(sql)
+            res = cr.fetchall()
+            if res:
+                remove = []
+                for usuario in res:
+                    remove.append((3, usuario[0]))
+                if remove:
+                    group.write({'users': remove})
+        if ids:
+            remove = []
+            for doc in self.browse(cr, uid, ids, context):
+                perfis = perfil_model.search(cr, SUPERUSER_ID, [('ud_papel_id', '=', doc.orientador_id.id)])
+                if not self.search_count(cr, SUPERUSER_ID, [('perfil_id', 'in', perfis)]) and doc.orientador_id.user_id:
+                    remove.append((3, doc.orientador_id.user_id.id))
+            if remove:
+                group.write({'users': remove})
 
     # Validadores
     def valida_datas(self, cr, uid, ids, context=None):
