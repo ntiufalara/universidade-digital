@@ -212,6 +212,13 @@ class Semestre(osv.Model):
         cr.execute(sql % {'status': 'encerrado', 'condicao': "data_fim < '%(hj)s'" % {'hj': hoje}})
         return True
 
+    def garantir_permissoes_orientadores(self, cr, uid, ids, context=None):
+        """
+        Ação temporária para dar permissão aos orientadores.
+        """
+        disc_model = self.pool.get('ud_monitoria.disciplina')
+        disc_model.add_grupo_orientador(cr, uid, disc_model.search(cr, uid, []), context)
+        return True
 
 class Ocorrencia(osv.Model):
     _name = "ud_monitoria.ocorrencia"

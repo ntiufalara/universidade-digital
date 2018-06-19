@@ -124,6 +124,10 @@
                         <button name="%(ud_monitoria.action_ud_monitoria_disciplina)d" type="action" string="Disciplinas"
                                 groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                                 context="{'disciplinas_semestre': True}" attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button name="garantir_permissoes_orientadores" string="Permissões de Orientadores" type="object"
+                                groups="ud_monitoria.group_ud_monitoria_administrador"
+                                attrs="{'invisible': ['|', ('is_active', '=', True), ('id', '=', False)]}"/>
+
                     </header>
                     <field name="id"/>
                     <group col="4">
