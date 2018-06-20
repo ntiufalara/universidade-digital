@@ -93,7 +93,7 @@ class CadastroMonitoria(http.Controller):
             except ValueError as e:
                 return template.render({
                     'campi': campi,
-                    'erro': e.message.decode('UTF-8'),
+                    'erro': e.message,
                     'values': kwargs
                 })
             except Exception as e:
