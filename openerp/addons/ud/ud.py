@@ -542,8 +542,8 @@ class Employee(osv.osv):
     _constraints = [
         # (lambda self, *args, **kwargs: self._obrigar_papel(*args, **kwargs), 'Pessoa precisa ter pelo menos um papel!', [u'Papéis']),
         (lambda self, *args, **kwargs: self._valida_cpf(*args, **kwargs), u"CPF inválido! Verifique se está correto. Ex.: 111.111.111-00", ["\nCPF"]),
-        (lambda self, *args, **kwargs: self._valida_email(*args, **kwargs),
-         u"E-mail inválido! Verifique se está correto e se não há espaços", ["E-mail"]),
+        #(lambda self, *args, **kwargs: self._valida_email(*args, **kwargs),
+        #u"E-mail inválido! Verifique se está correto e se não há espaços", ["E-mail"]),
     ]
 
     _defaults = {
