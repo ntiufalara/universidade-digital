@@ -605,6 +605,11 @@ class Employee(osv.osv):
             self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID:
+            args = [('user_id', '=', uid)] + (args or [])
+        return super(Employee, self).search(cr, uid, args, offset, limit, order, context, count)
+
     def _criar_usuario(self, cr, uid, ids, vals=None, context=None):
         context = context or {}
         if context.get("nao_criar_usuario", False):
