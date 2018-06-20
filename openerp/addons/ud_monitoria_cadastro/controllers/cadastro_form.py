@@ -18,7 +18,7 @@ class CadastroMonitoria(http.Controller):
 
     # Os mesmos campos disponníveis no formulário, para validação
     campos = ['nome_completo', 'matricula', 'cpf', 'rg', 'email', 'celular', 'campus', 'polo',
-              'curso', 'senha','confirma_senha']
+              'curso', 'senha', 'confirma_senha']
 
     template_dir = join(dirname(dirname(__file__)), 'static', 'src', 'html')
     jinja2_env = jinja2.Environment(
@@ -55,6 +55,7 @@ class CadastroMonitoria(http.Controller):
                 ir_model_obj = req.session.model('ir.model.data')
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
                 grupo_monitor = grupo_monitor_recs and grupo_monitor_recs[1] or False
+                _logger.info(u'Carregando...')
                 usuario = User.create({
                     'email': kwargs.get('email'),
                     'login': kwargs.get('login'),
@@ -62,6 +63,8 @@ class CadastroMonitoria(http.Controller):
                     'name': kwargs.get('nome_completo'),
                     'groups_id': [[5], [4, grupo_monitor]]
                 })
+
+                _logger.info(u'Usuário cadastrado')
 
                 pessoa = Pessoa.create({
                     'name': kwargs.get('nome_completo'),
@@ -72,6 +75,8 @@ class CadastroMonitoria(http.Controller):
                     'work_phone': kwargs.get('outro_telefone'),
                     'user_id': usuario
                 })
+
+                _logger.info(u'Pessoa cadastrado')
 
                 Perfil.create({
                     'tipo': 'a',
@@ -88,36 +93,37 @@ class CadastroMonitoria(http.Controller):
             except ValueError as e:
                 return template.render({
                     'campi': campi,
-                    'erro': e.message.decode('UTF-8'),
+                    'erro': e.message,
                     'values': kwargs
                 })
             except Exception as e:
-                _logger.error(e.__str__())
+                _logger.error(e)
                 return template.render({
                     'campi': campi,
-                    'erro': "Aconteceu um erro inesperado, por favor, entre em contato com o NTI para mais informações",
+                    'erro': u"Aconteceu um erro inesperado, por favor, entre em contato com o NTI do Campus Arapiraca "
+                            u"para mais informações. marcos.neto@nti.ufal.br",
                     'values': kwargs
                 })
 
     def validate(self, data):
         for campo in self.campos:
             if not data.get(campo):
-                raise ValueError("O campo: {} é obrigatório".format(campo.capitalize().replace('_', ' ')))
+                raise ValueError(u"O campo: {} é obrigatório".format(campo.capitalize().replace('_', ' ')))
         # verificando nome completo
         if len(data.get('nome_completo').split(' ')) < 2:
-            raise ValueError('O nome completo precisa ter mais de uma palavra.')
+            raise ValueError(u'O nome completo precisa ter mais de uma palavra.')
 
         # valida CPF
         Utils.validar_cpf(data.get('cpf').decode('UTF-8').replace('.', '').replace('-', ''))
         data['login'] = data.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
         # valida o número de telefone
         if len(data.get('celular')) < 11:
-            raise ValueError('Verifique se o número de celular está correto e tente novamente')
+            raise ValueError(u'Verifique se o número de celular está correto e tente novamente')
         if data.get('outro_telefone') and len(data.get('outro_telefone')) < 10:
-            raise ValueError('Verifique se o número no campo "Outro telefone" está correto e tente novamente')
+            raise ValueError(u'Verifique se o número no campo "Outro telefone" está correto e tente novamente')
         # valida senhas
         if data.get('senha') != data.get('confirma_senha'):
-            raise ValueError('A confirmação de senha não confere, a senha e a confirmação deve ser iguais')
+            raise ValueError(u'A confirmação de senha não confere, a senha e a confirmação deve ser iguais')
         Utils.validate_password(data.get('senha'))
 
 
