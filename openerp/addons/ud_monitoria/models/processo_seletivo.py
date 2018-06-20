@@ -1,5 +1,5 @@
 # coding: utf-8
-from datetime import datetime
+from datetime import datetime, timedelta
 from re import finditer
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv, orm
@@ -334,7 +334,7 @@ class ProcessoSeletivo(osv.Model):
         Impede a antecipação da data de encerramento do processo seletivo caso ele esteja em andamento ou encerrado e
         adiamento da data final para uma data anterior a atual.
 
-        :raise osv.except_osv: Caso haja a tentantiva de alterar para um semestre inativo ou tentativa indevida de
+        :raise orm.except_orm: Caso haja a tentantiva de alterar para um semestre inativo ou tentativa indevida de
                                antecipação ou adiamento da data de encerramento.
         """
         if "semestre_id" in vals:
@@ -349,8 +349,15 @@ class ProcessoSeletivo(osv.Model):
             for ps in self.browse(cr, uid, ids, context):
                 if ps.state in ["andamento", "encerrado"]:
                     if data_fim < ps.data_fim:
-                        raise osv.except_osv(u"Data Final", u"Não é permitido antecipar a data de finalização quando o "
-                                                            u"processo seletivo já está em andamento ou encerrado.")
+                        raise orm.except_orm(
+                            u"Data Final",
+                            u"Não é permitido antecipar a data de finalização quando o processo seletivo já está em "
+                            u"andamento ou encerrado.")
+                    elif ps.state == 'encerrado' and (datetime.strptime(ps.data_fim, DEFAULT_SERVER_DATE_FORMAT).date() + timedelta(7)) < data_hoje(self, cr, uid):
+                        raise orm.except_orm(
+                            u'Data Final',
+                            u'Fora do prazo de 7 dias, após o encerramento, para reabertura do processo seletivo.'
+                        )
                     elif datetime.strptime(data_fim, DEFAULT_SERVER_DATE_FORMAT).date() < datetime.utcnow().date():
                         raise osv.except_osv(u"Data Final", u"A data final do processo seletivo deve ser maior ou "
                                                             u"igual a data atual.")
