@@ -56,13 +56,13 @@ class CadastroMonitoria(http.Controller):
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
                 grupo_monitor = grupo_monitor_recs and grupo_monitor_recs[1] or False
                 _logger.info(u'Carregando...')
-                # usuario = User.create({
-                #     'email': kwargs.get('email'),
-                #     'login': kwargs.get('login'),
-                #     'password': kwargs.get('senha'),
-                #     'name': kwargs.get('nome_completo'),
-                #     'groups_id': [[5], [4, grupo_monitor]]
-                # })
+                usuario = User.create({
+                    'email': kwargs.get('email'),
+                    'login': kwargs.get('login'),
+                    'password': kwargs.get('senha'),
+                    'name': kwargs.get('nome_completo'),
+                    'groups_id': [[5], [4, grupo_monitor]]
+                })
 
                 _logger.info(u'Usuário cadastrado')
 
@@ -73,7 +73,7 @@ class CadastroMonitoria(http.Controller):
                     'work_email': kwargs.get('email'),
                     'mobile_phone': kwargs.get('celular'),
                     'work_phone': kwargs.get('outro_telefone'),
-                    # 'user_id': usuario
+                    'user_id': usuario
                 })
 
                 _logger.info(u'Pessoa cadastrado')
