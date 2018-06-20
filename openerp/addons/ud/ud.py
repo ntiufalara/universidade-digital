@@ -585,6 +585,11 @@ class Employee(osv.osv):
 
     def create(self, cr, uid, vals, context=None):
         context = context or {}
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID:
+            raise orm.except_orm(
+                u'Acesso Negado',
+                u'Você não possui permissão para realizar essa ação.'
+            )
         context["ud_employee"] = context.get("ud_employee", True)
         res = super(Employee, self).create(cr, uid, vals, context)
         self._criar_usuario(cr, uid, res, vals, context)
@@ -592,12 +597,22 @@ class Employee(osv.osv):
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or {}
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID:
+            raise orm.except_orm(
+                u'Acesso Negado',
+                u'Você não possui permissão para realizar essa ação.'
+            )
         context["ud_employee"] = context.get("ud_employee", True)
         super(Employee, self).write(cr, uid, ids, vals, context)
         self._criar_usuario(cr, uid, ids, vals, context)
         return True
 
     def unlink(self, cr, uid, ids, context=None):
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID:
+            raise orm.except_orm(
+                u'Acesso Negado',
+                u'Você não possui permissão para realizar essa ação.'
+            )
         if ConfiguracaoUsuarioUD.get_exclusao_cascata(self, cr, uid, context):
             usuarios = [
                 pessoa.resource_id.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.resource_id.user_id.id != SUPERUSER_ID
@@ -606,7 +621,7 @@ class Employee(osv.osv):
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID:
+        if (context or {}).get('apenas_administradores', False) and (uid != SUPERUSER_ID or not self.user_has_groups(cr, uid, 'base.admin_ud')):
             args = [('user_id', '=', uid)] + (args or [])
         return super(Employee, self).search(cr, uid, args, offset, limit, order, context, count)
 
