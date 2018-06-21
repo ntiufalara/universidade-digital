@@ -47,43 +47,35 @@ class CadastroMonitoria(http.Controller):
                 # Valida todos os campos
                 self.validate(kwargs)
                 # Conclui o cadastro
-                User = req.session.model('res.users')
+                # User = req.session.model('res.users')
                 Pessoa = req.session.model('ud.employee')
-                Perfil = req.session.model('ud.perfil')
+                # Perfil = req.session.model('ud.perfil')
 
                 # Busca pelo grupo de permissões "Monitor/Tutor"
                 ir_model_obj = req.session.model('ir.model.data')
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
                 grupo_monitor = grupo_monitor_recs and grupo_monitor_recs[1] or False
                 _logger.info(u'Carregando...')
-                usuario = User.create({
-                    'email': kwargs.get('email'),
-                    'login': kwargs.get('login'),
-                    'password': kwargs.get('senha'),
-                    'name': kwargs.get('nome_completo'),
-                    'groups_id': [[5], [4, grupo_monitor]]
-                })
+                # usuario = User.create({
+                #     'email': kwargs.get('email'),
+                #     'login': kwargs.get('login'),
+                #     'password': kwargs.get('senha'),
+                #     'name': kwargs.get('nome_completo'),
+                #     'groups_id': [[5], [4, grupo_monitor]]
+                # })
+                #
+                # _logger.info(u'Usuário cadastrado')
 
-                _logger.info(u'Usuário cadastrado')
+                pessoa = Pessoa.cria_pessoa_grupo(kwargs, grupo_monitor)
 
-                pessoa = Pessoa.create({
-                    'name': kwargs.get('nome_completo'),
-                    'cpf': kwargs.get('cpf'),
-                    'rg': kwargs.get('rg'),
-                    'work_email': kwargs.get('email'),
-                    'mobile_phone': kwargs.get('celular'),
-                    'work_phone': kwargs.get('outro_telefone'),
-                    'user_id': usuario
-                })
-
-                _logger.info(u'Pessoa cadastrado')
-
-                Perfil.create({
-                    'tipo': 'a',
-                    'matricula': kwargs.get('matricula'),
-                    'ud_cursos': kwargs.get('curso'),
-                    'ud_papel_id': pessoa
-                }, {'ud_employee': pessoa})
+                # _logger.info(u'Pessoa cadastrado')
+                #
+                # Perfil.create({
+                #     'tipo': 'a',
+                #     'matricula': kwargs.get('matricula'),
+                #     'ud_cursos': kwargs.get('curso'),
+                #     'ud_papel_id': pessoa
+                # }, {'ud_employee': pessoa})
 
                 return template.render({
                     'campi': campi,
@@ -110,7 +102,7 @@ class CadastroMonitoria(http.Controller):
             if not data.get(campo):
                 raise ValueError(u"O campo: {} é obrigatório".format(campo.capitalize().replace('_', ' ')))
         # verificando nome completo
-        if len(data.get('nome_completo').split(' ')) < 2:
+        if data.get('nome_completo') and len(data.get('nome_completo').split(' ')) < 2:
             raise ValueError(u'O nome completo precisa ter mais de uma palavra.')
 
         # valida CPF

@@ -81,7 +81,7 @@ class Banco(osv.osv):
         return [
             (banco["id"], bancos.get(banco["banco"], '%s,%d' % (self._name, banco['id'])))
             for banco in self.read(cr, uid, ids, ["banco"], context=context, load="_classic_write")
-            ]
+        ]
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         """
@@ -121,7 +121,7 @@ class DadosBancarios(osv.osv):
     }
 
     _rec_name = "banco_id"
-    
+
     _constraints = [
         (lambda self, *args, **kwargs: self.valida_dados(*args, **kwargs),
          u"Já existe um registro com essas informações!", [u"Dados Bancários"]),
@@ -210,7 +210,7 @@ class DadosBancarios(osv.osv):
             if self.search(cr, uid, args, context=context):
                 return False
         return True
-    
+
     def onchange_banco(self, cr, uid, ids, banco_id, context=None):
         """
         Ao atualizar o banco do registro atual, ele irá atualizar uns campos funcionais instantaneamente para mostrar
@@ -354,7 +354,8 @@ class Curso(osv.osv):
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
               ("v", u"Vespertino"), ("n", u"Noturno"), ]
-    _MODALIDADE = [("l", u"Licenciatura"), ("lp", u"Licenciatura Plena"), ("b", u"Bacharelado"), ('e', u'Especialização')]
+    _MODALIDADE = [("l", u"Licenciatura"), ("lp", u"Licenciatura Plena"), ("b", u"Bacharelado"),
+                   ('e', u'Especialização')]
 
     _columns = {
         'name': fields.char(u'Nome', size=40, help=u"Ex.: Ciência da Computação", required=True),
@@ -541,9 +542,10 @@ class Employee(osv.osv):
 
     _constraints = [
         # (lambda self, *args, **kwargs: self._obrigar_papel(*args, **kwargs), 'Pessoa precisa ter pelo menos um papel!', [u'Papéis']),
-        (lambda self, *args, **kwargs: self._valida_cpf(*args, **kwargs), u"CPF inválido! Verifique se está correto. Ex.: 111.111.111-00", ["\nCPF"]),
-        #(lambda self, *args, **kwargs: self._valida_email(*args, **kwargs),
-        #u"E-mail inválido! Verifique se está correto e se não há espaços", ["E-mail"]),
+        (lambda self, *args, **kwargs: self._valida_cpf(*args, **kwargs),
+         u"CPF inválido! Verifique se está correto. Ex.: 111.111.111-00", ["\nCPF"]),
+        # (lambda self, *args, **kwargs: self._valida_email(*args, **kwargs),
+        # u"E-mail inválido! Verifique se está correto e se não há espaços", ["E-mail"]),
     ]
 
     _defaults = {
@@ -585,7 +587,8 @@ class Employee(osv.osv):
 
     def create(self, cr, uid, vals, context=None):
         context = context or {}
-        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid,
+                                                                                                             'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
@@ -597,7 +600,8 @@ class Employee(osv.osv):
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or {}
-        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid,
+                                                                                                             'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
@@ -608,20 +612,25 @@ class Employee(osv.osv):
         return True
 
     def unlink(self, cr, uid, ids, context=None):
-        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr,
+                                                                                                                     uid,
+                                                                                                                     'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
             )
         if ConfiguracaoUsuarioUD.get_exclusao_cascata(self, cr, uid, context):
             usuarios = [
-                pessoa.resource_id.user_id.id for pessoa in self.browse(cr, uid, ids, context) if pessoa.resource_id.user_id.id != SUPERUSER_ID
+                pessoa.resource_id.user_id.id for pessoa in self.browse(cr, uid, ids, context) if
+                pessoa.resource_id.user_id.id != SUPERUSER_ID
             ]
             self.pool.get('res.users').unlink(cr, uid, usuarios, context=context)
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr,
+                                                                                                                     uid,
+                                                                                                                     'base.admin_ud'):
             args = [('user_id', '=', uid)] + (args or [])
         return super(Employee, self).search(cr, uid, args, offset, limit, order, context, count)
 
@@ -656,13 +665,53 @@ class Employee(osv.osv):
                     pessoa.write({"user_id": usuario})
             if not criado:
                 dados = {}
-                if vals.get("name", False) and ConfiguracaoUsuarioUD.get_atualizar_pessoa_usuario_name(self, cr, uid, context):
+                if vals.get("name", False) and ConfiguracaoUsuarioUD.get_atualizar_pessoa_usuario_name(self, cr, uid,
+                                                                                                       context):
                     dados["name"] = vals["name"]
                 if vals.get("cpf", False) and ConfiguracaoUsuarioUD.get_atualizar_login_cpf(self, cr, uid, context):
                     dados["login"] = pessoa.cpf.replace(".", "").replace("-", "")
                 usuario = usuario or pessoa.resource_id.user_id.id
                 if usuario and dados:
                     user_model.write(cr, SUPERUSER_ID, usuario, dados, context)
+
+    def cria_pessoa_grupo(self, cr, uid, vals, group_id):
+        """
+        Cria usuário e pessoa e adiciona no grupo
+        vals: nome_completo, email, senha, login, cpf, rg, celular, outro_telefone, matricula, curso
+        :return:
+        """
+        user = self.pool.get('res.users')
+        perfil = self.pool.get('ud.perfil')
+
+        context = {'nao_criar_usuario': True}
+
+        if not vals.get('login', False):
+            vals['login'] = vals.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
+
+        usuario = user.create(cr, SUPERUSER_ID, {
+            'email': vals.get('email'),
+            'login': vals.get('login'),
+            'password': vals.get('senha'),
+            'name': vals.get('nome_completo'),
+            'groups_id': [[5], [4, group_id]]
+        }, {'usuario_ud': False})
+
+        pessoa = self.create(cr, SUPERUSER_ID, {
+            'name': vals.get('nome_completo'),
+            'cpf': vals.get('cpf'),
+            'rg': vals.get('rg'),
+            'work_email': vals.get('email'),
+            'mobile_phone': vals.get('celular'),
+            'work_phone': vals.get('outro_telefone'),
+            'user_id': usuario
+        }, {'nao_criar_usuario': True})
+
+        perf = perfil.create(cr, SUPERUSER_ID, {
+            'tipo': 'a',
+            'matricula': vals.get('matricula'),
+            'ud_cursos': vals.get('curso'),
+            'ud_papel_id': pessoa
+        }, {'ud_employee': pessoa})
 
     def _get_default_image(self, cr, uid, context=None):
         """
@@ -683,6 +732,7 @@ class Employee(osv.osv):
                 dv += int(cpf[i]) * (11 - (i + (-(pos_dv + 1))))
             dv %= 11
             return 0 if dv < 2 else 11 - dv
+
         padrao = re.compile("^\d{3}\.\d{3}\.\d{3}-\d{2}$")
         for pessoa in self.browse(cr, uid, ids, context=context):
             cpf = pessoa.cpf
