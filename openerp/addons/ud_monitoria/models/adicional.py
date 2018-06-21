@@ -310,7 +310,7 @@ class DisciplinaMonitoria(osv.Model):
                 u'Exclusão não permitida!',
                 u'Não é possível excluir disciplinas quando seu orientador possui algum documento anexado.'
             )
-        perfis = [disc['perfil_id'] for disc in self.read(cr, uid, ids, ['perfil_id'], load='_classic_write')]
+        perfis = list(set([disc['perfil_id'] for disc in self.read(cr, uid, ids, ['perfil_id'], load='_classic_write')]))
         super(DisciplinaMonitoria, self).unlink(cr, uid, ids, context)
         self.remove_grupo_orientador(cr, uid, perfis=perfis, context=context)
         return True
@@ -325,9 +325,13 @@ class DisciplinaMonitoria(osv.Model):
         res = super(DisciplinaMonitoria, self).default_get(cr, uid, fields_list, context)
         if context.get('bolsas_curso_id', False):
             res['bolsas_curso_id'] = context['bolsas_curso_id']
-            res['semestre_id'] = self.pool.get('ud_monitoria.bolsas_curso').read(
+            res['semestre_id'] = context.get("semestre_id", False) or self.pool.get('ud_monitoria.bolsas_curso').read(
                 cr, SUPERUSER_ID, context['bolsas_curso_id'], ['semestre_id'], load='_classic_write'
             )['semestre_id']
+        elif context.get("semestre_id", None):
+            res['semestre_id'] = context['semestre_id']
+        elif context.get('active_model', False) == 'ud_monitoria.semestre' and context.get('active_id', False):
+            res['semestre_id'] = context['active_id']
         if context.get("coordenador_monitoria_curso", False):
             if not context.get("semestre_id", False):
                 return res
@@ -355,8 +359,6 @@ class DisciplinaMonitoria(osv.Model):
         """
         context = context or {}
         res = super(DisciplinaMonitoria, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        if 'perfil_id' in res["fields"] and 'data_inicial' in res["fields"]:
-            a = 1
         if 'bolsas_curso_id' in res["fields"]:
             domain_temp = res["fields"]["bolsas_curso_id"].get("domain", [])
             if isinstance(domain_temp, str):
@@ -418,6 +420,8 @@ class DisciplinaMonitoria(osv.Model):
             if not semestre:
                 return []
             res = super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
+            if not res:
+                return []
             cr.execute('''
             SELECT
                 disc.id
@@ -471,7 +475,7 @@ class DisciplinaMonitoria(osv.Model):
             SELECT
                 usu.id
             FROM
-                %(per)s per LEFT JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                %(per)s per LEFT JOIN %(disc)s disc ON (per.id = disc.perfil_id)
                     INNER JOIN %(pes)s pes ON (per.ud_papel_id = pes.id)
                         INNER JOIN %(res)s res ON (pes.resource_id = res.id)
                             INNER JOIN %(usu)s usu ON (res.user_id = usu.id)
