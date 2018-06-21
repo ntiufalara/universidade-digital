@@ -22,22 +22,22 @@
 
 {
     "name": "Monitoria (UD)",
-    "version": "1.1",
+    "version": "1.1.1",
     "category": u"Universidade Digital",
     "summary": u"Gerenciamento de Monitores e Tutores",
     "licence": "AGPLv3",
-    "description": u"""Módulo de Monitoria
-===================
-Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.""",
+    "description": u'Módulo de Monitoria\n'
+                   u'===================\n'
+                   u'Esse módulo irá permitir a criação e gerenciamento de Processos Seletivo, '
+                   u'suas inscrições e monitores/tutores com seus respectivos orientadores e disciplinas.',
     "author": u"Cloves Oliveira",
     "data": [
         # Dados Iniciais
-        # "data/cron.xml",
+        "data/cron.xml",
         "security/ud_monitoria_security.xml",
         "security/ir.model.access.csv",
         # Wizards
         "wizards/alteracao_bolsas_wizard_view.xml",
-        "wizards/inscricao_wizard_view.xml",
         "wizards/desligamento_wizard_view.xml",
         "wizards/disciplinas_para_ps_view.xml",
         # Views
