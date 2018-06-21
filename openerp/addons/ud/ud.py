@@ -585,7 +585,7 @@ class Employee(osv.osv):
 
     def create(self, cr, uid, vals, context=None):
         context = context or {}
-        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID:
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
@@ -597,7 +597,7 @@ class Employee(osv.osv):
 
     def write(self, cr, uid, ids, vals, context=None):
         context = context or {}
-        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID:
+        if context.get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
@@ -608,7 +608,7 @@ class Employee(osv.osv):
         return True
 
     def unlink(self, cr, uid, ids, context=None):
-        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID:
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
             raise orm.except_orm(
                 u'Acesso Negado',
                 u'Você não possui permissão para realizar essa ação.'
@@ -621,7 +621,7 @@ class Employee(osv.osv):
         return super(Employee, self).unlink(cr, uid, ids, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        if (context or {}).get('apenas_administradores', False) and (uid != SUPERUSER_ID or not self.user_has_groups(cr, uid, 'base.admin_ud')):
+        if (context or {}).get('apenas_administradores', False) and uid != SUPERUSER_ID and not self.user_has_groups(cr, uid, 'base.admin_ud'):
             args = [('user_id', '=', uid)] + (args or [])
         return super(Employee, self).search(cr, uid, args, offset, limit, order, context, count)
 
