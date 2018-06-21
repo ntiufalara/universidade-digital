@@ -97,6 +97,18 @@ class Inscricao(osv.Model):
                 res[inscricao.id] = media_ponderada(inscricao.pontuacoes_ids)
         return res
 
+    def get_concorrencia(self, cr, uid, ids, campos, args, context=None):
+        res = {}
+        for insc in self.browse(cr, uid, ids, context):
+            qtd = self.search_count(
+                cr, uid, [('disciplina_id', '=', insc.disciplina_id.id), ('bolsista', '=', insc.bolsista)]
+            )
+            if insc.bolsista:
+                res[insc.id] = insc.disciplina_id.bolsistas < qtd
+            else:
+                res[insc.id] = insc.disciplina_id.colaboradores < qtd
+        return res
+
     def atualiza_media_pont(self, cr, uid, ids, context=None):
         """
         Gatilho para atualizar a pontuação dada a algum critério avaliativo dessa disciplina.
@@ -144,10 +156,6 @@ class Inscricao(osv.Model):
         'email': fields.related('perfil_id', 'ud_papel_id', 'work_email', string='E-mail', type='char', required=True),
         'whatsapp': fields.char(u'WhatsApp', size=15, required=True),
         # Arquivos
-        'cpf_nome': fields.char(u'Arquivo CPF'),
-        'identidade_nome': fields.char(u'Arquivo RG'),
-        'hist_analitico_nome': fields.char(u'Arquivo Hist. Analítico'),
-        'certidao_vinculo_nome': fields.char(u'Arquivo Certidão de Vínculo'),
         'cpf': fields.binary(u'CPF', required=True),
         'identidade': fields.binary(u'RG', required=True),
         'hist_analitico': fields.binary(u'Hist. Analítico', required=True),
@@ -165,11 +173,17 @@ class Inscricao(osv.Model):
                    'ud_monitoria.criterio_avaliativo': (atualiza_media_peso, ['peso'], 10)},
             help=u'Cálculo da média de acordo com os critérios avaliativos do processo seletivo'
         ),
-        'bolsista': fields.boolean(u'Bolsista'),
+        'bolsista': fields.boolean(u'Bolsista?'),
         'dados_bancarios_id': fields.many2one('ud.dados.bancarios', u'Dados Bancários', ondelete='restrict',
                                               domain='[("ud_conta_id", "=", discente_id)]', context='{"ud_conta_id": discente_id}'),
         'info': fields.text(u'Informações Adicionais', readonly=True),
         'state': fields.selection(_STATES, u'Status', readonly=True, required=True),
+        # Campos de controle
+        'cpf_nome': fields.char(u'Arquivo CPF'),
+        'identidade_nome': fields.char(u'Arquivo RG'),
+        'hist_analitico_nome': fields.char(u'Arquivo Hist. Analítico'),
+        'certidao_vinculo_nome': fields.char(u'Arquivo Certidão de Vínculo'),
+        'com_concorrencia': fields.function(get_concorrencia, type='boolean', string=u'Possui concorrência?'),
     }
     _sql_constraints = [
         ('discente_ps_unique', 'unique(perfil_id,processo_seletivo_id)',
@@ -190,8 +204,10 @@ class Inscricao(osv.Model):
         === Sobrescrita do método osv.Model.search
         Define como inscrição será visualizada em campos many2one.
         """
-        return [(insc.id, u'%s (Matrícula: %s)' % (insc.discente_id.name, insc.perfil_id.matricula))
-                for insc in self.browse(cr, uid, ids, context=context)]
+        res = []
+        for insc in self.browse(cr, SUPERUSER_ID, ids, context=context):
+            res.append((insc.id, u'%s (Matrícula: %s)' % (insc.discente_id.name, insc.perfil_id.matricula)))
+        return res
 
     def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
         """
@@ -230,7 +246,9 @@ class Inscricao(osv.Model):
             if not pessoa:
                 raise orm.except_orm(
                     u'Usuário não cadastrado',
-                    u'O usuário atual não possui registros no núcleo.'
+                    u'O usuário atual (%s) não possui registros no núcleo.' % self.pool.get('res.users').read(
+                        cr, SUPERUSER_ID, uid, ['login'], load='_classic_write'
+                    )['login']
                 )
             if 'perfil_id' in res['fields']:
                 domain = res["fields"]["perfil_id"].get("domain", [])
@@ -295,8 +313,10 @@ class Inscricao(osv.Model):
         """
         Aprova o discente ignorando a pontuação obtida.
 
-        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise' ou se sua inscrição for
-                                aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
+                                Se existir inscrições para bolsista não avaliadas enquanto torna um discente colaborador como bolsista.
         """
         context = context or {}
         perfil_model = self.pool.get('ud.perfil')
@@ -305,6 +325,11 @@ class Inscricao(osv.Model):
         doc_orientador = self.pool.get('ud_monitoria.documentos_orientador')
         hoje = data_hoje(self, cr, uid)
         for insc in self.browse(cr, uid, ids, context):
+            if insc.processo_seletivo_id.status != 'encerrado':
+                raise orm.except_orm(
+                    u'Ação inválida',
+                    u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
+                )
             if insc.state != 'analise':
                 raise orm.except_orm(
                     u'Ação não permitida',
@@ -319,6 +344,31 @@ class Inscricao(osv.Model):
                         insc.disciplina_id.bolsas_curso_id.curso_id.name
                     )
                     insc.write({'info': '%s\n%s' % (insc.info, info)})
+                elif insc.perfil_id.is_bolsista:
+                    raise orm.except_orm(
+                        u'Discente bolsista', u'O discente atual está vinculado a uma bolsa do tipo: "{}"'.format(
+                            TIPOS_BOLSA[insc.perfil_id.tipo_bolsa]
+                        )
+                    )
+                else:
+                    # FIXME: O campo do valor da bolsa no núcleo é um CHAR, se possível, mudar para um FLOAT
+                    perfil_model.write(cr, SUPERUSER_ID, insc.perfil_id.id, {
+                        'is_bolsista': True, 'tipo_bolsa': 'm',
+                        'valor_bolsa': ('%.2f' % insc.processo_seletivo_id.valor_bolsa).replace('.', ',')
+                    })
+                    dados_bancarios_model.write(cr, SUPERUSER_ID, insc.dados_bancarios_id.id, {
+                        'ud_conta_id': insc.discente_id.id
+                    }, context=context)
+                    state = 'bolsista'
+            elif context.pop('bolsista', False):
+                if self.search_count(cr, uid, [
+                    ('processo_seletivo_id', '=', insc.processo_seletivo_id.id), ('id', '!=', insc.id),
+                    ('bolsista', '=', True), ('state', '=', 'analise'),
+                ]):
+                    raise orm.except_orm(
+                        u'Ação bloqueada',
+                        u'A ação será desbloqueada quando não houverem inscrições, para discentes bolsistas, para avaliar e classificar.'
+                    )
                 elif insc.perfil_id.is_bolsista:
                     raise orm.except_orm(
                         u'Discente bolsista', u'O discente atual está vinculado a uma bolsa do tipo: "{}"'.format(
@@ -353,13 +403,27 @@ class Inscricao(osv.Model):
         self.write(cr, SUPERUSER_ID, ids, {'state': 'classificado'}, context)
         return True
 
+    def classificar_direto_bolsa(self, cr, uid, ids, context=None):
+        """
+        Classifica o discente como bolsista, mesmo se for colaborador, ignorando sua média.
+
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
+                                Caso existam inscrições para bolsista não avaliadas.
+        """
+        context = context or {}
+        context['bolsista'] = True
+        return self.classificar_direto(cr, uid, ids, context)
+
     def classificar_direto_s_bolsa(self, cr, uid, ids, context=None):
         """
         Aprova o discente como colaborador ignorando a pontuação obtida. Caso seja para bolsista, após aprovado, o(a)
         discente passa a ser colaborador(a).
 
-        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise' ou se sua inscrição for
-                                aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
         """
         context = context or {}
         context['n_bolsista'] = True
@@ -369,8 +433,10 @@ class Inscricao(osv.Model):
         """
         Aprova o discente baseado na pontuação obtida.
 
-        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise' ou se sua inscrição for
-                                aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
+                                Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
         """
         def valida_media(insc):
             media_minima = insc.processo_seletivo_id.media_minima
@@ -379,13 +445,29 @@ class Inscricao(osv.Model):
                                      u'A média não atingiu o valor mínimo especificado de %.2f' % media_minima)
         return self.classificar_direto(cr, uid, ids, context, valida_media)
 
+    def classificar_media_bolsa(self, cr, uid, ids, context=None):
+        """
+        Classifica o discente como bolsista, mesmo se for colaborador, baseado em sua média.
+
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
+                                Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
+                                Caso existam inscrições para bolsista não avaliadas.
+        """
+        context = context or {}
+        context['bolsista'] = True
+        return self.classificar_media(cr, uid, ids, context)
+
     def classificar_media_s_bolsa(self, cr, uid, ids, context=None):
         """
         Aprova o discente como colaborador baseando na pontuação obtida. Caso seja para bolsista, após aprovado, o(a)
         discente passa a ser colaborador(a).
 
-        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise' ou se sua inscrição for
-                                aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+        :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
+                                Se o processo seletivo não estiver encerrado.
+                                Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
         """
         context = context or {}
         context['n_bolsista'] = True
@@ -396,10 +478,16 @@ class Inscricao(osv.Model):
         Cadastra o documento do discente para o cadastro de reserva.
 
         :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se o processo seletivo não estiver encerrado.
         """
         context = context or {}
         doc_discente = self.pool.get('ud_monitoria.documentos_discente')
         for insc in self.browse(cr, uid, ids, context):
+            if insc.processo_seletivo_id.status != 'encerrado':
+                raise orm.except_orm(
+                    u'Ação inválida',
+                    u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
+                )
             if insc.state != 'analise':
                 raise orm.except_orm(
                     u'Ação não permitida',
@@ -420,22 +508,37 @@ class Inscricao(osv.Model):
         Desclassifica a inscrição.
 
         :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
+                                Se o processo seletivo não estiver encerrado.
         """
         if self.search_count(cr, uid, [('id', 'in', ids), ('state', '!=', 'analise')]):
             raise orm.except_orm(
                 u'Ação não permitida',
                 u'Não é possível mudar o status de inscrições já avaliadas.'
             )
+        cr.execute('''
+        SELECT EXISTS (
+            SELECT
+                insc.id
+            FROM
+                %(insc)s insc INNER JOIN %(ps)s ps ON (insc.processo_seletivo_id = ps.id)
+            WHERE
+                insc.id in (%(ids)s) AND ps.state != 'encerrado'
+        );
+        ''' % {
+            'insc': self._table,
+            'ps': self.pool.get('ud_monitoria.processo_seletivo')._table,
+            'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', '')
+        })
+        if cr.fetchone()[0]:
+            raise orm.except_orm(
+                u'Ação inválida',
+                u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
+            )
         return self.write(cr, uid, ids, {'state': 'desclassificado'}, context)
 
     def acao(self, cr, uid, ids, context=None):
         """
-        Apenas para ser vir como botão.
-        :param cr:
-        :param uid:
-        :param ids:
-        :param context:
-        :return:
+        Apenas para servir para salvar a inscrição quando clicado em no botão.
         """
         return True
 
