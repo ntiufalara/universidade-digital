@@ -1,6 +1,9 @@
 # Pasta de armazenamento do container Docker
 storage/
 
+# Vagrant folder
+.vagrant/
+
 # removendo logs do git
 access.log*
 

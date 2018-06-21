@@ -54,5 +54,9 @@ $(function () {
 
     $('#sucessoModal').modal('show');
 
+    $('#form_cadastro_aluno').submit(function (event) {
+        $('#bt_salvar').attr('disabled', 'true');
+        return true;
+    })
 
 });
