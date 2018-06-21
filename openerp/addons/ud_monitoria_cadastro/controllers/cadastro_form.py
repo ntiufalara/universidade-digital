@@ -74,7 +74,7 @@ class CadastroMonitoria(http.Controller):
                     'mobile_phone': kwargs.get('celular'),
                     'work_phone': kwargs.get('outro_telefone'),
                     'user_id': usuario
-                })
+                }, {'nao_criar_usuario': True})
 
                 _logger.info(u'Pessoa cadastrado')
 
