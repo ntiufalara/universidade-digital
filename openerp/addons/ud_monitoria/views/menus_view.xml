@@ -12,7 +12,9 @@
                   action="action_ud_monitoria_minhas_inscricoes" sequence="3"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_liberacao_disciplina" sequence="5"
                   action="action_ud_monitoria_bolsas_curso_liberacao_disciplina_view"
-                  groups="group_ud_monitoria_coord_disciplina,group_ud_monitoria_administrador"/>
+                  groups="group_ud_monitoria_coord_disciplina"/>
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_demanda" sequence="7"
+                  action="action_ud_monitoria_demanda_view" groups="group_ud_monitoria_coord_disciplina"/>
 
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_horarios_menu" name="Monitores/Tutores"
                   action="action_ud_monitoria_horarios_discente" sequence="9"/>

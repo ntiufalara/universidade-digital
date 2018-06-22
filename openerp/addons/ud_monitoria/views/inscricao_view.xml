@@ -114,14 +114,14 @@
                     </group>
                     <group string="Dados da Inscrição" col="4">
                         <field name="processo_seletivo_id" colspan="2" readonly="1"/>
+                        <field name="tutoria" colspan="2" readonly="1"/>
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
-                        <field name="tutoria" colspan="2" readonly="1"/>
                         <field name="bolsista" colspan="2" readonly="1"/>
                         <field name="dados_bancarios_id" options="{'no_open': true}" colspan="2" readonly="1"/>
                     </group>
                     <group string="Pontuações" col="4">
-                        <field name="pontuacoes_ids" nolabel="1" on_change="onchange_pontuacoes(pontuacoes_ids)" colspan="4" readonly="1"/>
+                        <field name="pontuacoes_ids" nolabel="1" colspan="4" readonly="1"/>
                         <field name="media" colspan="4"/>
                     </group>
                     <group string="Outras Informações" attrs="{'invisible': [('info', '=', False)]}">
@@ -161,17 +161,20 @@
                     </group>
                     <group string="Dados da Inscrição" col="4">
                         <field name="processo_seletivo_id" colspan="2" on_change="onchage_processo_seletivo(processo_seletivo_id)"
-                               attrs="{'readonly': [('id', '!=', False)]}"/>
+                               options="{'no_open': true}" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="tutoria" colspan="2" on_change="onchange_tutoria()"
                                attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="bolsas_curso_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="disciplina_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="bolsas_curso_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
+                        <field name="disciplina_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
                         <field name="bolsista" colspan="2" on_change="onchange_perfil_ou_bolsista(perfil_id, bolsista)"
                                attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="dados_bancarios_id" colspan="2"
+                        <field name="dados_bancarios_id" colspan="2" options="{'no_open': true}"
                                context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'define_usuario': True}"
                                attrs="{'invisible': [('bolsista', '=', False)], 'readonly': ['|', ('discente_id', '=', False), ('id', '!=', False)]}"/>
                     </group>
+                    <div attrs="{'invisible': [('bolsista', '=', False)]}" style="color: red;">
+                        <strong>Atenção:</strong> A conta deve pertencer ao discente e não deve ser do tipo Poupança nem Conta Fácil.
+                    </div>
                     <footer>
                         <button name="acao" string="Inscrever" type="object" class="oe_highlight"/>
                         ou
@@ -189,8 +192,63 @@
             <field name="arch" type="xml">
                 <field name="pontuacoes_ids" position="attributes">
                     <attribute name="readonly"/>
+                    <attribute name="on_change">onchange_pontuacoes(pontuacoes_ids)</attribute>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
                 </field>
+                <xpath expr="//form" position="inside">
+                    <field name="com_concorrencia" invisible="1"/>
+                    <group string="Ações" attrs="{'invisible': [('state', '!=', 'analise')]}">
+                        <div>
+                            Você pode realizar uma das seguintes ações para definir o status do(a) discente:
+                            <ul>
+                                <li>
+                                    Enviar para o <button name="cadastro_reserva" type="object" string="cadastro de reserva" class="oe_link"
+                                                          confirm="Você está prestes a deixar o(a) discente no cadastro de reserva."/>;
+                                </li>
+                                <li attrs="{'invisible': [('bolsista', '=', False)]}">
+                                    <button name="classificar_media_bolsa" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente colaborador(a) como bolsista."/>
+                                    o(a) discente colaborador(a) como bolsista;
+                                </li>
+                                <li attrs="{'invisible': [('bolsista', '=', True)]}">
+                                    <button name="classificar_media_s_bolsa" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente bolsita como colaborador(a)."/>
+                                    o(a) discente bolsista como colaborador(a);
+                                </li>
+                                <li>
+                                    <button name="classificar_media" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente."/> o(a) discente;
+                                </li>
+                                <li>
+                                    <button name="desclassificar" type="object" string="Desclassificar" class="oe_link"
+                                            confirm="Você desclassificará o(a) discente."/> o(a) discente.
+                                </li>
+                            </ul>
+                        </div>
+                        <div attrs="{'invisible': [('com_concorrencia', '=', True)]}"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                            Quando não ha concorrência, é possível utilizar uma das ações abaixo:
+                            <ul>
+                                <li attrs="{'invisible': [('bolsista', '=', False)]}">
+                                    <button name="classificar_bolsa" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente colaborador(a) como bolsista."/>
+                                    o(a) discente colaborador(a) como bolsista;
+                                </li>
+                                <li attrs="{'invisible': [('bolsista', '=', True)]}">
+                                    <button name="classificar_direto_s_bolsa" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente bolsista como colaborador(a)."/>
+                                    o(a) discente bolsista como colaborador(a);
+                                </li>
+                                <li>
+                                    <button name="classificar_direto" type="object" string="Classificar" class="oe_link"
+                                            confirm="Você classificará o(a) discente IGNORANDO sua pontuação."/>
+                                    o(a) discente.
+                                </li>
+                            </ul>
+                        </div>
+                    </group>
+                </xpath>
+
             </field>
         </record>
 

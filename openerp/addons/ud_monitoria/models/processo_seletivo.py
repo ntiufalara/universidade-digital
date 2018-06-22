@@ -1,6 +1,8 @@
 # coding: utf-8
+import logging
 from datetime import datetime, timedelta
 from re import finditer
+
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -9,6 +11,7 @@ from openerp.addons.ud.ud import _TIPOS_BOLSA
 from util import regex_clausula, regex_espacos, regex_order, regex_regra, data_hoje, get_ud_pessoa_id
 
 
+_logger = logging.getLogger('ud_monitoria')
 TIPOS_BOLSA = dict(_TIPOS_BOLSA)
 
 
@@ -149,28 +152,21 @@ class DisciplinaPS(osv.Model):
             args += [('id', 'in', map(lambda l: l[0], cr.fetchall()))]
         return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
-    #
-    # def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
-    #     if not isinstance(args, (list, tuple)):
-    #         args = []
-    #     args += [("disciplina_id", "in", self.pool.get("ud.disciplina").search(cr, SUPERUSER_ID, [("name", operator, name)]))]
-    #     return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
-    #
-    # def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-    #     """
-    #     === Extensão do método osv.Model.search
-    #     Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
-    #     monitoria do curso correspondente.
-    #     """
-    #     if (context or {}).get("coordenador_monitoria_curso", False):
-    #         pessoa_id = get_ud_pessoa_id(self, cr, uid)
-    #         if not pessoa_id:
-    #             return []
-    #         curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
-    #         curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
-    #                                                                       [('curso_id', 'in', curso_ids)])
-    #         args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
-    #     return super(DisciplinaPS, self).search(cr, uid, args, offset, limit, order, context, count)
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        """
+        === Extensão do método osv.Model.search
+        Foi adicionado a opção de filtrar as disciplinas em que o usuário logado esteja vinculado como coordenador de
+        monitoria do curso correspondente.
+        """
+        if (context or {}).get("coordenador_monitoria_curso", False):
+            pessoa_id = get_ud_pessoa_id(self, cr, uid)
+            if not pessoa_id:
+                return []
+            curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
+            curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
+                                                                          [('curso_id', 'in', curso_ids)])
+            args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
+        return super(DisciplinaPS, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         res = super(DisciplinaPS, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
@@ -179,14 +175,8 @@ class DisciplinaPS(osv.Model):
             domain = res["fields"]["disc_monit_id"].get("domain", [])
             if isinstance(domain, str):
                 domain = list(eval(domain))
-            if context.get('coordenador_monitoria_curso'):
-                pessoa_id = get_ud_pessoa_id(self, cr, uid)
-                if pessoa_id:
-                    curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
-                    curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID, [('curso_id', 'in', curso_ids)])
-                    domain.extend([("bolsas_curso_id", "in", curso_ids)])
             if context.get('semestre_id', False):
-                domain.extend([('semestre_id', '=', context['semestre_id'])])
+                domain.insert(0, ('semestre_id', '=', context['semestre_id']))
             res['fields']['disc_monit_id']['domain'] = domain
         return res
 
@@ -467,6 +457,7 @@ class ProcessoSeletivo(osv.Model):
         Atualiza o status dos processos seletivos para demanda, novo e andamento de acordo com suas datas utilizado o
         modelo "ir.cron".
         """
+        _logger.info(u'Atualizando status dos Processos Seletivos...')
         sql = "UPDATE " + self._table + " SET state='%(status)s' WHERE state NOT IN ('invalido', '%(status)s') AND %(condicao)s;"
         hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
         cr.execute(sql % {'status': 'demanda', 'condicao': "prazo_demanda >= '%s'" % hoje})
