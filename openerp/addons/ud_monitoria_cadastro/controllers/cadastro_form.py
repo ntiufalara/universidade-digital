@@ -109,7 +109,7 @@ class CadastroMonitoria(http.Controller):
         Utils.validar_cpf(data.get('cpf').decode('UTF-8').replace('.', '').replace('-', ''))
         data['login'] = data.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
         # valida o número de telefone
-        if len(data.get('celular').replace('(').replace(')').replace(' ').replace('-')) < 11:
+        if len(data.get('celular').replace('(', '').replace(')', '').replace(' ', '').replace('-', '')) < 11:
             raise ValueError(u'Verifique se o número de celular está correto e tente novamente')
         if data.get('outro_telefone') and len(data.get('outro_telefone')) < 10:
             raise ValueError(u'Verifique se o número no campo "Outro telefone" está correto e tente novamente')
