@@ -9,7 +9,6 @@ from openerp.addons.web import http
 from openerp.addons.web.controllers import main
 
 import jinja2
-from jinja2 import select_autoescape
 
 _logger = logging.getLogger(__name__)
 
