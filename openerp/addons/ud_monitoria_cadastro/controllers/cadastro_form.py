@@ -196,6 +196,6 @@ class Utils(object):
             dv1 = calcula_dv1(cpf)
             dv2 = calcula_dv2(cpf)
             if int(cpf[-2]) != dv1 or int(cpf[-1]) != dv2 or cpf[1:] == cpf[:-1]:
-                raise ValueError('CPF Inválido')
+                raise ValueError(u'CPF Inválido')
         else:
-            raise ValueError('CPF não contém 11 digitos')
+            raise ValueError(u'CPF não contém 11 digitos')
