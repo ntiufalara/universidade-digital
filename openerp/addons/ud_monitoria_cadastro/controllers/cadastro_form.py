@@ -24,7 +24,7 @@ class CadastroMonitoria(http.Controller):
     template_dir = join(dirname(dirname(__file__)), 'static', 'src', 'html')
     jinja2_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(template_dir),
-        autoescape=select_autoescape(['html', 'xml'])
+        # autoescape=select_autoescape(['html', 'xml'])
     )
 
     @http.httprequest
