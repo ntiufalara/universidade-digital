@@ -154,9 +154,9 @@ class Utils(object):
         Validate password algorithm
         """
         if len(senha) < 8:
-            raise ValueError("A senha precisa ter mais de %d digitos" % 8)
+            raise ValueError(u"A senha precisa ter mais de %d digitos" % 8)
         elif not re.search(r'[^\d]', senha) and re.search(r'\d', senha):
-            raise ValueError('A senha precisa possuir números e letras')
+            raise ValueError(u'A senha precisa possuir números e letras')
 
     @staticmethod
     def validar_cpf(cpf):

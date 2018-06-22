@@ -683,8 +683,6 @@ class Employee(osv.osv):
         user = self.pool.get('res.users')
         perfil = self.pool.get('ud.perfil')
 
-        context = {'nao_criar_usuario': True}
-
         if not vals.get('login', False):
             vals['login'] = vals.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
 
