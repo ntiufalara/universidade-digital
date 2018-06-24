@@ -343,14 +343,16 @@ class ProcessoSeletivo(osv.Model):
                             u"Data Final",
                             u"Não é permitido antecipar a data de finalização quando o processo seletivo já está em "
                             u"andamento ou encerrado.")
+                    elif datetime.strptime(data_fim, DEFAULT_SERVER_DATE_FORMAT).date() < data_hoje(self, cr, uid):
+                        raise orm.except_orm(
+                            u"Data Final",
+                            u"A data final do processo seletivo deve ser maior ou igual a data atual."
+                        )
                     elif ps.state == 'encerrado' and (datetime.strptime(ps.data_fim, DEFAULT_SERVER_DATE_FORMAT).date() + timedelta(7)) < data_hoje(self, cr, uid):
                         raise orm.except_orm(
                             u'Data Final',
-                            u'Fora do prazo de 7 dias, após o encerramento, para reabertura do processo seletivo.'
+                            u'A reabertura de processos seletivos é permitida se não tiver passado 7 dias após o encerramento.'
                         )
-                    elif datetime.strptime(data_fim, DEFAULT_SERVER_DATE_FORMAT).date() < datetime.utcnow().date():
-                        raise osv.except_osv(u"Data Final", u"A data final do processo seletivo deve ser maior ou "
-                                                            u"igual a data atual.")
         return super(ProcessoSeletivo, self).write(cr, uid, ids, vals, context=context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
