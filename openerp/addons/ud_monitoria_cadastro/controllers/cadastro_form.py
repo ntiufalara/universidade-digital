@@ -22,7 +22,7 @@ class CadastroMonitoria(http.Controller):
 
     template_dir = join(dirname(dirname(__file__)), 'static', 'src', 'html')
     jinja2_env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(template_dir)
+        loader=jinja2.FileSystemLoader(template_dir),
     )
 
     @http.httprequest
@@ -109,7 +109,7 @@ class CadastroMonitoria(http.Controller):
         Utils.validar_cpf(data.get('cpf').decode('UTF-8').replace('.', '').replace('-', ''))
         data['login'] = data.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
         # valida o número de telefone
-        if len(data.get('celular')) < 11:
+        if len(data.get('celular').replace('(', '').replace(')', '').replace(' ', '').replace('-', '')) < 11:
             raise ValueError(u'Verifique se o número de celular está correto e tente novamente')
         if data.get('outro_telefone') and len(data.get('outro_telefone')) < 10:
             raise ValueError(u'Verifique se o número no campo "Outro telefone" está correto e tente novamente')
@@ -154,9 +154,9 @@ class Utils(object):
         Validate password algorithm
         """
         if len(senha) < 8:
-            raise ValueError("A senha precisa ter mais de %d digitos" % 8)
+            raise ValueError(u"A senha precisa ter mais de %d digitos" % 8)
         elif not re.search(r'[^\d]', senha) and re.search(r'\d', senha):
-            raise ValueError('A senha precisa possuir números e letras')
+            raise ValueError(u'A senha precisa possuir números e letras')
 
     @staticmethod
     def validar_cpf(cpf):
@@ -196,6 +196,6 @@ class Utils(object):
             dv1 = calcula_dv1(cpf)
             dv2 = calcula_dv2(cpf)
             if int(cpf[-2]) != dv1 or int(cpf[-1]) != dv2 or cpf[1:] == cpf[:-1]:
-                raise ValueError('CPF Inválido')
+                raise ValueError(u'CPF Inválido')
         else:
-            raise ValueError('CPF não contém 11 digitos')
+            raise ValueError(u'CPF não contém 11 digitos')
