@@ -214,11 +214,26 @@ class Semestre(osv.Model):
 
     def garantir_permissoes_orientadores(self, cr, uid, ids, context=None):
         """
-        Ação temporária para dar permissão aos orientadores.
+        Ação para dar permissão aos orientadores dos semestres correspondentes.
         """
         disc_model = self.pool.get('ud_monitoria.disciplina')
-        disc_model.add_grupo_orientador(cr, uid, disc_model.search(cr, uid, []), context)
+        cr.execute('''
+        SELECT
+            disc.id
+        FROM
+            %(disc)s disc INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
+                INNER JOIN %(sm)s sm ON (bc.semestre_id = sm.id)
+        WHERE
+            sm.id in (%(ids)s)
+        ''' % {
+            'disc': disc_model._table,
+            'bc': self.pool.get('ud_monitoria.bolsas_curso')._table,
+            'sm': self._table,
+            'ids': str(ids).lstrip('([').rstrip(')],').replace('L', '')
+        })
+        disc_model.add_grupo_orientador(cr, uid, [l[0] for l in cr.fetchall()], context)
         return True
+
 
 class Ocorrencia(osv.Model):
     _name = "ud_monitoria.ocorrencia"
