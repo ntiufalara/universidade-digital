@@ -184,12 +184,17 @@ class DadosBancarios(osv.osv):
 
     def default_get(self, cr, uid, fields_list, context=None):
         res = super(DadosBancarios, self).default_get(cr, uid, fields_list, context)
-        if (context or {}).get('define_usuario', False):
+        context = context or {}
+        if context.get('proprietario_conta', False):
+            res['ud_conta_id'] = context['proprietario_conta']
+        elif context.get('proprietario_conta_usuario', False):
             pessoa_id = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
             if not pessoa_id:
                 raise orm.except_orm(
                     u'Ação não permitida',
-                    u'O usuário atual não possui registro no núcleo.'
+                    u'O usuário atual (%s) não possui registro no núcleo.' % self.pool.get('res.users').read(
+                        cr, SUPERUSER_ID, uid, ['login'], load='_classic_write'
+                    )['login']
                 )
             res['ud_conta_id'] = pessoa_id[0]
         return res
