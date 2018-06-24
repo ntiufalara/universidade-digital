@@ -206,20 +206,10 @@ class DisciplinaMonitoria(osv.Model):
                                          string=u'Cadastro de Reserva', multi='disciplina_monitoria_discentes'),
     }
     _constraints = [
-        (lambda cls, *args, **kwargs: cls.valida_datas(*args, **kwargs),
-         u'A data inicial deve ocorrer antes da data final.', [u'Data inicial e Data final']),
-        (lambda cls, *args, **kwargs: cls.valida_bolsas(*args, **kwargs),
-         u'O total de bolsas das disciplinas não pode ultrapassar a quatidade máxima definida em seu curso.', [u'Bolsistas']),
-        (lambda cls, *args, **kwargs: cls.valida_bolsas_utilizadas(*args, **kwargs),
-         u'O número de bolsas não pode ser menor que o número de bolsas utilizadas.', [u'Bolsas utilizadas']),
-        (lambda cls, *args, **kwargs: cls.valida_disciplinas_curso(*args, **kwargs),
-         u'A disciplina deve pertencer ao curso selecionado.', [u'Disciplina(s)']),
-        (lambda cls, *args, **kwargs: cls.valida_disciplina_monitoria(*args, **kwargs),
-         u'Para monitoria, apenas uma disciplina deve ser selecionada.', [u'Disciplina(s)']),
-        (lambda cls, *args, **kwargs: cls.valida_disciplina_tutoria(*args, **kwargs),
-         u'Para tutoria, é possível selecionar até três disciplinas.', [u'Disciplina(s)']),
-        (lambda cls, *args, **kwargs: cls.valida_vagas(*args, **kwargs),
-         u'Não são permitidos valores negativos para o número de vagas.', [u'Bolsistas / Colaboradores']),
+        (lambda cls, *args, **kwargs: cls.valida_datas(*args, **kwargs), u'Datas inválidas.', [u'Data inicial e Data final']),
+        (lambda cls, *args, **kwargs: cls.valida_bolsas(*args, **kwargs), u'Número de bolsistas inválido.', [u'Bolsistas']),
+        (lambda cls, *args, **kwargs: cls.valida_disciplinas(*args, **kwargs), u'Dados inválidos uma ou mais disciplinas', [u'Disciplina(s)']),
+        (lambda cls, *a, **k: cls.valida_vagas(*a, **k), u'Número de vagas inválido.', [u'Bolsistas / Colaboradores']),
     ]
 
     # Métodos sobrescritos
@@ -272,12 +262,20 @@ class DisciplinaMonitoria(osv.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        if 'data_inicial' in vals or 'data_final' in vals:
+            for disc in self.browse(cr, uid, ids):
+                if not disc.semestre_id.is_active:
+                    raise orm.except_orm(
+                        u'Erro de Validação',
+                        u'Não é possível realizar alterações nas datas quando o registro do semestre está inativo.'
+                    )
         orientadores = None
         if 'perfil_id' in vals:
-            if isinstance(ids, (int, long)):
-                ids = [ids]
             orientadores = [disc['perfil_id'] for disc in self.read(cr, uid, ids, ['perfil_id'], load='_classic_write')]
-        super(DisciplinaMonitoria, self).write(cr, uid, vals, context)
+
+        super(DisciplinaMonitoria, self).write(cr, uid, ids, vals, context)
         if orientadores:
             self.remove_grupo_orientador(cr, uid, perfis=orientadores, context=context)
             self.add_grupo_orientador(cr, uid, ids, context)
@@ -513,20 +511,30 @@ class DisciplinaMonitoria(osv.Model):
         """
         for disc in self.browse(cr, uid, ids, context=context):
             if datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT) >= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT):
-                return False
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'A data inicial deve ocorrer antes da data final'
+                )
         return True
 
     def valida_vagas(self, cr, uid, ids, context=None):
         for disc in self.browse(cr, uid, ids, context):
             if disc.bolsistas < 0 or disc.colaboradores < 0:
-                return False
+                raise orm.except_orm(
+                    u'Erro de validação',
+                    u'O número de vagas para bolsistas e colaboradores não podem ser menor do que 0.'
+                )
+            if disc.bolsistas + disc.colaboradores < 1:
+                raise orm.except_orm(
+                    u'Erro de validação',
+                    u'É necessário informar ao menos uma vaga para bolsista ou colaborador.'
+                )
         return True
 
     def valida_bolsas(self, cr, uid, ids, context=None):
         """
-        Verifica se o total de bolsas das disciplinas ultrapassa o máximo de bolsas de seu curso.
-
-        :return: True, se não utrapassa, False, caso contrário.
+        Verifica se o total de bolsas das disciplinas ultrapassa o máximo de bolsas de seu curso e verifica
+        se a qualtidade de bolsas foi alterada para um valor menor que a quantidade de discentes bolsistas.
         """
         for disc in self.browse(cr, uid, ids, context):
             bolsas = 0
@@ -534,55 +542,41 @@ class DisciplinaMonitoria(osv.Model):
                 if outra_disc.id != disc.id:
                     bolsas += outra_disc.bolsistas
             if disc.bolsas_curso_id.bolsas < (bolsas + disc.bolsistas):
-                return False
-        return True
-
-    def valida_bolsas_utilizadas(self, cr, uid, ids, context=None):
-        """
-        Verifica se o número de bolsas é maior ou igual ao número de bolsas utilizadas.
-
-        :return: True, se satisfazer o critério, False, caso contrário.
-        """
-        for disc in self.browse(cr, uid, ids, context):
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'O número de bolsistas das disciplinas não pode ultrapassar o máximo definido em seu curso.'
+                )
             if disc.bolsistas < disc.bolsas_utilizadas:
-                return False
-        return True
-
-    def valida_disciplina_monitoria(self, cr, uid, ids, context=None):
-        """
-        Verifica se a quantidade de disciplinas para monitoria é apenas uma e se ocorre apenas uma vez no semestre para
-        o mesmo orientador.
-        """
-        for disc in self.browse(cr, uid, ids, context):
-            if not disc.tutoria and len(disc.disciplina_ids) != 1:
                 raise orm.except_orm(
-                    u'Erro de validação!',
-                    u'Na modalidade "Monitoria", um registro de disciplina deve ter vínculo de apenas uma disciplina.'
+                    u'Erro de Validação',
+                    u'O número de bolsas não pode ser menor que o número de bolsas utilizadas (%d).'
+                    % disc.bolsas_utilizadas
                 )
-        # TODO: Implementar a verificação de unicidade de conjunto de disciplinas por seu orientador no smemestre.
         return True
 
-    def valida_disciplina_tutoria(self, cr, uid, ids, context=None):
+    def valida_disciplinas(self, cr, uid, ids, context=None):
         """
-        Verifica se a disciplina de tutoria possui no máximo 3 disciplinas e o conjunto ser único para um orientador.
-        """
-        for disc in self.browse(cr, uid, ids, context):
-            if disc.tutoria and len(disc.disciplina_ids) > 3:
-                raise orm.except_orm(
-                    u'Erro de validação!',
-                    u'Na modalidade "Tutoria", um registro de disciplina deve possuir 3 disciplinas, no máximo.'
-                )
-        # TODO: Implementar a verificação de unicidade de conjunto de disciplinas por seu orientador no smemestre.
-        return True
-
-    def valida_disciplinas_curso(self, cr, uid, ids, context=None):
-        """
-        Verifica se a disciplina pertence ao curso selecionado.
+        Verifica se as disciplinas selecionadas são do curso selecionado e se a quantidade de disciplinas de acordo com
+        a modalidade, 1 para monitoria e até 3 para tutoria.
         """
         for disc in self.browse(cr, uid, ids, context):
             for disc_ud in disc.disciplina_ids:
                 if disc.bolsas_curso_id.curso_id.id != disc_ud.ud_disc_id.id:
-                    return False
+                    raise orm.except_orm(
+                        u'Erro de Validação',
+                        u'A disciplina deve pertencer ao curso selecionado'
+                    )
+            if not disc.tutoria and len(disc.disciplina_ids) != 1:
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'Na modalidade "Monitoria", um registro de disciplina deve ter vínculo de apenas uma disciplina.'
+                )
+            if disc.tutoria and len(disc.disciplina_ids) > 3:
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'Na modalidade "Tutoria", um registro de disciplina deve possuir 3 disciplinas, no máximo.'
+                )
+        # TODO: Implementar a verificação de unicidade de conjunto de disciplinas por seu orientador no semestre.
         return True
 
     # Ações após alteração de valor na view
