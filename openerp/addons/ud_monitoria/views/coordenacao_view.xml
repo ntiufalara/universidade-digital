@@ -115,19 +115,15 @@
             <field name="arch" type="xml">
                 <form string="Semestre" version="7.0">
                     <header groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <button name="%(ud_monitoria.action_ud_monitoria_disciplina)d" type="action" string="Disciplinas" class="oe_highligth"
+                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                                context="{'disciplinas_semestre': True, 'semestre_id': id}" attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button name="ativar_registro" string="Reativar" type="object" groups="ud_monitoria.group_ud_monitoria_administrador"
+                                attrs="{'invisible': ['|', ('is_active', '=', True), ('id', '=', False)]}"/>
                         <button name="desativar_registro" string="Finalizar" type="object"
                                 confirm="Realmente deseja finalizar registro atual?"
                                 help="Finaliza o registro desse semestre."
                                 attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}"/>
-                        <button name="ativar_registro" string="Reativar" type="object" groups="ud_monitoria.group_ud_monitoria_administrador"
-                                attrs="{'invisible': ['|', ('is_active', '=', True), ('id', '=', False)]}"/>
-                        <button name="%(ud_monitoria.action_ud_monitoria_disciplina)d" type="action" string="Disciplinas"
-                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                                context="{'disciplinas_semestre': True, 'semestre_id': id}" attrs="{'invisible': [('id', '=', False)]}"/>
-                        <button name="garantir_permissoes_orientadores" string="Permissões de Orientadores" type="object"
-                                groups="ud_monitoria.group_ud_monitoria_administrador"
-                                attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}"/>
-
                     </header>
                     <field name="id"/>
                     <group col="4">
@@ -198,6 +194,19 @@
                         <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d' type='action'
                                 string='Transferir Bolsa'/>
                     </page>
+                        <page string="Ações Administrativas" attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}" groups="ud_monitoria.group_ud_monitoria_administrador">
+                            <div style="color: red;">
+                                <strong>Atenção:</strong> Essas ações estarão visíveis apenas enquanto o registro do semestre estiver ativo.
+                            </div>
+                            <group string="Permissões">
+                                <ul>
+                                    <li>
+                                        <button name="garantir_permissoes_orientadores" type="object" string="Clique aqui" class="oe_link"/>
+                                        para adicionar as permissões a todos os orientadores das disciplinas.
+                                    </li>
+                                </ul>
+                            </group>
+                        </page>
                     </notebook>
                 </form>
             </field>
