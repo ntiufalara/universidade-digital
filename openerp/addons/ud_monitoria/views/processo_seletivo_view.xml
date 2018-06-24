@@ -11,9 +11,10 @@
                 <tree string="Disciplinas" colors="blue:is_active==True">
                     <field name="disc_monit_id"/>
                     <field name="bolsas_curso_id"/>
-                    <field name="data_inicial"/>
-                    <field name="data_final"/>
                     <field name="orientador_id"/>
+                    <field name="bolsistas"/>
+                    <field name="colaboradores"/>
+                    <field name="tutoria"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -215,13 +216,13 @@
                     </div>
                     <group col="4">
                         <field name="name" colspan="4" placeholder="Nome do Processo Seletivo"
-                               attrs="{'readonly': [('state', 'in', ['andamento', 'finalizado'])]}"/>
+                               attrs="{'readonly': [('state', 'in', ['andamento', 'encerrado'])]}"/>
                         <field name="data_inicio" colspan="2" attrs="{'readonly': [('id', '!=', False), ('state', 'not in', ['demanda', 'invalido', 'novo'])]}"/>
                         <field name="data_fim" colspan="2"/>
                         <field name="semestre_id" colspan="2" options="{'no_open': 1}"
                                invisible="context.get('semestre_id', False)"
-                               attrs="{'readonly': ['|', ('id', '!=', False), ('state', 'in', ['andamento', 'finalizado'])]}"/>
-                        <field name="valor_bolsa" colspan="2" attrs="{'readonly': [('state', 'in', ['andamento', 'finalizado'])]}"/>
+                               attrs="{'readonly': ['|', ('id', '!=', False), ('state', 'in', ['andamento', 'encerrado'])]}"/>
+                        <field name="valor_bolsa" colspan="2" attrs="{'readonly': [('state', 'in', ['andamento', 'encerrado'])]}"/>
                     </group>
                     <notebook attrs="{'invisible': ['|', ('name', '=', False), '|', ('data_inicio', '=', False), '|', ('data_fim', '=', False), ('semestre_id', '=', False)]}">
                         <page string="Anexos">
