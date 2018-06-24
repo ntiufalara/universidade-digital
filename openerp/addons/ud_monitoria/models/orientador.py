@@ -8,6 +8,14 @@ class DocumentosOrientador(osv.Model):
     _description = u"Documentos de monitoria do orientador (UD)"
     _order = "is_active desc"
 
+    def get_doc_discentes(self, cr, uid, ids, campos, args, context=None):
+        res = {}
+        doc_discente = self.pool.get('ud_monitoria.documentos_discente')
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.disciplina_id.perfil_id.id == doc.perfil_id.id:
+                res[doc.id] = doc_discente.search(cr, uid, [('disciplina_id', '=', doc.disciplina_id.id)])
+        return res
+
     _columns = {
         "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", ondelete="restrict"),
         "curso_id": fields.related("disciplina_id", "bolsas_curso_id", type="many2one", relation="ud_monitoria.bolsas_curso",
@@ -15,8 +23,10 @@ class DocumentosOrientador(osv.Model):
         "semestre_id": fields.related("disciplina_id", "bolsas_curso_id", "semestre_id", type="many2one",
                                       relation="ud_monitoria.semestre", readonly=True, string=u"Semestre"),
         "perfil_id": fields.many2one("ud.perfil", u"SIAPE", required=True),
-        "orientador_id": fields.related('disciplina_id', "perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
+        "orientador_id": fields.related("perfil_id", "ud_papel_id", type="many2one", relation="ud.employee",
                                         readonly=True, string=u"Orientador"),
+        'doc_discente_ids': fields.function(get_doc_discentes, type='one2many', relation='ud_monitoria.documentos_discente',
+                                            string=u'Discentes'),
 
         "declaracao_nome": fields.char(u"Declaração (Nome)"),
         "declaracao": fields.binary(u"Declaração", help=u"Declaração de Participação de Banca"),

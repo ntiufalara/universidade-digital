@@ -37,27 +37,6 @@
         <record id="ud_monitoria_documentos_discente_tree" model="ir.ui.view">
             <field name="name">ud_monitoria.documentos_discente.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
-            <field eval="8" name="priority"/>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Documentos" create="false" colors="blue:is_active==True;">
-                    <field name="curso_id"/>
-                    <field name="disciplina_id" invisible="context.get('ocultar_disciplina', False)"/>
-                    <field name="discente_id"/>
-                    <field name="semestre_id"/>
-                    <field name="tutor"/>
-                    <field name="state"/>
-                    <field name="is_active"/>
-                    <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
-                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                            string="Desligar" icon="STOCK_CANCEL" states="bolsista,n_bolsista"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="ud_monitoria_horarios_discente_tree" model="ir.ui.view">
-            <field name="name">ud_monitoria.documentos_discente.form</field>
-            <field name="model">ud_monitoria.documentos_discente</field>
             <field eval="10" name="priority"/>
             <field name="type">tree</field>
             <field name="arch" type="xml">
@@ -70,13 +49,56 @@
             </field>
         </record>
 
+        <record id="ud_monitoria_documentos_discente_coordenador_tree" model="ir.ui.view">
+            <field name="name">ud_monitoria.documentos_discente_coordenador.tree</field>
+            <field name="model">ud_monitoria.documentos_discente</field>
+            <field name="inherit_id" ref="ud_monitoria_documentos_discente_tree"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="discente_id" position="after">
+                    <field name="semestre_id"/>
+                </field>
+                <field name="disciplina_id" position="attributes">
+                    <attribute name="invisible">context.get('ocultar_disciplina', False)</attribute>
+                </field>
+                <field name="tutor" position="after">
+                    <field name="state"/>
+                    <field name="is_active"/>
+                     <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                            string="Desligar" icon="STOCK_CANCEL" states="bolsista,n_bolsista"/>
+                </field>
+            </field>
+        </record>
+
         <record id="ud_monitoria_documentos_discente_form" model="ir.ui.view">
             <field name="name">ud_monitoria.documentos_discente.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
-            <field eval="8" name="priority"/>
+            <field eval="10" name="priority"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Documentos" create="false" edit="false" version="7.0">
+                <form string="Horários" create="false" edit="false" delete="false" version="7.0">
+                    <group col="4">
+                        <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="discente_id" colspan="2" options="{'no_open':True}" readonly="1"/>
+                        <field name="curso_id" colspan="2" readonly="1"/>
+                        <field name="disciplina_id" colspan="2" readonly="1"/>
+                        <field name="tutor" colspan="2"/>
+                    </group>
+                    <group string="Horários">
+                        <field name="horario_ids" nolabel="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_documentos_discente_completo_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.documentos_discente.completo.form</field>
+            <field name="model">ud_monitoria.documentos_discente</field>
+            <field eval="20" name="priority"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Documentos" create="false" delete="false" version="7.0">
                     <header>
                         <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
                                 groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
@@ -88,25 +110,31 @@
                     </header>
                     <field name="declaracao_nome" invisible="1"/>
                     <field name="certificado_nome" invisible="1"/>
+                    <field name="relatorio_nome" invisible="1"/>
                     <field name="frequencia_controle" invisible="1"/>
                     <group col="4">
-                        <field name="orientador_ids" colspan="4" readonly="1" widget="many2many_tags"/>
-                        <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="perfil_id" colspan="2" readonly="1"/>
+                        <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="tutor" colspan="2" readonly="1"/>
                         <field name="dados_bancarios_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="curso_id" colspan="2" readonly="1"/>
+                        <field name="disciplina_id" colspan="2" readonly="1"/>
                         <field name="ch" colspan="2"/>
                         <field name="is_active" colspan="2" readonly="1"/>
-                        <field name="curso_id" colspan="2" readonly="1" options="{'no_open': true}"/>
-                        <field name="disciplina_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                     </group>
                     <group string="Documentos" col="4">
-                        <field name="declaracao" filename="declaracao_nome" readonly="1" colspan="2"/>
                         <field name="certificado" filename="certificado_nome" readonly="1" colspan="2"/>
-                        <field name="relatorio" filename="certificado_nome" readonly="1" colspan="2"/>
+                        <field name="declaracao" filename="declaracao_nome" readonly="1" colspan="2"/>
+                        <field name="relatorio" filename="relatorio_nome" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
                     </group>
                     <group string="Frequências" col="4">
-                        <field name="frequencia_ids" nolabel="1" readonly="1" colspan="4"/>
+                        <div style="color:red;" colspan="4" attrs="{'invisible': ['|', ('is_active', '=', False), ('frequencia_controle', '=', False)]}">
+                            <strong>Atenção:</strong> Você pode adicionar novas frequências.
+                        </div>
+                        <field name="frequencia_ids" nolabel="1" colspan="4"
+                               attrs="{'readonly': ['|', ('frequencia_controle', '=', False), ('is_active', '=', False)]}"/>
                     </group>
                     <group string="Horários">
                         <field name="horario_ids" nolabel="1" readonly="1"/>
@@ -118,28 +146,9 @@
         <record id="ud_monitoria_documentos_discente_monitor_form" model="ir.ui.view">
             <field name="name">ud_monitoria.documentos_discente.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
-            <field name="inherit_id" ref="ud_monitoria_documentos_discente_form"/>
+            <field name="inherit_id" ref="ud_monitoria_documentos_discente_completo_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_monitor')])]"/>
             <field name="arch" type="xml">
-                <xpath expr="//form" position="attributes">
-                    <attribute name="edit">true</attribute>
-                </xpath>
-                <field name="disciplina_id" position="attributes">
-                    <attribute name="options"/>
-                </field>
-                <field name="relatorio" position="attributes">
-                    <attribute name="attrs">{'readonly': [('is_active', '=', False)]}</attribute>
-                    <attribute name="readonly"/>
-                </field>
-                <field name="frequencia_ids" position="before">
-                    <div style="color:red;" colspan="4" attrs="{'invisible': ['|', ('is_active', '=', False), ('frequencia_controle', '=', False)]}">
-                            <strong>Atenção:</strong> Dentro do prazo para incusão de frequências.
-                        </div>
-                </field>
-                <field name="frequencia_ids" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|', ('frequencia_controle', '=', False), ('is_active', '=', False)]}</attribute>
-                    <attribute name="readonly"/>
-                </field>
                 <field name="horario_ids" position="attributes">
                     <attribute name="attrs">{'readonly': [('is_active', '=', False)]}</attribute>
                     <attribute name="readonly"/>
@@ -148,53 +157,70 @@
         </record>
 
         <record id="ud_monitoria_documentos_discente_coordenador_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.documentos_discente_coordenador.form</field>
+            <field name="name">ud_monitoria.documentos_discente.coordenador.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
-            <field name="inherit_id" ref="ud_monitoria_documentos_discente_form"/>
+            <field name="inherit_id" ref="ud_monitoria_documentos_discente_completo_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
+                <field name="orientador_id" position="attributes">
+                    <attribute name="options"/>
+                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
+                </field>
                 <field name="declaracao" position="attributes">
                     <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': [('declaracao', '!=', False)]}</attribute>
                 </field>
                 <field name="certificado" position="attributes">
                     <attribute name="readonly"/>
+                    <attribute name="attrs">{'readonly': [('declaracao', '!=', False)]}</attribute>
                 </field>
             </field>
         </record>
 
-        <record id="ud_monitoria_horarios_discente_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.documentos_discente.form</field>
+        <record id="ud_monitoria_documentos_discente_admin_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.documentos_discente.admin.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
-            <field eval="10" name="priority"/>
-            <field name="type">form</field>
+            <field name="inherit_id" ref="ud_monitoria_documentos_discente_coordenador_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
-                <form string="Horários" create="false" edit="false" delete="false" version="7.0">
-                    <group col="4">
-                        <field name="orientador_ids" colspan="4" readonly="1" widget="many2many_tags"/>
-                        <field name="discente_id" colspan="2" options="{'no_open':True}" readonly="1"/>
-                        <field name="curso_id" colspan="2" options="{'no_open':True}" readonly="1"/>
-                        <field name="disciplina_id" colspan="2" options="{'no_open':True}" readonly="1"/>
-                        <field name="tutor" colspan="2"/>
-                    </group>
-                    <group string="Horários">
-                        <field name="horario_ids" nolabel="1"/>
-                    </group>
-                </form>
+                <field name="declaracao" position="attributes">
+                    <attribute name="attrs"/>
+                </field>
+                <field name="certificado" position="attributes">
+                    <attribute name="attrs"/>
+                </field>
+                <field name="relatorio" position="attributes">
+                    <attribute name="attrs"/>
+                </field>
             </field>
         </record>
 
-        <record id="action_ud_monitoria_horarios_discente_tree_view" model="ir.actions.act_window.view">
-            <field name="sequence" eval="1"/>
-            <field name="view_id" ref="ud_monitoria_horarios_discente_tree"/>
+        <record id="action_ud_monitoria_documentos_discente_coordenador_tree_view" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_ud_monitoria_documentos_discente_coordenador"/>
+            <field name="view_id" ref="ud_monitoria_documentos_discente_coordenador_tree"/>
             <field name="view_mode">tree</field>
-            <field name="act_window_id" ref="action_ud_monitoria_horarios_discente"/>
+            <field name="sequence" eval="0"/>
         </record>
 
-        <record id="action_ud_monitoria_horarios_discente_form_view" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
-            <field name="view_id" ref="ud_monitoria_horarios_discente_form"/>
+        <record id="action_ud_monitoria_documentos_discente_coordenador_form_view" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_ud_monitoria_documentos_discente_coordenador"/>
+            <field name="view_id" ref="ud_monitoria_documentos_discente_coordenador_form"/>
             <field name="view_mode">form</field>
-            <field name="act_window_id" ref="action_ud_monitoria_horarios_discente"/>
+            <field name="sequence" eval="1"/>
+        </record>
+
+        <record id="action_ud_monitoria_documentos_discente_tree_view" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_ud_monitoria_documentos_discente"/>
+            <field name="view_id" ref="ud_monitoria_documentos_discente_tree"/>
+            <field name="view_mode">tree</field>
+            <field name="sequence" eval="0"/>
+        </record>
+
+        <record id="action_ud_monitoria_documentos_discente_form_view" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_ud_monitoria_documentos_discente"/>
+            <field name="view_id" ref="ud_monitoria_documentos_discente_completo_form"/>
+            <field name="view_mode">form</field>
+            <field name="sequence" eval="1"/>
         </record>
 
         <!-- HORÁRIO -->

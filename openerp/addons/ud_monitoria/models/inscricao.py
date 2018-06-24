@@ -304,7 +304,7 @@ class Inscricao(osv.Model):
         Verifica se o processo seletivo correspondente é inválido.
         """
         for insc in self.browse(cr, uid, ids, context=context):
-            if insc.processo_seletivo_id.status in ['invalido', 'demanda', 'novo']:
+            if insc.processo_seletivo_id.state in ['invalido', 'demanda', 'novo']:
                 return False
         return True
 
@@ -317,15 +317,35 @@ class Inscricao(osv.Model):
                                 Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
                                 Se o processo seletivo não estiver encerrado.
                                 Se existir inscrições para bolsista não avaliadas enquanto torna um discente colaborador como bolsista.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         perfil_model = self.pool.get('ud.perfil')
-        dados_bancarios_model = self.pool.get('ud.dados.bancarios')
         doc_discente = self.pool.get('ud_monitoria.documentos_discente')
         doc_orientador = self.pool.get('ud_monitoria.documentos_orientador')
         hoje = data_hoje(self, cr, uid)
+        grupos = [
+            'ud_monitoria.group_ud_monitoria_orientador',
+            'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador',
+        ]
+        if not self.user_has_groups(cr, uid, ','.join(grupos)):
+            raise orm.except_orm(
+                u'Acesso Negado!',
+                u'Você não possui permissão para realizar essa ação'
+            )
         for insc in self.browse(cr, uid, ids, context):
-            if insc.processo_seletivo_id.status != 'encerrado':
+            if not self.user_has_groups(cr, uid, grupos[1]):
+                if not self.user_has_groups(cr, uid, grupos[0]):
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não faz parte de nenhum grupo de segurança que permite alterar o status de inscrições.'
+                    )
+                elif insc.disciplina_id.orientador_id.user_id.id != uid:
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não é o orientador da disciplina da inscrição atual.'
+                    )
+            if insc.processo_seletivo_id.state != 'encerrado':
                 raise orm.except_orm(
                     u'Ação inválida',
                     u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
@@ -339,11 +359,8 @@ class Inscricao(osv.Model):
             state = 'n_bolsista'
             if insc.bolsista:
                 if context.pop('n_bolsista', False):
-                    info = u'%s - Inscrição para a disciplina "%s" do curso de "%s" foi aprovada SEM bolsa.' % (
-                        datetime.strftime(hoje, '%d-%m-%Y'), insc.disciplina_id.disciplina_id.name,
-                        insc.disciplina_id.bolsas_curso_id.curso_id.name
-                    )
-                    insc.write({'info': '%s\n%s' % (insc.info, info)})
+                    info = u'%s - Discente aprovado(a) SEM bolsa.' % datetime.strftime(hoje, '%d-%m-%Y')
+                    insc.write({'info': '%s%s' % (insc.info and insc.info + '\n' or '', info)})
                 elif insc.perfil_id.is_bolsista:
                     raise orm.except_orm(
                         u'Discente bolsista', u'O discente atual está vinculado a uma bolsa do tipo: "{}"'.format(
@@ -356,9 +373,6 @@ class Inscricao(osv.Model):
                         'is_bolsista': True, 'tipo_bolsa': 'm',
                         'valor_bolsa': ('%.2f' % insc.processo_seletivo_id.valor_bolsa).replace('.', ',')
                     })
-                    dados_bancarios_model.write(cr, SUPERUSER_ID, insc.dados_bancarios_id.id, {
-                        'ud_conta_id': insc.discente_id.id
-                    }, context=context)
                     state = 'bolsista'
             elif context.pop('bolsista', False):
                 if self.search_count(cr, uid, [
@@ -381,20 +395,19 @@ class Inscricao(osv.Model):
                         'is_bolsista': True, 'tipo_bolsa': 'm',
                         'valor_bolsa': ('%.2f' % insc.processo_seletivo_id.valor_bolsa).replace('.', ',')
                     })
-                    dados_bancarios_model.write(cr, SUPERUSER_ID, insc.dados_bancarios_id.id, {
-                        'ud_conta_id': insc.discente_id.id
-                    }, context=context)
                     state = 'bolsista'
+                    info = u'%s - Discente aprovado(a) COM bolsa.' % datetime.strftime(hoje, '%d-%m-%Y')
+                    insc.write({'info': '%s%s' % (insc.info and insc.info + '\n' or '', info)})
             doc_discente.create(cr, SUPERUSER_ID, {
                 'perfil_id': insc.perfil_id.id,
-                'dados_bancarios_id': insc.dados_bancarios_id.id,
+                'dados_bancarios_id': getattr(insc.dados_bancarios_id, 'id', False),
                 'disciplina_id': insc.disciplina_id.disc_monit_id.id,
                 'tutor': insc.tutoria,
                 'state': state,
             }, context)
             args = [('disciplina_id', '=', insc.disciplina_id.disc_monit_id.id),
                     ('perfil_id', '=', insc.disciplina_id.perfil_id.id)]
-            if not doc_orientador.search(cr, SUPERUSER_ID, args, context=context, limit=1):
+            if not doc_orientador.search(cr, SUPERUSER_ID, args, limit=1):
                 dados = {
                     'disciplina_id': insc.disciplina_id.disc_monit_id.id,
                     'perfil_id': insc.disciplina_id.perfil_id.id,
@@ -411,6 +424,7 @@ class Inscricao(osv.Model):
                                 Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
                                 Se o processo seletivo não estiver encerrado.
                                 Caso existam inscrições para bolsista não avaliadas.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         context['bolsista'] = True
@@ -424,6 +438,7 @@ class Inscricao(osv.Model):
         :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
                                 Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
                                 Se o processo seletivo não estiver encerrado.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         context['n_bolsista'] = True
@@ -437,6 +452,7 @@ class Inscricao(osv.Model):
                                 Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
                                 Se o processo seletivo não estiver encerrado.
                                 Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         def valida_media(insc):
             media_minima = insc.processo_seletivo_id.media_minima
@@ -454,6 +470,7 @@ class Inscricao(osv.Model):
                                 Se o processo seletivo não estiver encerrado.
                                 Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
                                 Caso existam inscrições para bolsista não avaliadas.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         context['bolsista'] = True
@@ -468,6 +485,7 @@ class Inscricao(osv.Model):
                                 Se a inscrição for aprovar como bolsista e o discente já estiver vinculado a outra bolsa.
                                 Se o processo seletivo não estiver encerrado.
                                 Se a inscrição não estive com média mínima ao do processo seletivo correspondente.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         context['n_bolsista'] = True
@@ -479,11 +497,32 @@ class Inscricao(osv.Model):
 
         :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
                                 Se o processo seletivo não estiver encerrado.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         context = context or {}
         doc_discente = self.pool.get('ud_monitoria.documentos_discente')
+        grupos = [
+            'ud_monitoria.group_ud_monitoria_orientador',
+            'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador',
+        ]
+        if not self.user_has_groups(cr, uid, ','.join(grupos)):
+            raise orm.except_orm(
+                u'Acesso Negado!',
+                u'Você não possui permissão para realizar essa ação'
+            )
         for insc in self.browse(cr, uid, ids, context):
-            if insc.processo_seletivo_id.status != 'encerrado':
+            if not self.user_has_groups(cr, uid, grupos[1]):
+                if not self.user_has_groups(cr, uid, grupos[0]):
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não faz parte de nenhum grupo de segurança que permite alterar o status de inscrições.'
+                    )
+                elif insc.disciplina_id.orientador_id.user_id.id != uid:
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não é o orientador da disciplina da inscrição atual.'
+                    )
+            if insc.processo_seletivo_id.state != 'encerrado':
                 raise orm.except_orm(
                     u'Ação inválida',
                     u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
@@ -495,7 +534,7 @@ class Inscricao(osv.Model):
                 )
             doc_discente.create(cr, SUPERUSER_ID, {
                 'perfil_id': insc.perfil_id.id,
-                'dados_bancarios_id': insc.dados_bancarios_id.id,
+                'dados_bancarios_id': getattr(insc.dados_bancarios_id, 'id', False),
                 'disciplina_id': insc.disciplina_id.disc_monit_id.id,
                 'tutor': insc.tutoria,
                 'state': 'reserva',
@@ -509,6 +548,7 @@ class Inscricao(osv.Model):
 
         :except orm.except_orm: Caso haja alguma inscrição com status diferente de 'analise'.
                                 Se o processo seletivo não estiver encerrado.
+                                Se não tiver as permissões corretas para realizar a ação.
         """
         if self.search_count(cr, uid, [('id', 'in', ids), ('state', '!=', 'analise')]):
             raise orm.except_orm(
@@ -534,6 +574,27 @@ class Inscricao(osv.Model):
                 u'Ação inválida',
                 u'Não é possível alterar o status da inscrição enquanto o processo seletivo não estiver encerrado.'
             )
+        grupos = [
+            'ud_monitoria.group_ud_monitoria_orientador',
+            'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador',
+        ]
+        if not self.user_has_groups(cr, uid, ','.join(grupos)):
+            raise orm.except_orm(
+                u'Acesso Negado!',
+                u'Você não possui permissão para realizar essa ação'
+            )
+        for insc in self.browse(cr, uid, ids, context):
+            if not self.user_has_groups(cr, uid, grupos[1]):
+                if not self.user_has_groups(cr, uid, grupos[0]):
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não faz parte de nenhum grupo de segurança que permite alterar o status de inscrições.'
+                    )
+                elif insc.disciplina_id.orientador_id.user_id.id != uid:
+                    raise orm.except_orm(
+                        u'Acesso Negado!',
+                        u'Você não é o orientador da disciplina da inscrição atual.'
+                    )
         return self.write(cr, uid, ids, {'state': 'desclassificado'}, context)
 
     def acao(self, cr, uid, ids, context=None):

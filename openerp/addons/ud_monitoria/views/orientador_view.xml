@@ -68,6 +68,7 @@
                 </field>
                 <field name="orientador_id" position="attributes">
                     <attribute name="colspan">2</attribute>
+                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
                 </field>
                 <xpath expr="//group[@name='info']" position="after">
                     <group string="Documentos" col="4"
@@ -78,6 +79,10 @@
                                attrs="{'invisible': [('declaracao', '=', False)]}"/>
                         <field name="certificado" colspan="2" filename="certificado_nome" readonly="1"
                                attrs="{'invisible': [('certificado', '=', False)]}"/>
+                    </group>
+                    <group string="Discentes" attrs="{'invisible': [('doc_discente_ids', '=', [])]}">
+                        <field name="doc_discente_ids" nolabel="1"
+                               context="{'form_view_ref': 'ud_monitoria.ud_monitoria_documentos_discente_completo_form'}"/>
                     </group>
                 </xpath>
             </field>
@@ -116,6 +121,9 @@
                 <field name="certificado" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs"/>
+                </field>
+                <field name="doc_discente_ids" position="attributes">
+                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_monitoria_documentos_discente_coordenador_form'}</attribute>
                 </field>
             </field>
         </record>
