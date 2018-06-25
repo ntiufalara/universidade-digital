@@ -157,7 +157,7 @@
         </record>
 
         <record id="ud_monitoria_documentos_discente_coordenador_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.documentos_discente.coordenador.form</field>
+            <field name="name">ud_monitoria.documentos_discente.coordenador.formm</field>
             <field name="model">ud_monitoria.documentos_discente</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_discente_completo_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
