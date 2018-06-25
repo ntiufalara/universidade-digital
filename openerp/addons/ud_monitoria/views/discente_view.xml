@@ -78,6 +78,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Horários" create="false" edit="false" delete="false" version="7.0">
+                    <field name="declaracao" invisible="1"/>
                     <group col="4">
                         <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="discente_id" colspan="2" options="{'no_open':True}" readonly="1"/>
@@ -157,7 +158,7 @@
         </record>
 
         <record id="ud_monitoria_documentos_discente_coordenador_form" model="ir.ui.view">
-            <field name="name">ud_monitoria.documentos_discente.coordenador.formm</field>
+            <field name="name">ud_monitoria.documentos_discente.coordenador.form</field>
             <field name="model">ud_monitoria.documentos_discente</field>
             <field name="inherit_id" ref="ud_monitoria_documentos_discente_completo_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
