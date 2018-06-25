@@ -88,7 +88,7 @@
                         <field name="tutor" colspan="2"/>
                     </group>
                     <group string="Horários">
-                        <field name="horario_ids" nolabel="1"/>
+                        <field name="horario_ids" nolabel="1" readonly="1"/>
                     </group>
                 </form>
             </field>
