@@ -280,6 +280,8 @@ class Inscricao(osv.Model):
                     return []
                 perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)],
                                                            context=context)
+                if not perfis:
+                    return []
             cr.execute('''
             SELECT
                 insc.id
