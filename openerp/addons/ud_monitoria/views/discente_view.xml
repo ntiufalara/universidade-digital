@@ -153,7 +153,9 @@
             <field name="arch" type="xml">
                 <field name="horario_ids" position="attributes">
                     <attribute name="attrs">{'readonly': [('is_active', '=', False)]}</attribute>
+                    <!--
                     <attribute name="readonly"/>
+                    -->
                 </field>
             </field>
         </record>
