@@ -131,16 +131,18 @@
                         <field name="bolsas_utilizadas" colspan="2"/>
                         <field name="bolsas_disponiveis" colspan="2"/>
                     </group>
-                    <group string="Disciplinas">
-                        <field name="disciplina_ids" nolabel="1" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"
-                               on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)">
-                            <tree string="Disciplina">
-                                <field name="codigo"/>
-                                <field name="name"/>
-                                <field name="periodo"/>
-                            </tree>
-                        </field>
-                    </group>
+                    <notebook>
+                        <page string="Disciplinas">
+                            <field name="disciplina_ids" nolabel="1" attrs="{'readonly': [('id', '!=', False)]}"
+                                   options="{'no_open': true}" on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)">
+                                <tree string="Disciplina">
+                                    <field name="codigo"/>
+                                    <field name="name"/>
+                                    <field name="periodo"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                     <group string="Discentes" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                            attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])]), ('n_bolsista_ids', '=', [(6, False, [])]), ('reserva_ids', '=', [(6, False, [])]), ('desligado_ids', '=', [(6, False, [])])]}">
                         <notebook>
@@ -172,6 +174,11 @@
                     <attribute name="options"/>
                     <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
                 </field>
+                <xpath expr="//notebook/page[@string='Disciplinas']" position="after">
+                    <page string="Inscrições">
+                        <field name="inscricao_ids" nolabel="1"/>
+                    </page>
+                </xpath>
             </field>
         </record>
     </data>

@@ -136,6 +136,27 @@ class DisciplinaMonitoria(osv.Model):
             res[disc.id] = datetime.strptime(disc.data_inicial, DEFAULT_SERVER_DATE_FORMAT).date() <= hoje <= datetime.strptime(disc.data_final, DEFAULT_SERVER_DATE_FORMAT).date()
         return res
 
+    def get_inscricoes(self, cr, uid, ids, campo, args, context=None):
+        res = {}
+        if ids:
+            for id in ids:
+                cr.execute('''
+                SELECT
+                    insc.id
+                FROM
+                    %(insc)s insc INNER JOIN %(disc_ps)s disc_ps ON (insc.disciplina_id = disc_ps.id)
+                        INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
+                WHERE
+                    disc.id = %(id)s
+                ''' % {
+                    'insc': self.pool.get('ud_monitoria.inscricao')._table,
+                    'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
+                    'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                    'id': '%d' % id,
+                })
+                res[id] = [l[0] for l in cr.fetchall()]
+        return res
+
     def update_bolsas_utilizadas(self, cr, uid, ids, context=None):
         """
         Busca os ids das disciplinas de monitoria quando o campo "state" dos documentos do discente é atualizado para
@@ -196,6 +217,7 @@ class DisciplinaMonitoria(osv.Model):
         'data_inicial': fields.date(u'Data Inicial', required=True),
         'data_final': fields.date(u'Data Final', required=True),
         'is_active': fields.function(get_is_active, type='boolean', string=u'Ativo'),
+        'inscricao_ids': fields.function(get_inscricoes, type='many2many', relation='ud_monitoria.inscricao', string=u'Inscrições'),
         'bolsista_ids': fields.function(get_discentes, type='many2many', relation='ud_monitoria.documentos_discente',
                                         string=u'Bolsistas', multi='disciplina_monitoria_discentes'),
         'n_bolsista_ids': fields.function(get_discentes, type='many2many', relation='ud_monitoria.documentos_discente',
