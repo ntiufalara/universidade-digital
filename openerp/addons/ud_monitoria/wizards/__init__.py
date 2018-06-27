@@ -1,4 +1,4 @@
 import alteracao_bolsas_wizard
 import desligamento_wizard
-import disciplinas_para_ps
+import acoes_administrativas
 # import alteracao_orientador

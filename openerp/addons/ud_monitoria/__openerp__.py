@@ -39,7 +39,7 @@
         # Wizards
         "wizards/alteracao_bolsas_wizard_view.xml",
         "wizards/desligamento_wizard_view.xml",
-        "wizards/disciplinas_para_ps_view.xml",
+        "wizards/acoes_administrativas_view.xml",
         # Views
         "views/adicional_view.xml",
         "views/coordenacao_view.xml",
