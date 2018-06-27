@@ -262,9 +262,9 @@ class Inscricao(osv.Model):
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         """
         === Extensão do método osv.Model.search
-        Filtra as inscrições se context tiver a chave para filtrar discente e/ou orientador. A primeira opção limita as
-        inscrições ao proprietário da mesma, a segunda limita as inscrições pelas disciplinas que foram selecionadas
-        na inscrição. É necessário saber que a primeira pode influenciar no resultado da segunda.
+        Se em "context" houver "filtrar_discente", a lista de inscrições será limitada pelo perfil do usuário logado.
+        Se contiver "filtrar_orientador", também limita as inscrições pelas disciplinas que o usuário logado está como
+        orientador.
         """
         context = context or {}
         pessoa_id = None
@@ -274,14 +274,12 @@ class Inscricao(osv.Model):
                 return []
             perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
             args += [('perfil_id', 'in', perfis)]
-        res = super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
-        if res and context.get('filtrar_orientador', False):
+        if context.get('filtrar_orientador', False):
             if not pessoa_id:
                 pessoa_id = get_ud_pessoa_id(self, cr, uid)
                 if not pessoa_id:
                     return []
-                perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)],
-                                                           context=context)
+                perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
                 if not perfis:
                     return []
             cr.execute('''
@@ -291,16 +289,15 @@ class Inscricao(osv.Model):
                 %(insc)s insc INNER JOIN %(disc_ps)s disc_ps ON (insc.disciplina_id = disc_ps.id)
                     INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
             WHERE
-                insc.id in (%(ids)s) AND disc.perfil_id in (%(perfis)s)
+                disc.perfil_id in (%(perfis)s)
             ''' % {
                 'insc': self._table,
                 'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
                 'disc': self.pool.get('ud_monitoria.disciplina')._table,
-                'ids': str(res).lstrip('([').rstrip(')],').replace('L', ''),
                 'perfis': str(perfis).lstrip('([').rstrip(')],').replace('L', ''),
             })
-            res = map(lambda l: l[0], cr.fetchall())
-        return res
+            args = [('id', 'in', map(lambda l: l[0], cr.fetchall()))] + (args or [])
+        return super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
 
     # Validadores
     def valida_processo_seletivo(self, cr, uid, ids, context=None):
