@@ -273,7 +273,7 @@ class Inscricao(osv.Model):
             perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
             args += [('perfil_id', 'in', perfis)]
         res = super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
-        if context.get('filtrar_orientador', False):
+        if res and context.get('filtrar_orientador', False):
             if not pessoa_id:
                 pessoa_id = get_ud_pessoa_id(self, cr, uid)
                 if not pessoa_id:
