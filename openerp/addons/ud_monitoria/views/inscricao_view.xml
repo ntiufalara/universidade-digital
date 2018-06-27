@@ -233,12 +233,12 @@
                                 groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                             Como não ha concorrência, é possível utilizar uma das ações abaixo:
                             <ul>
-                                <li attrs="{'invisible': [('bolsista', '=', False)]}">
+                                <li attrs="{'invisible': [('bolsista', '=', True)]}">
                                     <button name="classificar_direto_bolsa" type="object" string="Classificar" class="oe_link"
                                             confirm="Você classificará o(a) discente colaborador(a) como bolsista."/>
                                     o(a) discente colaborador(a) como <strong>bolsista</strong>;
                                 </li>
-                                <li attrs="{'invisible': [('bolsista', '=', True)]}">
+                                <li attrs="{'invisible': [('bolsista', '=', False)]}">
                                     <button name="classificar_direto_s_bolsa" type="object" string="Classificar" class="oe_link"
                                             confirm="Você classificará o(a) discente bolsista como colaborador(a)."/>
                                     o(a) discente bolsista como <strong>colaborador(a)</strong>;
