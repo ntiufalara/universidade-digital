@@ -117,7 +117,7 @@
                         <field name="tutoria" colspan="2" readonly="1"/>
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
-                        <field name="orientador_id" colspan="2" readonly="1"/>
+                        <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="bolsista" colspan="2" readonly="1"/>
                         <field name="dados_bancarios_id" options="{'no_open': true}" colspan="4" readonly="1"/>
                     </group>
@@ -299,12 +299,14 @@
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
                     <attribute name="on_change">onchange_perfil_ou_bolsista(perfil_id, bolsista)</attribute>
                 </field>
+                <field name="orientador_id" position="attributes">
+                    <attribute name="options"/>
+                </field>
                 <field name="dados_bancarios_id" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
                     <attribute name="context">{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}</attribute>
                 </field>
-
             </field>
         </record>
 
