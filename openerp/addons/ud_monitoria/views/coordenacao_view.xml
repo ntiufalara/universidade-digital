@@ -40,6 +40,7 @@
                     <field name="bolsas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="distribuidas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="disponiveis" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                    <field name="disciplina_ids"/>
                     <field name="is_active"/>
                 </tree>
             </field>
