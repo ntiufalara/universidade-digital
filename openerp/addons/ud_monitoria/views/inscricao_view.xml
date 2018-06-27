@@ -164,7 +164,8 @@
                                options="{'no_open': true}" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="tutoria" colspan="2" on_change="onchange_tutoria()"
                                attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="bolsas_curso_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
+                        <field name="bolsas_curso_id" colspan="2" on_change="onchange_curso()"
+                               attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
                         <field name="disciplina_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
                         <field name="bolsista" colspan="2" on_change="onchange_perfil_ou_bolsista(perfil_id, bolsista)"
                                attrs="{'readonly': [('id', '!=', False)]}"/>
@@ -283,6 +284,7 @@
                 <field name="bolsas_curso_id" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
+                    <attribute name="on_change">onchange_curso()</attribute>
                 </field>
                 <field name="disciplina_id" position="attributes">
                     <attribute name="readonly"/>

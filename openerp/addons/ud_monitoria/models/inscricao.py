@@ -615,6 +615,9 @@ class Inscricao(osv.Model):
             res['domain'] = {'bolsas_curso_id': [('semestre_id', '=', semestre)]}
         return res
 
+    def onchange_curso(self, cr, uid, ids, context=None):
+        return {'value': {'disciplina_id': False}}
+
     def onchange_perfil_ou_bolsista(self, cr, uid, ids, perfil_id, bolsista, context=None):
         res = {'value': {'discente_id': False, 'curso_id': False, 'celular': False,
                'email': False, 'telefone_fixo': False, 'dados_bancarios_id': False}}
