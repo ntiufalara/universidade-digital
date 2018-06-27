@@ -202,8 +202,9 @@
                             <group string="Permissões">
                                 <ul>
                                     <li>
-                                        <button name="garantir_permissoes_orientadores" type="object" string="Clique aqui" class="oe_link"/>
-                                        para adicionar as permissões a todos os orientadores das disciplinas.
+                                        <button name="%(ud_monitoria.action_ud_monitoria_permissao_orientadores_wizard)d"
+                                                type="action" string="Clique aqui" class="oe_link"/>
+                                        escolher quem receberá as permissões de orientador.
                                     </li>
                                 </ul>
                             </group>
