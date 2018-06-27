@@ -166,6 +166,8 @@ class Inscricao(osv.Model):
         'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, ondelete='restrict'),
         'disciplina_id': fields.many2one('ud_monitoria.disciplina_ps', u'Disciplina(s)', required=True, ondelete='restrict',
                                          domain='[("processo_seletivo_id", "=", processo_seletivo_id), ("bolsas_curso_id", "=", bolsas_curso_id), ("tutoria", "=", tutoria)]'),
+        'orientador_id': fields.related('disciplina_id', 'perfil_id', 'ud_papel_id', type='many2one', readonly=True,
+                                        relation='ud.employee', string=u'Orientador(a)'),
         'pontuacoes_ids': fields.one2many('ud_monitoria.pontuacao', 'inscricao_id', u'Pontuações', readonly=True),
         'media': fields.function(
             calcula_media, type='float', string=u'Média',
@@ -616,7 +618,12 @@ class Inscricao(osv.Model):
         return res
 
     def onchange_curso(self, cr, uid, ids, context=None):
-        return {'value': {'disciplina_id': False}}
+        return {'value': {'disciplina_id': False, 'orientador_id': False}}
+
+    def onchange_disciplina(self, cr, uid, ids, disciplina, context=None):
+        if disciplina:
+            return {'value': {'orientador_id': self.pool.get('ud_monitoria.disciplina_ps').browse(cr, uid, disciplina).orientador_id.id}}
+        return {'value': {'orientador_id': False}}
 
     def onchange_perfil_ou_bolsista(self, cr, uid, ids, perfil_id, bolsista, context=None):
         res = {'value': {'discente_id': False, 'curso_id': False, 'celular': False,

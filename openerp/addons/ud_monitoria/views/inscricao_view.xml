@@ -117,8 +117,9 @@
                         <field name="tutoria" colspan="2" readonly="1"/>
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
+                        <field name="orientador_id" colspan="2" readonly="1"/>
                         <field name="bolsista" colspan="2" readonly="1"/>
-                        <field name="dados_bancarios_id" options="{'no_open': true}" colspan="2" readonly="1"/>
+                        <field name="dados_bancarios_id" options="{'no_open': true}" colspan="4" readonly="1"/>
                     </group>
                     <group string="Pontuações" col="4">
                         <field name="pontuacoes_ids" nolabel="1" colspan="4" readonly="1"/>
@@ -166,10 +167,12 @@
                                attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="bolsas_curso_id" colspan="2" on_change="onchange_curso()"
                                attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
-                        <field name="disciplina_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
+                        <field name="disciplina_id" colspan="2" on_change="onchange_disciplina(disciplina_id)"
+                               attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': true}"/>
                         <field name="bolsista" colspan="2" on_change="onchange_perfil_ou_bolsista(perfil_id, bolsista)"
                                attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="dados_bancarios_id" colspan="2" options="{'no_open': true}"
+                        <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="dados_bancarios_id" colspan="4" options="{'no_open': true}"
                                context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}"
                                attrs="{'invisible': [('bolsista', '=', False)], 'readonly': ['|', ('discente_id', '=', False), ('id', '!=', False)]}"/>
                     </group>
@@ -289,6 +292,7 @@
                 <field name="disciplina_id" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
+                    <attribute name="on_change">onchange_disciplina(disciplina_id)</attribute>
                 </field>
                 <field name="bolsista" position="attributes">
                     <attribute name="readonly"/>
