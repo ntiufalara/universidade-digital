@@ -378,7 +378,7 @@ class Inscricao(osv.Model):
             elif context.pop('bolsista', False):
                 if self.search_count(cr, uid, [
                     ('processo_seletivo_id', '=', insc.processo_seletivo_id.id), ('id', '!=', insc.id),
-                    ('bolsista', '=', True), ('state', '=', 'analise'),
+                    ('bolsista', '=', True), ('state', '=', 'analise'), ('disciplina_id', '=', insc.disciplina_id.id)
                 ]):
                     raise orm.except_orm(
                         u'Ação bloqueada',
