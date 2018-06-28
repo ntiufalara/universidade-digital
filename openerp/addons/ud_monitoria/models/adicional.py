@@ -439,23 +439,8 @@ class DisciplinaMonitoria(osv.Model):
             semestre = context.get('semestre_id', context['active_id'] if context.get('active_model', False) == 'ud_monitoria.semestre' else False)
             if not semestre:
                 return []
-            res = super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
-            if not res:
-                return []
-            cr.execute('''
-            SELECT
-                disc.id
-            FROM
-                %(disc)s disc INNER JOIN %(bc)s bc ON (disc.bolsas_curso_id = bc.id)
-            WHERE
-                disc.id in (%(ids)s) and bc.semestre_id = %(id)s;
-            ''' % {
-                'disc': self._table,
-                'bc': self.pool.get('ud_monitoria.bolsas_curso')._table,
-                'ids': str(res).lstrip('[(').rstrip(']),').replace('L', ''),
-                'id': semestre,
-            })
-            return map(lambda l: l[0], cr.fetchall())
+            bolsas_curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID, [('semestre_id', '=', semestre)])
+            args = [('bolsas_curso_id', 'in', bolsas_curso_ids)] + (args or [])
         return super(DisciplinaMonitoria, self).search(cr, uid, args, offset, limit, order, context, count)
 
     # Adição e remoção do grupo de segurança

@@ -165,7 +165,7 @@ class DisciplinaPS(osv.Model):
             curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
             curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
                                                                           [('curso_id', 'in', curso_ids)])
-            args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
+            args = [("bolsas_curso_id", "in", curso_ids)] + (args or [])
         return super(DisciplinaPS, self).search(cr, uid, args, offset, limit, order, context, count)
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):

@@ -214,24 +214,13 @@ class DocumentosDiscente(osv.Model):
             args = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
                 cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
             ))] + (args or [])
-        res = super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
         if (context or {}).get('documentos_ativos', False) and res:
-            cr.execute('''
-            SELECT
-                doc.id
-            FROM
-                %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
-            WHERE
-                doc.id in (%(ids)s)
-                AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
-            ''' % {
-                'doc': self._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table,
-                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT),
-                'ids': str(res).lstrip('[(').rstrip(']),').replace('L', ''),
-            })
-            return map(lambda v: v[0], cr.fetchall())
-        return res
+            hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
+                cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
+            )
+            args = [('disciplina_id', 'in', disciplina_ids)] + (args or [])
+        return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
 
     # Validadores
     def valida_vagas(self, cr, uid, ids, context=None):
