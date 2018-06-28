@@ -74,6 +74,7 @@
                     <field name="perfil_id" invisible="context.get('filtrar_discente', False)"/>
                     <field name="discente_id" invisible="context.get('filtrar_discente', False)"/>
                     <field name="disciplina_id"/>
+                    <field name="orientador_id"/>
                     <field name="processo_seletivo_id"/>
                     <field name="tutoria"/>
                     <field name="bolsista"/>
@@ -252,7 +253,6 @@
                         </div>
                     </group>
                 </xpath>
-
             </field>
         </record>
 
