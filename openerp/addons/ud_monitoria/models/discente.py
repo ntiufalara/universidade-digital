@@ -214,7 +214,7 @@ class DocumentosDiscente(osv.Model):
             args = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
                 cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
             ))] + (args or [])
-        if (context or {}).get('documentos_ativos', False) and res:
+        if (context or {}).get('documentos_ativos', False):
             hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
             disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
                 cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
