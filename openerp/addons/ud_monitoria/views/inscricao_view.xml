@@ -230,8 +230,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div attrs="{'invisible': [('com_concorrencia', '=', True)]}"
-                                groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                        <div attrs="{'invisible': [('com_concorrencia', '=', True)]}">
                             Como não ha concorrência, é possível utilizar uma das ações abaixo:
                             <ul>
                                 <li attrs="{'invisible': [('bolsista', '=', True)]}">
