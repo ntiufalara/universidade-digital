@@ -231,8 +231,8 @@
                             </ul>
                         </div>
                         <div attrs="{'invisible': [('com_concorrencia', '=', True)]}">
-                            Não houve concorrência para a disciplina atual e é possível classificar o(a) discente direto,
-                            ignorando sua pontuação. Você também pode escolher uma das opções abaixo:
+                            A disciplina atual não teve concorrência. Com isso, é possível classificar o(a) discente
+                            ignorando sua pontuação utilizando uma das ações abaixo:
                             <ul>
                                 <li attrs="{'invisible': [('bolsista', '=', True)]}">
                                     <button name="classificar_direto_bolsa" type="object" string="Classificar" class="oe_link"
