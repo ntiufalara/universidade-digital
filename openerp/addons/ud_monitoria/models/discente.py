@@ -14,7 +14,7 @@ class DocumentosDiscente(osv.Model):
     _name = 'ud_monitoria.documentos_discente'
     _description = u'Documentos de monitoria do discente (UD)'
     _order = 'state, disciplina_id'  # TODO: Verificar essa ordenação
-    _STATES = [('reserva', u'Cadastro de Reserva'), ('n_bolsista', u'Não Bolsista'),
+    _STATES = [('reserva', u'Cadastro de Reserva'), ('n_bolsista', u'Colaborador(a)'),
                ('bolsista', u'Bolsista'), ('desligado', u'Desligado(a)')]
 
     # Métodos para campos funcionais
