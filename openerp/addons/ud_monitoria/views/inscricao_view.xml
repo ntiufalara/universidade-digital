@@ -280,6 +280,9 @@
             <field name="inherit_id" ref="ud_monitoria_inscricao_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
+                <field name="discente_id" position="attributes">
+                    <attribute name="options"/>
+                </field>
                 <field name="tutoria" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
