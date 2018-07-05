@@ -154,7 +154,11 @@ class DisciplinaMonitoria(osv.Model):
                     'disc': self.pool.get('ud_monitoria.disciplina')._table,
                     'id': '%d' % id,
                 })
-                res[id] = [l[0] for l in cr.fetchall()]
+                inscs = [l[0] for l in cr.fetchall()]
+                res[id] = {
+                    'inscricao_ids': inscs,
+                    'total_inscricoes': len(inscs),
+                }
         return res
 
     def update_bolsas_utilizadas(self, cr, uid, ids, context=None):
@@ -217,7 +221,10 @@ class DisciplinaMonitoria(osv.Model):
         'data_inicial': fields.date(u'Data Inicial', required=True),
         'data_final': fields.date(u'Data Final', required=True),
         'is_active': fields.function(get_is_active, type='boolean', string=u'Ativo'),
-        'inscricao_ids': fields.function(get_inscricoes, type='many2many', relation='ud_monitoria.inscricao', string=u'Inscrições'),
+        'total_inscricoes': fields.function(get_inscricoes, type='integer', string=u'Total de Inscrições',
+                                            multi='ud_monitoria_disciplina_inscricao'),
+        'inscricao_ids': fields.function(get_inscricoes, type='many2many', relation='ud_monitoria.inscricao',
+                                         multi='ud_monitoria_disciplina_inscricao', string=u'Inscrições'),
         'bolsista_ids': fields.function(get_discentes, type='many2many', relation='ud_monitoria.documentos_discente',
                                         string=u'Bolsistas', multi='disciplina_monitoria_discentes'),
         'n_bolsista_ids': fields.function(get_discentes, type='many2many', relation='ud_monitoria.documentos_discente',
@@ -521,6 +528,11 @@ class DisciplinaMonitoria(osv.Model):
                 raise orm.except_orm(
                     u'Erro de Validação',
                     u'A data inicial deve ocorrer antes da data final'
+                )
+            elif not disc.semestre_id.is_active:
+                raise orm.except_orm(
+                    u'Ação não permitida',
+                    u'Não é permitido alterar as datas de disciplinas pertencentes a semestres inativos.'
                 )
         return True
 
