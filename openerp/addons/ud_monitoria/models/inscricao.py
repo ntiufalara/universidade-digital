@@ -145,6 +145,7 @@ class Inscricao(osv.Model):
 
     _columns = {
         'id': fields.integer('ID', invisible=True, readonly=True),
+        'write_date': fields.datetime('Última atualização', invisible=True, readonly=True),
         # Dados Pessoais
         'perfil_id': fields.many2one('ud.perfil', u'Matrícula', required=True, ondelete='restrict', domain=[('tipo', '=', 'a')]),
         'curso_id': fields.related('perfil_id', 'ud_cursos', type='many2one', relation='ud.curso', string=u'Curso',
