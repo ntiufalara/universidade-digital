@@ -21,54 +21,27 @@
             <field name="arch" type="xml">
                 <form string="Adição de bolsa" version="7.0">
                     <div>Apenas disciplinas ativas serão mostradas</div>
+                    <field name="discente_id" invisible="1" options="{'no_open': true}"/>
                     <group string="Filtros" col="4">
                         <field name="semestre_id" colspan="4" options="{'no_open': true}"/>
-                        <field name="curso_id" colspan="2" options="{'create_edit': false, 'create': false}"
-                               on_change="onchange_curso(semestre_id,curso_id,disciplina_id)"/>
-                        <field name="disciplina_id" colspan="2" options="{'create_edit': false, 'create': false}"
-                               on_change="onchange_disciplina(disciplina_id,doc_discente_id)"
-                               attrs="{'readonly': ['|', ('curso_id', '=', False), ('semestre_id', '=', False)]}"/>
-                        <field name="tutor" colspan="2" on_change="onchange_tutor()"/>
-                        <field name="status" colspan="2" on_change="onchange_state()"/>
+                        <field name="bolsas_curso_id" colspan="2"
+                               options="{'create_edit': false, 'create': false, 'no_open': true}"
+                               on_change="onchange_curso()"/>
+                        <field name="disciplina_id" colspan="2"
+                               options="{'create_edit': false, 'create': false, 'no_open': true}"
+                               on_change="onchange_disciplina(disciplina_id)"
+                               attrs="{'readonly': ['|', ('bolsas_curso_id', '=', False), ('semestre_id', '=', False)]}"/>
+                        <field name="tutor" colspan="2" on_change="onchange_limpar_doc_discente()"/>
+                        <field name="status" colspan="2" on_change="onchange_limpar_doc_discente()"/>
                     </group>
                     <group string="Dados do discente" col="4">
                         <field name="bolsas" colspan="2" readonly="1"/>
                         <field name="valor_bolsa" colspan="2"/>
                         <field name="doc_discente_id" colspan="2" options="{'create_edit': false, 'create': false}"
-                               on_change="onchange_doc_discente(doc_discente_id, dados_bancarios_id)"
-                               attrs="{'readonly': ['|', '|', ('curso_id', '=', False), ('semestre_id', '=', False), ('disciplina_id', '=', False)]}"/>
-                        <field name="dados_bancarios_id" colspan="2"/>
-                    </group>
-                    <group string="Dados Bancários" col="4" attrs="{'invisible': [('dados_bancarios_id', '!=', False)]}">
-                        <div colspan="4">
-                            Caso o discente não tenha os dados bancários desejados no campo reservado anteriormente, é
-                            possível inserir novos dados.
-                        </div>
-                        <field name="banco_id" on_change="onchange_banco(banco_id)" options="{'no_open': true}"
-                               placeholder="Seleção do Banco" colspan="4"/>
-                        <group col="4" attrs="{'invisible': [('banco_id', '==', False)]}" colspan="4">
-                            <group col="8" colspan="2">
-                                <field name="agencia" colspan="6" placeholder="Nº da agência bancária"
-                                       attrs="{'required': [('agencia_v', '==', True)], 'invisible': [('agencia_v', '==', False)]}"/>
-                                <field name="dv_agencia" nolabel="1" colspan="2" placeholder="Díg. verif."
-                                       attrs="{'required': [('dv_agencia_v', '==', True)], 'invisible': [('dv_agencia_v', '==', False)]}"/>
-                            </group>
-                            <group col="8" colspan="2">
-                                <field name="conta" colspan="6" placeholder="Nº da conta bancária"
-                                       attrs="{'required': [('conta_v', '==', True)], 'invisible': [('conta_v', '==', False)]}"/>
-                                <field name="dv_conta" nolabel="1" colspan="2" placeholder="Díg. verif."
-                                       attrs="{'required': [('dv_conta_v', '==', True)], 'invisible': [('dv_conta_v', '==', False)]}"/>
-                            </group>
-                            <field name="operacao" colspan="2" placeholder="Nº da Operação"
-                                   attrs="{'required': [('operacao_v', '==', True)], 'invisible': [('operacao_v', '==', False)]}"/>
-                        </group>
-                        <group invisible="1">
-                            <field name="agencia_v"/>
-                            <field name="dv_agencia_v"/>
-                            <field name="conta_v"/>
-                            <field name="dv_conta_v"/>
-                            <field name="operacao_v"/>
-                        </group>
+                               on_change="onchange_doc_discente(doc_discente_id)"
+                               attrs="{'readonly': ['|', '|', ('bolsas_curso_id', '=', False), ('semestre_id', '=', False), ('disciplina_id', '=', False)]}"/>
+                        <field name="dados_bancarios_id" colspan="2"
+                               context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}"/>
                     </group>
                     <footer>
                         <button name="botao_adicionar" string="Adicionar" type="object" class="oe_highlight"

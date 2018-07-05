@@ -1,6 +1,6 @@
 # coding: utf-8
 from openerp import SUPERUSER_ID
-from openerp.osv import osv, fields
+from openerp.osv import osv, fields, orm
 from openerp.addons.ud.ud import _TIPOS_BOLSA
 from ..models.util import data_hoje, DEFAULT_SERVER_DATE_FORMAT
 
@@ -52,29 +52,19 @@ class AdicionarBolsaWizard(osv.TransientModel):
     _columns = {
         'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=True, readonly=True,
                                        domain=[('is_active', '=', True)]),
-        'curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, domain="[('semestre_id', '=', semestre_id)]"),
-        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True),
+        'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, domain="[('semestre_id', '=', semestre_id)]"),
+        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplinas', required=True, domain="[('bolsas_curso_id', '=', bolsas_curso_id)]"),
         'bolsas': fields.integer(u'Bolsas disponíveis', help=u'Número de bolsas disponíveis para a disciplina'),
-        'valor_bolsa': fields.float(u'Bolsa (R$)'),
+        'valor_bolsa': fields.float(u'Bolsa (R$)', required=True),
         'tutor': fields.boolean(u'Tutor?'),
         'status': fields.selection(_STATES, u'Status', required=True),
         'doc_discente_id': fields.many2one('ud_monitoria.documentos_discente', u'Discente', required=True,
                                              domain="[('disciplina_id', '=', disciplina_id), ('tutor', '=', tutor), "
                                                     "('state', '=', status)]"),
+        'discente_id': fields.related('doc_discente_id', 'perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee',
+                                      string=u'Discente', readonly=True),
         # DADOS BANCÁRIOS
-        'dados_bancarios_id': fields.many2one('ud.dados.bancarios', u'Dados Bancários', domain=[('id', '=', False)]),
-        'banco_id': fields.many2one('ud.banco', u'Banco', ondelete='restrict'),
-        'agencia': fields.char(u'Agência', size=4, help=u'Número da Agência'),
-        'dv_agencia': fields.char(u'DV Agência', size=2, help=u'Dígito verificador da Agência'),
-        'conta': fields.char(u'Conta', size=10, help=u'Número da Conta'),
-        'dv_conta': fields.char(u'DV Conta', size=1, help=u'Dígito verificador da Conta'),
-        'operacao': fields.char(u'Operação', size=3, help=u'Tipo de conta'),
-
-        'agencia_v': fields.related('banco_id', 'agencia', type='boolean', invisible=True, readonly=True),
-        'dv_agencia_v': fields.related('banco_id', 'dv_agencia', type='boolean', invisible=True, readonly=True),
-        'conta_v': fields.related('banco_id', 'conta', type='boolean', invisible=True, readonly=True),
-        'dv_conta_v': fields.related('banco_id', 'dv_conta', type='boolean', invisible=True, readonly=True),
-        'operacao_v': fields.related('banco_id', 'operacao', type='boolean', invisible=True, readonly=True),
+        'dados_bancarios_id': fields.many2one('ud.dados.bancarios', u'Dados Bancários', domain='[("ud_conta_id", "=", discente_id)]'),
     }
 
     def default_get(self, cr, uid, fields_list, context=None):
@@ -86,76 +76,42 @@ class AdicionarBolsaWizard(osv.TransientModel):
             if context.get('active_model', False) == 'ud_monitoria.semestre':
                 res['semestre_id'] = context.get('active_id')
             elif context.get('active_model', False) == 'ud_monitoria.documentos_discente':
-                doc = self.pool.get('ud_monitoria.documentos_discente').browse(cr, uid, context.get('active_id'), context)
+                doc = self.pool.get('ud_monitoria.documentos_discente').browse(cr, uid, context['active_id'], context)
                 if doc.state == 'bolsista':
-                    raise osv.except_osv(u'Discente bolsista', u'O discente já é bolsista')
-                elif not doc.is_active and doc.state != 'reserva':
-                    raise osv.except_osv(u'Documento do discente inativo',
-                                         u'Não é possível adicionar bolsas para discentes inativos')
+                    raise orm.except_orm(u'Discente bolsista', u'O discente já é bolsista')
+                elif not doc.semestre_id.is_active:
+                    raise orm.except_orm(
+                        u'Semestre Inativo',
+                        u'Alteração indisponível enquanto o semestre correspondente estiver inativo (%s)'
+                        % doc.semestre_id.semestre
+                    )
                 res['semestre_id'] = doc.disciplina_id.semestre_id.id
-                res['curso_id'] = doc.disciplina_id.bolsas_curso_id.id
+                res['bolsas_curso_id'] = doc.disciplina_id.bolsas_curso_id.id
                 res['disciplina_id'] = doc.disciplina_id.id
                 res['tutor'] = doc.tutor
                 res['status'] = doc.state
                 res['doc_discente_id'] = doc.id
+                res['dados_bancarios_id'] = getattr(doc.dados_bancarios_id, 'id', False)
         return res
 
-    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
-        res = super(AdicionarBolsaWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        if 'disciplina_id' in res['fields']:
-            res['fields']['disciplina_id']['domain'] = "[('bolsas_curso_id', '=', curso_id), ('data_inicial', '<=', '%(hj)s'), ('data_final', '>=', '%(hj)s')]" % {
-                'hj': data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            }
-        return res
+    def onchange_curso(self, cr, uid, ids, context=None):
+        return {'value': {'disciplina_id': False}}
 
-    def onchange_curso(self, cr, uid, ids, semestre_id, curso_id, disciplina_id, context=None):
-        if not (semestre_id and curso_id):
-            return {'value': {'disciplina_id': False}}
-        args = [('bolsas_curso_id', '=', curso_id), ('semestre_id', '=', semestre_id)]
-        disc = self.pool.get('ud_monitoria.disciplina').search(cr, uid, args, context=context)
-        valor = {}
-        if disciplina_id not in disc:
-            valor['disciplina_id'] = False
-        return {'value': valor, 'domain': {'disciplina_id': [('id', 'in', disc)]}}
-
-    def onchange_disciplina(self,  cr, uid, ids, disciplina_id, doc_discente_id, context=None):
+    def onchange_disciplina(self,  cr, uid, ids, disciplina_id, context=None):
+        res = {'value': {'bolsas': 0, 'doc_discente_id': False}}
         if disciplina_id:
-            disciplina = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disciplina_id, context)
-            valores = {'bolsas': disciplina.bolsas_disponiveis}
-            if doc_discente_id:
-                doc_discente = self.pool.get('ud_monitoria.documentos_discente').browse(cr, uid, doc_discente_id, context)
-                if doc_discente.disciplina_id.id == disciplina_id:
-                    valores['doc_discente_id'] = doc_discente_id
-                else:
-                    valores['doc_discente_id'] = False
-            return {'value': valores}
-        return {'value': {'doc_discente_id': False, 'bolsas': 0}}
+            res['value']['bolsas'] = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disciplina_id, context).bolsas_disponiveis
+        return res
 
-    def onchange_doc_discente(self, cr, uid, ids, doc_discente_id, dados_bancarios_id, context=None):
+    def onchange_doc_discente(self, cr, uid, ids, doc_discente_id, context=None):
+        res = {'value': {'discente_id': False, 'dados_bancarios_id': False}}
         if doc_discente_id:
-            doc = self.pool.get('ud_monitoria.documentos_discente').browse(cr, uid, doc_discente_id, context)
-            if not dados_bancarios_id:
-                dados_bancarios_id = getattr(doc.dados_bancarios_id, 'id', False)
-            return {'value': {'dados_bancarios_id': dados_bancarios_id},
-                    'domain': {'dados_bancarios_id': [('ud_conta_id', '=', doc.discente_id.id)]}}
-        return {'value': {'dados_bancarios_id': False},
-                'domain': {'dados_bancarios_id': [('id', '=', False)]}}
+            res['value']['discente_id'] = self.pool.get('ud_monitoria.documentos_discente').browse(
+                cr, uid, doc_discente_id, context
+            ).discente_id.id
+        return res
 
-    def onchange_banco(self, cr, uid, ids, banco_id, context=None):
-        if banco_id:
-            banco = self.pool.get('ud.banco').read(cr, uid, banco_id, [
-                'agencia', 'dv_agencia', 'conta', 'dv_conta', 'operacao'
-            ], context=context, load='_classic_write')
-            vals = {'agencia': False, 'dv_agencia': False, 'conta': False, 'dv_conta': False, 'operacao': False}
-            vals.update({'%s_v' % dado: banco.get(dado) for dado in banco.keys()})
-            return {'value': vals}
-        return {'value': {'agencia_v': False, 'dv_agencia_v': False, 'conta_v': False, 'dv_conta_v': False,'operacao_v': False,
-                          'agencia': False, 'dv_agencia': False, 'conta': False, 'dv_conta': False, 'operacao': False}}
-
-    def onchange_tutor(self, cr, uid, ids, context=None):
-        return {'value': {'doc_discente_id': False}}
-
-    def onchange_state(self, cr, uid, ids, context=None):
+    def onchange_limpar_doc_discente(self, cr, uid, ids, context=None):
         return {'value': {'doc_discente_id': False}}
 
     def botao_adicionar(self, cr, uid, ids, context=None):
