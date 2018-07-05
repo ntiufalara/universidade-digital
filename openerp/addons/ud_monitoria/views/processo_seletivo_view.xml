@@ -81,7 +81,7 @@
             <field name="arch" type="xml">
                 <tree string="Critérios Avaliativos">
                     <field name="name"/>
-                    <field name="peso"/>
+                    <field name="peso" invisible="context.get('tipo_media', False) == 'a'"/>
                 </tree>
             </field>
         </record>
@@ -237,7 +237,7 @@
                                 <field name="tipo_media" colspan="2" attrs="{'readonly': [('state', 'not in', [False, 'demanda', 'invalido'])]}"/>
                                 <field name="media_minima" colspan="2" attrs="{'readonly': [('state', 'not in', [False, 'demanda', 'invalido'])]}"/>
                             </group>
-                            <field name="criterios_avaliativos_ids" nolabel="1"
+                            <field name="criterios_avaliativos_ids" nolabel="1" context="{'tipo_media': tipo_media}"
                                    attrs="{'readonly': [('state', 'in', ['novo', 'andamento', 'encerrado'])]}"/>
                         </page>
                     </notebook>
@@ -315,7 +315,6 @@
                 </field>
             </field>
         </record>
-
 
         <record id="ud_monitoria_processo_seletivo_admin_form" model="ir.ui.view">
             <field name="name">ud_monitoria.processo_seletivo.coordenandor.form</field>
