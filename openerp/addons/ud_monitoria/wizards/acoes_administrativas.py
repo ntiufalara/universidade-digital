@@ -191,21 +191,25 @@ class StatusInscricaoWizard(osv.TransientModel):
             res['state'] = inscricao.state
         return res
 
+    def view_init(self, cr, uid, fields_list, context=None):
+        context = context or {}
+        if context.get('active_model', False) == 'ud_monitoria.inscricao' and context.get('active_id', False):
+            inscricao = self.pool.get('ud_monitoria.inscricao').browse(cr, uid, context['active_id'], context)
+            data_max = datetime.strptime(inscricao.write_date, DEFAULT_SERVER_DATETIME_FORMAT).date() + timedelta(30)
+            if data_max < data_hoje(self, cr, uid):
+                raise orm.except_orm(
+                    u'Ação Indisponível!',
+                    u'Inscrições modificadas há mais de 30 dias não podem ter seu status modificado'
+                )
+            elif not inscricao.disciplina_id.semestre_id.is_active:
+                raise orm.except_orm(
+                    u'Ação Indisponível!',
+                    u'A modificação do status é permitidas apenas quando o semestre correspondente está ativo.'
+                )
+
     def executar_acao(self, cr, uid, ids, context=None):
         doc_discente_model = self.pool.get('ud_monitoria.documentos_discente')
-        hoje = data_hoje(self, cr, uid)
         for reverter in self.browse(cr, uid, ids, context):
-            data_max = datetime.strptime(reverter.inscricao_id.write_date, DEFAULT_SERVER_DATETIME_FORMAT).date() + timedelta(30)
-            if data_max < hoje:
-                raise orm.except_orm(
-                    u'Ação inválida!',
-                    u'Não é possível modificar o status de uma inscrição modificada 30 dias atrás ou mais.'
-                )
-            elif not reverter.inscricao_id.disciplina_id.semestre_id.is_active:
-                raise orm.except_orm(
-                    u'Ação inválida!',
-                    u'Não é possível alterar o status de uma incrição quando o semestre correspondente está inativo.'
-                )
             doc_discente = doc_discente_model.search(cr, uid, [
                 ('perfil_id', '=', reverter.perfil_id.id),
                 ('disciplina_id', '=', reverter.disciplina_id.disc_monit_id.id)
