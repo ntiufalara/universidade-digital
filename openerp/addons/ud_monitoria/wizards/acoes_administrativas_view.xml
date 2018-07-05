@@ -71,5 +71,53 @@
                 </form>
             </field>
         </record>
+
+        <!-- STATUS INSCRICAO -->
+        <record id="action_ud_monitoria_status_inscricao_wizard" model="ir.actions.act_window">
+            <field name="name">Status de Inscrição</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.status_inscricao_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_status_inscricao_wizard_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.status_inscricao_wizard.form</field>
+            <field name="model">ud_monitoria.status_inscricao_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Status de Inscrição" version="7.0">
+                    <group col="4">
+                        <field name="inscricao_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="state" colspan="2" readonly="1"/>
+                        <field name="discente_id" colspan="2" readonly="1"/>
+                        <field name="perfil_id" colspan="2" readonly="1"/>
+                        <field name="bolsas_curso_id" colspan="2" readonly="1"/>
+                        <field name="disciplina_id" colspan="2" readonly="1"/>
+                    </group>
+                    <div>
+                        <strong>Atenção:</strong> Ao aplicar a mudança, caso exista um documento para o discente
+                        vinculado a essa matrícula e disciplina, esse será <span style="color: red;">excluído</span>. Se a mudança for para o status de
+                        classificado(a) ou cadastro de reserva, um novo registro será criado.
+                    </div>
+                    <group string="Ações" col="4">
+                        <div colspan="4">
+                            Selecione o novo status para a inscrição atual:
+                        </div>
+                        <field name="acao_inscricao"/>
+                        <div colspan="4" attrs="{'invisible': [('acao_inscricao', '!=', 'classificado')]}">
+                            Caso deseje ignorar a pontuação média, deixe a opção abaixo marcada:
+                        </div>
+                        <field name="ignorar_pontuacao" colspan="4" attrs="{'invisible': [('acao_inscricao', '!=', 'classificado')]}"/>
+                    </group>
+                    <footer>
+                        <button name="executar_acao" string="Alterar Status" class="oe_highlight" type="object"/>
+                        Ou
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
     </data>
 </openerp>
