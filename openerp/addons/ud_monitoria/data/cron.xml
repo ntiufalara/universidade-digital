@@ -14,5 +14,17 @@
             <field name="model">ud_monitoria.processo_seletivo</field>
             <field name="function">atualiza_status_cron</field>
         </record>
+
+        <record id="ud_monitoria_bolsas_discentes_cron" model="ir.cron">
+            <field name="name">Remove bolsas monitoria/tutoria de discentes em disciplinas inativas</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.utcnow() + timedelta(1)).strftime('%Y-%m-%d 03:00:00')"/>
+            <field name="numbercall">-1</field>
+            <field name="priority">5</field>
+            <field name="doall" eval="True"/>
+            <field name="model">ud_monitoria.semestre</field>
+            <field name="function">atualiza_bolsas_discente_cron</field>
+        </record>
     </data>
 </openerp>
