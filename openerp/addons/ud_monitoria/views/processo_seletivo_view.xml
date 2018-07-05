@@ -316,6 +316,27 @@
             </field>
         </record>
 
+
+        <record id="ud_monitoria_processo_seletivo_admin_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.processo_seletivo.coordenandor.form</field>
+            <field name="model">ud_monitoria.processo_seletivo</field>
+            <field name="inherit_id" ref="ud_monitoria_processo_seletivo_coordenador_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="criterios_avaliativos_ids" position="attributes">
+                    <attribute name="attrs"/>
+                </field>
+                <field name="criterios_avaliativos_ids" position="before">
+                    <div class="oe_edit_only" style="color: red" attrs="{'invisible': [('inscricoes_ids', '=', [])]}">
+                        <strong>ATENÇÃO:</strong> Não adicione nem exclua critérios avaliativos, pois causará
+                        <strong>incosistência nos dados</strong> das inscrições.
+                        <span style="text-decoration: underline">A única ação segura é edição de informações já
+                            existentes</span>.
+                    </div>
+                </field>
+            </field>
+        </record>
+
         <!-- PROCESSO SELETIVO: Solicitação de disciplina -->
         <record id="ud_monitoria_processo_seletivo_demanda_tree_view" model="ir.ui.view">
             <field name="name">ud_monitoria.processo_seletivo.tree</field>
