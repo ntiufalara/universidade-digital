@@ -302,7 +302,7 @@ class ProcessoSeletivo(osv.Model):
         "tipo_media": "p",
         "criterios_avaliativos_ids": [
             (0, 0, {"name": u"PROVA ESCRITA", "peso": 3}),
-            (0, 0, {"name": u"MÉDIA FINAL NAS DISCIPLINAS", "peso": 3}),
+            (0, 0, {"name": u"MÉDIA FINAL NA(S) DISCIPLINA(S)", "peso": 3}),
             (0, 0, {"name": u"COEFICIENTE DE RENDIMENTO ACUMULADO", "peso": 2}),
             (0, 0, {"name": u"ENTREVISTA", "peso": 2}),
         ]
@@ -459,7 +459,7 @@ class ProcessoSeletivo(osv.Model):
         Atualiza o status dos processos seletivos para demanda, novo e andamento de acordo com suas datas utilizado o
         modelo "ir.cron".
         """
-        _logger.info(u'Atualizando status dos Processos Seletivos...')
+        _logger.info(u'Atualizando status dos Processos Seletivos.')
         sql = "UPDATE " + self._table + " SET state='%(status)s' WHERE state NOT IN ('invalido', '%(status)s') AND %(condicao)s;"
         hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
         cr.execute(sql % {'status': 'demanda', 'condicao': "prazo_demanda >= '%s'" % hoje})
