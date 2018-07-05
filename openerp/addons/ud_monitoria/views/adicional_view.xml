@@ -82,7 +82,7 @@
             <field name="res_model">ud_monitoria.disciplina</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'disciplina_ativa': True}</field>
+            <field name="context">{'disciplina_ativa': True, 'somente_leitura': True}</field>
         </record>
 
         <record id="ud_monitoria_disciplina_tree" model="ir.ui.view">
@@ -97,6 +97,7 @@
                     <field name="tutoria"/>
                     <field name="bolsistas"/>
                     <field name="colaboradores"/>
+                    <field name="total_inscricoes"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -119,7 +120,7 @@
                         <field name="perfil_id" colspan="2" options="{'no_open': true}" on_change="onchange_perfil(perfil_id)"
                                attrs="{'readonly': [('id', '!=', False)]}"
                                groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
-                        <field name="tutoria" colspan="2" on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)"/>
+                        <field name="tutoria" attrs="{'readonly': [('id', '!=', False)]}" colspan="2" on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)"/>
                         <field name="orientador_id" colspan="4" readonly="1" options="{'no_open': true}"/>
                     </group>
                     <group string="Vagas" col="4">
@@ -176,9 +177,15 @@
                 </field>
                 <xpath expr="//notebook/page[@string='Disciplinas']" position="after">
                     <page string="Inscrições">
+                        <group>
+                            <field name="total_inscricoes"/>
+                        </group>
                         <field name="inscricao_ids" nolabel="1"/>
                     </page>
                 </xpath>
+                <field name="perfil_id" position="attributes">
+                    <attribute name="attrs">{'readonly': [('id', '!=', False), ('total_inscricoes', '&gt;', 0)]}</attribute>
+                </field>
             </field>
         </record>
     </data>
