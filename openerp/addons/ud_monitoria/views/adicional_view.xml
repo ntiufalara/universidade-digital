@@ -150,7 +150,7 @@
                             <page string="Bolsistas" attrs="{'invisible': [('bolsista_ids', '=', [(6, False, [])])]}">
                                 <field name="bolsista_ids" nolabel="1" context="{'ocultar_disciplina': True}"/>
                             </page>
-                            <page string="Não bolsistas" attrs="{'invisible': [('n_bolsista_ids', '=', [(6, False, [])])]}">
+                            <page string="Colaboradores" attrs="{'invisible': [('n_bolsista_ids', '=', [(6, False, [])])]}">
                                 <field name="n_bolsista_ids" nolabel="1" context="{'ocultar_disciplina': True}"/>
                             </page>
                             <page string="Em reserva" attrs="{'invisible': [('reserva_ids', '=', [(6, False, [])])]}">
