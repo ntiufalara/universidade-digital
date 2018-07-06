@@ -26,6 +26,7 @@
             <field name="res_model">ud_monitoria.documentos_discente</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', 'in', ['bolsista', 'n_bolsista'])]</field>
             <field name="context">{"documentos_ativos": True}</field>
             <field name="help" type="html">
                 <div>
