@@ -33,6 +33,10 @@
                                context="{'semestre_id': context.get('semestre_id', False), 'coordenador_monitoria_curso': context.get('coordenador_monitoria_curso', False)}"
                                options="{'no_open': true, 'create': false, 'create_edit': false, 'm2o_dialog': false}"/>
                     </group>
+                    <div style="color: red">
+                        <strong>Atenção:</strong> As informações mostradas dizem estão diretamente relacionadas ao
+                        semestre, não ao processo seletivo. Isso quer dizer que elas podem ser atualizadas posteriormente.
+                    </div>
                     <group string="Detalhes" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
