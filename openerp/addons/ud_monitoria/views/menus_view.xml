@@ -12,18 +12,18 @@
                   action="action_ud_monitoria_minhas_inscricoes" sequence="3"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_liberacao_disciplina" sequence="5"
                   action="action_ud_monitoria_bolsas_curso_liberacao_disciplina_view"
-                  groups="group_ud_monitoria_coord_disciplina"/>
+                  groups="ud_monitoria.group_ud_monitoria_coord_disciplina"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_demanda" sequence="7"
-                  action="action_ud_monitoria_demanda_view" groups="group_ud_monitoria_coord_disciplina"/>
-
+                  action="action_ud_monitoria_demanda_view" groups="ud_monitoria.group_ud_monitoria_coord_disciplina"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_horarios_menu" name="Monitores/Tutores"
                   action="action_ud_monitoria_horarios_discente" sequence="9"/>
+
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="11"
-                  groups="group_ud_monitoria_coordenador,group_ud_monitoria_administrador"/>
+                  groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_menu" name="Discente" sequence="13"
-                  groups="group_ud_monitoria_monitor"/>
+                  groups="ud_monitoria.group_ud_monitoria_monitor"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_orientador_menu" name="Orientador" sequence="15"
-                  groups="group_ud_monitoria_orientador"/>
+                  groups="ud_monitoria.group_ud_monitoria_orientador"/>
 
         <!-- Menu Interno Coordenação -->
         <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_registro_menu" name="Semestres"
