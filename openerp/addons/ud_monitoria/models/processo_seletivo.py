@@ -1,10 +1,9 @@
 # coding: utf-8
 import logging
 from datetime import datetime, timedelta
-from re import finditer
 
 from openerp import SUPERUSER_ID
-from openerp.osv import fields, osv, orm
+from openerp.osv import fields, osv, orm, expression
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 from openerp.addons.ud.ud import _TIPOS_BOLSA
@@ -125,31 +124,33 @@ class DisciplinaPS(osv.Model):
         """
         if not args:
             args = []
-        elif isinstance(args, tuple):
-            args = list(args)
         if name:
-            condicoes = "disc.name ilike '%%%(n)s%%' OR disc.codigo ilike '%%%(n)s%%'" %  {'n': name}
-            for disc in finditer('(?P<nome>\w+(?:\s+\w+)*)\s*(?:\((?P<cod>\w+)\))?', name):
-                condicoes += " OR disc.name ilike '%%%s%%'" % disc.group('nome')
-                if disc.group('cod'):
-                    condicoes += " OR disc.codigo ilike '%%%s%%'" % disc.group('cod')
-
+            disc_model = self.pool.get('ud.disciplina')
+            e = expression.expression(cr, uid, ['|', ('name', operator, name), ('codigo', operator, name)], disc_model, context)
+            _where, _params = e.to_sql()
+            where = _where.replace('%s', '%r') % tuple(_params)
+            if args:
+                e = expression.expression(cr, uid, args, self, context)
+                _where, _params = e.to_sql()
+                where = '(%s) AND (%s)' % (where, _where.replace('%s', '%r') % tuple(_params))
             cr.execute('''
             SELECT
-                disc_ps.id
+                %(disc_ps)s."id"
             FROM
-                %(disc_ps)s disc_ps INNER JOIN  %(disc_m)s disc_m ON (disc_ps.disc_monit_id = disc_m.id)
-                    INNER JOIN ud_monitoria_disciplinas_rel disc_rel ON (disc_m.id = disc_rel.disc_monitoria)
-                        INNER JOIN %(disc)s disc ON (disc_rel.disciplina_ud = disc.id)
+                %(disc_ps)s INNER JOIN %(disc_m)s ON (%(disc_ps)s."disc_monit_id" = %(disc_m)s."id")
+                    INNER JOIN %(rel)s ON (%(disc_m)s."id" = %(rel)s."disc_monitoria")
+                        INNER JOIN %(disc)s ON (%(rel)s."disciplina_ud" = %(disc)s."id")
             WHERE
-                %(condicoes)s;
+                %(where)s%(limit)s;
             ''' % {
-                'disc_m': self._table,
-                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
-                'disc': self.pool.get('ud.disciplina')._table,
-                'condicoes': condicoes
+                'disc': '"%s"' % disc_model._table,
+                'disc_m': '"%s"' % self.pool.get('ud_monitoria.disciplina')._table,
+                'disc_ps': '"%s"' % self.pool.get('ud_monitoria.disciplina_ps')._table,
+                'rel': '"ud_monitoria_disciplinas_rel"',
+                'where': where,
+                'limit': limit and ' LIMIT %d' % limit or ''
             })
-            args += [('id', 'in', map(lambda l: l[0], cr.fetchall()))]
+            return self.name_get(cr, uid, [l[0] for l in cr.fetchall()], context)
         return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
