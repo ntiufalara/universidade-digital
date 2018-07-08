@@ -1,10 +1,10 @@
 # coding: utf-8
 from datetime import datetime
-from re import finditer
 
 from openerp import SUPERUSER_ID
-from openerp.osv import fields, osv, orm
+from openerp.osv import fields, osv, orm, expression
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+
 from util import get_ud_pessoa_id, data_hoje
 
 
@@ -114,19 +114,31 @@ class DisciplinaMonitoria(osv.Model):
             }
         return res
 
-    def get_discentes(self, cr, uid, ids, campo, args, context=None):
+    def get_discentes(self, cr, uid, ids, campos, args, context=None):
         """
         Busca todos os discentes e separa-os em um dicionário de acordo com seu status e seu campo correspondente.
         """
         doc_model = self.pool.get("ud_monitoria.documentos_discente")
         res = {}
         for disc_id in ids:
-            res[disc_id] = {
-                "bolsista_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "bolsista")], context=context),
-                "n_bolsista_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "n_bolsista")], context=context),
-                "reserva_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context),
-                "desligado_ids": doc_model.search(cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context),
-            }
+            res[disc_id] = {}
+            for campo in campos:
+                if campo == 'bolsista_ids':
+                    res[disc_id]['bolsista_ids'] = doc_model.search(
+                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "bolsista")], context=context
+                    )
+                elif campo == 'n_bolsista_ids':
+                    res[disc_id]['n_bolsista_ids'] = doc_model.search(
+                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "n_bolsista")], context=context
+                    )
+                elif campo == 'reserva_ids':
+                    res[disc_id]['reserva_ids'] = doc_model.search(
+                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context
+                    )
+                elif campo == 'desligado_ids':
+                    res[disc_id]['desligado_ids'] = doc_model.search(
+                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context
+                    )
         return res
 
     def get_is_active(self, cr, uid, ids, campo, args, context=None):
@@ -260,29 +272,31 @@ class DisciplinaMonitoria(osv.Model):
         """
         if not args:
             args = []
-        elif isinstance(args, tuple):
-            args = list(args)
         if name:
-            condicoes = "disc.name ilike '%%%(n)s%%' OR disc.codigo ilike '%%%(n)s%%'" %  {'n': name}
-            for disc in finditer('(?P<nome>\w+(?:\s+\w+)*)\s*(?:\((?P<cod>\w+)\))?', name):
-                condicoes += " OR disc.name ilike '%%%s%%'" % disc.group('nome')
-                if disc.group('cod'):
-                    condicoes += " OR disc.codigo ilike '%%%s%%'" % disc.group('cod')
-
+            disc_model = self.pool.get('ud.disciplina')
+            e = expression.expression(cr, uid, ['|', ('name', operator, name), ('codigo', operator, name)], disc_model, context)
+            _where, _params = e.to_sql()
+            where = _where.replace('%s', '%r') % tuple(_params)
+            if args:
+                e = expression.expression(cr, uid, args, self, context)
+                _where, _params = e.to_sql()
+                where = '(%s) AND (%s)' % (where, _where.replace('%s', '%r') % tuple(_params))
             cr.execute('''
             SELECT
-                disc_m.id
+                %(disc_m)s."id"
             FROM
-                %(disc_m)s disc_m INNER JOIN ud_monitoria_disciplinas_rel disc_rel ON (disc_m.id = disc_rel.disc_monitoria)
-                    INNER JOIN %(disc)s disc ON (disc_rel.disciplina_ud = disc.id)
+                %(disc_m)s INNER JOIN %(rel)s ON (%(disc_m)s."id" = %(rel)s."disc_monitoria")
+                    INNER JOIN %(disc)s ON (%(rel)s."disciplina_ud" = %(disc)s."id")
             WHERE
-                %(condicoes)s;
+                %(where)s%(limit)s;
             ''' % {
-                'disc_m': self._table,
-                'disc': self.pool.get('ud.disciplina')._table,
-                'condicoes': condicoes
+                'disc': '"%s"' % disc_model._table,
+                'disc_m': '"%s"' % self.pool.get('ud_monitoria.disciplina')._table,
+                'rel': '"ud_monitoria_disciplinas_rel"',
+                'where': where,
+                'limit': limit and ' LIMIT %d' % limit or ''
             })
-            args += [('id', 'in', map(lambda l: l[0], cr.fetchall()))]
+            return self.name_get(cr, uid, [l[0] for l in cr.fetchall()], context)
         return self.name_get(cr, uid, self.search(cr, uid, args, limit=limit, context=context), context)
 
     def create(self, cr, uid, vals, context=None):
