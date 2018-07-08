@@ -186,27 +186,38 @@
                                 Mostra as ocorrências do semestre, tal como alterações de bolsa dos discentes.
                             </p>
                         </page>
-                        <page string="Alteração de Bolsas" attrs="{'invisible': [('id', '=', False)]}"
+                        <page string="Ações Semestrais" attrs="{'invisible': [('id', '=', False)]}"
                               groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard)d' type='action'
-                                string='Vincular Bolsa'/>
-                        <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d' type='action'
-                                string='Remover Bolsa'/>
-                        <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d' type='action'
-                                string='Transferir Bolsa'/>
-                    </page>
-                        <page string="Ações Administrativas" attrs="{'invisible': ['|', ('is_active', '=', False), ('id', '=', False)]}" groups="ud_monitoria.group_ud_monitoria_administrador">
-                            <div style="color: red;">
-                                <strong>Atenção:</strong> Essas ações estarão visíveis apenas enquanto o registro do semestre estiver ativo.
-                            </div>
-                            <group string="Permissões">
-                                <ul>
-                                    <li>
-                                        <button name="%(ud_monitoria.action_ud_monitoria_permissao_orientadores_wizard)d"
-                                                type="action" string="Clique aqui" class="oe_link"/>
-                                        escolher quem receberá as permissões de orientador.
-                                    </li>
-                                </ul>
+                            <group>
+                                <group string="Manipulação de Bolsas" col="4">
+                                    <ul colspan="4">
+                                        <li>
+                                            <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard)d'
+                                                    type='action' string='Clique aqui' class="oe_link"/> para
+                                            <strong>adicionar</strong> uma bolsa a um(a) discente;
+                                        </li>
+                                        <li>
+                                            <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
+                                                    type='action' string='Clique aqui' class="oe_link"/> para
+                                            <strong>remover</strong> a bolsa a um(a) discente;
+                                        </li>
+                                        <li invisible="1">
+                                            <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d'
+                                                    type='action' string='Clique aqui' class="oe_link"/> para
+                                            <strong>transferir</strong> a bolsa a um(a) discente;
+                                        </li>
+                                    </ul>
+                                </group>
+                                <group string="Ações Administrativas" col="4"
+                                       groups="ud_monitoria.group_ud_monitoria_administrador">
+                                    <ul colspan="4">
+                                        <li>
+                                            <button name="%(ud_monitoria.action_ud_monitoria_permissao_orientadores_wizard)d"
+                                                    type="action" string="Clique aqui" class="oe_link"/>
+                                            escolher quem receberá as permissões de orientador.
+                                        </li>
+                                    </ul>
+                                </group>
                             </group>
                         </page>
                     </notebook>
