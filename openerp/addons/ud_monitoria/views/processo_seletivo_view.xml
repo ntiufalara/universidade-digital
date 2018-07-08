@@ -211,11 +211,11 @@
                         <field name="state" widget="statusbar" states="novo,andamento,encerrado" statusbar_visible="novo,andamento,encerrado"/>
                     </header>
                     <field name="id"/>
-                    <div attrs="{'invisible': [('state', '!=', 'invalido')]}"
+                    <div style="color: red;" attrs="{'invisible': [('state', '!=', 'invalido')]}"
                          groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                         <p>
                             O processo seletivo torna-se inválido quando não está sob demanda e não possui ao menos um
-                            anexo e/ou uma disciplina.
+                            anexo e uma disciplina.
                         </p>
                     </div>
                     <group col="4">
