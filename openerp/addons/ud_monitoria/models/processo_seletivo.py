@@ -7,6 +7,7 @@ from openerp.osv import fields, osv, orm, expression
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
 from openerp.addons.ud.ud import _TIPOS_BOLSA
+
 from util import regex_clausula, regex_espacos, regex_order, regex_regra, data_hoje, get_ud_pessoa_id
 
 
@@ -241,9 +242,6 @@ class ProcessoSeletivo(osv.Model):
         Gatilho utilizado para atualizar o status do processo seletivo quando os campos de disciplinas, anexos e todas
         as suas datas forem modificados.
         """
-        context = context or {}
-        if 'tz' not in context:
-            context['tz'] = u'America/Maceio'
         hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
         args = [
             '&', ('id', 'in', ids), '|', '|', '|', '|', ('state', 'in', [None, 'invalido']),
@@ -461,10 +459,33 @@ class ProcessoSeletivo(osv.Model):
         modelo "ir.cron".
         """
         _logger.info(u'Atualizando status dos Processos Seletivos.')
+        hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        ids = self.search(cr, uid, [
+            ('prazo_demanda', '<', hoje), '|', ('anexos_ids', '=', False), ('disciplinas_ids', '=', False)
+        ])
         sql = "UPDATE " + self._table + " SET state='%(status)s' WHERE state NOT IN ('invalido', '%(status)s') AND %(condicao)s;"
         hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        if ids:
+            cr.execute("UPDATE %(ps)s SET state='invalido' WHERE id in (%(ids)s);" % {
+                'ps': self._table, 'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', '')
+            })
         cr.execute(sql % {'status': 'demanda', 'condicao': "prazo_demanda >= '%s'" % hoje})
-        cr.execute(sql % {'status': 'novo', 'condicao': "prazo_demanda < '%(hj)s' AND data_inicio > '%(hj)s'" % {'hj': hoje}})
-        cr.execute(sql % {'status': 'andamento', 'condicao': "data_inicio <= '%(hj)s' AND data_fim >= '%(hj)s'" % {'hj': hoje}})
-        cr.execute(sql % {'status': 'encerrado', 'condicao': "data_fim < '%(hj)s'" % {'hj': hoje}})
+        cr.execute(sql % {
+            'status': 'novo',
+            'condicao': "%(ids)sprazo_demanda < '%(hj)s' AND data_inicio > '%(hj)s'" % {
+                'hj': hoje, 'ids': ids and 'id not in (%s) AND ' % str(ids).lstrip('[(').rstrip(']),').replace('L', '') or ''
+            }
+        })
+        cr.execute(sql % {
+            'status': 'andamento',
+            'condicao': "data_inicio <= '%(hj)s' AND data_fim >= '%(hj)s'" % {
+                'hj': hoje, 'ids': ids and 'id not in (%s) AND ' % str(ids).lstrip('[(').rstrip(']),').replace('L', '') or ''
+            }
+        })
+        cr.execute(sql % {
+            'status': 'encerrado',
+            'condicao': "data_fim < '%(hj)s'" % {
+                'hj': hoje, 'ids': ids and 'id not in (%s) AND ' % str(ids).lstrip('[(').rstrip(']),').replace('L', '') or ''
+            }
+        })
         return True
