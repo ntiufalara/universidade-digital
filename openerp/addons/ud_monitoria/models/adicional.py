@@ -98,7 +98,7 @@ class DisciplinaMonitoria(osv.Model):
     _order = 'bolsas_curso_id'
 
     # Métodos para campos funcionais
-    def get_dados_bolsas(self, cr, uid, ids, campo, args, context=None):
+    def get_dados_bolsas(self, cr, uid, ids, campos, args, context=None):
         """
         Calcula o número de bolsas utilizadas e disponiveis para uso.
 
@@ -108,10 +108,13 @@ class DisciplinaMonitoria(osv.Model):
         doc_discente = self.pool.get('ud_monitoria.documentos_discente')
         for disc in self.browse(cr, uid, ids, context):
             utilizadas = doc_discente.search_count(cr, SUPERUSER_ID, [('state', '=', 'bolsista'), ('disciplina_id', '=', disc.id)])
-            res[disc.id] = {
-                'bolsas_disponiveis': disc.bolsistas - utilizadas,
-                'bolsas_utilizadas': utilizadas,
-            }
+            res[disc.id] = {}
+            for campo in campos:
+                if campo == 'bolsas_utilizadas':
+                    res[disc.id]['bolsas_utilizadas'] = utilizadas
+                elif campo == 'bolsas_disponiveis':
+                    res[disc.id]['bolsas_disponiveis'] = disc.bolsistas - utilizadas
+
         return res
 
     def get_discentes(self, cr, uid, ids, campos, args, context=None):
