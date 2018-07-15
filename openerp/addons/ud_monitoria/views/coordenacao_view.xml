@@ -194,17 +194,17 @@
                                         <li>
                                             <button name='%(ud_monitoria.action_ud_monitoria_bolsa_adicionar_wizard)d'
                                                     type='action' string='Clique aqui' class="oe_link"/> para
-                                            <strong>adicionar</strong> uma bolsa a um(a) discente;
+                                            <strong>adicionar</strong> uma bolsa para um(a) discente;
                                         </li>
                                         <li>
                                             <button name='%(ud_monitoria.action_ud_monitoria_bolsa_remover_wizard_form_view)d'
                                                     type='action' string='Clique aqui' class="oe_link"/> para
-                                            <strong>remover</strong> a bolsa a um(a) discente;
+                                            <strong>remover</strong> a bolsa de um(a) discente;
                                         </li>
-                                        <li invisible="1">
+                                        <li>
                                             <button name='%(ud_monitoria.ud_monitoria_bolsa_transferir_wizard_action)d'
                                                     type='action' string='Clique aqui' class="oe_link"/> para
-                                            <strong>transferir</strong> a bolsa a um(a) discente;
+                                            <strong>transferir</strong> a bolsa de um(a) discente para outro(a).
                                         </li>
                                     </ul>
                                 </group>
