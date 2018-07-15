@@ -201,6 +201,12 @@
                     <attribute name="on_change">onchange_pontuacoes(pontuacoes_ids)</attribute>
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
                 </field>
+                <field name="pontuacoes_ids" position="before">
+                    <div colspan="4" style="text-decoration: underline;">
+                        <strong>Obs.:</strong> A edição da pontuação é permitida apenas enquanto a inscrição estiver em
+                        análise.
+                    </div>
+                </field>
                 <xpath expr="//form" position="inside">
                     <field name="com_concorrencia" invisible="1"/>
                     <group string="Ações" col="4" attrs="{'invisible': [('state', '!=', 'analise')]}">
@@ -241,7 +247,7 @@
                                     <button name="classificar_direto_bolsa" type="object" string="Classificar" class="oe_link"
                                             confirm="Você classificará o(a) discente colaborador(a) como bolsista."/>
                                     o(a) discente <span style="text-decoration: underline">colaborador(a)</span> como
-                                    <strong>bolsista</strong>;
+                                    <strong style="color: red;">bolsista</strong>;
                                 </li>
                                 <li attrs="{'invisible': [('bolsista', '=', False)]}">
                                     <button name="classificar_direto_s_bolsa" type="object" string="Classificar" class="oe_link"
