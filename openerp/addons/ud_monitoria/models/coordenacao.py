@@ -227,7 +227,7 @@ class Semestre(osv.Model):
                 SELECT doc.id FROM
                     %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
                 WHERE
-                    doc.perfil_id = per.id AND disc.data_final > %(hj)s AND doc.state = 'bolsista'
+                    doc.perfil_id = per.id AND disc.data_final > '%(hj)s' AND doc.state = 'bolsista'
             ));
         ''' % {
             'doc': self.pool.get('ud_monitoria.documentos_discente')._table,
