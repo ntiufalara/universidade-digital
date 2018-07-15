@@ -199,6 +199,7 @@ class Inscricao(osv.Model):
     ]
     _defaults = {
         'state': 'analise',
+        'media': 0,
     }
 
     # Métodos sobrescritos
