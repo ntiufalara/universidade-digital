@@ -79,6 +79,12 @@
             <field name="inherit_id" ref="ud_monitoria_bolsas_curso_form_view"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
+                <field name="id" position="before">
+                    <header>
+                        <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
+                                type="action" string="Atualizar datas" attrs="{'invisible': [('id', '=', False)]}"/>
+                    </header>
+                </field>
                 <field name="bolsas" position="attributes">
                     <attribute name="readonly"/>
                 </field>
@@ -208,13 +214,22 @@
                                         </li>
                                     </ul>
                                 </group>
+                                <group string="Ações de Disciplinas" col="4">
+                                    <ul colspan="4">
+                                        <li>
+                                            <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
+                                                    type="action" string="Clique aqui" class="oe_link"/>
+                                            para modificar as datas de início e finalização de uma ou mais disciplinas.
+                                        </li>
+                                    </ul>
+                                </group>
                                 <group string="Ações Administrativas" col="4"
                                        groups="ud_monitoria.group_ud_monitoria_administrador">
                                     <ul colspan="4">
                                         <li>
                                             <button name="%(ud_monitoria.action_ud_monitoria_permissao_orientadores_wizard)d"
                                                     type="action" string="Clique aqui" class="oe_link"/>
-                                            escolher quem receberá as permissões de orientador.
+                                            para adicionar as permissões de orientador em um grupo específico de usuários.
                                         </li>
                                     </ul>
                                 </group>
