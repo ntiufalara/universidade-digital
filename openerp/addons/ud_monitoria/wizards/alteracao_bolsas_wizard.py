@@ -178,33 +178,32 @@ class AdicionarBolsaWizard(osv.TransientModel):
         perfil_model = self.pool.get('ud.perfil')
         ocorrencia_model = self.pool.get('ud_monitoria.ocorrencia')
         for add in self.browse(cr, uid, ids, context):
-            perfil = add.doc_discente_id.perfil_id
             if add.disciplina_id.bolsas_disponiveis == 0:
                 raise osv.except_osv(u'Bolsas Insuficientes', u'Não há bolsas disponíveis para a(s) disciplina(s).')
             elif not add.doc_discente_id.is_active:
                 raise osv.except_osv(
                     u'Registro inativo',
-                    u'O registro do discente (%s - %s) não pode ser classificado como bolsista por está inativo.'
-                    % (perfil.matricula, add.doc_discente_id.discente_id.name)
+                    u'O registro do(a) discente (%s - %s) não pode ser classificado como bolsista por está inativo.'
+                    % (add.doc_discente_id.perfil_id.matricula, add.doc_discente_id.discente_id.name)
                 )
-            if perfil.is_bolsista:
-                raise osv.except_osv(
+            if add.doc_discente_id.perfil_id.is_bolsista:
+                raise orm.except_orm(
                     u'Discente bolsista',
-                    u'O discente "%s", sob matrícula "%s", possui bolsa do tipo "%s"'
-                    % (add.doc_discente_id.discente_id.name, perfil.matricula, TIPOS_BOLSA[perfil.tipo_bolsa])
+                    u'O(a) discente "%s", sob matrícula "%s", possui bolsa do tipo "%s"'
+                    % (add.doc_discente_id.discente_id.name, add.doc_discente_id.perfil_id.matricula, TIPOS_BOLSA[add.doc_discente_id.perfil_id.tipo_bolsa])
                 )
             responsavel = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
             if not responsavel:
-                raise osv.except_osv(
+                raise orm.except_orm(
                     u'Registro Inexistente',
                     u'Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo'
                 )
             if len(responsavel) > 1:
-                raise osv.except_osv(
+                raise orm.except_orm(
                     u'Multiplos vínculos',
                     u'Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo'
                 )
-            perfil_model.write(cr, SUPERUSER_ID, perfil.id, {
+            perfil_model.write(cr, SUPERUSER_ID, add.doc_discente_id.perfil_id.id, {
                 'is_bolsista': True, 'tipo_bolsa': 'm', 'valor_bolsa': ('%.2f' % add.valor_bolsa).replace('.', ',')
             })
             if add.dados_bancarios_id:
@@ -222,7 +221,7 @@ class AdicionarBolsaWizard(osv.TransientModel):
                 'envolvidos_ids': [(4, add.doc_discente_id.discente_id.id)],
                 'descricao': u'Uma bolsa de R$ %s foi vinculada para o(a) discente "%s" sob matrícula "%s".%s' % (
                     ('%.2f' % add.valor_bolsa).replace('.', ','),
-                    add.doc_discente_id.discente_id.name.upper(), perfil.matricula,
+                    add.doc_discente_id.discente_id.name.upper(), add.doc_discente_id.perfil_id.matricula,
                     u' Anteriormente o(a) discente estava no cadastro de reserva.'
                     if add.doc_discente_id.state == 'reserva' else ''
                 )
