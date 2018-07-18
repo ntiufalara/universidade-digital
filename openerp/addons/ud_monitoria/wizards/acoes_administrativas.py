@@ -2,7 +2,7 @@
 from datetime import datetime
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv, orm
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, timedelta
 from ..models.util import data_hoje
 
 
@@ -13,7 +13,7 @@ class DisciplinasParaPsWizard(osv.TransientModel):
     _columns = {
         'semestre_id': fields.many2one('ud_monitoria.semestre', u"Semestre", required=True, domain=[('is_active', '=', True)]),
         'processo_seletivo_id': fields.many2one('ud_monitoria.processo_seletivo', u'Processo Seletivo', required=True,
-                                                domain='[("state", "=", "demanda"), ("semestre_id", "=", semestre_id)]'),
+                                                domain='[("state", "in", ["demanda", "invalido"]), ("semestre_id", "=", semestre_id)]'),
         'todas': fields.boolean(u'Adicionar todas as disciplinas'),
         'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', domain='[("semestre_id", "=", semestre_id)]'),
     }
@@ -62,7 +62,7 @@ class DisciplinasParaPsWizard(osv.TransientModel):
 
 class PermissaoOrientadoresWizard(osv.TransientModel):
     _name = 'ud_monitoria.permissao_orientador_wizard'
-    _description = u'Atribuição de permissões aos orientadores'
+    _description = u'Atribuição de permissões aos orientadores (UD)'
 
     _columns = {
         'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre'),
@@ -229,3 +229,312 @@ class StatusInscricaoWizard(osv.TransientModel):
                 reverter.inscricao_id.write({'state': reverter.acao_inscricao})
         return True
 
+
+class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
+    _name = 'ud_monitoria.alteracao_datas_disciplina_wizard'
+    _description = u'Alteração de datas de disciplinas (UD)'
+
+    _columns = {
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=1, domain='[("is_active", "=", True)]'),
+        'todos_cursos': fields.boolean(u'Todos os cursos?', help=u'Informa se a mudança será aplicada a todos os cursos.'),
+        'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', domain='[("semestre_id", "=", semestre_id)]'),
+        'todas_disciplinas': fields.boolean(u'Todas as disciplinas?',
+                                            help=u'Informa se a mudança será aplicada a todas as disciplinas do curso escolhido.'),
+        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplina', domain='[("bolsas_curso_id", "=", bolsas_curso_id)]'),
+        'perfil_id': fields.related('disciplina_id', 'perfil_id', type='many2one', relation='ud.perfil', string=u'SIAPE', readonly=True),
+        'orientador_id': fields.related('disciplina_id', 'perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee', string=u'Orientador(a)', readonly=True),
+        'data_inicial': fields.date(u'Data Inicial'),
+        'data_final': fields.date(u'Data Final'),
+        'bolsistas_ids': fields.many2many('ud.perfil', 'ud_monitoria_alter_data_per_wizard_rel', 'alterar_id',
+                                          'perfil_id', u'Ex. Bolsistas'),
+        'valor_bolsa': fields.float(u'Valor da bolsa', required=True, help=u'Especifica o valor da bolsa para reativação do documento dos discentes.'),
+    }
+
+    _defaults = {
+        'todos_cursos': True,
+        'todas_disciplinas': True,
+        'valor_bolsa': 400.
+    }
+
+    def default_get(self, cr, uid, fields_list, context=None):
+        res = super(AlteracaoDatasDisciplinaWizard, self).default_get(cr, uid, fields_list, context)
+        context = context or {}
+        if context.get('active_id', False):
+            if context.get('active_model', False) == 'ud_monitoria.semestre':
+                res['semestre_id'] = context['active_id']
+            elif context.get('active_model', False) == 'ud_monitoria.bolsas_curso':
+                bc = self.pool.get('ud_monitoria.bolsas_curso').browse(cr, uid, context['active_id'])
+                res['semestre_id'] = bc.semestre_id.id
+                res['bolsas_curso_id'] = bc.id
+                res['todos_cursos'] = False
+            elif context.get('active_model', False) == 'ud_monitoria.disciplina':
+                disc = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, context['active_id'])
+                res['semestre_id'] = disc.bolsas_curso_id.semestre_id.id
+                res['bolsas_curso_id'] = disc.bolsas_curso_id.id
+                res['disciplina_id'] = disc.id
+                res['perfil_id'] = disc.perfil_id.id
+                res['orientador_id'] = disc.orientador_id.id
+                res['data_inicial'] = disc.data_inicial
+                res['data_final'] = disc.data_final
+                res['todos_cursos'] = False
+                res['todas_disciplinas'] = False
+        return res
+
+    def executar_sql_discente(self, cr, uid, condicao, retorno='per.id'):
+        cr.execute('''
+        SELECT
+            DISTINCT %(retorno)s
+        FROM
+            "%(per)s" per INNER JOIN "%(doc)s" doc ON (per.id = doc.perfil_id)
+                INNER JOIN "%(disc)s" disc ON (doc.disciplina_id = disc.id)
+                    INNER JOIN "%(cur)s" cur ON (disc.bolsas_curso_id = cur.id)
+        WHERE
+            %(condicao)s AND doc.state = 'bolsista' AND disc.data_final < '%(hj)s'
+            AND per.is_bolsista = true AND per.tipo = 'a' AND (
+                per.tipo_bolsa != 'm' OR (SELECT EXISTS(
+                    SELECT
+                        doc2.id
+                    FROM
+                        "%(doc)s" doc2 INNER JOIN "%(disc)s" disc2 ON (doc2.disciplina_id = disc2.id)
+                    WHERE
+                        doc2.id != doc.id AND disc2.data_final >= '%(hj)s' AND doc2.perfil_id = doc.perfil_id
+                        AND doc2.state = 'bolsista'
+                ))
+            );
+            ''' % {
+                'per': self.pool.get('ud.perfil')._table,
+                'doc': self.pool.get('ud_monitoria.documentos_discente')._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'cur': self.pool.get('ud_monitoria.bolsas_curso')._table,
+                'condicao': condicao,
+                'retorno': retorno,
+                'hj': data_hoje(self, cr, uid),
+            })
+
+    def onchange_semestre(self, cr, uid, ids, todo_curso, sm, curso, context=None):
+        if todo_curso and sm:
+            self.executar_sql_discente(cr, uid, 'cur.semestre_id = %d' % sm)
+            return {'value': {'bolsas_curso_id': False, 'bolsistas_ids': [l[0] for l in cr.fetchall()]}}
+        valor = {'bolsistas_ids': []}
+        if curso and self.pool.get('ud_monitoria.bolsas_curso').browse(cr, uid, curso).semestre_id.id != sm:
+            valor['bolsas_curso_id'] = False
+        return {'value': valor}
+
+    def onchage_curso(self, cr, uid, ids, todo_curso, toda_disc, curso, disc, context=None):
+        if not todo_curso and toda_disc and curso:
+            self.executar_sql_discente(cr, uid, 'cur.id = %d' % curso)
+            return {'value': {'disciplina_id': False, 'bolsistas_ids': [l[0] for l in cr.fetchall()]}}
+        valor = {'bolsistas_ids': []}
+        if disc and self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disc).bolsas_curso_id.id != curso:
+            valor['disciplina_id'] = False
+        return {'value': valor}
+
+    def onchange_disciplina(self, cr, uid, ids, todo_curso, toda_disc, disc, di, df, context=None):
+        if not (todo_curso or toda_disc) and disc:
+            self.executar_sql_discente(cr, uid, 'disc.id = %d' % disc)
+            disc = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disc)
+            valores = {'perfil_id': disc.perfil_id.id, 'orientador_id': disc.orientador_id.id,
+                       'bolsistas_ids': [l[0] for l in cr.fetchall()]}
+            if not di:
+                valores['data_inicial'] = disc.data_inicial
+            if not df:
+                valores['data_final'] = disc.data_final
+            return {'value': valores}
+        return {'value': {'bolsistas_ids': []}}
+
+    def onchange_todo_curso(self, cr, uid, ids, todo_curso, semestre, curso, context=None):
+        valor = {}
+        if todo_curso:
+            if semestre:
+                self.executar_sql_discente(cr, uid, 'cur.semestre_id = %d' % semestre)
+                valor['bolsistas_ids'] = [l[0] for l in cr.fetchall()]
+            else:
+                valor['bolsistas_ids'] = []
+        elif curso and self.pool.get('ud_monitoria.bolsas_curso').browse(cr, uid, curso).semestre_id.id != semestre:
+            valor['bolsas_curso_id'] = False
+        return {'value': valor}
+
+    def onchange_toda_disciplina(self, cr, uid, ids, toda_disc, curso, disc, context=None):
+        valor = {}
+        if toda_disc:
+            if curso:
+                self.executar_sql_discente(cr, uid, 'cur.id = %d' % curso)
+                valor['bolsistas_ids'] = [l[0] for l in cr.fetchall()]
+            else:
+                valor['bolsistas_ids'] = []
+        elif disc and self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disc).bolsas_curso_id.id != curso:
+            valor['disciplina_id'] = False
+        return {'value': valor}
+
+    def executar_acao(self, cr, uid, ids, context=None):
+        """
+        Altera a data inicial e/ou a data final das disciplinas do semestre, curso ou uma específica realizando as
+        seguintes operações:
+            - Todos os discentes de uma disciplina antes inativa serão reabilitados considerando o valor informado;
+            - Em caso de conflitos de bolsas, o discente passa a ser colaborador e a bolsa fica livre;
+            - Disciplinas que sejam inativadas devido a atualização também remove as bolsas de seus bolsistas.
+        """
+        perfil_model = self.pool.get('ud.perfil')
+        curso_model = self.pool.get('ud_monitoria.bolsas_curso')
+        disciplina_model = self.pool.get('ud_monitoria.disciplina')
+        doc_discente_model = self.pool.get('ud_monitoria.documentos_discente')
+        ocorrencia_model = self.pool.get('ud_monitoria.ocorrencia')
+        hoje = data_hoje(self, cr, uid)
+        mensagem = u'Houve uma alteração de datas (inicial e/ou final) de %(qtd_disc)s disciplina(s). ' \
+                   u'A atualização foi realizada %(modificacao)s.\n' \
+                   u'%(di)s%(df)s%(disc_a_venc)s%(disc_venc)s%(discente_conflito)s%(disc_inativa)s'
+        for alter in self.browse(cr, uid, ids, context):
+            responsavel = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
+            if not responsavel:
+                raise orm.except_orm(
+                    u'Registro Inexistente',
+                    u'Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo'
+                )
+            if len(responsavel) > 1:
+                raise orm.except_orm(
+                    u'Multiplos vínculos',
+                    u'Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo'
+                )
+            dados_msg = {
+                'di': '', 'df': '', 'disc_a_venc': '', 'disc_venc': '', 'discente_conflito': '', 'disc_inativa': ''
+
+            }
+            datas = {}
+            if alter.data_inicial:
+                datas['data_inicial'] = alter.data_inicial
+                dados_msg['di'] = u'Data Inicial: %s\n' % datetime.strptime(alter.data_inicial, DEFAULT_SERVER_DATE_FORMAT).strftime('%d-%m-%Y')
+            if alter.data_final:
+                datas['data_final'] = alter.data_final
+                dados_msg['df'] = u'Data Final: %s\n' % datetime.strptime(alter.data_final, DEFAULT_SERVER_DATE_FORMAT).strftime('%d-%m-%Y')
+            if not datas:
+                continue
+            if alter.todos_cursos:
+                # Se for para todos os cursos, disciplinas do semestre são processadas.
+                cr.execute('''
+                SELECT
+                    disc.id
+                FROM
+                    "%(disc)s" disc INNER JOIN "%(curso)s" curso ON (disc.bolsas_curso_id = curso.id)
+                WHERE
+                    curso.semestre_id = %(sm)s;
+                ''' % {
+                    'disc': disciplina_model._table,
+                    'curso': curso_model._table,
+                    'sm': '%d' % alter.semestre_id.id
+                })
+                disciplinas = [l[0] for l in cr.fetchall()]
+                condicao_sql = 'cur.semestre_id = %d' % alter.semestre_id.id
+                dados_msg['modificacao'] = u'em todas as disciplinas do atual semestre (%s)' % alter.semestre_id.semestre
+                dados_msg['qtd_disc'] = '%d' % len(disciplinas)
+            elif alter.todas_disciplinas:
+                # Se for todas as disciplinas de um curso específico, essas são processadas.
+                cr.execute('''
+                SELECT
+                    disc.id
+                FROM
+                    "%(disc)s" disc INNER JOIN "%(curso)s" curso ON (disc.bolsas_curso_id = curso.id)
+                WHERE
+                    curso.id = %(id)s;
+                ''' % {
+                    'disc': disciplina_model._table,
+                    'curso': curso_model._table,
+                    'id': '%d' % alter.bolsas_curso_id.id
+                })
+                disciplinas = [l[0] for l in cr.fetchall()]
+                condicao_sql = 'cur.id = %d' % alter.bolsas_curso_id.id
+                dados_msg['modificacao'] = u'para as disciplinas do curso de "%s"' % alter.bolsas_curso_id.curso_id.name
+                dados_msg['qtd_disc'] = '%d' % len(disciplinas)
+            else:
+                # Se for uma disciplina específica, essa é processada.
+                condicao_sql = 'disc.id = %d' % alter.disciplina_id.id
+                disciplinas = alter.disciplina_id.disciplina_ids
+                dados_msg['qtd_disc'] = '%d' % len(disciplinas)
+                qtd = len(alter.disciplina_id.disciplina_ids)
+                if qtd > 1:
+                    dados_msg['qtd_disc'] = u'1 conjunto de'
+                    disciplina = None
+                    for d in disciplinas[:-1]:
+                        if disciplina:
+                            disciplina += u', "%s - %s"' % (d.codigo, d.name)
+                        else:
+                            disciplina = u'"%s - %s"' % (d.codigo, d.name)
+                    disciplina += u' e "%s"' % disciplina[-1]
+                    dados_msg['modificacao'] = u'no conjunto de disciplinas composto por %s' % disciplina
+                else:
+                    dados_msg['qtd_disc'] = u'1'
+                    dados_msg['modificacao'] = u'na disciplina de "%s - %s"' % (disciplinas[0].codigo, disciplinas[0].name)
+                disciplinas = [alter.disciplina_id.id]
+            if not disciplinas:
+                continue
+            if alter.data_final:
+                # Busca os discentes que perderão a bolsa devido ao vencimento da disciplina com a nova data final.
+                cr.execute('''
+                SELECT
+                    per.id
+                FROM
+                    "%(per)s" per INNER JOIN "%(doc)s" doc ON (per.id = doc.perfil_id)
+                        INNER JOIN "%(disc)s" disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    per.is_bolsista = true AND per.tipo_bolsa = 'm' AND doc.state = 'bolsista'
+                    AND disc.data_final >= '%(hj)s' AND disc.data_final < '%(data)s' AND disc.id in (%(ids)s);
+                ''' % {
+                    'per': perfil_model._table, 'doc': doc_discente_model._table, 'disc': disciplina_model._table,
+                    'data': alter.data_final, 'hj': hoje.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                    'ids': str(disciplinas).lstrip('([').rstrip(')],').replace('L', ''),
+                })
+                discentes = [l[0] for l in cr.fetchall()]
+                if discentes:
+                    perfil_model.write(cr, SUPERUSER_ID, discentes, {
+                        'is_bolsista': False, 'tipo_bolsa': False, 'valor_bolsa': False
+                    })
+                    qtd = len(discentes)
+                    msg = '\n'.join([u'%s - %s (%s)' % (p.matricula, p.ud_papel_id.name, p.ud_cursos.name)
+                                     for p in perfil_model.browse(cr, SUPERUSER_ID, discentes)])
+                    if qtd > 1:
+                        dados_msg['disc_a_venc'] = u'\nDurante o processo, %d discentes perderam suas bolsas devido a' \
+                                                   u'finalização da data final de suas disciplinas.\n%s\n' % (qtd, msg)
+                    else:
+                        dados_msg['disc_a_venc'] = u'\nDurante o processo, 1 discente perdeu sua bolsa devido a' \
+                                                   u'finalização da data final de sua(s) disciplina(s).\n%s\n' % msg
+                # Busca os discentes que eram bolsistas de uma disciplina e agora estão com vínculo de bolsitas de outra
+                # disciplina ou outro tipo de bolsa
+                self.executar_sql_discente(cr, uid, condicao_sql, 'doc.id')
+                discentes = [l[0] for l in cr.fetchall()]
+                if discentes:
+                    doc_discente_model.write(cr, uid, discentes, {'state': 'n_bolsista'})
+                    msg = '\n'.join([u'%s - %s (%s)' % (p.matricula, p.ud_papel_id.name, p.ud_cursos.name)
+                                     for p in perfil_model.browse(cr, SUPERUSER_ID, discentes)])
+                    dados_msg['discente_conflito'] = u'Com essa atualização, foi encontrado conflito de bolsas de um ' \
+                                                     u'ou mais discentes. Como consequência, esses foram realocados ' \
+                                                     u'como discentes colaboradores, liberando suas bolsas.\n%s\n' % msg
+            # Busca os discentes bolsistas de disciplinas "vencidas" sem vínculo de bolsas para atualizar o valor e o vínculo da bolsa
+            cr.execute('''
+            SELECT
+                per.id
+            FROM
+                "%(per)s" per INNER JOIN "%(doc)s" doc ON (per.id = doc.perfil_id)
+                    INNER JOIN "%(disc)s" disc ON (doc.disciplina_id = disc.id)
+            WHERE
+                per.is_bolsista = false AND doc.state = 'bolsista' AND disc.data_final < '%(hj)s' AND disc.id in (%(ids)s);
+            ''' % {
+                'per': perfil_model._table, 'doc': doc_discente_model._table,
+                'disc': disciplina_model._table, 'hj': hoje.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                'ids': str(disciplinas).lstrip('([').rstrip(')],').replace('L', ''),
+            })
+            discentes = [l[0] for l in cr.fetchall()]
+            if discentes:
+                perfil_model.write(cr, SUPERUSER_ID, discentes, {
+                    'is_bolsista': True, 'tipo_bolsa': 'm', 'valor_bolsa': ('%.2f' % alter.valor_bolsa).replace('.', ',')
+                })
+                msg = '\n'.join([u'%s - %s (%s)' % (p.matricula, p.ud_papel_id.name, p.ud_cursos.name)
+                                 for p in perfil_model.browse(cr, SUPERUSER_ID, discentes)])
+                dados_msg['disc_inativa'] = u'Os bolsistas de disciplinas inativas foram reabilitados com bolsa no ' \
+                                            u'valor de R$ %s.\n%s\n' % (
+                    ('%.2f' % alter.valor_bolsa).replace('.', ','), msg
+                )
+            disciplina_model.write(cr, uid, disciplinas, datas)
+            ocorrencia_model.create(cr, uid, {
+                'semestre_id': alter.semestre_id.id, 'responsavel_id': responsavel[0],
+                'name': u'Mudança de datas de uma ou mais disciplinas', 'descricao': mensagem % dados_msg
+            })
+        return True

@@ -119,5 +119,73 @@
                 </form>
             </field>
         </record>
+
+        <!-- ALTERAÇÃO DE DATAS DAS DISCIPLINAS -->
+        <record id="action_ud_monitoria_alteracao_datas_disciplina_wizard" model="ir.actions.act_window">
+            <field name="name">Alteração de Datas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.alteracao_datas_disciplina_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_alteracao_datas_disciplina_wizard_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.alteracao_datas_disciplina_wizard.form</field>
+            <field name="model">ud_monitoria.alteracao_datas_disciplina_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Alteração de Datas" version="7.0">
+                    <group col="4">
+                        <field name="semestre_id" colspan="4" on_change="onchange_semestre(todos_cursos, semestre_id, bolsas_curso_id)"
+                               readonly="1" options="{'no_open': true}"/>
+                        <field name="todos_cursos" colspan="2" on_change="onchange_todo_curso(todos_cursos, semestre_id, bolsas_curso_id)"/>
+                        <field name="todas_disciplinas" colspan="2" attrs="{'invisible': [('todos_cursos', '=', True)]}"
+                               on_change="onchange_toda_disciplina(todas_disciplinas, bolsas_curso_id, disciplina_id)"/>
+                        <field name="bolsas_curso_id" colspan="2" attrs="{'invisible': [('todos_cursos', '=', True)]}"
+                               options="{'no_open': true, 'create_edit': false}"
+                               on_change="onchage_curso(todos_cursos, todas_disciplinas, bolsas_curso_id, disciplina_id)"/>
+                        <field name="disciplina_id" colspan="2" options="{'no_open': true, 'create_edit': false}"
+                               attrs="{'invisible': ['|', ('todos_cursos', '=', True), ('todas_disciplinas', '=', True)]}"
+                               on_change="onchange_disciplina(todos_cursos, todas_disciplinas, disciplina_id, data_inicial, data_final)"/>
+                        <field name="perfil_id" colspan="2" options="{'no_open': true}"
+                               attrs="{'invisible': [('disciplina_id', '=', False)]}"/>
+                        <field name="orientador_id" colspan="2" options="{'no_open': true}"
+                               attrs="{'invisible': [('disciplina_id', '=', False)]}"/>
+                        <field name="data_inicial" colspan="2" attrs="{'required': [('data_final', '=', False)]}"/>
+                        <field name="data_final" colspan="2" attrs="{'required': [('data_inicial', '=', False)]}"/>
+                    </group>
+                    <group col="4">
+                        <div colspan="4">
+                            O campo abaixo é necessário para a reativação de documentos de discentes bolsistas.
+                        </div>
+                        <field name="valor_bolsa" colspan="4"/>
+                    </group>
+                    <group string="Conflitos" col="4" attrs="{'invisible': [('bolsistas_ids', '=', [(6, False, [])])]}">
+                        <div colspan="4">
+                            <p>A tabela abaixo mostra os discentes que eram bolsistas em disciplinas vencidas
+                                (data final já passou) e agora estão vinculados a outra bolsa. Seja essa de monitoria ou
+                                outro tipo.</p>
+                            <p>Diante disso, é importante saber que <strong>esses discentes serão reabilitados como
+                                colaboradores e as bolsas ficarão disponíveis para outros vínculos</strong>.</p>
+                        </div>
+                        <field name="bolsistas_ids" colspan="4" nolabel="1" readonly="1">
+                            <tree>
+                                <field name="matricula"/>
+                                <field name="ud_papel_id" string="Discente"/>
+                                <field name="ud_cursos"/>
+                                <field name="is_bolsista"/>
+                                <field name="tipo_bolsa"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="executar_acao" string="Alterar Datas" class="oe_highlight" type="object"/>
+                        Ou
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
     </data>
 </openerp>
