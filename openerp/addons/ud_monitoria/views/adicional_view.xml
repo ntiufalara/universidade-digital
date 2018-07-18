@@ -90,7 +90,7 @@
             <field name="model">ud_monitoria.disciplina</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Disciplinas" colors="blue:is_active==True">
+                <tree string="Disciplinas" colors="blue:data_inicial&gt;current_date;green:is_active==True">
                     <field name="disciplina_ids"/>
                     <field name="bolsas_curso_id"/>
                     <field name="orientador_id"/>
@@ -98,6 +98,7 @@
                     <field name="bolsistas"/>
                     <field name="colaboradores"/>
                     <field name="total_inscricoes"/>
+                    <field name="data_inicial" invisible="1"/>
                     <field name="is_active" invisible="1"/>
                 </tree>
             </field>
@@ -115,8 +116,8 @@
                     <group col="4">
                         <field name="bolsas_curso_id" readonly="1" colspan="2" options="{'no_open': true}"/>
                         <field name="semestre_id" colspan="2" options="{'no_open': true}"/>
-                        <field name="data_inicial" colspan="2" readonly="context.get('somente_leitura', False)"/>
-                        <field name="data_final" colspan="2" readonly="context.get('somente_leitura', False)"/>
+                        <field name="data_inicial" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="data_final" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="perfil_id" colspan="2" options="{'no_open': true}" on_change="onchange_perfil(perfil_id)"
                                attrs="{'readonly': [('id', '!=', False)]}"
                                groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
@@ -171,21 +172,50 @@
             <field name="inherit_id" ref="ud_monitoria_disciplina_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
-                <field name="orientador_id" position="attributes">
-                    <attribute name="options"/>
-                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
-                </field>
                 <xpath expr="//notebook/page[@string='Disciplinas']" position="after">
                     <page string="Inscrições">
                         <group>
                             <field name="total_inscricoes"/>
                         </group>
-                        <field name="inscricao_ids" nolabel="1"/>
+                        <field name="inscricao_ids" nolabel="1" context="{'active_model': 'ud_monitoria.disciplina'}"/>
                     </page>
                 </xpath>
+                <field name="id" position="before">
+                    <header>
+                        <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
+                                type="action" string="Alterar datas" attrs="{'invisible': [('id', '=', False)]}"/>
+                    </header>
+                </field>
+                <field name="orientador_id" position="attributes">
+                    <attribute name="options"/>
+                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
+                </field>
                 <field name="perfil_id" position="attributes">
                     <attribute name="attrs">{'readonly': [('id', '!=', False), ('total_inscricoes', '&gt;', 0)]}</attribute>
                 </field>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_disciplina_search" model="ir.ui.view">
+            <field name="name">Pesquisar Disciplinas</field>
+            <field name="model">ud_monitoria.disciplina</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Disciplina">
+                    <field name="disciplina_ids"/>
+                    <filter string="Data incial futura" name="ativas" help="Mostra as disciplinas com data inicial no futuro."
+                            domain="[('data_inicial', '&gt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Data final passada" name="inativas" help="Mostra as disciplinas com data final passada."
+                            domain="[('data_final', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Ativas" name="ativas" help="Mostra as disciplinas ativas"
+                            domain="[('data_inicial', '&lt;=', context_today().strftime('%%Y-%%m-%%d')), ('data_final', '&gt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Inativas" name="inativas" help="Mostra as disciplinas inativas"
+                            domain="['|', ('data_inicial', '&gt;', context_today().strftime('%%Y-%%m-%%d')), ('data_final', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <group expand="0" string="Agrupar por...">
+                        <filter string="Curso" name="setor" context="{'group_by': 'bolsas_curso_id'}"
+								help="Agrupar por curso"/>
+                    </group>
+                </search>
             </field>
         </record>
     </data>
