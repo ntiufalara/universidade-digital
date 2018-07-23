@@ -17,6 +17,8 @@
         'data/ud_perfil_tipo_data.xml',
         'data/ud_perfil_tipo_docente_data.xml',
         'data/ud_curso_modalidade_data.xml',
+        # Cron job
+        'data/load_openerp7_cron.xml',
         # Views
         'views/pessoa_view.xml',
         'views/campus_view.xml',
@@ -27,6 +29,8 @@
         'views/espaco_view.xml',
         'views/perfil_view.xml',
         'views/server_openerp7_view.xml',
+        'views/pessoa_contato_view.xml',
+        'views/pessoa_endereco_view.xml',
         'views/menus.xml',
     ],
     "installable": True,

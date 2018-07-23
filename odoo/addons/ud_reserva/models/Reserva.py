@@ -201,7 +201,7 @@ class Reserva(models.Model):
         except:
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
-        # busca as publicações
+        # busca as reservas
         reserva_ids = server.execute(db, uid, password, 'ud.reserva', 'search',
                                      [('hora_entrada', '>=', datetime.datetime(2018, 01, 01, 0, 0, 0).isoformat()),
                                       ('state', '!=', 'cancelada')])

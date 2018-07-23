@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="pessoa_endereco_action">
+            <field name="name">Endereço</field>
+            <field name="res_model">ud.pessoa.endereco</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clque para adicionar um novo Endereço
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="pessoa_endereco_tree">
+            <field name="name">Endereços</field>
+            <field name="model">ud.pessoa.endereco</field>
+            <field name="arch" type="xml">
+                <tree string="Endereços">
+                    <field name="rua" />
+                    <field name="cidade" />
+                    <field name="estado" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="pessoa_endereco_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.pessoa.endereco</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="rua" />
+                    <field name="cep" />
+                    <field name="cidade" />
+                    <field name="estado" />
+                    <field name="complemento" />
+                    <field name="bairro" />
+                    <field name="pessoa_id" />
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Rua" icon="terp-personal" domain="[]" context="{'group_by':'rua'}"/>
+                        <filter string="Cidade" icon="terp-personal" domain="[]" context="{'group_by':'cidade'}"/>
+                        <filter string="Estado" icon="terp-personal" domain="[]" context="{'group_by':'estado'}"/>
+                        <filter string="Bairro" icon="terp-personal" domain="[]" context="{'group_by':'bairro'}"/>
+                        <filter string="Pessoa" icon="terp-personal" domain="[]" context="{'group_by':'pessoa_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="pessoa_endereco_form">
+            <field name="name">Endereço</field>
+            <field name="model">ud.pessoa.endereco</field>
+            <field name="arch" type="xml">
+                <form string="Endereço">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="cep"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="cep"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="rua"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="rua"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="complemento"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="complemento"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="numero"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="numero"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="bairro"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="bairro"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="cidade"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="cidade"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="estado"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="estado"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="pais"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="pais"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

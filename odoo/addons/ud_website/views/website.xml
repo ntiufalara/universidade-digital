@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <template id="ud_website.home">
+        <head>
+            <!-- Required meta tags -->
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet"
+                  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
+                  integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+                  crossorigin="anonymous"/>
+
+            <!-- Meu CSS -->
+            <link rel="stylesheet" href="ud_website/static/src/css/style.css"/>
+
+            <title>Universidade Digital</title>
+        </head>
+        <body>
+
+            <!-- Navbar -->
+            <header>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container py-3">
+                        <a class="navbar-brand" href="#">
+                            <img src="ud_website/static/src/img/ud_logo.png" alt="Universidade Digital Logo"/>
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a href="/" class="nav-link">Início</a>
+                                </li>
+                            </ul>
+                            <a href="/web">
+                                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Acessar o
+                                    sistema
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <section id="content">
+                    <t t-raw="0"></t>
+                </section>
+
+                <footer id="site-footer" class="mt-5 p-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img class="footer-logo" src="ud_website/static/src/img/ufal_logo_small.png"/>
+                                <img class="footer-logo" src="ud_website/static/src/img/nti_logo.png"/>
+                            </div>
+                            <p class="col-sm-6 text-left ml-auto">
+                                <a href="http://arapiraca.ufal.br">
+                                    <span>@ Universidade Federal de Alagoas - Campus Arapiraca</span>
+                                </a>
+                                <br/>
+                                <span>Núcleo de tecnologia da informação - NTI Arapiraca</span>
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+            </header>
+            <!-- Navbar - FIM -->
+
+            <!-- Optional JavaScript -->
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                    crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                    crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+                    integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+                    crossorigin="anonymous"></script>
+        </body>
+    </template>
+
+</odoo>

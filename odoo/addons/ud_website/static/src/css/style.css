@@ -1,0 +1,32 @@
+.navbar-brand img {
+    max-height: 45px;
+}
+
+#site-footer {
+    background-color: #f8f9fa;
+}
+
+.navbar-light {
+    background-color: transparent !important;
+}
+
+.navbar-light .container {
+
+    border-bottom: 1px solid #e7e7e7;
+}
+
+#site-footer a {
+    text-decoration: none;
+    outline: none;
+    color: #7c7c7c;
+}
+
+footer img {
+    height: 50px;
+}
+
+@media screen and (max-width: 375px) {
+    .navbar-brand img {
+        max-height: 30px;
+    }
+}

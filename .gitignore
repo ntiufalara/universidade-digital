@@ -6,6 +6,10 @@ access.log*
 
 # Pasta do Pycharm
 .idea/
+
+# Pasta do Vagrant
+.vagrant/
+
 # Pasta do banco de dados (Volume Docker)
 db_data/
 # Byte-compiled / optimized / DLL files
