@@ -31,7 +31,7 @@
                     <field name="perfil_id" groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="orientador_id"/>
                     <field name="semestre_id"/>
-                    <field name="is_active" invisible="1"/>
+                    <field name="is_active"/>
                 </tree>
             </field>
         </record>
@@ -103,17 +103,6 @@
             <field name="inherit_id" ref="ud_monitoria_documentos_orientador_orientador_form"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'),ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
-                <field name="id" position="before">
-                    <field name="is_active" invisible="1" readonly="1"/>
-                    <header>
-                        <button name="ativar" type="object" string="Ativar"
-                                confirm="Realmente deseja reativar o víncudo de orientador da disciplina?"
-                                attrs="{'invisible': [('is_active', '=', True)]}"/>
-                        <button name="desativar" type="object" string="Desativar"
-                                confirm="Realmente deseja desativar o víncudo de orientador da disciplina?"
-                                attrs="{'invisible': [('is_active', '=', False)]}"/>
-                    </header>
-                </field>
                 <field name="perfil_id" position="attributes">
                     <attribute name="readonly">not context.get('criar', False)</attribute>
                     <attribute name="on_change">onchange_perfil(perfil_id)</attribute>
