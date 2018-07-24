@@ -305,6 +305,8 @@ class BolsasCurso(osv.Model):
     _columns = {
         'id': fields.integer("ID", readonly=True, invisible=True),
         'curso_id': fields.many2one("ud.curso", u"Curso", required=True, ondelete="restrict", domain=[("is_active", "=", True)]),
+        'coord_monitoria_id': fields.related('curso_id', 'coord_monitoria_id', type='many2one', relation='ud.employee',
+                                             string=u"Coordenador(a) de monitoria"),
         'is_active': fields.related("curso_id", "is_active", type="boolean", string=u"Curso Ativo?", readonly=True,
                                     help=u"Identifica se atualmente o curso está ativo ou não"),
         'bolsas': fields.integer(u"Bolsas", required=True, help=u"Número de bolsas disponibilizadas para o curso"),
@@ -399,3 +401,9 @@ class BolsasCurso(osv.Model):
             if bc.bolsas < 0:
                 return False
         return True
+
+    # Funções Onchange
+    def onchange_curso(self, cr, uid, ids, curso):
+        if curso:
+            return {'value': {'coord_monitoria_id': self.pool.get('ud.curso').browse(cr, SUPERUSER_ID, curso).coord_monitoria_id.id}}
+        return {'value': {'coord_monitoria_id': False}}
