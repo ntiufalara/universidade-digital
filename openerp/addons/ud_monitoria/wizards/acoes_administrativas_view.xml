@@ -146,7 +146,7 @@
                                options="{'no_open': true, 'create_edit': false}"
                                on_change="onchage_curso(todos_cursos, todas_disciplinas, bolsas_curso_id, disciplina_id)"/>
                         <field name="disciplina_id" colspan="2" options="{'no_open': true, 'create_edit': false}"
-                               attrs="{'invisible': ['|', ('todos_cursos', '=', True), ('todas_disciplinas', '=', True)]}"
+                               attrs="{'invisible': ['|', ('todos_cursos', '=', True), ('todas_disciplinas', '=', True)], 'readonly': [('bolsas_curso_id', '=', False)]}"
                                on_change="onchange_disciplina(todos_cursos, todas_disciplinas, disciplina_id, data_inicial, data_final)"/>
                         <field name="perfil_id" colspan="2" options="{'no_open': true}"
                                attrs="{'invisible': [('disciplina_id', '=', False)]}"/>
@@ -183,6 +183,50 @@
                         <button name="executar_acao" string="Alterar Datas" class="oe_highlight" type="object"/>
                         Ou
                         <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ALTERAR ORIENTADOR -->
+        <record id="action_ud_monitoria_alterar_orientador_wizard" model="ir.actions.act_window">
+            <field name="name">Alterar Orientador</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ud_monitoria.alterar_orientador_wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="ud_monitoria_alterar_orientador_wizard_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.alterar_orientador_wizard.form</field>
+            <field name="model">ud_monitoria.alterar_orientador_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Alterarção" version="7.0">
+                    <group string="Selecione a disciplina" col="4">
+                        <field name="semestre_id" colspan="4" readonly="1" options="{'no_open': true}"/>
+                        <field name="bolsas_curso_id" colspan="2" on_change="onchange_curso(bolsas_curso_id, disciplina_id)"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                        <field name="disciplina_id" colspan="2" on_change="onchange_disciplina(disciplina_id)"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"
+                               attrs="{'readonly': [('bolsas_curso_id', '=', False)]}"/>
+                        <field name="perfil_atual_id" colspan="2" readonly="1"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"
+                               attrs="{'invisible': [('disciplina_id', '=', False)]}"/>
+                        <field name="orientador_atual_id" colspan="2" readonly="1"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"
+                               attrs="{'invisible': [('disciplina_id', '=', False)]}"/>
+                    </group>
+                    <group string="Escolha outro(a) orientador(a)">
+                        <field name="perfil_id" on_change="onchange_perfil(perfil_id)"
+                               options="{'no_open': true, 'create_edit': false, 'create': false, 'm2o_dialog': false}"/>
+                        <field name="orientador_id" options="{'no_open': true}"/>
+                    </group>
+                    <footer>
+                        <button name="executar_acao" string="Modificar" type="object" class="oe_highlight" confirm="Confirmar alteração?"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
             </field>

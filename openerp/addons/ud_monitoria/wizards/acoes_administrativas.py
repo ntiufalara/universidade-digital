@@ -11,7 +11,7 @@ class DisciplinasParaPsWizard(osv.TransientModel):
     _description = u'Adição de disciplinas em Processo Seletivo (UD)'
 
     _columns = {
-        'semestre_id': fields.many2one('ud_monitoria.semestre', u"Semestre", required=True, domain=[('is_active', '=', True)]),
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=True, domain=[('is_active', '=', True)]),
         'processo_seletivo_id': fields.many2one('ud_monitoria.processo_seletivo', u'Processo Seletivo', required=True,
                                                 domain='[("state", "in", ["demanda", "invalido"]), ("semestre_id", "=", semestre_id)]'),
         'todas': fields.boolean(u'Adicionar todas as disciplinas'),
@@ -350,6 +350,7 @@ class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
                 valor['bolsistas_ids'] = [l[0] for l in cr.fetchall()]
             else:
                 valor['bolsistas_ids'] = []
+            valor['bolsas_curso_id'] = False
         elif curso and self.pool.get('ud_monitoria.bolsas_curso').browse(cr, uid, curso).semestre_id.id != semestre:
             valor['bolsas_curso_id'] = False
         return {'value': valor}
@@ -362,6 +363,7 @@ class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
                 valor['bolsistas_ids'] = [l[0] for l in cr.fetchall()]
             else:
                 valor['bolsistas_ids'] = []
+            valor['disciplina_id'] = False
         elif disc and self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disc).bolsas_curso_id.id != curso:
             valor['disciplina_id'] = False
         return {'value': valor}
@@ -385,6 +387,8 @@ class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
                    u'%(di)s%(df)s%(disc_a_venc)s%(disc_venc)s%(discente_conflito)s%(disc_inativa)s'
         for alter in self.browse(cr, uid, ids, context):
             responsavel = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
+            if not alter.semestre_id.is_active:
+                raise orm.except_orm(u'Semestre inativo', u'Ação não permitida para semestres inativos')
             if not responsavel:
                 raise orm.except_orm(
                     u'Registro Inexistente',
@@ -463,6 +467,9 @@ class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
                 else:
                     dados_msg['qtd_disc'] = u'1'
                     dados_msg['modificacao'] = u'na disciplina de "%s - %s"' % (disciplinas[0].codigo, disciplinas[0].name)
+                dados_msg['modificacao'] += u', sob orientação de "%s" (%s)' % (
+                    alter.disciplina_id.orientador_id.name, alter.disciplina_id.perfil_id.matricula
+                )
                 disciplinas = [alter.disciplina_id.id]
             if not disciplinas:
                 continue
@@ -536,5 +543,176 @@ class AlteracaoDatasDisciplinaWizard(osv.TransientModel):
             ocorrencia_model.create(cr, uid, {
                 'semestre_id': alter.semestre_id.id, 'responsavel_id': responsavel[0],
                 'name': u'Mudança de datas de uma ou mais disciplinas', 'descricao': mensagem % dados_msg
+            })
+        return True
+
+
+class AlterarOrientadorWizard(osv.TransientModel):
+    _name = 'ud_monitoria.alterar_orientador_wizard'
+    _description = u'Alteração de orientador de disciplinas (UD)'
+
+    _columns = {
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=True, domain=[('is_active', '=', True)]),
+        'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True,
+                                           domain='[("semestre_id", "=", semestre_id)]'),
+        'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplina', required=True,
+                                         domain='[("bolsas_curso_id", "=", bolsas_curso_id)]'),
+        'perfil_atual_id': fields.related('disciplina_id', 'perfil_id', type='many2one', relation='ud.perfil',
+                                          string=u'SIAPE', readonly=True),
+        'orientador_atual_id': fields.related('disciplina_id', 'perfil_id', 'ud_papel_id', type='many2one',
+                                              relation='ud.employee', string=u'Orientador', readonly=True),
+        'perfil_id': fields.many2one('ud.perfil', u'SIAPE', required=True,
+                                     domain='[("id", "!=", perfil_atual_id), ("tipo", "=", "p")]'),
+        'orientador_id': fields.related('perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee',
+                                        string=u'Orientador', readonly=True),
+    }
+    _constraints = [
+        (lambda cls, *a, **kw: cls.registros_ativos(*a, **kw), u'Todos os registros precisam está ativos', [u'Semestre/Disciplina'])
+    ]
+
+    def default_get(self, cr, uid, fields_list, context=None):
+        """
+        === Extensão do método osv.TransientModel.default_get
+        Caso o modelo a
+        """
+        res = super(AlterarOrientadorWizard, self).default_get(cr, uid, fields_list, context)
+        if context.get('active_id', False):
+            if context.get('active_model', False) == 'ud_monitoria.semestre':
+                res['semestre_id'] = context['active_id']
+            elif context.get('active_model', False) == 'ud_monitoria.bolsas_curso':
+                curso = self.pool.get('ud_monitoria.bolsas_curso').browse(cr, uid, context['active_id'])
+                res['bolsas_curso_id'] = context['active_id']
+                res['semestre_id'] = curso.semestre_id.id
+            elif context.get('active_model', False) == 'ud_monitoria.disciplina':
+                disc = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, context['active_id'])
+                res['disciplina_id'] = context['active_id']
+                res['perfil_atual_id'] = disc.perfil_id.id
+                res['orientador_atual_id'] = disc.orientador_id.id
+                res['bolsas_curso_id'] = disc.bolsas_curso_id.id
+                res['semestre_id'] = disc.bolsas_curso_id.semestre_id.id
+        return res
+
+    # def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+    #     """
+    #     === Extensão do método osv.TransientModel.fields_view_get
+    #     Para atender a necessidade na view, foi adicionado a opção de filtro de perfis
+    #     caso o ID da disciplina tenha sido informado. Isso permitirá que a modificação seja realizada apenas para
+    #     professores do mesmo curso.
+    #     """
+    #     context = context or {}
+    #     res = super(AlterarOrientadorWizard, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+    #     if 'perfil_id' in res['fields']:
+    #         if context.get('active_id', False) and context.get('active_mode', False) == 'ud_monitoria.disciplina':
+    #             domain_temp = res['fields']['perfil_id'].get('domain', [])
+    #             if isinstance(domain_temp, str):
+    #                 domain_temp = list(eval(domain_temp))
+    #             domain = []
+    #             for d in domain_temp:
+    #                 if d[0] not in ['id', 'ud_cursos']:
+    #                     domain.append(d)
+    #             del domain_temp
+    #             disciplina = self.pool.get('ud_monitoria.disciplina').browse(cr, SUPERUSER_ID, context['active_id'])
+    #             domain += [('id', '!=', disciplina.perfil_id.id)]
+    #             res['fields']['perfil_id']['domain'] = domain
+    #     return res
+
+    # Validadores
+    def registros_ativos(self, cr, uid, ids, context=None):
+        """
+        Verifica se tanto a disciplina quanto o semestre estão ativos.
+
+        :return: Boolean
+        """
+        hoje = data_hoje(self, cr, uid)
+        for alt in self.browse(cr, uid, ids, context):
+            if not alt.semestre_id.is_active:
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'Não é permitido mudança de orientador quando o semestre (%s) está inativo.'
+                    % alt.semestre_id.semestre
+                )
+            data_final = datetime.strptime(alt.disciplina_id.data_final, DEFAULT_SERVER_DATE_FORMAT).date()
+            if  data_final < hoje:
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'Não é permitido modificar o orientador de disciplinas com prazo final vencido (%s).'
+                    % data_final.strftime('%d-%m-%Y')
+                )
+        return True
+
+    # Ações de atualização de valores ao modificar dados de campos
+    def onchange_curso(self, cr, uid, ids, curso, disc):
+        if curso and (not disc or self.pool.get('ud_monitoria.disciplina').search(cr, uid, [('id', '=', disc), ('bolsas_curso_id', '=', curso)])):
+            return {}
+        return {'value': {'disciplina_id': False}}
+
+    def onchange_disciplina(self, cr, uid, ids, disc):
+        if disc:
+            disc = self.pool.get('ud_monitoria.disciplina').browse(cr, uid, disc)
+            return {'value': {'perfil_atual_id': disc.perfil_id.id, 'orientador_atual_id': disc.orientador_id.id}}
+        return {'value': {'perfil_atual_id': False, 'orientador_atual_id': False}}
+
+    def onchange_perfil(self, cr, uid, ids, perfil_id, context=None):
+        """
+        Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
+        """
+        if perfil_id:
+            perfil_id = self.pool.get('ud.perfil').browse(cr, uid, perfil_id, context)
+            return {'value': {'orientador_id': perfil_id.ud_papel_id.id}}
+        return {'value': {'orientador_id': False}}
+
+    # Execução de ação
+    def executar_acao(self, cr, uid, ids, context=None):
+        """
+        Muda o orientador de uma disciplina.
+
+        :raise orm.except_orm: Se usuário logado não tiver ou possuir múltiplos vínculos com Perfil do núcleo.
+        """
+        doc_ori_model = self.pool.get('ud_monitoria.documentos_orientador')
+        doc_disc_model = self.pool.get('ud_monitoria.documentos_discente')
+        ocorrencia_model = self.pool.get('ud_monitoria.ocorrencia')
+        pessoa_model = self.pool.get('ud.employee')
+        for alt in self.browse(cr, uid, ids, context):
+            if not alt.semestre_id.is_active:
+                raise orm.except_orm(u'Semestre Inativo', u'Não é possível realizar essa ação em semestres inativos.')
+            responsavel = pessoa_model.search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
+            if not responsavel:
+                raise orm.except_orm(
+                    u'Registro Inexistente',
+                    u'Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo'
+                )
+            if len(responsavel) > 1:
+                raise orm.except_orm(
+                    u'Multiplos vínculos',
+                    u'Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo'
+                )
+
+            perfil_antigo = alt.perfil_atual_id
+            alt.disciplina_id.write({'perfil_id': alt.perfil_id.id})
+            novo_orientador = doc_ori_model.search(
+                cr, uid, [('disciplina_id', '=', alt.disciplina_id.id), ('perfil_id', '=', alt.perfil_id.id)]
+            )
+            if doc_disc_model.search(cr, uid, [('disciplina_id', '=', alt.disciplina_id.id)]) and not novo_orientador:
+                doc_ori_model.create(cr, uid, {'disciplina_id': alt.disciplina_id.id, 'perfil_id': alt.perfil_id.id})
+            if len(alt.disciplina_id.disciplina_ids) == 1:
+                discs = u'da disciplina ' + alt.disciplina_id.disciplina_ids[0].name
+            else:
+                discs = []
+                for disc in alt.disciplina_id.disciplina_ids[:-1]:
+                    discs.append(u'"%s"' % disc.name)
+                discs = u'das disciplinas de ' + u', '.join(discs)
+                discs += u' e ' + alt.disciplina_id.disciplina_ids[-1]
+            ocorrencia_model.create(cr, SUPERUSER_ID, {
+                'semestre_id': alt.disciplina_id.semestre_id.id,
+                'responsavel_id': responsavel[0],
+                'name': u'Mudança de orientação para "%s"' % alt.bolsas_curso_id.curso_id.name,
+                'envolvidos_ids': [(6, 0, [perfil_antigo.ud_papel_id.id, alt.perfil_id.ud_papel_id.id])],
+                'descricao': u'Houve uma mudança de orientador(a) %(discs)s, do curso de %(curso)s. "%(ori)s" '
+                             u'(SIAPE: %(siape)s) assumiu a responsabilidade que antes pertencia à "%(ori_a)s" '
+                             u'(SIAPE: %(siape_a)s).' % {
+                    'discs': discs, 'curso': alt.bolsas_curso_id.curso_id.name,
+                    'ori_a': perfil_antigo.ud_papel_id.name, 'siape_a': perfil_antigo.matricula,
+                    'ori': alt.perfil_id.ud_papel_id.name, 'siape': alt.perfil_id.matricula,
+                },
             })
         return True
