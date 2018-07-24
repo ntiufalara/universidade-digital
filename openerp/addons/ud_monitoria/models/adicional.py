@@ -9,15 +9,15 @@ from util import get_ud_pessoa_id, data_hoje
 
 
 class Curso(osv.Model):
-    _name = "ud.curso"
-    _description = u"Extensão de Curso (UD)"
-    _inherit = "ud.curso"
+    _name = 'ud.curso'
+    _description = u'Extensão de Curso (UD)'
+    _inherit = 'ud.curso'
     _columns = {
-        "coord_monitoria_id": fields.many2one("ud.employee", u"Coordenador de Monitoria"),
+        'coord_monitoria_id': fields.many2one('ud.employee', u'Coordenador(a) de Monitoria'),
     }
     _sql_constraints = [
-        ("coord_monitoria_unico", "unique(coord_monitoria_id)",
-         u"Uma pessoa pode ser coordenador de monitoria de apenas 1 curso."),
+        ('coord_monitoria_unico', 'unique(coord_monitoria_id)',
+         u'Uma pessoa pode ser coordenador de monitoria de apenas 1 curso.'),
     ]
 
     # Métodos sobrescritos
@@ -28,13 +28,13 @@ class Curso(osv.Model):
         correspondente.
         """
         res = super(Curso, self).create(cr, uid, vals, context)
-        if vals.get("coord_monitoria_id", False):
-            group = self.pool.get("ir.model.data").get_object(
-                cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_coord_disciplina", context
+        if vals.get('coord_monitoria_id', False):
+            group = self.pool.get('ir.model.data').get_object(
+                cr, SUPERUSER_ID, 'ud_monitoria', 'group_ud_monitoria_coord_disciplina', context
             )
-            usuario = self.pool.get("ud.employee").browse(cr, uid, vals["coord_monitoria_id"], context).user_id
+            usuario = self.pool.get('ud.employee').browse(cr, uid, vals['coord_monitoria_id'], context).user_id
             if usuario:
-                group.write({"users": [(4, usuario.id)]})
+                group.write({'users': [(4, usuario.id)]})
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -47,30 +47,33 @@ class Curso(osv.Model):
         :attention: Antes de remover qualquer orientador do grupo de segurança, é verificado se esse não possui nenhum
         vínculo com outros cursos.
         """
-        if "coord_monitoria_id" in vals:
+        if 'coord_monitoria_id' in vals:
+            grupos = 'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador'
+            if not self.user_has_groups(cr, uid, 'base.admin_ud') and self.user_has_groups(cr, uid, grupos) and len(vals) == 1:
+                uid = SUPERUSER_ID
             coordenadores_antigos = []
             for curso in self.browse(cr, uid, ids, context):
                 if curso.coord_monitoria_id.user_id:
                     coordenadores_antigos.append(curso.coord_monitoria_id)
-            super(Curso, self).write(cr, uid, ids, vals, context)
-            group = self.pool.get("ir.model.data").get_object(
-                cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_coord_disciplina", context
+            super(Curso, self).write(cr, SUPERUSER_ID, ids, vals, context)
+            group = self.pool.get('ir.model.data').get_object(
+                cr, SUPERUSER_ID, 'ud_monitoria', 'group_ud_monitoria_coord_disciplina', context
             )
-            if vals.get("coord_monitoria_id", False):
-                user = self.pool.get("ud.employee").browse(cr, uid, vals["coord_monitoria_id"], context)
+            if vals.get('coord_monitoria_id', False):
+                user = self.pool.get('ud.employee').browse(cr, uid, vals['coord_monitoria_id'], context)
                 if user.user_id:
                     user = user.user_id.id
-                    group.write({"users": [(4, user)]})
+                    group.write({'users': [(4, user)]})
                     for coord in coordenadores_antigos:
                         if coord.user_id:
                             if (coord.user_id.id != user and self.search_count(
-                                    cr, uid, [("coord_monitoria_id", "=", coord.id)]) == 0):
-                                group.write({"users": [(3, coord.user_id.id)]})
+                                    cr, uid, [('coord_monitoria_id', '=', coord.id)]) == 0):
+                                group.write({'users': [(3, coord.user_id.id)]})
             else:
                 for coord in coordenadores_antigos:
                     if coord.user_id:
-                        if self.search_count(cr, uid, [("coord_monitoria_id", "=", coord.id)]) == 0:
-                            group.write({"users": [(3, coord.user_id.id)]})
+                        if self.search_count(cr, uid, [('coord_monitoria_id', '=', coord.id)]) == 0:
+                            group.write({'users': [(3, coord.user_id.id)]})
             return True
         return super(Curso, self).write(cr, uid, ids, vals, context)
 
@@ -82,13 +85,13 @@ class Curso(osv.Model):
         """
         coordenadores = [curso.coord_monitoria_id for curso in self.browse(cr, uid, ids, context)]
         super(Curso, self).unlink(cr, uid, ids, context)
-        group = self.pool.get("ir.model.data").get_object(
-            cr, SUPERUSER_ID, "ud_monitoria", "group_ud_monitoria_coord_disciplina", context
+        group = self.pool.get('ir.model.data').get_object(
+            cr, SUPERUSER_ID, 'ud_monitoria', 'group_ud_monitoria_coord_disciplina', context
         )
         for coordenador in coordenadores:
-            if self.search_count(cr, uid, [("coord_monitoria_id", "=", coordenador.id)]) == 0:
+            if self.search_count(cr, uid, [('coord_monitoria_id', '=', coordenador.id)]) == 0:
                 if coordenador.user_id:
-                    group.write({"users": [(3, coordenador.user_id.id)]})
+                    group.write({'users': [(3, coordenador.user_id.id)]})
         return True
 
 
@@ -121,26 +124,26 @@ class DisciplinaMonitoria(osv.Model):
         """
         Busca todos os discentes e separa-os em um dicionário de acordo com seu status e seu campo correspondente.
         """
-        doc_model = self.pool.get("ud_monitoria.documentos_discente")
+        doc_model = self.pool.get('ud_monitoria.documentos_discente')
         res = {}
         for disc_id in ids:
             res[disc_id] = {}
             for campo in campos:
                 if campo == 'bolsista_ids':
                     res[disc_id]['bolsista_ids'] = doc_model.search(
-                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "bolsista")], context=context
+                        cr, SUPERUSER_ID, [('disciplina_id', '=', disc_id), ('state', '=', 'bolsista')], context=context
                     )
                 elif campo == 'n_bolsista_ids':
                     res[disc_id]['n_bolsista_ids'] = doc_model.search(
-                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "n_bolsista")], context=context
+                        cr, SUPERUSER_ID, [('disciplina_id', '=', disc_id), ('state', '=', 'n_bolsista')], context=context
                     )
                 elif campo == 'reserva_ids':
                     res[disc_id]['reserva_ids'] = doc_model.search(
-                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "reserva")], context=context
+                        cr, SUPERUSER_ID, [('disciplina_id', '=', disc_id), ('state', '=', 'reserva')], context=context
                     )
                 elif campo == 'desligado_ids':
                     res[disc_id]['desligado_ids'] = doc_model.search(
-                        cr, SUPERUSER_ID, [("disciplina_id", "=", disc_id), ("state", "=", "desligado")], context=context
+                        cr, SUPERUSER_ID, [('disciplina_id', '=', disc_id), ('state', '=', 'desligado')], context=context
                     )
         return res
 
@@ -231,7 +234,7 @@ class DisciplinaMonitoria(osv.Model):
                 'ud_monitoria.disciplina': (lambda cls, cr, uid, ids, ctx=None: ids, ['bolsistas'], 9),
             }
         ),
-        'perfil_id': fields.many2one('ud.perfil', u'SIAPE', required=True, ondelete='restrict', domain="[('tipo', '=', 'p')]"),
+        'perfil_id': fields.many2one('ud.perfil', u'SIAPE', required=True, ondelete='restrict', domain='[("tipo", "=", "p")]'),
         'orientador_id': fields.related('perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee', readonly=True, string=u'Orientador'),
         'data_inicial': fields.date(u'Data Inicial', required=True),
         'data_final': fields.date(u'Data Final', required=True),
@@ -369,29 +372,29 @@ class DisciplinaMonitoria(osv.Model):
         res = super(DisciplinaMonitoria, self).default_get(cr, uid, fields_list, context)
         if context.get('bolsas_curso_id', False):
             res['bolsas_curso_id'] = context['bolsas_curso_id']
-            res['semestre_id'] = context.get("semestre_id", False) or self.pool.get('ud_monitoria.bolsas_curso').read(
+            res['semestre_id'] = context.get('semestre_id', False) or self.pool.get('ud_monitoria.bolsas_curso').read(
                 cr, SUPERUSER_ID, context['bolsas_curso_id'], ['semestre_id'], load='_classic_write'
             )['semestre_id']
-        elif context.get("semestre_id", None):
+        elif context.get('semestre_id', None):
             res['semestre_id'] = context['semestre_id']
         elif context.get('active_model', False) == 'ud_monitoria.semestre' and context.get('active_id', False):
             res['semestre_id'] = context['active_id']
-        if context.get("coordenador_monitoria_curso", False):
-            if not context.get("semestre_id", False):
+        if context.get('coordenador_monitoria_curso', False):
+            if not context.get('semestre_id', False):
                 return res
             pessoa_id = get_ud_pessoa_id(self, cr, uid)
             if pessoa_id:
-                curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)],
+                curso_ids = self.pool.get('ud.curso').search(cr, SUPERUSER_ID, [('coord_monitoria_id', '=', pessoa_id)],
                                                              context=context)
                 if not curso_ids:
                     return res
                 curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(
-                    cr, SUPERUSER_ID, [('semestre_id', '=', context["semestre_id"]), ('curso_id', 'in', curso_ids)],
+                    cr, SUPERUSER_ID, [('semestre_id', '=', context['semestre_id']), ('curso_id', 'in', curso_ids)],
                     context=context
                 )
                 if not curso_ids:
                     return res
-                res["bolsas_curso_id"] = curso_ids[0]
+                res['bolsas_curso_id'] = curso_ids[0]
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
@@ -403,22 +406,22 @@ class DisciplinaMonitoria(osv.Model):
         """
         context = context or {}
         res = super(DisciplinaMonitoria, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        if 'bolsas_curso_id' in res["fields"]:
-            domain_temp = res["fields"]["bolsas_curso_id"].get("domain", [])
+        if 'bolsas_curso_id' in res['fields']:
+            domain_temp = res['fields']['bolsas_curso_id'].get('domain', [])
             if isinstance(domain_temp, str):
                 domain_temp = list(eval(domain_temp))
             domain = []
             for d in domain_temp:
-                if d[0] != "id":
+                if d[0] != 'id':
                     domain.append(d)
             del domain_temp
-            if context.get("semestre_id", None):
+            if context.get('semestre_id', None):
                 domain.append(('semestre_id', '=', context['semestre_id']))
                 if context.get('coordenador_monitoria_curso', False):
                     domain.append(('curso_id', 'in', self.pool.get('ud.curso').search(
-                        cr, uid, [("coord_monitoria_id", "=", get_ud_pessoa_id(self, cr, uid))]
+                        cr, uid, [('coord_monitoria_id', '=', get_ud_pessoa_id(self, cr, uid))]
                     )))
-            res["fields"]["bolsas_curso_id"]["domain"] = domain
+            res['fields']['bolsas_curso_id']['domain'] = domain
         if 'disciplina_ids' in res['fields']:
             if context.get('curso_id', False):
                 curso_id = context['curso_id']
@@ -428,15 +431,15 @@ class DisciplinaMonitoria(osv.Model):
                 )['curso_id']
             else:
                 return res
-            domain_temp = res["fields"]["disciplina_ids"].get("domain", [])
+            domain_temp = res['fields']['disciplina_ids'].get('domain', [])
             if isinstance(domain_temp, str):
                 domain_temp = list(eval(domain_temp))
             domain = []
             for d in domain_temp:
-                if d[0] != "id":
+                if d[0] != 'id':
                     domain.append(d)
             del domain_temp
-            res["fields"]["disciplina_ids"]['domain'] = domain + [
+            res['fields']['disciplina_ids']['domain'] = domain + [
                 ('id', 'in', self.pool.get('ud.disciplina').search(cr, SUPERUSER_ID, [('ud_disc_id', '=', curso_id)]))
             ]
         return res
@@ -448,15 +451,15 @@ class DisciplinaMonitoria(osv.Model):
         monitoria do curso correspondente.
         """
         context = context or {}
-        if context.get("coordenador_monitoria_curso", False):
+        if context.get('coordenador_monitoria_curso', False):
             pessoa_id = get_ud_pessoa_id(self, cr, uid)
             if not pessoa_id:
                 return []
-            curso_ids = self.pool.get("ud.curso").search(cr, SUPERUSER_ID, [("coord_monitoria_id", "=", pessoa_id)])
+            curso_ids = self.pool.get('ud.curso').search(cr, SUPERUSER_ID, [('coord_monitoria_id', '=', pessoa_id)])
             curso_ids = self.pool.get('ud_monitoria.bolsas_curso').search(cr, SUPERUSER_ID,
                                                                           [('curso_id', 'in', curso_ids)])
-            args = (args or []) + [("bolsas_curso_id", "in", curso_ids)]
-        if context.get("disciplina_ativa", False):
+            args = (args or []) + [('bolsas_curso_id', 'in', curso_ids)]
+        if context.get('disciplina_ativa', False):
             hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
             args = (args or []) + [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
         if context.get('disciplinas_semestre', False):
@@ -631,10 +634,10 @@ class DisciplinaMonitoria(osv.Model):
         Método usado para atualizar os dados do campo "orientador_id" caso "perfil_id" seja modificado.
         """
         if perfil_id:
-            return {"value": {"orientador_id": self.pool.get("ud.perfil").read(
-                cr, SUPERUSER_ID, perfil_id, ["ud_papel_id"], context=context
-            ).get("ud_papel_id")}}
-        return {"value": {"orientador_id": False}}
+            return {'value': {'orientador_id': self.pool.get('ud.perfil').read(
+                cr, SUPERUSER_ID, perfil_id, ['ud_papel_id'], context=context
+            ).get('ud_papel_id')}}
+        return {'value': {'orientador_id': False}}
 
     def onchange_modalidade_disciplina(self, cr, uid, ids, tutoria, disciplinas):
         if tutoria and len(disciplinas[0][2]) > 3:
