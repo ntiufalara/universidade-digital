@@ -171,8 +171,9 @@
                             <field name="bolsas_curso_ids" attrs="{'readonly': [('is_active', '=', False)]}">
                                 <tree editable="bottom" version="7.0" colors="green:is_active==True">
                                     <field name="id" invisible="1"/>
-                                    <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}"
+                                    <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" on_change="onchange_curso(curso_id)"
                                            options="{'no_open': true, 'create_edit': false, 'create': false}"/>
+                                    <field name="coord_monitoria_id"/>
                                     <field name="bolsas"/>
                                     <field name="distribuidas"/>
                                     <field name="utilizadas"/>
@@ -219,8 +220,11 @@
                                         <li>
                                             <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
                                                     type="action" string="Clique aqui" class="oe_link"/>
-                                            para modificar as datas de início e finalização de uma ou mais disciplinas.
+                                            para modificar as <strong>datas de início e finalização</strong> de uma ou mais disciplinas;
                                         </li>
+                                        <li><button name="%(ud_monitoria.action_ud_monitoria_alterar_orientador_wizard)d"
+                                                    type="action" string="Clique aqui" class="oe_link"/>
+                                            para <strong>atualizar o orientador</strong> de alguma disciplina.</li>
                                     </ul>
                                 </group>
                                 <group string="Ações Administrativas" col="4"
