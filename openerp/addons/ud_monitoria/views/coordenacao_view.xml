@@ -83,6 +83,8 @@
                     <header>
                         <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
                                 type="action" string="Atualizar datas" attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button name="%(ud_monitoria.action_ud_monitoria_alterar_orientador_wizard)d"
+                                type="action" string="Alterar Orientador(a)"/>
                     </header>
                 </field>
                 <field name="bolsas" position="attributes">

@@ -184,6 +184,8 @@
                     <header>
                         <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
                                 type="action" string="Alterar datas" attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button name="%(ud_monitoria.action_ud_monitoria_alterar_orientador_wizard)d"
+                                type="action" string="Alterar Orientador(a)"/>
                     </header>
                 </field>
                 <field name="orientador_id" position="attributes">
@@ -203,7 +205,7 @@
             <field name="arch" type="xml">
                 <search string="Disciplina">
                     <field name="disciplina_ids"/>
-                    <filter string="Data incial futura" name="ativas" help="Mostra as disciplinas com data inicial no futuro."
+                    <filter string="Data inicial futura" name="ativas" help="Mostra as disciplinas com data inicial no futuro."
                             domain="[('data_inicial', '&gt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
                     <filter string="Data final passada" name="inativas" help="Mostra as disciplinas com data final passada."
                             domain="[('data_final', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
@@ -211,8 +213,16 @@
                             domain="[('data_inicial', '&lt;=', context_today().strftime('%%Y-%%m-%%d')), ('data_final', '&gt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
                     <filter string="Inativas" name="inativas" help="Mostra as disciplinas inativas"
                             domain="['|', ('data_inicial', '&gt;', context_today().strftime('%%Y-%%m-%%d')), ('data_final', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Tutoria" name="tutoria" help="Mostra as disciplinas de tutoria"
+                            domain="[('tutoria', '=', True)]"/>
+                    <filter string="Monitoria" name="monitoria" help="Mostra as disciplinas de monitoria"
+                            domain="[('tutoria', '=', False)]"/>
+                    <filter string="Sem inscrições" name="sem_inscricoes" help="Mostra as disciplinas sem inscrições."
+                            domain="[('total_inscricoes', '=', 0)]"/>
+                    <filter string="Com inscrições" name="com_inscricoes" help="Mostra as disciplinas com inscrições."
+                            domain="[('total_inscricoes', '>', 0)]"/>
                     <group expand="0" string="Agrupar por...">
-                        <filter string="Curso" name="setor" context="{'group_by': 'bolsas_curso_id'}"
+                        <filter string="Curso" name="curso" context="{'group_by': 'bolsas_curso_id'}"
 								help="Agrupar por curso"/>
                     </group>
                 </search>
