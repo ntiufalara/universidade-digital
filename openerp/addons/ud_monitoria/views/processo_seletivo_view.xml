@@ -214,8 +214,8 @@
                     <div style="color: red;" attrs="{'invisible': [('state', '!=', 'invalido')]}"
                          groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                         <p>
-                            O processo seletivo torna-se inválido quando não está sob demanda e não possui ao menos um
-                            anexo e uma disciplina.
+                            O processo seletivo torna-se inválido quando está fora do prazo de demanada e não possui ao
+                            menos um anexo ou disciplina.
                         </p>
                     </div>
                     <group col="4">
@@ -412,6 +412,35 @@
             <field name="view_id" ref="ud_monitoria_processo_seletivo_demanda_form_view"/>
             <field name="view_mode">form</field>
             <field name="act_window_id" ref="action_ud_monitoria_demanda_view"/>
+        </record>
+
+        <record id="ud_monitoria_processo_seletivo_search" model="ir.ui.view">
+            <field name="name">Pesquisar Processos Seletivos</field>
+            <field name="model">ud_monitoria.processo_seletivo</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Processo Seletivo">
+                    <field name="name"/>
+                    <filter string="Inválido" name="Inválido" help="Mostra os processos seletivos inválidos."
+                            groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                            domain="[('state', '=', 'invalido')]"/>
+                    <filter string="Em damanda" name="demanda" help="Mostra os processos seletivos em demanda."
+                            groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                            domain="[('state', '=', 'demanda')]"/>
+                    <filter string="Novo" name="novo" help="Mostra os novos processos seletivos."
+                            domain="[('state', '=', 'novo')]"/>
+                    <filter string="Em andamento" name="andamento" help="Mostra os processos seletivos em andamento."
+                            domain="[('state', '=', 'andamento')]"/>
+                    <filter string="Encerrado" name="encerrado" help="Mostra os processos seletivos encerrados."
+                            domain="[('state', '=', 'encerrado')]"/>
+                    <group expand="0" string="Agrupar por...">
+                        <filter string="Semestre" name="semestre" context="{'group_by': 'semestre_id'}"
+								help="Agrupar por semestre"/>
+                        <filter string="Status" name="status" context="{'group_by': 'state'}"
+								help="Agrupar por status"/>
+                    </group>
+                </search>
+            </field>
         </record>
     </data>
 </openerp>
