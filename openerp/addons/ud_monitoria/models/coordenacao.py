@@ -1,14 +1,11 @@
 # coding: utf-8
 from datetime import datetime, timedelta
-import logging
 from re import compile
 
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from util import get_ud_pessoa_id, data_hoje
-
-_logger = logging.getLogger('ud_monitoria')
+from util import get_ud_pessoa_id
 
 
 class Semestre(osv.Model):
@@ -214,26 +211,6 @@ class Semestre(osv.Model):
         cr.execute(sql % {'status': 'andamento', 'condicao': "data_inicio <= '%(hj)s' AND data_fim >= '%(hj)s'" % {'hj': hoje}})
         cr.execute(sql % {'status': 'encerrado', 'condicao': "data_fim < '%(hj)s'" % {'hj': hoje}})
         return True
-
-    def atualiza_bolsas_discente_cron(self, cr, uid, *args, **kwargs):
-        perfil_model = self.pool.get('ud.perfil')
-        hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
-        _logger.info(u'Removendo bolsas de monitoria/tutoria dos perfis dos discentes em disciplinas inativas.')
-        cr.execute('''
-        SELECT per.id FROM %(per)s per
-        WHERE
-            per.tipo_bolsa = 'm' AND per.is_bolsista = true
-            AND NOT(SELECT EXISTS(
-                SELECT doc.id FROM
-                    %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
-                WHERE
-                    doc.perfil_id = per.id AND disc.data_final > '%(hj)s' AND doc.state = 'bolsista'
-            ));
-        ''' % {
-            'doc': self.pool.get('ud_monitoria.documentos_discente')._table,
-            'disc': self.pool.get('ud_monitoria.disciplina')._table,
-            'per': perfil_model._table, 'hj': hoje,
-        })
 
 
 class Ocorrencia(osv.Model):
