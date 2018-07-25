@@ -75,11 +75,11 @@
                     <field name="discente_id" invisible="context.get('filtrar_discente', False)"/>
                     <field name="disciplina_id" invisible="context.get('active_model', False) == 'ud_monitoria.disciplina'"/>
                     <field name="orientador_id" invisible="context.get('active_model', False) == 'ud_monitoria.disciplina'"/>
-                    <field name="processo_seletivo_id"/>
+                    <field name="processo_seletivo_id" invisible="context.get('ocultar_processo_seletivo', False)"/>
                     <field name="tutoria"/>
                     <field name="bolsista"/>
                     <field name="media"/>
-                    <field name="state"/>
+                    <field name="state" invisible="context.get('ocultar_status', False)"/>
                 </tree>
             </field>
         </record>
@@ -351,11 +351,29 @@
                 <search string="Inscrição">
                     <field name="perfil_id"/>
                     <field name="discente_id"/>
+                    <filter string="Em análise" name="analise" help="Mostra as inscrições em análise."
+                            domain="[('state', '=', 'analise')]"/>
+                    <filter string="Classificado(a)" name="classificado" help="Mostra as inscrições de discentes classificados."
+                            domain="[('state', '=', 'classificado')]"/>
+                    <filter string="Desclassificado(a)" name="desclassificado" domain="[('state', '=', 'desclassificado')]"
+                            help="Mostra as inscrições de discentes desclassificados."/>
+                    <filter string="Cadastro de reserva" name="reserva" domain="[('state', '=', 'reserva')]"
+                            help="Mostra as inscrições de discentes enviados para o cadastro de reserva."/>
+                    <filter string="Bolsistas" name="bolsista" domain="[('bolsista', '=', True)]"
+                            help="Mostra as inscrições de bolsistas."/>
+                    <filter string="Colaboradores" name="colaborador" domain="[('bolsista', '=', False)]"
+                            help="Mostra as inscrições de colaboradores."/>
+                    <filter string="Tutores" name="tutor" domain="[('tutoria', '=', True)]"
+                            help="Mostra as inscrições de tutores."/>
+                    <filter string="Monitores" name="monitor" domain="[('tutoria', '=', False)]"
+                            help="Mostra as inscrições de tutores."/>
                     <group expand="0" string="Agrupar por...">
-                        <filter string="Status" name="setor" context="{'group_by': 'state'}"
+                        <filter string="Status" name="status" context="{'group_by': 'state', 'ocultar_status': True}"
 								help="Agrupar por status"/>
-                        <filter string="Curso" name="setor" context="{'group_by': 'bolsas_curso_id'}"
+                        <filter string="Curso" name="curso" context="{'group_by': 'bolsas_curso_id'}"
 								help="Agrupar por curso"/>
+                        <filter string="Processo Seletivo" name="curso" help="Agrupar por processo seletivo"
+                                context="{'group_by': 'processo_seletivo_id', 'ocultar_processo_seletivo': True}"/>
                     </group>
                 </search>
             </field>
