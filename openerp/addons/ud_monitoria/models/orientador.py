@@ -1,6 +1,12 @@
 # coding: utf-8
+from datetime import datetime
+import logging
 from openerp.osv import osv, fields
 from openerp import SUPERUSER_ID
+
+from util import data_hoje, DEFAULT_SERVER_DATE_FORMAT
+
+_logger = logging.getLogger('ud_monitoria')
 
 
 class DocumentosOrientador(osv.Model):
@@ -14,7 +20,37 @@ class DocumentosOrientador(osv.Model):
         for doc in self.browse(cr, uid, ids, context):
             if doc.disciplina_id.perfil_id.id == doc.perfil_id.id:
                 res[doc.id] = doc_discente.search(cr, uid, [('disciplina_id', '=', doc.disciplina_id.id)])
+            else:
+                res[doc.id] = []
         return res
+
+    def get_is_active(self, cr, uid, ids, campos, args, context=None):
+        res = {}
+        hoje = data_hoje(self, cr, uid)
+        for doc in self.browse(cr, uid, ids, context):
+            res[doc.id] = (
+                    doc.disciplina_id.perfil_id.id == doc.perfil_id.id
+                    and hoje <= datetime.strptime(doc.disciplina_id.data_final, DEFAULT_SERVER_DATE_FORMAT)
+            )
+        return res
+
+    def update_is_active(self, cr, uid, ids, context=None):
+        if self._name == 'ud_monitoria.disciplina':
+            cr.execute('''
+            SELECT
+                doc.id
+            FROM
+                "%(doc)s" doc INNER JOIN "%(disc)s" disc ON (doc.disciplina_id = disc.id)
+            WHERE
+                (doc.perfil_id != disc.perfil_id OR disc.data_final < '%(hj)s') AND doc.is_active = true
+                OR (doc.perfil_id = disc.perfil_id AND disc.data_final >= '%(hj)s') AND doc.is_active = false;
+            ''' % {
+                'doc': self.pool.get('ud_monitoria.documentos_orientador')._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'hj': data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT),
+            })
+            return [l[0] for l in cr.fetchall()]
+        return []
 
     _columns = {
         "disciplina_id": fields.many2one('ud_monitoria.disciplina', u"Disciplina", ondelete="restrict"),
@@ -32,14 +68,13 @@ class DocumentosOrientador(osv.Model):
         "declaracao": fields.binary(u"Declaração", help=u"Declaração de Participação de Banca"),
         "certificado_nome": fields.char(u"Certificado (Nome)"),
         "certificado": fields.binary(u"Certificado", help=u"Certidão de Participação de Orientação"),
-        "is_active": fields.boolean(u"Ativo?", readonly=True),
+        'is_active': fields.function(get_is_active, type='boolean', string=u'Ativo?', store={
+            'ud_monitoria.disciplina': (update_is_active, ['perfil_id', 'data_final'], 10)
+        })
     }
     _sql_constraints = [
         ("doc_perfil_disciplina_unique", "unique(disciplina_id,perfil_id)", u"Deve haver apenas um documento para um orientador e disciplina.")
     ]
-    _defaults = {
-        "is_active": True,
-    }
 
     # Métodos sobrescritos
     def name_get(self, cr, uid, ids, context=None):
@@ -94,52 +129,27 @@ class DocumentosOrientador(osv.Model):
                     u"O registro no núcleo do atual orientador não possui login de usuário.")
             group.write({"users": [(4, doc.orientador_id.user_id.id)]})
 
-    # Método para botões na view
-    def ativar(self, cr, uid, ids, context=None):
-        cr.execute(
-            '''
-            SELECT EXISTS(
-                SELECT
-                    doc.id
-                FROM
-                  %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
-                WHERE
-                  doc.id in (%(ids)s) AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
-            );
-            ''' % {
-                'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),
-                'doc': self._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table,
-                'hj': ''
-            }
-        )
-        if cr.fetchone()[0]:
-            raise osv.except_osv(
-                u'Ação indisponível',
-                u'Não é possível reativar o vínculo do orientador enquanto a disciplina estiver inativa.'
-            )
-        return self.write(cr, uid, ids, {'is_active': True}, context)
+    # Método para execução agendada
+    def atualiza_status_cron(self, cr, uid, context=None):
+        """
+        Atualiza o status dos orientadores.
+        """
+        _logger.info(u'Desativando documentos de orientadores de disciplinas vencidas ou sem vínculo com a mesma...')
+        cr.execute('''
+        UPDATE "%(doc)s" doc SET doc.is_active = False
+        WHERE
+          doc.id in (
+              SELECT
+                  doc.id
+              FROM
+                  "%(doc)s" doc2 INNER JOIN "%(disc)s" disc ON (doc2.disciplina_id = disc.id)
+              WHERE
+                  (doc2.perfil_id != disc.perfil_id OR disc.data_final < '%(hj)s') AND doc2.is_active = true
+          );
+        ''' % {
+            'doc': self.pool.get('ud_monitoria.documentos_orientador')._table,
+            'disc': self.pool.get('ud_monitoria.disciplina')._table,
+            'hj': data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT),
+        })
+        return True
 
-    def desativar(self, cr, uid, ids, context=None):
-        cr.execute(
-            '''
-            SELECT EXISTS(
-                SELECT
-                    doc.id
-                FROM
-                    %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
-                WHERE
-                    doc.id in (%(ids)s) AND (disc.data_inicial <= '%(hj)s' AND disc.data_final >= '%(hj)s') = true
-            );
-            ''' % {
-                'ids': str(ids).lstrip('[(').rstrip(']),').replace('L', ''),
-                'doc': self._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table
-            }
-        )
-        if cr.fetchone()[0]:
-            raise osv.except_osv(
-                u'Ação indisponível',
-                u'Não é possível desativar o vínculo do orientador enquanto a disciplina estiver inativa.'
-            )
-        return self.write(cr, uid, ids, {'is_active': False}, context)
