@@ -211,6 +211,25 @@ class DisciplinaMonitoria(osv.Model):
             return [linha[0] for linha in res]
         return []
 
+    def update_total_inscricoes(self, cr, uid, ids, context=None):
+        if self._name == 'ud_monitoria.inscricao' and ids:
+            cr.execute('''
+            SELECT
+                disc.id
+            FROM
+                %(disc)s disc INNER JOIN %(disc_ps)s disc_ps ON (disc.id = disc_ps.disc_monit_id)
+                    INNER JOIN %(insc)s insc ON (disc_ps.id = insc.disciplina_id)
+            WHERE
+                insc.id in (%(ids)s)
+            ''' % {
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
+                'insc': self._table,
+                'ids': str(ids).lstrip('([').rstrip(')],').replace('L', '')
+            })
+            return [l[0] for l in cr.fetchall()]
+        return []
+
     _columns = {
         'id': fields.integer('ID', readonly=True, invisible=True),
         'bolsas_curso_id': fields.many2one('ud_monitoria.bolsas_curso', u'Curso', required=True, ondelete='cascade'),
@@ -240,7 +259,8 @@ class DisciplinaMonitoria(osv.Model):
         'data_final': fields.date(u'Data Final', required=True),
         'is_active': fields.function(get_is_active, type='boolean', string=u'Ativo'),
         'total_inscricoes': fields.function(get_inscricoes, type='integer', string=u'Total de Inscrições',
-                                            multi='ud_monitoria_disciplina_inscricao'),
+                                            multi='ud_monitoria_disciplina_inscricao',
+                                            store={'ud_monitoria.inscricao': (update_total_inscricoes, ['disciplina_id'], 10)}),
         'inscricao_ids': fields.function(get_inscricoes, type='many2many', relation='ud_monitoria.inscricao',
                                          multi='ud_monitoria_disciplina_inscricao', string=u'Inscrições'),
         'bolsista_ids': fields.function(get_discentes, type='many2many', relation='ud_monitoria.documentos_discente',
