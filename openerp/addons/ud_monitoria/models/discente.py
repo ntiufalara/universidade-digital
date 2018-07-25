@@ -1,19 +1,23 @@
 # coding: utf-8
 from datetime import datetime, timedelta
+import logging
 from re import compile
+
 from openerp import SUPERUSER_ID
 from openerp.osv import osv, fields, orm
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools.translate import _
+
 from .util import regex_regra, regex_order, regex_espacos, regex_clausula, _MESES, data_hoje, get_ud_pessoa_id
 
 regex_hora = compile("^[0-2][0-9]:[0-5][0-9]$")
+_logger = logging.getLogger('ud_monitoria')
 
 
 class DocumentosDiscente(osv.Model):
     _name = 'ud_monitoria.documentos_discente'
     _description = u'Documentos de monitoria do discente (UD)'
-    _order = 'state, disciplina_id'  # TODO: Verificar essa ordenação
+    _order = 'state, disciplina_id'
     _STATES = [('reserva', u'Cadastro de Reserva'), ('n_bolsista', u'Colaborador(a)'),
                ('bolsista', u'Bolsista'), ('desligado', u'Desligado(a)')]
 
@@ -82,6 +86,11 @@ class DocumentosDiscente(osv.Model):
             h.documento_id.id for h in self.browse(cr, uid, ids, context)
         ))
 
+    def update_curso_semestre(self, cr, uid, ids, context=None):
+        if self._name == 'ud_monitoria.disciplina':
+            return self.pool.get('ud_monitoria.documentos_discente').search(cr, uid, [('disciplina_id', 'in', ids)])
+        return []
+
     _columns = {
         'perfil_id': fields.many2one('ud.perfil', u'Matrícula', required=True, ondelete='restrict'),
         'discente_id': fields.related('perfil_id', 'ud_papel_id', type='many2one', relation='ud.employee', readonly=True,
@@ -91,9 +100,14 @@ class DocumentosDiscente(osv.Model):
         'disciplina_id': fields.many2one('ud_monitoria.disciplina', u'Disciplina', required=True, ondelete='restrict'),
         'tutor': fields.related('disciplina_id', 'tutoria', string=u'Tutor?', type='boolean', help=u'Indica se o discente é um tutor, caso contrário, ele é um monitor'),
         'semestre_id': fields.related('disciplina_id', 'bolsas_curso_id', 'semestre_id', type='many2one',
-                                      relation='ud_monitoria.semestre', string=u'Semestre', ondelete='restrict'),
+                                      relation='ud_monitoria.semestre', string=u'Semestre', ondelete='restrict',
+                                   store={'ud_monitoria.documentos_discente': (lambda cls, cr, uid, ids, ctx: ids, ['disciplina_id'], 10),
+                                          'ud_monitoria.disciplina': (update_curso_semestre, ['bolsas_curso_id'], 10)}),
         'curso_id': fields.related('disciplina_id', 'bolsas_curso_id', type='many2one', string=u'Curso',
-                                   relation='ud_monitoria.bolsas_curso', ondelete='restrict'),
+                                   relation='ud_monitoria.bolsas_curso', ondelete='restrict',
+                                   store={'ud_monitoria.documentos_discente': (lambda cls, cr, uid, ids, ctx: ids, ['disciplina_id'], 10),
+                                          'ud_monitoria.disciplina': (update_curso_semestre, ['bolsas_curso_id'], 10)}
+                                   ),
         'orientador_id': fields.related('disciplina_id', 'perfil_id', 'ud_papel_id', type='many2one', readonly=True,
                                         relation='ud.employee', string=u'Orientador'),
         'frequencia_ids': fields.one2many('ud_monitoria.frequencia', 'documentos_id', u'Frequências'),
@@ -207,20 +221,48 @@ class DocumentosDiscente(osv.Model):
 
         Obs.: Enquanto a disciplina correspondente estiver ativa, o documento também estará.
         """
-        if (context or {}).get('filtrar_discente', False):
+        context = context or {}
+        if context.get('filtrar_discente', False):
             pessoa_id = get_ud_pessoa_id(self, cr, uid)
             if not pessoa_id:
                 return []
             args = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
                 cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
             ))] + (args or [])
-        if (context or {}).get('documentos_ativos', False):
+        if 'documentos_ativos' in context:
             hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
-                cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
-            )
+            if context['documentos_ativos']:
+                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
+                    cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
+                )
+            else:
+                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
+                    cr, SUPERUSER_ID, ['|', ('data_inicial', '>', hoje), ('data_final', '<', hoje)]
+                )
             args = [('disciplina_id', 'in', disciplina_ids)] + (args or [])
         return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
+        context = context or {}
+        if context.get('filtrar_discente', False):
+            pessoa_id = get_ud_pessoa_id(self, cr, uid)
+            if not pessoa_id:
+                return []
+            domain = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
+                cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
+            ))] + (domain or [])
+        if 'documentos_ativos' in context:
+            hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
+            if context['documentos_ativos']:
+                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
+                    cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
+                )
+            else:
+                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
+                    cr, SUPERUSER_ID, ['|', ('data_inicial', '>', hoje), ('data_final', '<', hoje)]
+                )
+            domain = [('disciplina_id', 'in', disciplina_ids)] + (domain or [])
+        return super(DocumentosDiscente, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby)
 
     # Validadores
     def valida_vagas(self, cr, uid, ids, context=None):
@@ -311,6 +353,31 @@ class DocumentosDiscente(osv.Model):
                 perfis = perfil_model.search_count(cr, SUPERUSER_ID, [('ud_papel_id', '=', doc.discente_id.id)])
                 if not self.search_count(cr, SUPERUSER_ID, [('perfil_id', 'in', perfis)]):
                     group.write({"users": [(3, doc.discente_id.user_id.id)]})
+
+    # Método Agendado
+    def atualiza_bolsas_discente_cron(self, cr, uid, context=None):
+        perfil_model = self.pool.get('ud.perfil')
+        hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        _logger.info(u'Removendo bolsas de monitoria/tutoria dos perfis dos discentes em disciplinas inativas.')
+        cr.execute('''
+        SELECT per.id
+        FROM %(per)s per
+        WHERE
+            per.tipo_bolsa = 'm' AND per.is_bolsista = true
+            AND NOT(SELECT EXISTS(
+                SELECT doc.id FROM
+                    %(doc)s doc INNER JOIN %(disc)s disc ON (doc.disciplina_id = disc.id)
+                WHERE
+                    doc.perfil_id = per.id AND disc.data_final >= '%(hj)s' AND doc.state = 'bolsista'
+            ));
+        ''' % {
+            'doc': self.pool.get('ud_monitoria.documentos_discente')._table,
+            'disc': self.pool.get('ud_monitoria.disciplina')._table,
+            'per': perfil_model._table, 'hj': hoje,
+        })
+        ids = [l[0] for l in cr.fetchall()]
+        if ids:
+            perfil_model.write(cr, SUPERUSER_ID, ids, {'tipo_bolsa': False, 'is_bolsista': False, 'valor_bolsa': False})
 
 
 class Horario(osv.Model):
