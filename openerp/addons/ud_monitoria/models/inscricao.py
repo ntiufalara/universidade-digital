@@ -301,6 +301,40 @@ class Inscricao(osv.Model):
             args = [('id', 'in', map(lambda l: l[0], cr.fetchall()))] + (args or [])
         return super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
 
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
+        context = context or {}
+        pessoa_id = None
+        if context.pop('filtrar_discente', False):
+            pessoa_id = get_ud_pessoa_id(self, cr, uid)
+            if not pessoa_id:
+                return []
+            perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
+            domain += [('perfil_id', 'in', perfis)]
+        if context.get('filtrar_orientador', False):
+            if not pessoa_id:
+                pessoa_id = get_ud_pessoa_id(self, cr, uid)
+                if not pessoa_id:
+                    return []
+                perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
+                if not perfis:
+                    return []
+            cr.execute('''
+                    SELECT
+                        insc.id
+                    FROM
+                        %(insc)s insc INNER JOIN %(disc_ps)s disc_ps ON (insc.disciplina_id = disc_ps.id)
+                            INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
+                    WHERE
+                        disc.perfil_id in (%(perfis)s)
+                    ''' % {
+                'insc': self._table,
+                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
+                'disc': self.pool.get('ud_monitoria.disciplina')._table,
+                'perfis': str(perfis).lstrip('([').rstrip(')],').replace('L', ''),
+            })
+            domain = [('id', 'in', map(lambda l: l[0], cr.fetchall()))] + (domain or [])
+        return super(Inscricao, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby)
+
     # Validadores
     def valida_processo_seletivo(self, cr, uid, ids, context=None):
         """
