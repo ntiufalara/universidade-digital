@@ -15,7 +15,7 @@
                   groups="ud_monitoria.group_ud_monitoria_coord_disciplina"/>
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_demanda" sequence="7"
                   action="action_ud_monitoria_demanda_view" groups="ud_monitoria.group_ud_monitoria_coord_disciplina"/>
-        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_horarios_menu" name="Monitores/Tutores"
+        <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_discente_horarios_menu"
                   action="action_ud_monitoria_horarios_discente" sequence="9"/>
 
         <menuitem parent="ud_monitoria_lateral" id="ud_monitoria_coordenacao_menu" name="Coordenação" sequence="11"
