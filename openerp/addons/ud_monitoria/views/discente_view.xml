@@ -21,7 +21,7 @@
         </record>
 
         <record id="action_ud_monitoria_horarios_discente" model="ir.actions.act_window">
-            <field name="name">Horários</field>
+            <field name="name">Monitores/Tutores</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.documentos_discente</field>
             <field name="view_type">form</field>
@@ -42,10 +42,11 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Horários" create="false" edit="false" delete="false">
-                    <field name="curso_id"/>
-                    <field name="disciplina_id"/>
+                    <field name="curso_id" invisible="context.get('ocultar_curso', False)"/>
+                    <field name="disciplina_id" invisible="context.get('ocultar_disciplina', False)"/>
                     <field name="discente_id"/>
                     <field name="tutor"/>
+                    <field name="state" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -65,9 +66,10 @@
                 <field name="tutor" position="after">
                     <field name="state"/>
                     <field name="is_active"/>
-                     <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
+                    <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
                             groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-                            string="Desligar" icon="STOCK_CANCEL" states="bolsista,n_bolsista"/>
+                            attrs="{'invisible': ['|', ('is_active', '=', False), ('state', 'not in', ['bolsista', 'n_bolsista'])]}"
+                            string="Desligar" icon="STOCK_CANCEL"/>
                 </field>
             </field>
         </record>
@@ -109,10 +111,6 @@
                                 confirm="Realmente deseja retirar do cadastro de reserva para torná-lo(a) um(a) discente não bolsista?"/>
 						<field name="state" widget="statusbar"/>
                     </header>
-                    <field name="declaracao_nome" invisible="1"/>
-                    <field name="certificado_nome" invisible="1"/>
-                    <field name="relatorio_nome" invisible="1"/>
-                    <field name="frequencia_controle" invisible="1"/>
                     <group col="4">
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="orientador_id" colspan="2" readonly="1" options="{'no_open': true}"/>
@@ -222,6 +220,44 @@
             <field name="view_id" ref="ud_monitoria_documentos_discente_completo_form"/>
             <field name="view_mode">form</field>
             <field name="sequence" eval="1"/>
+        </record>
+
+        <record id="ud_monitoria_documentos_discente_search" model="ir.ui.view">
+            <field name="name">Pesquisar Discentes</field>
+            <field name="model">ud_monitoria.documentos_discente</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Discente">
+                    <field name="perfil_id"/>
+                    <field name="discente_id"/>
+
+                    <filter string="Ativos" name="ativos" help="Mostra os documentos ativos."
+                            context="{'documentos_ativos': True}"/>
+                    <filter string="Inativos" name="inativos" help="Mostra os documentos inativos."
+                            context="{'documentos_ativos': False}"/>
+                    <filter string="Bolsistas" name="bolsistas" help="Mostra os documentos de bolsistas."
+                            domain="[('state', '=', 'bolsista')]"/>
+                    <filter string="Colaboradores" name="colaboradores" help="Mostra os documentos de colaboradores."
+                            domain="[('state', '=', 'n_bolsista')]"/>
+                    <filter string="Cadastro de Reserva" name="cadastro_reserva" help="Mostra os documentos no cadastro de reserva."
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                            domain="[('state', '=', 'reserva')]"/>
+                    <filter string="Desligados" name="desligados" help="Mostra os documentos de discentes desligados."
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
+                            domain="[('state', '=', 'desligado')]"/>
+
+                    <group expand="0" string="Agrupar por...">
+                        <filter string="Status" name="state" context="{'group_by': 'state'}"
+								help="Agrupar por status"/>
+                        <filter string="Semestre" name="semestre" context="{'group_by': 'semestre_id'}"
+								help="Agrupar por semestre"/>
+                        <filter string="Curso" name="curso" help="Agrupar por curso"
+                                context="{'group_by': 'curso_id', 'ocultar_curso': True}"/>
+                        <filter string="Disciplina" name="disciplina" help="Agrupar por disciplina"
+                                context="{'group_by': 'disciplina_id', 'ocultar_disciplina': True}"/>
+                    </group>
+                </search>
+            </field>
         </record>
 
         <!-- HORÁRIO -->
