@@ -102,6 +102,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Documentos" create="false" delete="false" version="7.0">
+                    <field name="frequencia_controle" invisible="1"/>
                     <header>
                         <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action" string="Desligar"
                                 groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
@@ -117,7 +118,8 @@
                         <field name="perfil_id" colspan="2" readonly="1"/>
                         <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="tutor" colspan="2" readonly="1"/>
-                        <field name="dados_bancarios_id" colspan="2" readonly="1" options="{'no_open': true}"/>
+                        <field name="dados_bancarios_id" colspan="2" options="{'no_open': true}"
+                               context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}"/>
                         <field name="curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
                         <field name="ch" colspan="2"/>
