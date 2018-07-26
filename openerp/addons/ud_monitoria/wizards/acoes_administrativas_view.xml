@@ -96,11 +96,20 @@
                         <field name="bolsas_curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
                     </group>
-                    <div>
-                        <strong>Atenção:</strong> Ao aplicar a mudança, caso exista um documento para o discente
-                        vinculado a essa matrícula e disciplina, esse será <span style="color: red;">excluído</span>. Se a mudança for para o status de
-                        classificado(a) ou cadastro de reserva, um novo registro será criado.
-                    </div>
+                    <group string="Informações Importantes">
+                        <div>
+                            <p>Ao realizar a alteração de status, essas serão as mudanças realizadas nos dados:</p>
+                            <ul>
+                                <li>
+                                    Se existir um documento para o discente (Documentos/Discentes), esse será excluído.
+                                    A depender do status, um novo registro será criado;
+                                </li>
+                                <li>
+                                    Caso a inscrição possua informações em "Outras Informações", os dados serão apagados;
+                                </li>
+                            </ul>
+                        </div>
+                    </group>
                     <group string="Ações" col="4">
                         <div colspan="4">
                             Selecione o novo status para a inscrição atual:

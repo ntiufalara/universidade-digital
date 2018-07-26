@@ -217,16 +217,16 @@ class StatusInscricaoWizard(osv.TransientModel):
             if doc_discente:
                 doc_discente_model.unlink(cr, SUPERUSER_ID, doc_discente, context)
             if reverter.acao_inscricao == 'classificado':
-                reverter.inscricao_id.write({'state': 'analise'})
+                reverter.inscricao_id.write({'state': 'analise', 'info': False})
                 if reverter.ignorar_pontuacao:
                     reverter.inscricao_id.classificar_direto()
                 else:
                     reverter.inscricao_id.classificar_media()
             elif reverter.acao_inscricao == 'reserva':
-                reverter.inscricao_id.write({'state': 'analise'})
+                reverter.inscricao_id.write({'state': 'analise', 'info': False})
                 reverter.inscricao_id.cadastro_reserva()
             else:
-                reverter.inscricao_id.write({'state': reverter.acao_inscricao})
+                reverter.inscricao_id.write({'state': reverter.acao_inscricao, 'info': False})
         return True
 
 
