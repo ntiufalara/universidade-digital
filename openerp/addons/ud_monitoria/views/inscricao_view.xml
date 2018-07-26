@@ -127,7 +127,7 @@
                         <field name="pontuacoes_ids" nolabel="1" colspan="4" readonly="1"/>
                         <field name="media" colspan="4"/>
                     </group>
-                    <group string="Outras Informações" attrs="{'invisible': [('info', '=', False)]}">
+                    <group string="Outras Informações" name="info" attrs="{'invisible': [('info', '=', False)]}">
                         <field name="info" nolabel="1" readonly="1"/>
                     </group>
                 </form>
@@ -330,6 +330,12 @@
                     <attribute name="attrs">{'readonly': [('state', '!=', 'analise')]}</attribute>
                     <attribute name="context">{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}</attribute>
                 </field>
+                <field name="info" position="attributes">
+                    <attribute name="readonly"/>
+                </field>
+                <xpath expr="//group[@name='info']" position="attributes">
+                    <attribute name="attrs"/>
+                </xpath>
             </field>
         </record>
 

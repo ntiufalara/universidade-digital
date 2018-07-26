@@ -179,7 +179,7 @@ class Inscricao(osv.Model):
         'bolsista': fields.boolean(u'Bolsista?'),
         'dados_bancarios_id': fields.many2one('ud.dados.bancarios', u'Dados Bancários', ondelete='restrict',
                                               domain='[("ud_conta_id", "=", discente_id)]', context='{"ud_conta_id": discente_id}'),
-        'info': fields.text(u'Informações Adicionais', readonly=True),
+        'info': fields.text(u'Informações Adicionais'),
         'state': fields.selection(_STATES, u'Status', readonly=True, required=True),
         # Campos de controle
         'cpf_nome': fields.char(u'Arquivo CPF'),
