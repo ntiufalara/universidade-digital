@@ -47,35 +47,15 @@ class CadastroMonitoria(http.Controller):
                 # Valida todos os campos
                 self.validate(kwargs)
                 # Conclui o cadastro
-                # User = req.session.model('res.users')
                 Pessoa = req.session.model('ud.employee')
-                # Perfil = req.session.model('ud.perfil')
 
                 # Busca pelo grupo de permissões "Monitor/Tutor"
                 ir_model_obj = req.session.model('ir.model.data')
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
                 grupo_monitor = grupo_monitor_recs and grupo_monitor_recs[1] or False
                 _logger.info(u'Carregando...')
-                # usuario = User.create({
-                #     'email': kwargs.get('email'),
-                #     'login': kwargs.get('login'),
-                #     'password': kwargs.get('senha'),
-                #     'name': kwargs.get('nome_completo'),
-                #     'groups_id': [[5], [4, grupo_monitor]]
-                # })
-                #
-                # _logger.info(u'Usuário cadastrado')
 
-                pessoa = Pessoa.cria_pessoa_grupo(kwargs, grupo_monitor)
-
-                # _logger.info(u'Pessoa cadastrado')
-                #
-                # Perfil.create({
-                #     'tipo': 'a',
-                #     'matricula': kwargs.get('matricula'),
-                #     'ud_cursos': kwargs.get('curso'),
-                #     'ud_papel_id': pessoa
-                # }, {'ud_employee': pessoa})
+                Pessoa.cria_pessoa_grupo(kwargs, grupo_monitor)
 
                 return template.render({
                     'campi': campi,
