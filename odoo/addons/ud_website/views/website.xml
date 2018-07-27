@@ -2,7 +2,7 @@
 
 <odoo>
 
-    <template id="ud_website.home">
+    <template id="ud_website.layout">
         <head>
             <!-- Required meta tags -->
             <meta charset="utf-8"/>
@@ -15,18 +15,19 @@
                   crossorigin="anonymous"/>
 
             <!-- Meu CSS -->
-            <link rel="stylesheet" href="ud_website/static/src/css/style.css"/>
+            <link rel="stylesheet" href="/ud_website/static/src/css/style.css"/>
 
             <title>Universidade Digital</title>
         </head>
+
         <body>
 
             <!-- Navbar -->
             <header>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container py-3">
-                        <a class="navbar-brand" href="#">
-                            <img src="ud_website/static/src/img/ud_logo.png" alt="Universidade Digital Logo"/>
+                        <a class="navbar-brand" href="/">
+                            <img src="/ud_website/static/src/img/ud_logo.png" alt="Universidade Digital Logo"/>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent"
@@ -37,7 +38,7 @@
 
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ml-auto">
-                                <li class="nav-item active">
+                                <li id="menu_inicio" class="nav-item">
                                     <a href="/" class="nav-link">Início</a>
                                 </li>
                             </ul>
@@ -50,24 +51,24 @@
                     </div>
                 </nav>
 
-                <section id="content">
+                <section class="container" id="content">
                     <t t-raw="0"></t>
                 </section>
 
                 <footer id="site-footer" class="mt-5 p-5">
                     <div class="container">
                         <div class="row">
-                            <div class="col-sm-4">
-                                <img class="footer-logo" src="ud_website/static/src/img/ufal_logo_small.png"/>
-                                <img class="footer-logo" src="ud_website/static/src/img/nti_logo.png"/>
-                            </div>
-                            <p class="col-sm-6 text-left ml-auto">
+                            <p class="col-sm-10 text-left ml-auto">
                                 <a href="http://arapiraca.ufal.br">
-                                    <span>@ Universidade Federal de Alagoas - Campus Arapiraca</span>
+                                    <span>Universidade Federal de Alagoas - Campus Arapiraca</span>
                                 </a>
                                 <br/>
-                                <span>Núcleo de tecnologia da informação - NTI Arapiraca</span>
+                                <span>Núcleo de Tecnologia da Informação - NTI Arapiraca</span>
                             </p>
+                            <div class="col-sm-2">
+                                <img class="footer-logo" src="/ud_website/static/src/img/ufal_logo_small.png"/>
+                                <img class="footer-logo" src="/ud_website/static/src/img/nti_logo.png"/>
+                            </div>
                         </div>
                     </div>
                 </footer>
@@ -86,6 +87,14 @@
                     integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
                     crossorigin="anonymous"></script>
         </body>
+    </template>
+
+    <template id="ud_website.home">
+        <t t-call="ud_website.layout">
+            <div id="icones_inicio" class="card-group">
+
+            </div>
+        </t>
     </template>
 
 </odoo>

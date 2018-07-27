@@ -1,0 +1,3 @@
+import home_repositorio
+import lista_publicacoes
+import detalhes_publicacao

@@ -3,8 +3,8 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 {
-    "name": "Site Universidade Digital",
-    "summary": "Site público Universidade Digital",
+    "name": "Site Biblioteca",
+    "summary": "Complemento para ud_website: Exibe o respositório no site principal",
     "version": "10.0.1.0.18",
     "category": "Site UD",
     "website": "http://ud.arapiraca.ufal.br",
@@ -12,10 +12,10 @@
     "author": "NTI UFAL Arapiraca",
     "license": "LGPL-3",
     "installable": True,
-    "depends": ['web'],
+    "depends": ['ud_website', 'ud_biblioteca'],
     "data": [
         # 'views/assets.xml',
-        'views/website.xml',
-        # 'views/ud_layout.xml',
+        'views/home.xml',
+        'views/home_repositorio.xml',
     ],
 }

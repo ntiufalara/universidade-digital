@@ -25,6 +25,11 @@ footer img {
     height: 50px;
 }
 
+.home-card .card-img-top {
+    height: 200px;
+    width: 200px;
+}
+
 @media screen and (max-width: 375px) {
     .navbar-brand img {
         max-height: 30px;
