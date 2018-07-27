@@ -14,3 +14,5 @@ import Perfil
 import Bolsa
 import CursoModalidade
 import ServerOpenerp7
+import PessoaEndereco
+import PessoaContato

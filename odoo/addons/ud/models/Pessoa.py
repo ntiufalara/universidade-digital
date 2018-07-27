@@ -4,7 +4,6 @@ import utils
 import logging
 
 _logger = logging.getLogger(__name__)
-
 # http://www.odoo.com/documentation/10.0/reference/mixins.html
 
 
@@ -27,20 +26,18 @@ class Pessoa(models.Model):
         [('solteiro', u'Solteiro'), ('casado', u'Casado'), ('viuvo', u'Viúvo'), ('divorciado', u'Divorciado')],
         u'Estado Civil', default='solteiro'
     )
-    telefone_fixo = fields.Char(u'Telefone principal')
-    celular = fields.Char(u'Celular')
+    telefone_fixo = fields.Char(u'Outro telefone')
+    celular = fields.Char(u'Telefone principal')
     email = fields.Char(u'E-mail')
     orgaoexpedidor = fields.Char(u'Orgão Expedidor', size=10, help=u"Sigla: Ex. SSP/SP")
 
     dados = fields.One2many('ud.dados.bancarios', 'pessoa_id', u'Dados Bancários')
     nacionalidade = fields.Selection(utils.NACIONALIDADES, u'Nacionalidade', default='br')
-    rua = fields.Char(u'Rua')
-    numero = fields.Char(u"Número")
-    bairro = fields.Char(u'Bairro')
-    cidade = fields.Char(u'Cidade')
-    estado = fields.Selection(utils.ESTADOS, u'Estado')
     curriculo_lattes_link = fields.Char(u'Link do Currículo Lattes')
     perfil_ids = fields.One2many('ud.perfil', 'pessoa_id', u'Perfil')
+
+    endereco_ids = fields.One2many('ud.pessoa.endereco', 'pessoa_id', u'Endereços')
+    contato_ids = fields.One2many('ud.pessoa.contato', 'pessoa_id', u'Contatos')
 
     _sql_constraints = [
         ("ud_cpf_uniq", "unique(cpf)", u'Já existe CPF com esse número cadastrado.'),
@@ -55,8 +52,8 @@ class Pessoa(models.Model):
         :param vals:
         :return:
         """
-        if vals.get('email'):
-            vals['login'] = vals['email']
+        if vals.get('email') or vals.get('cpf'):
+            vals['login'] = vals['cpf'] or vals['email']
         obj_set = super(models.Model, self).create(vals)
         usuario_ud_group = self.env.ref('base.usuario_ud')
         obj_set.groups_id |= usuario_ud_group
@@ -68,7 +65,57 @@ class Pessoa(models.Model):
         :param vals:
         :return:
         """
-        if vals and type(vals) == dict and vals.get('email'):
-            vals['login'] = vals['email']
+        if vals and type(vals) == dict and (vals.get('email') or vals.get('cpf')):
+            vals['login'] = vals['cpf'] or vals['email']
         return super(Pessoa, self).write(vals)
 
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização das pessoas com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando pessoas com o Openerp 7...')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        server_oe7 = self.env['ud.server.openerp7'].search([('db', '=', 'ud')])
+        url, db, username, password = server_oe7.url, server_oe7.db, server_oe7.username, server_oe7.password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        pessoa_ids = server.execute(db, uid, password, 'ud.employee', 'search', [])
+        pessoas = server.execute_kw(db, uid, password, 'ud.employee', 'read', [pessoa_ids])
+
+        for p in pessoas:
+            p_obj = self.search([('cpf', '=', p['cpf']), ('cpf', '!=', False)])
+            p = self.clean_openerp7_data(p)
+            data = {
+                'name': p['resource_id'][1],
+                'cpf': p['cpf'],
+                'rg': p['rg'],
+                'data_nascimento': p['birthday'],
+                'genero': p['gender'],
+                'estado_civil': p['marital'],
+                'telefone_fixo': p['work_phone'],
+                'celular': p['mobile_phone'],
+                'email': p['work_email'],
+                'orgaoexpedidor': p['orgaoexpedidor']
+            }
+            if not p_obj:
+                self.create(data)
+
+    def clean_openerp7_data(self, src_data):
+        """
+        Remove pontos, traços, virgulas; Substitui valores False por "" (string vazia)
+        :param src_data:
+        :return:
+        """
+        if type(src_data) is not dict:
+            return
+        src_data['cpf'] = src_data['cpf'].replace('.', '').replace('-', '').replace(' ', '') if src_data.get('cpf') else ''
+        src_data['mobile_phone'] = src_data['mobile_phone'].replace('(', '').replace(')', '').replace('-', '').replace(' ', '') if src_data.get('mobile_phone') else ''
+        src_data['work_phone'] = src_data['work_phone'].replace('(', '').replace(')', '').replace('-', '').replace(' ', '') if src_data.get('work_phone') else ''
+        return src_data

@@ -96,15 +96,15 @@
                             <div role="tabpanel" class="tab-pane" id="contato">
                                 <fieldset>
                                     <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="telefone_fixo"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="telefone_fixo"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 form-group">
                                         <label class="col-md-4 col-sm-4 control-label" for="celular"></label>
                                         <div class="col-md-7 col-sm-7">
                                             <field name="celular"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 form-group">
+                                        <label class="col-md-4 col-sm-4 control-label" for="telefone_fixo"></label>
+                                        <div class="col-md-7 col-sm-7">
+                                            <field name="telefone_fixo"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-6 form-group">
@@ -114,32 +114,19 @@
                                             <field name="curriculo_lattes_link"/>
                                         </div>
                                     </div>
+                                    <div class="col-md-12 col-lg-12 form-group">
+                                        <legend>Outros contatos</legend>
+                                        <div class="col-md-12 col-sm-12">
+                                            <field name="contato_ids"/>
+                                        </div>
+                                    </div>
                                 </fieldset>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="endereco">
                                 <fieldset>
-                                    <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="rua"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="rua"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="bairro"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="bairro"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="cidade"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="cidade"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 form-group">
-                                        <label class="col-md-4 col-sm-4 control-label" for="estado"></label>
-                                        <div class="col-md-7 col-sm-7">
-                                            <field name="estado"/>
+                                    <div class="col-md-12 col-lg-12 form-group">
+                                        <div class="col-md-12 col-sm-12">
+                                            <field name="endereco_ids"/>
                                         </div>
                                     </div>
                                 </fieldset>

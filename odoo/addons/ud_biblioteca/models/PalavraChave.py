@@ -21,7 +21,7 @@ class PalavraChave(models.Model):
 
     def load_from_openerp7_cron(self):
         """
-        Realiza a sincronização das publicações com o Openerp 7
+        Realiza a sincronização das palavras-chave com o Openerp 7
         :return:
         """
         _logger.info(u'Sincronizando palavras-chave com o Openerp 7')
