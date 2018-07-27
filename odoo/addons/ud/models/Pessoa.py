@@ -1,6 +1,9 @@
 # encoding: UTF-8
 from odoo import models, fields, api
 import utils
+import logging
+
+_logger = logging.getLogger(__name__)
 
 # http://www.odoo.com/documentation/10.0/reference/mixins.html
 
@@ -68,3 +71,4 @@ class Pessoa(models.Model):
         if vals and type(vals) == dict and vals.get('email'):
             vals['login'] = vals['email']
         return super(Pessoa, self).write(vals)
+
