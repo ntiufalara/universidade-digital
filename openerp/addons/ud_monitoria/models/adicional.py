@@ -504,14 +504,7 @@ class DisciplinaMonitoria(osv.Model):
         )
         for disc in self.browse(cr, uid, ids, context):
             if not disc.orientador_id.user_id:
-                if disc.orientador_id.cpf:
-                    comp = '(CPF: %s)' % disc.orientador_id.cpf
-                else:
-                    comp = '(SIAPE: %s)' % disc.perfil_id.matricula
-                raise orm.except_orm(
-                    u'Usuário não encontrado',
-                    u'O(a) orientador(a) "%s" %s não possui login de usuário.' % (disc.orientador_id.name, comp)
-                )
+                continue
             group.write({'users': [(4, disc.orientador_id.user_id.id)]})
 
     def remove_grupo_orientador(self, cr, uid, ids=None, perfis=None, context=None):
