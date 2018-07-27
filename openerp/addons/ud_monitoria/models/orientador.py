@@ -30,7 +30,7 @@ class DocumentosOrientador(osv.Model):
         for doc in self.browse(cr, uid, ids, context):
             res[doc.id] = (
                     doc.disciplina_id.perfil_id.id == doc.perfil_id.id
-                    and hoje <= datetime.strptime(doc.disciplina_id.data_final, DEFAULT_SERVER_DATE_FORMAT)
+                    and hoje <= datetime.strptime(doc.disciplina_id.data_final, DEFAULT_SERVER_DATE_FORMAT).date()
             )
         return res
 
