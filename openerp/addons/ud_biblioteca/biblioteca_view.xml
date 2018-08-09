@@ -42,6 +42,9 @@
                                 <field name="area_ids" widget="many2many_tags" />
                             </group>
                         </group>
+                        <group string="Observações">
+                            <field name="observacoes" nolabel="1"/>
+                        </group>
                         <group>
                             <button name="ud_biblioteca.ud_biblioteca_anexo_action_form" string="Novo anexo"
                                     type="action" attrs="{'invisible' : [('autorizar_publicacao', '=', False)] }"/>

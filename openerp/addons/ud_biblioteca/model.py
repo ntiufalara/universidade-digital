@@ -26,6 +26,7 @@ class ud_biblioteca_publicacao(osv.osv):
         u'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
         u"curso_indefinido": fields.boolean(u"Outro curso"),
         u"curso_indefinido_detalhes": fields.char(u"Curso"),
+        u'observacoes': fields.text(u'Observações'),
         u'palavras_chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id',
                                                 'pc_id', u'Palavras-chave', required=True),
         u'polo_id': fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
@@ -136,8 +137,8 @@ class ud_biblioteca_publicacao(osv.osv):
             employee = self.pool.get('ud.employee').browse(cr, uid, self.pool.get('ud.employee').search(cr, uid, [
                 ('resource_id.user_id', '=', user_id)]))[0]
         except:
-            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
-                             'Contate o administrador do sistema')
+            raise except_orm(u"O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             u'Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -158,8 +159,8 @@ class ud_biblioteca_publicacao(osv.osv):
             employee = self.pool.get('ud.employee').browse(cr, uid, self.pool.get('ud.employee').search(cr, uid, [
                 ('resource_id.user_id', '=', user_id)]))[0]
         except:
-            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
-                             'Contate o administrador do sistema')
+            raise except_orm(u"O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             u' Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
