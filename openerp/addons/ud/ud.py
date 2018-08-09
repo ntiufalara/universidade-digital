@@ -357,6 +357,8 @@ class Curso(osv.osv):
     _name = 'ud.curso'
     _description = u'Curso'
 
+    _order = 'name asc'
+
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
               ("v", u"Vespertino"), ("n", u"Noturno"), ]
     _MODALIDADE = [("l", u"Licenciatura"), ("lp", u"Licenciatura Plena"), ("b", u"Bacharelado"),
