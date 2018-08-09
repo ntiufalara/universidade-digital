@@ -34,6 +34,7 @@
                                            attrs="{'readonly': [('polo_id', '!=', False)]}"/>
                                 </div>
                             </div>
+                            <field name="polo_txt" invisible="1"/>
                         </fieldset>
                         <fieldset>
                             <legend>Informações da publicação</legend>
@@ -138,6 +139,14 @@
                                 <legend>Anexos</legend>
                                 <div class="col-md-12 col-sm-12">
                                     <field name="anexo_ids"/>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Observações</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="observacoes"/>
                                 </div>
                             </div>
                         </fieldset>

@@ -32,7 +32,7 @@
                         Cursos
                     </div>
                     <div class="card-body">
-                        <a t-foreach="cursos" t-as="curso" href="">
+                        <a t-foreach="cursos" t-as="curso" t-attf-href="/repositorio/publicacoes?curso={{ curso.id }}">
                             <button class="btn btn-outline-secondary btn-lg" t-esc="curso.name"></button>
                         </a>
                     </div>

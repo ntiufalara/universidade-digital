@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="ud_biblioteca_website.publicacoes">
+
+        <t t-call="ud_website.layout">
+            <div class="row mx-auto my-2">
+                <div class="col-12 text-center">
+                    <h5>Publicações</h5>
+                </div>
+            </div>
+
+            <div class="row mx-auto">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Filtrar
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                <div class="form-group">
+                                    <label for="buscar">Buscar</label>
+                                    <input id="buscar" name="buscar" class="form-control" />
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary btn-block">Buscar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="list-group">
+                        <a href="#" t-foreach="publicacoes" t-as="publicacao"
+                           class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" t-esc="publicacao.name"></h5>
+                                <small t-esc="publicacao.create_date" t-options='{"widget": "date"}'></small>
+                            </div>
+                            <p>
+                                <strong>Autor</strong>
+                                <span t-esc="publicacao.autor_id.name"></span>
+                                <br/>
+                                <strong>Curso</strong>
+                                <span t-esc="publicacao.curso_id.name"></span>
+                                <br/>
+                                <strong>Tipo</strong>
+                                <span t-esc="publicacao.tipo_id.name"></span>
+                                <br/>
+                                <strong>Ano de publicação</strong>
+                                <span t-esc="publicacao.ano_pub"></span>
+                                <br/>
+                                <strong>Visualizações</strong>
+                                <span t-esc="publicacao.visualizacoes"></span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+
+    </template>
+</odoo>

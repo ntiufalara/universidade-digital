@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acess_ud_curso,acess_ud_curso,ud.model_ud_curso,base.group_public,1,0,0,0
+acess_ud_campus,acess_ud_campus,ud.model_ud_campus,base.group_public,1,0,0,0
+acess_ud_polo,acess_ud_polo,ud.model_ud_polo,base.group_public,1,0,0,0
+acess_ud_polo,acess_ud_polo,ud.model_ud_polo,base.group_public,1,0,0,0
+acess_ud_biblioteca_palavra_chave,acess_ud_biblioteca_palavra_chave,ud_biblioteca.model_ud_biblioteca_p_chave,base.group_public,1,0,0,0
+acess_ud_biblioteca_publicacao,acess_ud_biblioteca_publicacao,ud_biblioteca.model_ud_biblioteca_publicacao,base.group_public,1,0,0,0

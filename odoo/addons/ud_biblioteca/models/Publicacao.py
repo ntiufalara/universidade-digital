@@ -27,9 +27,13 @@ class Publicacao(models.Model):
     curso_id = fields.Many2one('ud.curso', u'Curso', ondelete='set null')
     curso_indefinido = fields.Boolean(u"Outro curso")
     curso_indefinido_detalhes = fields.Char(u"Curso")
+    observacoes = fields.Text(u'Observações')
     palavras_chave_ids = fields.Many2many('ud.biblioteca.p_chave', 'publicacao_p_chave_rel', string=u'Palavras-chave',
                                           required=True)
     polo_id = fields.Many2one('ud.polo', u'Polo', required=True, default=lambda self: self.busca_polo())
+    # usado para recuperar o polo ao criar
+    polo_txt = fields.Char(u'Polo id')
+
     orientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_orientador_rel',
                                       string=u'Orientadores', required=True)
     coorientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_coorientador_rel',
@@ -74,9 +78,8 @@ class Publicacao(models.Model):
 
     @api.model
     def create(self, vals):
-        # Recupera o polo para salvar
-        if self.__polo_id != 0 and not vals.get('polo_id'):
-            vals['polo_id'] = self.__polo_id
+        if 'polo_txt' in vals and not vals.get('polo_id'):
+            vals['polo_id'] = vals.get('polo_txt')
 
         # Salvando contato do autor
         self.env['ud.biblioteca.publicacao.autor'].browse(vals.get('autor_id')).write({'contato': vals.get('contato')})
@@ -89,7 +92,7 @@ class Publicacao(models.Model):
         Fields disabled não são enviados ao servidor
         :return:
         """
-        self.__polo_id = self.polo_id
+        self.polo_txt = self.polo_id.id
 
     @api.model
     def busca_campus(self):

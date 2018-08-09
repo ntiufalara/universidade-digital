@@ -12,7 +12,7 @@
     "author": "NTI UFAL Arapiraca",
     "license": "LGPL-3",
     "installable": True,
-    "depends": ['web'],
+    "depends": ['web', 'ud'],
     "data": [
         # 'views/assets.xml',
         'views/website.xml',
