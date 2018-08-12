@@ -739,10 +739,11 @@ class Employee(osv.osv):
             return 0 if dv < 2 else 11 - dv
 
         padrao = re.compile("^\d{3}\.\d{3}\.\d{3}-\d{2}$")
+        padrao2 = re.compile("\d{11}")
         for pessoa in self.browse(cr, uid, ids, context=context):
             cpf = pessoa.cpf
             if cpf:
-                if not padrao.match(cpf):
+                if not (padrao.match(cpf) or padrao2.match(cpf)):
                     return False
                 if cpf.count(cpf[0]) == 11:
                     return False

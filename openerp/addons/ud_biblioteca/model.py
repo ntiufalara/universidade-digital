@@ -229,7 +229,7 @@ class ud_biblioteca_orientador(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
         objs = self.browse(cr, uid, ids, context)
-        return [(obj.id, "{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else "{}".format(obj.name))
+        return [(obj.id, u"{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else "{}".format(obj.name))
                 for obj in objs]
         # return "{} {}".format(titulacao, name)
 

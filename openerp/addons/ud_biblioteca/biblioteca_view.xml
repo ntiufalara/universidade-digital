@@ -39,7 +39,7 @@
                                        attrs="{'invisible' : [('curso_indefinido', '=', False )], 'required' : [('curso_indefinido', '=', True)] }"/>
                                 <field name="curso" domain="[('polo_id','=',polo_id)]"
                                        attrs="{'invisible' : [('curso_indefinido', '=', True )], 'required' : [('curso_indefinido', '=', False)] }"/>
-                                <field name="area_ids" widget="many2many_tags" />
+                                <field name="area_ids" widget="many2many_tags"/>
                             </group>
                         </group>
                         <group string="Observações">
@@ -106,8 +106,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Orientadores">
-                    <field name="name" />
-                    <field name="titulacao_id" />
+                    <field name="name"/>
+                    <field name="titulacao_id"/>
                 </tree>
             </field>
         </record>
@@ -118,12 +118,12 @@
             <field name="arch" type="xml">
                 <form string="Orientador" version="7.0">
                     <group>
-                        <field name="name" />
-                        <field name="titulacao_id" />
+                        <field name="name"/>
+                        <field name="titulacao_id"/>
                     </group>
                     <group>
-                        <field name="publicacao_orientador_id" />
-                        <field name="publicacao_coorientador_id" />
+                        <field name="publicacao_orientador_id"/>
+                        <field name="publicacao_coorientador_id"/>
                     </group>
                 </form>
             </field>
@@ -152,7 +152,7 @@
         </record>
 
         <record id="ud_biblioteca_publicacao_action" model="ir.actions.act_window">
-            <field name="name">Campus Arapiraca</field>
+            <field name="name">Publicações</field>
             <field name="res_model">ud.biblioteca.publicacao</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -271,12 +271,13 @@
                   sequence="4" parent="ud.menu_point_root"
                   groups="base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario,base.group_ud_biblioteca_visitante"/>
 
-        <menuitem string="Campus Arapiraca" action="ud_biblioteca_publicacao_action"
+        <menuitem string="Publicações" action="ud_biblioteca_publicacao_action"
                   id="cadsatro_publicacao" parent="biblioteca_top"
                   groups="base.group_ud_biblioteca_bibliotecario_admin,base.group_ud_biblioteca_bibliotecario,base.group_ud_biblioteca_visitante"/>
 
         <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
-                  action="ud_biblioteca_responsavel_action" groups="base.admin_ud"/>
+                  action="ud_biblioteca_responsavel_action"
+                  groups="base.admin_ud,base.group_ud_biblioteca_bibliotecario_admin"/>
 
         <menuitem id="ud_biblioteca_pc" name="Gerenciar palavras-chave" parent="biblioteca_top"
                   action="ud_biblioteca_pc_action"

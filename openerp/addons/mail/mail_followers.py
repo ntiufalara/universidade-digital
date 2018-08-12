@@ -129,7 +129,9 @@ class mail_notification(osv.Model):
             partners_to_notify = filter(lambda item: item not in notified_partners, partners_to_notify)
             if notifications_to_update:
                 self.write(cr, SUPERUSER_ID, notifications_to_update, {'read': False}, context=context)
-            mail_message_obj.write(cr, uid, context=context)
+                mail_message_obj.write(cr, uid, msg_id,
+                                       {'notified_partner_ids': [(4, id) for id in partners_to_notify]},
+                                       context=context)
 
         # mail_notify_noemail (do not send email) or no partner_ids: do not send, return
         if context.get('mail_notify_noemail'):
