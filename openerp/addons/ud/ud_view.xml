@@ -681,7 +681,7 @@
                     <group col="8">
                         <group colspan="6">
                             <field name="name" string="Nome"/>
-                            <field name="user_id" groups="base.admin_ud"/>
+                            <field name="user_id" groups="base.admin_ud" placeholder="Digite o CPF no campo abaixo e salve para criar um novo usuário"/>
                         </group>
                         <field name="image" widget='image' nolabel="1" colspan="2" class="oe_left oe_avatar"/>
                     </group>

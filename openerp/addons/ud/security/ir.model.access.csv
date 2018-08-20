@@ -11,7 +11,7 @@ access_ud_admin_projeto,Administrador: ud.projeto,ud.model_ud_projeto,base.admin
 access_ud_admin_curso,Administrador: ud.curso,ud.model_ud_curso,base.admin_ud,1,1,1,1
 access_ud_admin_disciplina,Administrador: ud.disciplina,ud.model_ud_disciplina,base.admin_ud,1,1,1,1
 access_ud_admin_bloco,Administrador: ud.bloco,ud.model_ud_bloco,base.admin_ud,1,1,1,1
-,,,,,,,
+access_ud_admin_resource,Administrador: resource.resource,resource.model_resource_resource,base.admin_ud,1,1,1,1
 access_ud_gerente_espaco_espaco,Gerente de Espaço: ud.espaco,ud.model_ud_espaco,base.gerente_espaco_ud,1,1,1,1
 access_ud_gerente_espaco_polo,Gerente de Espaço: ud.polo,ud.model_ud_polo,base.gerente_espaco_ud,1,0,0,0
 access_ud_gerente_espaco_bloco,Gerente de Espaço: ud.bloco,ud.model_ud_bloco,base.gerente_espaco_ud,1,0,0,0

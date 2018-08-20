@@ -1,5 +1,4 @@
 # -*- encoding: UTF-8 -*-
-from __future__ import unicode_literals
 import copy
 
 from openerp.osv import osv, fields
@@ -18,33 +17,38 @@ class ud_biblioteca_publicacao(osv.osv):
     """
     __polo_id = 0
 
-    _columns = {'name': fields.char(u'Título', required=True), 'autor': fields.char(u'Autor'),
-                'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', 'Autor', required=True),
-                'contato': fields.related('autor_id', 'contato', type="char", string="E-mail para contato"),
-                'ano_pub': fields.char(u'Ano de publicação', required=True),
-                'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
-                'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
-                "curso_indefinido": fields.boolean("Outro curso"), "curso_indefinido_detalhes": fields.char("Curso"),
-                'palavras_chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id',
-                                                       'pc_id', u'Palavras-chave', required=True),
-                'polo_id': fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
-                'orientador_ids': fields.many2many('ud.biblioteca.orientador',
-                                                   'ud_biblioteca_publicacao_orientador_rel', 'pub_id', 'orientador_id',
-                                                   string='Orientadores', required=True),
-                'coorientador_ids': fields.many2many('ud.biblioteca.orientador',
-                                                     'ud_biblioteca_publicacao_coorientador_rel', 'pub_id',
-                                                     'coorientador_id', string='Coorientadores'),
-                'anexo_ids': fields.one2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF', required=True),
-                'tipo': fields.selection((
-                    ('tcc', 'TCC'), ('dissertacao', u'Dissertação '), ('monografia', u'Monografia'),
-                    ('artigo', u'Artigo'), ('tese', u'Tese'), ('institucional', u'Material Institucional'),
-                    ('fotografia', "Fotografia"), ('outros', u"Outros")), string=u'Tipo'),
-                'categoria_cnpq_id': fields.many2one('ud.biblioteca.publicacao.categoria_cnpq', 'Categoria CNPQ'),
-                'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', "Tipo", required=True),
-                "autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
-                'visualizacoes': fields.integer(u'Visualizações', required=True),
-                'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
-                                             string=u'Áreas do trabalho', ), }
+    _columns = {
+        u'name': fields.char(u'Título', required=True), 'autor': fields.char(u'Autor'),
+        u'autor_id': fields.many2one('ud.biblioteca.publicacao.autor', u'Autor', required=True),
+        u'contato': fields.related('autor_id', 'contato', type="char", string=u"E-mail para contato"),
+        u'ano_pub': fields.char(u'Ano de publicação', required=True),
+        u'ud_campus_id': fields.many2one("ud.campus", u"Campus", required=True, change_default=True),
+        u'curso': fields.many2one('ud.curso', u'Curso', ondelete='set null'),
+        u"curso_indefinido": fields.boolean(u"Outro curso"),
+        u"curso_indefinido_detalhes": fields.char(u"Curso"),
+        u'observacoes': fields.text(u'Observações'),
+        u'palavras_chave_ids': fields.many2many('ud.biblioteca.pc', 'ud_biblioteca_publicacao_pc_rel', 'pub_id',
+                                                'pc_id', u'Palavras-chave', required=True),
+        u'polo_id': fields.many2one('ud.polo', u'Polo', required=True, change_default=True),
+        u'orientador_ids': fields.many2many('ud.biblioteca.orientador',
+                                            'ud_biblioteca_publicacao_orientador_rel', 'pub_id',
+                                            'orientador_id',
+                                            string=u'Orientadores', required=True),
+        u'coorientador_ids': fields.many2many('ud.biblioteca.orientador',
+                                              'ud_biblioteca_publicacao_coorientador_rel', 'pub_id',
+                                              'coorientador_id', string=u'Coorientadores'),
+        u'anexo_ids': fields.one2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF', required=True),
+        u'tipo': fields.selection((
+            ('tcc', u'TCC'), ('dissertacao', u'Dissertação '), ('monografia', u'Monografia'),
+            ('artigo', u'Artigo'), ('tese', u'Tese'), ('institucional', u'Material Institucional'),
+            ('fotografia', u"Fotografia"), ('outros', u"Outros")), string=u'Tipo'),
+        u'categoria_cnpq_id': fields.many2one('ud.biblioteca.publicacao.categoria_cnpq', u'Categoria CNPQ'),
+        u'tipo_id': fields.many2one('ud.biblioteca.publicacao.tipo', u"Tipo", required=True),
+        u"autorizar_publicacao": fields.boolean(u"Autorizar publicação"),
+        u'visualizacoes': fields.integer(u'Visualizações', required=True),
+        u'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
+                                      string=u'Áreas do trabalho', ),
+    }
 
     _order = "ano_pub desc"
 
@@ -67,6 +71,25 @@ class ud_biblioteca_publicacao(osv.osv):
                     self.write(cr, 1, ids, vals)
                     obj['visualizacoes'] = vals['visualizacoes']
         return result
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
+        """
+        Adiciona ordenação de cursos por nome na lista de publicações agrupada por curso
+        :param cr:
+        :param uid:
+        :param domain:
+        :param fields:
+        :param groupby:
+        :param offset:
+        :param limit:
+        :param context:
+        :param orderby:
+        :return:
+        """
+        if 'curso' in groupby:
+            orderby = 'curso ASC' + (orderby and (',' + orderby) or '')
+        return super(ud_biblioteca_publicacao, self).read_group(cr, uid, domain, fields, groupby, offset, limit,
+                                                                context, orderby)
 
     def create(self, cr, user, vals, context=None):
         """
@@ -114,8 +137,8 @@ class ud_biblioteca_publicacao(osv.osv):
             employee = self.pool.get('ud.employee').browse(cr, uid, self.pool.get('ud.employee').search(cr, uid, [
                 ('resource_id.user_id', '=', user_id)]))[0]
         except:
-            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
-                             'Contate o administrador do sistema')
+            raise except_orm(u"O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             u'Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -136,8 +159,8 @@ class ud_biblioteca_publicacao(osv.osv):
             employee = self.pool.get('ud.employee').browse(cr, uid, self.pool.get('ud.employee').search(cr, uid, [
                 ('resource_id.user_id', '=', user_id)]))[0]
         except:
-            raise except_orm("O usuário precisa estar vinculado a pessoa para executar esta ação.",
-                             'Contate o administrador do sistema')
+            raise except_orm(u"O usuário precisa estar vinculado a pessoa para executar esta ação.",
+                             u' Contate o administrador do sistema')
         responsavel_model = self.pool.get('ud.biblioteca.responsavel')
         responsavel_id = responsavel_model.search(cr, uid, [('employee_id', '=', employee.id)])
         responsavel_objs = responsavel_model.browse(cr, uid, responsavel_id)
@@ -206,7 +229,7 @@ class ud_biblioteca_orientador(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
         objs = self.browse(cr, uid, ids, context)
-        return [(obj.id, "{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else "{}".format(obj.name))
+        return [(obj.id, u"{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else "{}".format(obj.name))
                 for obj in objs]
         # return "{} {}".format(titulacao, name)
 
