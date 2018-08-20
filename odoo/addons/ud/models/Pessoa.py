@@ -86,7 +86,7 @@ class Pessoa(models.Model):
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         # busca as publicações
-        pessoa_ids = server.execute(db, uid, password, 'ud.employee', 'search', [])
+        pessoa_ids = server.execute(db, uid, password, 'ud.employee', 'search', [('cpf', '!=', False)])
         pessoas = server.execute_kw(db, uid, password, 'ud.employee', 'read', [pessoa_ids])
 
         for p in pessoas:
