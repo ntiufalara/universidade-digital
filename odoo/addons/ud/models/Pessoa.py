@@ -1,4 +1,6 @@
 # encoding: UTF-8
+from psycopg2._psycopg import IntegrityError
+
 from odoo import models, fields, api
 import utils
 import logging
@@ -105,7 +107,10 @@ class Pessoa(models.Model):
                 'orgaoexpedidor': p['orgaoexpedidor']
             }
             if not p_obj:
-                self.create(data)
+                try:
+                    self.create(data)
+                except IntegrityError:
+                    continue
 
     def clean_openerp7_data(self, src_data):
         """
