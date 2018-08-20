@@ -1,6 +1,7 @@
 # encoding: UTF-8
 import logging
 from odoo import models, fields, api
+
 _logger = logging.getLogger(__name__)
 
 
@@ -30,20 +31,15 @@ class Orientador(models.Model):
             result.append((record.id, record.display_name))
         return result
 
-    @api.depends('name', 'ultimo_nome', 'titulacao_id')
     @api.one
     def get_name(self):
+        display_name = u''
         if self.titulacao_id:
-            self.display_name = u"{}. {}, {}".format(
-                self.titulacao_id.sigla,
-                self.ultimo_nome,
-                self.name
-            )
-        else:
-            self.display_name = u"{}, {}".format(
-                self.ultimo_nome,
-                self.name
-            )
+            display_name += u'{}. '.format(self.titulacao_id.sigla)
+        if self.ultimo_nome:
+            display_name += u'{}, '.format(self.ultimo_nome)
+        display_name += self.name
+        self.display_name = display_name
 
     def load_from_openerp7_cron(self):
         """
@@ -68,9 +64,20 @@ class Orientador(models.Model):
         for orientador in orientadores:
             titulacao_obj = None
             if orientador.get('titulacao_id'):
-                titulacao_obj = self.env['ud.biblioteca.orientador.titulacao'].search([('name', '=', orientador.get('titulacao_id')[1])])
+                titulacao_obj = self.env['ud.biblioteca.orientador.titulacao'].search(
+                    [('name', '=', orientador.get('titulacao_id')[1])])
             if orientador.get('titulacao_id') and not titulacao_obj:
                 continue
             orientador_obj = self.search([('name', '=', orientador['name'])])
+            full_name = orientador['name'].split(',')
+            name = full_name[1].strip()
+            ultimo_nome = full_name[0][:-1]
+
+            data = {
+                'name': name,
+                'ultimo_nome': ultimo_nome,
+            }
+            if titulacao_obj:
+                data['titulacao_id'] = titulacao_obj.id
             if not orientador_obj:
-                self.create({'name': orientador['name']})
+                self.create(data)
