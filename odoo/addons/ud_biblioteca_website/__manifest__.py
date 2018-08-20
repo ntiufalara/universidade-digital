@@ -9,7 +9,6 @@
     "website": "http://ud.arapiraca.ufal.br",
     "description": """""",
     "author": "NTI UFAL Arapiraca",
-    "license": "MIT",
     "installable": True,
     "depends": ['ud_website', 'ud_biblioteca'],
     "data": [

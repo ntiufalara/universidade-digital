@@ -6,9 +6,8 @@
     "description": u"""Núcleo da aplicação Universidade Digital.""",
     "author": "NTI UFAL Arapiraca",
     "images": [],
-    "depends": ["base", "base_setup", 'inputmask_widget', 'auth_signup'],
+    "depends": ['inputmask_widget', 'auth_signup'],
     "init_xml": [],
-
     "data": [
         # Segurança
         'security/ud_security.xml',
