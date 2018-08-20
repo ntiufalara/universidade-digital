@@ -48,6 +48,18 @@
         <!-- =================== -->
         <!-- REGRAS DE SEGURANÇA -->
         <!-- =================== -->
+        <!-- Controle de Frequências -->
+        <record id="rule_ud_monitoria_mes_frequencia" model="ir.rule">
+            <field name="name">Coordenador e Admin: Controle de frequências (UD)</field>
+            <field name="model_id" ref="model_ud_monitoria_mes_frequencia"/>
+            <field name="domain_force">[('semestre_id.is_active', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('ud_monitoria.group_ud_monitoria_coordenador')), (4, ref('ud_monitoria.group_ud_monitoria_administrador'))]"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
         <!-- Bolsas de Curso -->
         <record id="rule_ud_monitoria_bolsas_curso_coordenador_curso" model="ir.rule">
             <field name="name">Coordenador de curso: Bolsas de curso (UD)</field>

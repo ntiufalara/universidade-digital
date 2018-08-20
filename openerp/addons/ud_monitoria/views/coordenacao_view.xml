@@ -190,11 +190,12 @@
                             </field>
                         </page>
                         <page string="Controle de Frequências" attrs="{'invisible': [('id', '=', False)]}" col="4">
-                            <div colspan="4" class="oe_edit_only" style="color: red;">
+                            <div colspan="4" class="oe_edit_only" attrs="{'invisible': [('is_active', '=', False)]}" style="color: red;">
                                 <strong>Atenção:</strong> Em caso de exclusão de qualquer mês de frequência, todas as
                                 frequências enviadas pelos discentes, no referido mês, serão excluídas.
                             </div>
-                            <field name="meses_frequencia" nolabel="1" colspan="4" context="{'ocultar_semestre': True}"/>
+                            <field name="meses_frequencia" nolabel="1" colspan="4" context="{'ocultar_semestre': True}"
+                                   attrs="{'readonly': [('is_active', '=', False)]}"/>
                         </page>
                         <page string="Ocorrências" attrs="{'invisible': [('id', '=', False)]}"
                               groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
