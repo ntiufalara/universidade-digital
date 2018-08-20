@@ -8,3 +8,4 @@ import PalavraChave
 import Publicacao
 import Responsavel
 import TipoPublicacao
+import Curso_override

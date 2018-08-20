@@ -22,3 +22,10 @@ class Responsavel(models.Model):
     def get_name(self):
         polo_name = "--" if not self.polo_id.name else self.polo_id.name
         self.name = u"{}; Campus: {}; Polo: {}".format(self.pessoa_id.name, self.campus_id.name, polo_name)
+
+    @api.model
+    def create(self, vals):
+        res = super(Responsavel, self).create(vals)
+        group_gerente_servico = self.env.ref('ud_biblioteca.group_biblioteca_bibliotecario')
+        res.pessoa_id.groups_id |= group_gerente_servico
+        return res

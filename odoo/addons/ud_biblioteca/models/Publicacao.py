@@ -19,7 +19,7 @@ class Publicacao(models.Model):
 
     name = fields.Char(u'Título', required=True)
     autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=True)
-    nome_autor = fields.Char(related='autor_id.name', string=u"Nome do autor")
+    nome_autor = fields.Char(related='autor_id.display_name', string=u"Nome do autor")
     contato = fields.Char(related='autor_id.contato', string=u"E-mail para contato")
     ano_pub = fields.Char(u'Ano de publicação', required=True)
     campus_id = fields.Many2one("ud.campus", u"Campus", required=True, ondelete='set null',
@@ -61,20 +61,9 @@ class Publicacao(models.Model):
             result_list.append(obj_list)
         return result_list
 
-    def read(self, fields=None, load='_classic_read'):
-        """
-        Cria um contador de leituras para a publicação
-        :param fields:
-        :param load:
-        :return:
-        """
-        result = super(Publicacao, self).read(fields, load)
-        if not fields:
-            fields = []
-        if len(self) == 1 and u'__last_update' in fields:
-            if self.visualizacoes is not None:
-                self.sudo().visualizacoes = self.sudo().visualizacoes + 1
-        return result
+    @api.one
+    def visualizacoes_plus(self):
+        self.sudo().visualizacoes = self.sudo().visualizacoes + 1
 
     @api.model
     def create(self, vals):

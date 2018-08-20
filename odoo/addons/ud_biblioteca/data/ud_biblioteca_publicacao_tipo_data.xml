@@ -13,7 +13,7 @@
             <field name="name">Monografia</field>
         </record>
         <record id="publicacao_tipo_artigo" model="ud.biblioteca.publicacao.tipo">
-            <field name="name">artigo</field>
+            <field name="name">Artigo</field>
         </record>
         <record id="publicacao_tipo_tese" model="ud.biblioteca.publicacao.tipo">
             <field name="name">Tese</field>
@@ -25,7 +25,7 @@
             <field name="name">Fotografia</field>
         </record>
         <record id="publicacao_tipo_outros" model="ud.biblioteca.publicacao.tipo">
-            <field name="name">outros</field>
+            <field name="name">Outros</field>
         </record>
 
     </data>

@@ -24,7 +24,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Orientadores">
-                    <field name="name" />
+                    <field name="display_name" />
                 </tree>
             </field>
         </record>
@@ -37,9 +37,15 @@
                 <form string="Orientador">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <div class="col-md-6 col-lg-6 form-group">
-                            <label class="col-md-4 col-sm-4 control-label" for="nome_orientador"></label>
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="nome_orientador"/>
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="ultimo_nome"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="ultimo_nome"/>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">
@@ -74,9 +80,15 @@
                 <form string="Orientador">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
                         <div class="col-md-6 col-lg-6 form-group">
-                            <label class="col-md-4 col-sm-4 control-label" for="nome_orientador"></label>
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="nome_orientador"/>
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="ultimo_nome"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="ultimo_nome"/>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">

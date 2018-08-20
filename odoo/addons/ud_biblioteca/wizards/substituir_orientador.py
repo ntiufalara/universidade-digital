@@ -6,7 +6,8 @@ from odoo import models, fields, api
 class SubstituirOrientador(models.TransientModel):
     _name = 'ud.biblioteca.substituir_orientador.wizard'
 
-    novo_orientador = fields.Char(u'Novo orientador', required=True)
+    novo_orientador = fields.Char(u'Nome', required=True)
+    ultimo_nome = fields.Char(u'Último nome', required=True)
     titulacao_id = fields.Many2one('ud.biblioteca.orientador.titulacao', u'Titulação', required=True)
 
     def substituir_orientador(self):
@@ -30,7 +31,8 @@ class SubstituirOrientador(models.TransientModel):
 
         # Cria o novo orientador
         orientador_model.create({
-            'nome_orientador': self.novo_orientador,
+            'name': self.novo_orientador,
+            'ultimo_nome': self.ultimo_nome,
             'titulacao_id': self.titulacao_id.id,
             'publicacao_orientador_ids': [(4, p) for p in pub_afetadas_orientador],
             'publicacao_coorientador_ids': [(4, p) for p in pub_afetadas_coorientador],

@@ -62,29 +62,6 @@
                                     <field name="tipo_id"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="orientador_ids"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="orientador_ids"
-                                           placeholder="Digite o nome e tecle Enter para adicionar"
-                                           widget="many2many_tags"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="coorientador_ids"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="coorientador_ids"
-                                           placeholder="Digite o nome e tecle Enter para adicionar"
-                                           widget="many2many_tags"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="palavras_chave_ids"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="palavras_chave_ids" widget="many2many_tags"
-                                           placeholder="biotecnologia,microbiologia,irrigação"/>
-                                </div>
-                            </div>
                             <div class="col-md-6 col-lg-6 form-group"
                                  attrs="{'invisible' : [('autorizar_publicacao', '=', True )]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
@@ -106,31 +83,38 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="curso_indefinido"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="curso_indefinido"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group"
-                                 attrs="{'invisible' : [('curso_indefinido', '=', False )]}">
-                                <label class="col-md-4 col-sm-4 control-label" for="curso_indefinido_detalhes"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="curso_indefinido_detalhes"
-                                           attrs="{'required' : [('curso_indefinido', '=', True)] }"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group"
-                                 attrs="{'invisible' : [('curso_indefinido', '=', True )]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="curso_id"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="curso_id" domain="[('polo_id','=',polo_id)]"
-                                           attrs="{'required' : [('curso_indefinido', '=', False)] }"/>
+                                    <field name="curso_id" domain="[('polo_id','=',polo_id)]"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="area_ids"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="area_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="orientador_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="orientador_ids"
+                                           placeholder="Digite o nome e tecle Enter para adicionar"
+                                           widget="many2many_tags" options="{'no_quick_create': True}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="coorientador_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="coorientador_ids"
+                                           placeholder="Digite o nome e tecle Enter para adicionar"
+                                           widget="many2many_tags" options="{'no_quick_create': True}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="palavras_chave_ids"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="palavras_chave_ids" widget="many2many_tags"
+                                           placeholder="biotecnologia,microbiologia,irrigação"/>
                                 </div>
                             </div>
                         </fieldset>

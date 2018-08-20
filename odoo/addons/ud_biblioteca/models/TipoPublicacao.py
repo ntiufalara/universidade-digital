@@ -9,5 +9,6 @@ class TipoPublicacao(models.Model):
     Descrição: Cadastro de tipos de publicações
     """
     _name = 'ud.biblioteca.publicacao.tipo'
+    _description = 'Tipo de publicação'
 
     name = fields.Char(u'Tipo', required=True)

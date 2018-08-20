@@ -13,7 +13,8 @@
                   groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"/>
 
         <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
-                  action="ud_biblioteca_responsavel_action" groups="base.admin_ud"/>
+                  action="ud_biblioteca_responsavel_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin"/>
 
 
         <menuitem name="Gerenciar palavras-chave" id="ud_biblioteca_p_chave" parent="biblioteca_top"

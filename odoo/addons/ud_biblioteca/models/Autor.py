@@ -1,6 +1,7 @@
 # encoding: UTF-8
 import logging
-from odoo import models, fields
+from odoo import models, fields, api
+
 _logger = logging.getLogger(__name__)
 
 
@@ -10,9 +11,21 @@ class Autor(models.Model):
     Descrição: Cadastro de autor de publicações
     """
     _name = 'ud.biblioteca.publicacao.autor'
+    _description = 'Autor'
+    _rec_name = 'display_name'
 
+    display_name = fields.Char(u'Nome', compute='get_name')
     name = fields.Char(u'Nome', required=True)
+    ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')
+
+    @api.one
+    def get_name(self):
+        """
+        Exibe o nome do autor no formato NBR
+        :return:
+        """
+        self.display_name = u"{}, {}".format(self.ultimo_nome, self.name)
 
     def load_from_openerp7_cron(self):
         """

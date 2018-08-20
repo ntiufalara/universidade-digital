@@ -10,21 +10,40 @@ class Orientador(models.Model):
     Deescrição: Relação many2many de publicação para orientador, permite adicionar mais de um orientador
     """
     _name = 'ud.biblioteca.publicacao.orientador'
+    _description = 'Orientador'
 
-    # Nome de exibição
-    name = fields.Char(u'Nome', compute='get_name')
     # Nome preenchido pelo usuário
-    nome_orientador = fields.Char(u'Nome completo', required=True)
+    name = fields.Char(u'Nome', required=True)
+    ultimo_nome = fields.Char(u'Ultimo nome', required=True)
+    # Nome de exibição
+    display_name = fields.Char(u'Nome', compute='get_name')
     titulacao_id = fields.Many2one('ud.biblioteca.orientador.titulacao', u'Titulação')
     publicacao_orientador_ids = fields.Many2many('ud.biblioteca.publicacao', 'publicacao_orientador_rel',
                                                  string=u'Orientador em')
     publicacao_coorientador_ids = fields.Many2many('ud.biblioteca.publicacao', 'publicacao_coorientador_rel',
                                                    string=u'Coorientador em')
 
-    @api.depends('nome_orientador', 'titulacao_id')
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            result.append((record.id, record.display_name))
+        return result
+
+    @api.depends('name', 'ultimo_nome', 'titulacao_id')
     @api.one
     def get_name(self):
-        self.name = u"{} {}".format(self.titulacao_id.sigla, self.nome_orientador) if self.titulacao_id else self.nome_orientador
+        if self.titulacao_id:
+            self.display_name = u"{}. {}, {}".format(
+                self.titulacao_id.sigla,
+                self.ultimo_nome,
+                self.name
+            )
+        else:
+            self.display_name = u"{}, {}".format(
+                self.ultimo_nome,
+                self.name
+            )
 
     def load_from_openerp7_cron(self):
         """
@@ -52,6 +71,6 @@ class Orientador(models.Model):
                 titulacao_obj = self.env['ud.biblioteca.orientador.titulacao'].search([('name', '=', orientador.get('titulacao_id')[1])])
             if orientador.get('titulacao_id') and not titulacao_obj:
                 continue
-            orientador_obj = self.search([('nome_orientador', '=', orientador['name'])])
+            orientador_obj = self.search([('name', '=', orientador['name'])])
             if not orientador_obj:
-                self.create({'nome_orientador': orientador['name']})
+                self.create({'name': orientador['name']})
