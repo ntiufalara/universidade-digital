@@ -196,6 +196,7 @@ class Inscricao(osv.Model):
         (lambda cls, *args, **kwargs: cls.valida_processo_seletivo(*args, **kwargs),
          u'Não é possível realizar as ações desejadas enquanto o processo seletivo for inválido',
          [u'Processo Seletivo']),
+        (lambda cls, *a, **k: cls.valida_arquivos(*a, **k), u'Formato invido de arquivos.', ['Arquivos anexados'])
     ]
     _defaults = {
         'state': 'analise',
@@ -239,102 +240,6 @@ class Inscricao(osv.Model):
             ]
         return res
 
-    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
-        res = super(Inscricao, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
-        context = context or {}
-        if context.get('active_model', False) == 'ud_monitoria.processo_seletivo' and context.get('active_id', False):
-            grupos = 'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador'
-            if self.user_has_groups(cr, uid, grupos, context):
-                return res
-            pessoa = get_ud_pessoa(self, cr, uid)
-            if not pessoa:
-                raise orm.except_orm(
-                    u'Usuário não cadastrado',
-                    u'O usuário atual (%s) não possui registros no núcleo.' % self.pool.get('res.users').read(
-                        cr, SUPERUSER_ID, uid, ['login'], load='_classic_write'
-                    )['login']
-                )
-            if 'perfil_id' in res['fields']:
-                domain = res["fields"]["perfil_id"].get("domain", [])
-                if isinstance(domain, str):
-                    domain = list(eval(domain))
-                res["fields"]["perfil_id"]["domain"] = domain + [('id', 'in', [p.id for p in pessoa.papel_ids])]
-        return res
-
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        """
-        === Extensão do método osv.Model.search
-        Se em "context" houver "filtrar_discente", a lista de inscrições será limitada pelo perfil do usuário logado.
-        Se contiver "filtrar_orientador", também limita as inscrições pelas disciplinas que o usuário logado está como
-        orientador.
-        """
-        context = context or {}
-        pessoa_id = None
-        if context.pop('filtrar_discente', False):
-            pessoa_id = get_ud_pessoa_id(self, cr, uid)
-            if not pessoa_id:
-                return []
-            perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
-            args += [('perfil_id', 'in', perfis)]
-        if context.get('filtrar_orientador', False):
-            if not pessoa_id:
-                pessoa_id = get_ud_pessoa_id(self, cr, uid)
-                if not pessoa_id:
-                    return []
-                perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
-                if not perfis:
-                    return []
-            cr.execute('''
-            SELECT
-                insc.id
-            FROM
-                %(insc)s insc INNER JOIN %(disc_ps)s disc_ps ON (insc.disciplina_id = disc_ps.id)
-                    INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
-            WHERE
-                disc.perfil_id in (%(perfis)s)
-            ''' % {
-                'insc': self._table,
-                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table,
-                'perfis': str(perfis).lstrip('([').rstrip(')],').replace('L', ''),
-            })
-            args = [('id', 'in', map(lambda l: l[0], cr.fetchall()))] + (args or [])
-        return super(Inscricao, self).search(cr, uid, args, offset, limit, order, context, count)
-
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
-        context = context or {}
-        pessoa_id = None
-        if context.pop('filtrar_discente', False):
-            pessoa_id = get_ud_pessoa_id(self, cr, uid)
-            if not pessoa_id:
-                return []
-            perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
-            domain += [('perfil_id', 'in', perfis)]
-        if context.get('filtrar_orientador', False):
-            if not pessoa_id:
-                pessoa_id = get_ud_pessoa_id(self, cr, uid)
-                if not pessoa_id:
-                    return []
-                perfis = self.pool.get('ud.perfil').search(cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)])
-                if not perfis:
-                    return []
-            cr.execute('''
-                    SELECT
-                        insc.id
-                    FROM
-                        %(insc)s insc INNER JOIN %(disc_ps)s disc_ps ON (insc.disciplina_id = disc_ps.id)
-                            INNER JOIN %(disc)s disc ON (disc_ps.disc_monit_id = disc.id)
-                    WHERE
-                        disc.perfil_id in (%(perfis)s)
-                    ''' % {
-                'insc': self._table,
-                'disc_ps': self.pool.get('ud_monitoria.disciplina_ps')._table,
-                'disc': self.pool.get('ud_monitoria.disciplina')._table,
-                'perfis': str(perfis).lstrip('([').rstrip(')],').replace('L', ''),
-            })
-            domain = [('id', 'in', map(lambda l: l[0], cr.fetchall()))] + (domain or [])
-        return super(Inscricao, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby)
-
     # Validadores
     def valida_processo_seletivo(self, cr, uid, ids, context=None):
         """
@@ -343,6 +248,22 @@ class Inscricao(osv.Model):
         for insc in self.browse(cr, uid, ids, context=context):
             if insc.processo_seletivo_id.state in ['invalido', 'demanda', 'novo']:
                 return False
+        return True
+
+    def valida_arquivos(self, cr, uid, ids, context=None):
+        """
+        Verifica se o formato dos arquivos anexados são PDFs ou imagens PNG ou JPG.
+        """
+        for insc in self.browse(cr, uid, ids):
+            if insc.cpf_nome and not (insc.cpf_nome.endswith('.pdf') or insc.cpf_nome.endswith('.jpg') or insc.cpf_nome.endswith('jpeg')):
+                raise orm.except_orm(
+                    u'Erro de Validação', u'O arquivo do CPF deve ser PDF ou imagem JPG/JPEG.')
+            elif insc.identidade_nome and not (insc.identidade_nome.endswith('.pdf') or insc.identidade_nome.endswith('.jpg') or insc.identidade_nome.endswith('jpeg')):
+                raise orm.except_orm(u'Erro de Validação', u'O arquivo da identidade deve ser PDF ou imagem JPG/JPEG.')
+            elif insc.hist_analitico_nome and not insc.hist_analitico_nome.endswith('.pdf'):
+                raise orm.except_orm(u'Erro de Validação', u'O arquivo do histórico analítico deve ser PDF.')
+            elif insc.certidao_vinculo_nome and not insc.certidao_vinculo_nome.endswith('.pdf'):
+                raise orm.except_orm(u'Erro de Validação', u'O arquivo da certidão de vínculo deve ser PDF.')
         return True
 
     # Ações de botões

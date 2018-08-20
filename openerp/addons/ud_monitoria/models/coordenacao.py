@@ -1,18 +1,18 @@
 # coding: utf-8
 from datetime import datetime, timedelta
-from re import compile
-
+from re import compile, match
 from openerp import SUPERUSER_ID
 from openerp.osv import fields, osv
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from util import get_ud_pessoa_id
+
+from util import get_ud_pessoa_id, _MESES, data_hoje
 
 
 class Semestre(osv.Model):
-    _name = "ud_monitoria.semestre"
-    _description = u"Configurações definidas para um semestre (UD)"
-    _order = "is_active desc, semestre desc"
-    _rec_name = "semestre"
+    _name = 'ud_monitoria.semestre'
+    _description = u'Configurações definidas para um semestre (UD)'
+    _order = 'is_active desc, semestre desc'
+    _rec_name = 'semestre'
 
     # Métodos para campos calculados
     def get_dados_bolsas(self, cr, uid, ids, campo, args, context=None):
@@ -61,43 +61,38 @@ class Semestre(osv.Model):
         return res
 
     _columns = {
-        "id": fields.integer(u"ID", readonly=True, invisible=True),
-        "semestre": fields.char(u"Semestre", size=6, required=True, help=u"Semestre no formato '2016.1'"),
-        "max_bolsas": fields.integer(u"Máximo de Bolsas", required=True, help=u"Número máximo de bolsas disponíveis para o semestre"),
-        "bolsas_distribuidas": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas Distribuidas",
-                                               multi=True, help=u"Bolsas distribuidas entre os cursos"),
-        "bolsas_n_distribuidas": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas não Distribuidas",
-                                                 multi=True, help=u"Bolsas não distribuidas entre os cursos"),
-        "bolsas_disponiveis": fields.function(get_dados_bolsas, type="integer", string=u"Bolsas não utilizadas",
-                                              multi=True, help=u"Bolsas disponíveis para novos bolsistas"),
-        "is_active": fields.boolean(u"Ativo", readonly=True),
-        "data_i_frequencia": fields.date(u"Envio de Frequência", required=True, help=u"Próxima data para submissão da frequências"),
-        "intervalo_frequencia": fields.integer(u"Período (Dias)", required=True, help=u"Intervalo de submissão de frequências"),
-        "bolsas_curso_ids": fields.one2many("ud_monitoria.bolsas_curso", "semestre_id", u"Distribuição de Bolsas",
-                                                   help=u"Permite distribuir bolsas entre cursos ativos"),
-        "processos_seletivos_ids": fields.one2many("ud_monitoria.processo_seletivo", "semestre_id",
-                                                   u"Processos Seletivos"),
-        "ocorrencias_ids": fields.one2many("ud_monitoria.ocorrencia", "semestre_id", u"Ocorrências semestrais",
-                                           help=u"Registro de ocorrências do semestre"),
+        'id': fields.integer(u'ID', readonly=True, invisible=True),
+        'semestre': fields.char(u'Semestre', size=6, required=True, help=u'Semestre no formato "2016.1"'),
+        'max_bolsas': fields.integer(u'Máximo de Bolsas', required=True, help=u'Número máximo de bolsas disponíveis para o semestre'),
+        'bolsas_distribuidas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas Distribuidas',
+                                               multi=True, help=u'Bolsas distribuidas entre os cursos'),
+        'bolsas_n_distribuidas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas não Distribuidas',
+                                                 multi=True, help=u'Bolsas não distribuidas entre os cursos'),
+        'bolsas_disponiveis': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas não utilizadas',
+                                              multi=True, help=u'Bolsas disponíveis para novos bolsistas'),
+        'is_active': fields.boolean(u'Ativo', readonly=True),
+        'meses_frequencia': fields.one2many('ud_monitoria.mes_frequencia', 'semestre_id', u'Frequências'),
+        'bolsas_curso_ids': fields.one2many('ud_monitoria.bolsas_curso', 'semestre_id', u'Distribuição de Bolsas',
+                                            help=u'Permite distribuir bolsas entre cursos ativos'),
+        'processos_seletivos_ids': fields.one2many('ud_monitoria.processo_seletivo', 'semestre_id',
+                                                   u'Processos Seletivos'),
+        'ocorrencias_ids': fields.one2many('ud_monitoria.ocorrencia', 'semestre_id', u'Ocorrências semestrais',
+                                           help=u'Registro de ocorrências do semestre'),
     }
     _constraints = [
-        (lambda cls, *args, **kwargs: cls.valida_intervalo_frequencia(*args, **kwargs),
-         u"O intervalo da frequência deve ser maior que 0.", [u"Período da frequência"]),
         (lambda cls, *args, **kwargs: cls.valida_semestre(*args, **kwargs),
-         u"Semestre inválido.", [u"Semestre"]),
+         u'Semestre inválido.', [u'Semestre']),
         (lambda cls, *args, **kwargs: cls.valida_bolsas(*args, **kwargs),
-         u"Número máximo de Bolsas excedido.", [u"Distribuição de Bolsas"]),
+         u'Número máximo de Bolsas excedido.', [u'Distribuição de Bolsas']),
         (lambda cls, *args, **kwargs: cls.valida_valor_negativo(*args, **kwargs),
-         u"Valores negativos não são permitidos.", [u"Máximo de Bolsas / Período (Dias)"]),
+         u'Valores negativos não são permitidos.', [u'Máximo de Bolsas']),
     ]
     _sql_constraints = [
-        ("semestre_unique", "unique (semestre)", u"Não é permitido criar registros com semestres iguais!"),
+        ('semestre_unique', 'unique (semestre)', u'Não é permitido criar registros com semestres iguais!'),
     ]
     _defaults = {
-        "intervalo_frequencia": 10,
-        "semestre": lambda cls, *args, **kwargs: cls.semestre_disponivel(*args, **kwargs),
-        "is_active": True,
-        "data_i_frequencia": (datetime.utcnow() + timedelta(30)).strftime("%Y-%m-%d"),
+        'semestre': lambda cls, *args, **kwargs: cls.semestre_disponivel(*args, **kwargs),
+        'is_active': True,
     }
 
     # Métodos sobrescritos
@@ -109,9 +104,8 @@ class Semestre(osv.Model):
         semestre = default.get('semestre', None)
         default.update({
             'semestre': self.semestre_disponivel(cr, uid, context, semestre),
-            'data_i_frequencia': (datetime.utcnow() + timedelta(30)).strftime('%Y-%m-%d'),
             'processos_seletivos_ids': [],
-            'relatorio_discentes_ids': [],
+            'meses_frequencia': [],
             'ocorrencias_ids': [],
             'is_active': True,
             'bolsas_curso_ids': [
@@ -150,20 +144,11 @@ class Semestre(osv.Model):
                 return '%d.%d' % (ano, semestre)
 
     # Validadores
-    def valida_intervalo_frequencia(self, cr, uid, ids, context=None):
-        """
-        Verifica se o internvalo de submissão de frequências dos discentes é menor que 1.
-        """
-        for registro in self.browse(cr, uid, ids, context=context):
-            if (registro.intervalo_frequencia < 1):
-                return False
-        return True
-
     def valida_semestre(self, cr, uid, ids, context=None):
         """
         Verifica se o semestre está no padrão de ano e semestre AAAA.S.
         """
-        padrao = compile("\d{4}\.[12]")
+        padrao = compile('\d{4}\.[12]')
         for semestre in self.browse(cr, uid, ids, context=context):
             if not padrao.match(semestre.semestre):
                 return False
@@ -183,7 +168,7 @@ class Semestre(osv.Model):
 
     def valida_valor_negativo(self, cr, uid, ids, context=None):
         for semestre in self.browse(cr, uid, ids, context):
-            if semestre.max_bolsas < 0 or semestre.intervalo_frequencia < 0:
+            if semestre.max_bolsas < 0:
                 return False
         return True
 
@@ -192,13 +177,13 @@ class Semestre(osv.Model):
         """
         Marca o registro como ativo
         """
-        return self.write(cr, uid, ids, {"is_active": True}, context=context)
+        return self.write(cr, uid, ids, {'is_active': True}, context=context)
 
     def desativar_registro(self, cr, uid, ids, context=None):
         """
         Marca o registro como inativo.
         """
-        return self.write(cr, uid, ids, {"is_active": False}, context=context)
+        return self.write(cr, uid, ids, {'is_active': False}, context=context)
 
     def atualizar_status_processos_seletivos(self, cr, uid, ids, context=None):
         ps = self.pool.get('ud_monitoria.processo_seletivo')
@@ -214,21 +199,21 @@ class Semestre(osv.Model):
 
 
 class Ocorrencia(osv.Model):
-    _name = "ud_monitoria.ocorrencia"
-    _description = u"Registro geral de ocorrências do semestre (UD)"
-    _order = "create_date desc"
+    _name = 'ud_monitoria.ocorrencia'
+    _description = u'Registro geral de ocorrências do semestre (UD)'
+    _order = 'create_date desc'
     _columns = {
-        "responsavel_id": fields.many2one("ud.employee", u"Responsável", required=True, readonly=True,
-                                          ondelete="restrict", help=u"Pessoa responsável pela ocorrência"),
-        "create_date": fields.datetime(u"Data da ocorrência", readonly=True),
-        "name": fields.char(u"Nome", required=True),
-        "envolvidos_ids": fields.many2many("ud.employee", "ud_monitoria_ocorrencia_envolvidos", "ocorrencia_id", "pessoa_id",
-                                           u"Envolvidos", ondelete="restrict"),
-        "descricao": fields.text(u"Descrição"),
-        "semestre_id": fields.many2one("ud_monitoria.semestre", u"Semestre", required=True, ondelete="cascade"),
+        'responsavel_id': fields.many2one('ud.employee', u'Responsável', required=True, readonly=True,
+                                          ondelete='restrict', help=u'Pessoa responsável pela ocorrência'),
+        'create_date': fields.datetime(u'Data da ocorrência', readonly=True),
+        'name': fields.char(u'Nome', required=True),
+        'envolvidos_ids': fields.many2many('ud.employee', 'ud_monitoria_ocorrencia_envolvidos', 'ocorrencia_id', 'pessoa_id',
+                                           u'Envolvidos', ondelete='restrict'),
+        'descricao': fields.text(u'Descrição'),
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', required=True, ondelete='cascade'),
     }
     _defaults = {
-        "responsavel_id": lambda cls, *args, **kwargs: cls.responsavel(*args, **kwargs),
+        'responsavel_id': lambda cls, *args, **kwargs: cls.responsavel(*args, **kwargs),
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -238,32 +223,32 @@ class Ocorrencia(osv.Model):
 
         :raise osv.except_osv: Caso registro semestral esteja inativo.
         """
-        semestre = vals.get("semestre_id", None)
-        if semestre and not self.pool.get("ud_monitoria.semestre").browse(cr, SUPERUSER_ID, semestre).is_active:
-            raise osv.except_osv(u"Registro Semestral", u"O registro do semestre em questão está inativo")
+        semestre = vals.get('semestre_id', None)
+        if semestre and not self.pool.get('ud_monitoria.semestre').browse(cr, SUPERUSER_ID, semestre).is_active:
+            raise osv.except_osv(u'Registro Semestral', u'O registro do semestre em questão está inativo')
         return super(Ocorrencia, self).create(cr, uid, vals, context)
 
     def responsavel(self, cr, uid, context=None):
         """
         Busca o perfil no núcleo do responsável atualmente logado.
         """
-        responsavel = self.pool.get("ud.employee").search(cr, SUPERUSER_ID, [("user_id", "=", uid)], limit=2)
+        responsavel = self.pool.get('ud.employee').search(cr, SUPERUSER_ID, [('user_id', '=', uid)], limit=2)
         if not responsavel:
             raise osv.except_osv(
-                u"Registro Inexistente",
-                u"Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo"
+                u'Registro Inexistente',
+                u'Não é possível realizar essa alteração enquanto seu login não estiver vinculado ao núcleo'
             )
         if len(responsavel) > 1:
             raise osv.except_osv(
-                u"Multiplos vínculos",
-                u"Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo"
+                u'Multiplos vínculos',
+                u'Não é possível realizar essa alteração enquanto seu login possuir multiplos vínculos no núcleo'
             )
         return responsavel[0]
 
 
 class BolsasCurso(osv.Model):
-    _name = "ud_monitoria.bolsas_curso"
-    _description = u"Distribuição de bolsas de cursos (UD)"
+    _name = 'ud_monitoria.bolsas_curso'
+    _description = u'Distribuição de bolsas de cursos (UD)'
 
     # Métodos para campos calculados
     def get_dados_bolsas(self, cr, uid, ids, campo, args, context=None):
@@ -280,34 +265,34 @@ class BolsasCurso(osv.Model):
         return res
 
     _columns = {
-        'id': fields.integer("ID", readonly=True, invisible=True),
-        'curso_id': fields.many2one("ud.curso", u"Curso", required=True, ondelete="restrict", domain=[("is_active", "=", True)]),
+        'id': fields.integer('ID', readonly=True, invisible=True),
+        'curso_id': fields.many2one('ud.curso', u'Curso', required=True, ondelete='restrict', domain=[('is_active', '=', True)]),
         'coord_monitoria_id': fields.related('curso_id', 'coord_monitoria_id', type='many2one', relation='ud.employee',
-                                             string=u"Coordenador(a) de monitoria"),
-        'is_active': fields.related("curso_id", "is_active", type="boolean", string=u"Curso Ativo?", readonly=True,
-                                    help=u"Identifica se atualmente o curso está ativo ou não"),
-        'bolsas': fields.integer(u"Bolsas", required=True, help=u"Número de bolsas disponibilizadas para o curso"),
-        'utilizadas': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas utilizadas",
-                                      multi='bolsas_curso', help=u"Número de bolsas com vínculo com discentes"),
-        'disponiveis': fields.function(get_dados_bolsas, type="integer", string=u"Bolsas sem uso",
-                                       multi='bolsas_curso', help=u"Bolsas disponíveis para novos bolsistas"),
+                                             string=u'Coordenador(a) de monitoria'),
+        'is_active': fields.related('curso_id', 'is_active', type='boolean', string=u'Curso Ativo?', readonly=True,
+                                    help=u'Identifica se atualmente o curso está ativo ou não'),
+        'bolsas': fields.integer(u'Bolsas', required=True, help=u'Número de bolsas disponibilizadas para o curso'),
+        'utilizadas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas utilizadas',
+                                      multi='bolsas_curso', help=u'Número de bolsas com vínculo com discentes'),
+        'disponiveis': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas sem uso',
+                                       multi='bolsas_curso', help=u'Bolsas disponíveis para novos bolsistas'),
         'distribuidas': fields.function(get_dados_bolsas, type='integer', string=u'Bolsas distribuidas',
                                         multi='bolsas_curso', help=u'Número de bolsas distribuídas entre disciplinas'),
         'disciplina_ids': fields.one2many('ud_monitoria.disciplina', 'bolsas_curso_id', u'Disciplinas'),
-        'semestre_id': fields.many2one("ud_monitoria.semestre", u"Semestre", ondelete="cascade", domain=[('is_active', '=', True)]),
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', ondelete='cascade', domain=[('is_active', '=', True)]),
     }
     _constraints = [
         (lambda cls, *args, **kwargs: cls.valida_bolsas(*args, **kwargs),
-         u"A quantidade de bolsas não pode ultrapassa a quatidade máxima para o semestre.", [u"Bolsas"]),
+         u'A quantidade de bolsas não pode ultrapassa a quatidade máxima para o semestre.', [u'Bolsas']),
         (lambda cls, *args, **kwargs: cls.valida_bolsas_distribuidas(*args, **kwargs),
-         u"A quantidade de bolsas não pode ser menor do que a quantidade de bolsas distribuídas entre suas disciplinas",
-         [u"Bolsas"]),
+         u'A quantidade de bolsas não pode ser menor do que a quantidade de bolsas distribuídas entre suas disciplinas',
+         [u'Bolsas']),
         (lambda cls, *args, **kwargs: cls.valida_valor_negativo(*args, **kwargs),
-         u"Valor negativo não é permitido.", [u"Bolsas"]),
+         u'Valor negativo não é permitido.', [u'Bolsas']),
     ]
     _sql_constraints = [
-        ("curso_semestre_unique", "unique(curso_id,semestre_id)",
-         u"Ofertas de cursos não podem ser duplicadas no mesmo semestre."),
+        ('curso_semestre_unique', 'unique(curso_id,semestre_id)',
+         u'Ofertas de cursos não podem ser duplicadas no mesmo semestre.'),
     ]
 
     # Métodos sobrescritos
@@ -384,3 +369,76 @@ class BolsasCurso(osv.Model):
         if curso:
             return {'value': {'coord_monitoria_id': self.pool.get('ud.curso').browse(cr, SUPERUSER_ID, curso).coord_monitoria_id.id}}
         return {'value': {'coord_monitoria_id': False}}
+
+
+class MesFrequencia(osv.Model):
+    _name = 'ud_monitoria.mes_frequencia'
+    _description = u'Definição de submisão de frequência (UD)'
+    _order = 'ano, mes'
+    _rec_name = 'mes'
+    _meses_dict = dict(_MESES)
+
+    def get_disponivel(self, cr, uid, ids, campos, args, context=None):
+        res = {}
+        hoje = data_hoje(self, cr, uid)
+        for mes in self.browse(cr, uid, ids):
+            data = datetime.strptime(mes.data_inicial, DEFAULT_SERVER_DATE_FORMAT).date()
+            res[mes.id] = data <= hoje <= data + timedelta(mes.intervalo)
+        return res
+
+    _columns = {
+        'id': fields.integer(u'ID', readonly=True, invisible=True),
+        'mes': fields.selection(_MESES, u'Mês', required=True),
+        'ano': fields.integer(u'Ano', required=True),
+        'data_inicial': fields.date(u'Data de Início', required=True, help=u'Data de início do envio das frequências'),
+        'intervalo': fields.integer(u'Intervalo (Dias)', required=True, help=u'Intervalo em dias para submissão das frequências'),
+        'semestre_id': fields.many2one('ud_monitoria.semestre', u'Semestre', ondelete='cascade'),
+        'disponivel': fields.function(get_disponivel, type='boolean', string=u'Disponível'),
+    }
+
+    _sql_constraints = [
+        ('mes_semestre_unique', 'unique(mes, ano, semestre_id)', u'Não é permitido duplicar meses de frequência no mesmo semestre')
+    ]
+
+    _constraints = [
+        (lambda cls, *args, **kwargs: cls.valida_intervalo_frequencia(*args, **kwargs),
+         u'O intervalo da frequência deve ser maior que 0.', [u'Intervalo']),
+    ]
+
+    def default_get(self, cr, uid, fields_list, context=None):
+        res = super(MesFrequencia, self).default_get(cr, uid, fields_list, context)
+        hoje = data_hoje(self, cr, uid)
+        res['intervalo'] = 10
+        res['ano'] = hoje.year
+        res['mes'] = self._meses_dict['%.2d' % hoje.month]
+        return res
+
+    def name_get(self, cr, uid, ids, context=None):
+        return [
+            (mes.id, '%s de %d' % (self._meses_dict[mes.mes], mes.ano))
+            for mes in self.browse(cr, uid, ids, context)
+        ]
+
+    def name_search(self, cr, uid, name='', args=None, operator='ilike', context=None, limit=100):
+        name = name.strip(' ')
+        if name.isdigit():
+            args = [('mes', operator, name)]
+        else:
+            dados = match('(?P<mes>[a-zA-Z]+)?(?: +de +)?(?P<ano>\d{4})?', name)
+            if dados:
+                if dados.group('mes'):
+                    name = dados.group('mes')
+                if dados.group('ano'):
+                    args = [('ano', '=', dados.group('ano'))] + (args or [])
+            args = [('mes', 'in', [mes[0] for mes in _MESES if name.lower() in mes[1].lower()])] + (args or [])
+        ids = self.search(cr, uid, args, limit=limit, context=context)
+        return self.name_get(cr, uid, ids, context)
+
+    def valida_intervalo_frequencia(self, cr, uid, ids, context=None):
+        """
+        Verifica se o internvalo de submissão de frequências dos discentes é menor que 1.
+        """
+        for mes in self.browse(cr, uid, ids, context=context):
+            if mes.intervalo < 1:
+                return False
+        return True

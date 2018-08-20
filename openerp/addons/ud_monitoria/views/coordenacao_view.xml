@@ -9,7 +9,8 @@
             <field name="res_model">ud_monitoria.bolsas_curso</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'coordenador_monitoria_curso': True, 'liberacao_disciplina': True}</field>
+            <field name="domain">[('semestre_id.is_active', '=', True), ('coord_monitoria_id.user_id.id', '=', uid)]</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <div>
                     <p>
@@ -36,7 +37,7 @@
                 <tree string="Bolsas de Cursos">
                     <field name="id" invisible="1"/>
                     <field name="curso_id"/>
-                    <field name="semestre_id" invisible="not context.get('coordenador_monitoria_curso', True)"/>
+                    <field name="semestre_id"/>
                     <field name="bolsas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="distribuidas" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                     <field name="disponiveis" groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
@@ -53,11 +54,12 @@
             <field name="arch" type="xml">
                 <form string="Bolsas de Curso" version="7.0">
                     <field name="id" invisible="1"/>
-                    <group col="8">
+                    <group col="4">
                         <field name="semestre_id" colspan="4" attrs="{'readonly': [('id', '!=', False)]}"
                                options="{'no_open': true, 'create_edit': false, 'create': false}"/>
-                        <field name="curso_id" colspan="4" attrs="{'readonly': [('id', '!=', False)]}"
+                        <field name="curso_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"
                                options="{'create_edit': false, 'create': false}"/>
+                        <field name="coord_monitoria_id" colspan="2" readonly="1" options="{'no_open': True}"/>
                     </group>
                     <group string="Informações de bolsas" col="8"
                            groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
@@ -90,6 +92,10 @@
                 <field name="bolsas" position="attributes">
                     <attribute name="readonly"/>
                 </field>
+                <field name="coord_monitoria_id" position="attributes">
+                    <attribute name="options"/>
+                    <attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
+                </field>
             </field>
         </record>
 
@@ -110,8 +116,6 @@
                 <tree string="Semestres" colors="blue:is_active == True">
                     <field name="semestre"/>
                     <field name="max_bolsas"/>
-                    <field name="data_i_frequencia"/>
-                    <field name="intervalo_frequencia"/>
                     <field name="is_active"/>
                 </tree>
             </field>
@@ -139,9 +143,6 @@
                         <field name="semestre" colspan="2" widget="semestre" attrs="{'readonly': [('id', '!=', False)]}"
                                placeholder="Ex.: 2016.1"/>
                         <field name="is_active" colspan="2"/>
-                        <field name="data_i_frequencia" attrs="{'readonly': [('is_active', '=', False)]}"/>
-                        <field name="intervalo_frequencia" colspan="2"
-                               attrs="{'readonly': [('is_active', '=', False)]}"/>
                     </group>
                     <group string="Informações de Bolsas" col="4">
                         <field name="max_bolsas" colspan="2" string="Total" attrs="{'readonly': [('is_active', '=', False)]}"/>
@@ -154,7 +155,8 @@
                               attrs="{'invisible': ['|', ('id', '=', False), ('bolsas_curso_ids', '=', False)]}">
                             <field name="processos_seletivos_ids" attrs="{'readonly': [('is_active', '=', False)]}"
                                    context="{'semestre_id': id}"/>
-                            <group string="Ações" attrs="{'invisible': ['|', ('id', '=', False), ('is_active', '=', False)]}">
+                            <group string="Ações" attrs="{'invisible': ['|', ('id', '=', False), ('is_active', '=', False)]}"
+                                   groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
                                 <ul>
                                     <li>
                                         <button name="atualizar_status_processos_seletivos" string="Clique aqui" class="oe_link"
@@ -170,8 +172,12 @@
                             </group>
                         </page>
                         <page string="Distribuição de Bolsas" groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                            <div groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
+                                <button name="%(action_ud_monitoria_bolsas_curso_semestre_view)d" type="action"
+                                        attrs="{'invisible': [('id', '=', False)]}" string="Mais detalhes"/>
+                            </div>
                             <field name="bolsas_curso_ids" attrs="{'readonly': [('is_active', '=', False)]}">
-                                <tree editable="bottom" version="7.0" colors="green:is_active==True">
+                                <tree editable="bottom" version="7.0" colors="purple:utilizadas&lt;distribuidas;red:utilizadas&lt;bolsas">
                                     <field name="id" invisible="1"/>
                                     <field name="curso_id" attrs="{'readonly': [('id', '!=', False)]}" on_change="onchange_curso(curso_id)"
                                            options="{'no_open': true, 'create_edit': false, 'create': false}"/>
@@ -182,11 +188,13 @@
                                     <field name="is_active"/>
                                 </tree>
                             </field>
-                            <div class="oe_right oe_button_box" groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
-                                <button name="%(action_ud_monitoria_bolsas_curso_semestre_view)d" type="action"
-                                        attrs="{'invisible': [('id', '=', False)]}"
-                                        string="Mais detalhes"/>
+                        </page>
+                        <page string="Controle de Frequências" attrs="{'invisible': [('id', '=', False)]}" col="4">
+                            <div colspan="4" class="oe_edit_only" style="color: red;">
+                                <strong>Atenção:</strong> Em caso de exclusão de qualquer mês de frequência, todas as
+                                frequências enviadas pelos discentes, no referido mês, serão excluídas.
                             </div>
+                            <field name="meses_frequencia" nolabel="1" colspan="4" context="{'ocultar_semestre': True}"/>
                         </page>
                         <page string="Ocorrências" attrs="{'invisible': [('id', '=', False)]}"
                               groups="ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador">
@@ -286,5 +294,42 @@
                 </form>
             </field>
         </record>
+
+        <!-- MÊS DE FREQUÊNCIA -->
+        <record model="ir.ui.view" id="ud_monitoria_mes_frequencia_tree">
+            <field name="name">ud_monitoria.mes_frequencia.tree</field>
+            <field name="model">ud_monitoria.mes_frequencia</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Mês" colors="blue:disponivel==True">
+                    <field name="mes" attrs="{'readonly': [('id', '!=', False)]}"/>
+                    <field name="ano" attrs="{'readonly': [('id', '!=', False)]}"/>
+                    <field name="data_inicial"/>
+                    <field name="intervalo"/>
+                    <field name="disponivel" invisible="1"/>
+                    <field name="id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_monitoria_mes_frequencia_form">
+            <field name="name">ud_monitoria.mes_frequencia.form</field>
+            <field name="model">ud_monitoria.mes_frequencia</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Mês" version="7.0">
+                    <field name="id" invisible="1"/>
+                    <group col="4">
+                        <field name="semestre_id" colspan="4" attrs="{'readonly': [('id', '!=', False)]}" domain="[('is_active', '=', True)]"
+                               invisible="context.get('ocultar_semestre', False)" required="context.get('ocultar_semestre', True)"/>
+                        <field name="mes" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="ano" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="data_inicial" colspan="2"/>
+                        <field name="intervalo" colspan="2"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
     </data>
 </openerp>

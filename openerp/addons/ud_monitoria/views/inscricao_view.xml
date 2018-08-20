@@ -46,7 +46,13 @@
             <field name="res_model">ud_monitoria.inscricao</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'filtrar_discente': True}</field>
+            <field name="domain">[('discente_id.user_id.id', '=', uid)]</field>
+            <field name="context">{'ocultar_discente': True}</field>
+            <field name="help" type="html">
+                <div>
+                    Aqui serão mostradas todas as suas inscrições em algum processo seletivo.
+                </div>
+            </field>
         </record>
 
         <record id="action_ud_monitoria_inscricao_orientador" model="ir.actions.act_window">
@@ -55,7 +61,7 @@
             <field name="res_model">ud_monitoria.inscricao</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'filtrar_orientador': True}</field>
+            <field name="context">{'ocultar_orientador': True}</field>
             <field name="help" type="html">
                 <div>
                     <p>
@@ -71,10 +77,10 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Inscrições" create="false" colors="blue:state=='analise';grey:state=='desclassificado';green:state=='classificado'">
-                    <field name="perfil_id" invisible="context.get('filtrar_discente', False)"/>
-                    <field name="discente_id" invisible="context.get('filtrar_discente', False)"/>
-                    <field name="disciplina_id" invisible="context.get('active_model', False) == 'ud_monitoria.disciplina'"/>
-                    <field name="orientador_id" invisible="context.get('active_model', False) == 'ud_monitoria.disciplina'"/>
+                    <field name="perfil_id" invisible="context.get('ocultar_discente', False)"/>
+                    <field name="discente_id" invisible="context.get('ocultar_discente', False)"/>
+                    <field name="disciplina_id" invisible="context.get('ocultar_disciplina', False)"/>
+                    <field name="orientador_id" invisible="context.get('ocultar_orientador', False)"/>
                     <field name="processo_seletivo_id" invisible="context.get('ocultar_processo_seletivo', False)"/>
                     <field name="tutoria"/>
                     <field name="bolsista"/>
@@ -148,7 +154,7 @@
                     <field name="certidao_vinculo_nome" invisible="1"/>
                     <group string="Dados Pessoais" col="4">
                         <field name="perfil_id" colspan="2" on_change="onchange_perfil_ou_bolsista(perfil_id, bolsista)"
-                               options="{'create': false}"/>
+                               domain="[('ud_papel_id.user_id.id', '=', uid), ('tipo', '=', 'a')]" options="{'create': false}"/>
                         <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="celular" colspan="2" class="telefone" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="whatsapp" colspan="2" class="telefone" attrs="{'readonly': [('id', '!=', False)]}"/>
@@ -187,6 +193,19 @@
                         <button string="Cancelar" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_inscricao_ps_coord_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.inscricao.ps.form</field>
+            <field name="model">ud_monitoria.inscricao</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="ud_monitoria_inscricao_ps_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="perfil_id" position="attributes">
+                    <attribute name="domain">[('tipo', '=', 'a')]</attribute>
+                </field>
             </field>
         </record>
 

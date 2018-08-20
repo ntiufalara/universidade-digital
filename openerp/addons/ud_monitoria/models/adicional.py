@@ -395,7 +395,7 @@ class DisciplinaMonitoria(osv.Model):
             res['semestre_id'] = context.get('semestre_id', False) or self.pool.get('ud_monitoria.bolsas_curso').read(
                 cr, SUPERUSER_ID, context['bolsas_curso_id'], ['semestre_id'], load='_classic_write'
             )['semestre_id']
-        elif context.get('semestre_id', None):
+        elif context.get('semestre_id', False):
             res['semestre_id'] = context['semestre_id']
         elif context.get('active_model', False) == 'ud_monitoria.semestre' and context.get('active_id', False):
             res['semestre_id'] = context['active_id']

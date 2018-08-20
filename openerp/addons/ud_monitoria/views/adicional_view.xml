@@ -82,7 +82,8 @@
             <field name="res_model">ud_monitoria.disciplina</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'disciplina_ativa': True, 'somente_leitura': True}</field>
+            <field name="domain">[('data_inicial', '&lt;=', time.strftime('%Y-%m-%d')), ('data_final', '&gt;=', time.strftime('%Y-%m-%d'))]</field>
+            <field name="context">{'somente_leitura': True}</field>
         </record>
 
         <record id="ud_monitoria_disciplina_tree" model="ir.ui.view">
@@ -119,7 +120,7 @@
                         <field name="data_inicial" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="data_final" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
                         <field name="perfil_id" colspan="2" options="{'no_open': true}" on_change="onchange_perfil(perfil_id)"
-                               attrs="{'readonly': [('id', '!=', False)]}"
+                               attrs="{'readonly': [('id', '!=', False)]}" readonly="context.get('somente_leitura', False)"
                                groups="ud_monitoria.group_ud_monitoria_coord_disciplina,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
                         <field name="tutoria" attrs="{'readonly': [('id', '!=', False)]}" colspan="2" on_change="onchange_modalidade_disciplina(tutoria,disciplina_ids)"/>
                         <field name="orientador_id" colspan="4" readonly="1" options="{'no_open': true}"/>
@@ -177,15 +178,15 @@
                         <group>
                             <field name="total_inscricoes"/>
                         </group>
-                        <field name="inscricao_ids" nolabel="1" context="{'active_model': 'ud_monitoria.disciplina'}"/>
+                        <field name="inscricao_ids" nolabel="1" context="{'ocultar_orientador': True, 'ocultar_disciplina': True}"/>
                     </page>
                 </xpath>
                 <field name="id" position="before">
                     <header>
                         <button name="%(ud_monitoria.action_ud_monitoria_alteracao_datas_disciplina_wizard)d"
                                 type="action" string="Alterar datas" attrs="{'invisible': [('id', '=', False)]}"/>
-                        <button name="%(ud_monitoria.action_ud_monitoria_alterar_orientador_wizard)d"
-                                type="action" string="Alterar Orientador(a)"/>
+                        <button name="%(ud_monitoria.action_ud_monitoria_alterar_orientador_wizard)d" type="action"
+                                string="Alterar Orientador(a)" attrs="{'invisible': ['|', ('id', '!=', False), ('total_inscricoes', '&gt;', 0)]}"/>
                     </header>
                 </field>
                 <field name="orientador_id" position="attributes">

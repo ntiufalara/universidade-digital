@@ -354,37 +354,6 @@ class ProcessoSeletivo(osv.Model):
                         )
         return super(ProcessoSeletivo, self).write(cr, uid, ids, vals, context=context)
 
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        """
-        === Extensão do método osv.Model.search
-        Limita os processos seletivos de acordo com seu status caso o usuário não pertença aos grupos de segurança de
-        coordenador de monitoria (não é o mesmo que coordenador de monitoria do curso) e administrador.
-        """
-        if (context or {}).get("filtro_coordenador", False):
-            grupos = "ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-            states = []
-            if not self.user_has_groups(cr, uid, grupos):
-                states.append("invalido")
-            grupos += ",ud_monitoria.group_ud_monitoria_coord_disciplina"
-            if not self.user_has_groups(cr, uid, grupos):
-                states.append("demanda")
-            if states:
-                args = (args or []) + [("state", "not in", states)]
-        return super(ProcessoSeletivo, self).search(cr, uid, args, offset, limit, order, context, count)
-
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
-        if (context or {}).get("filtro_coordenador", False):
-            grupos = "ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
-            states = []
-            if not self.user_has_groups(cr, uid, grupos):
-                states.append("invalido")
-            grupos += ",ud_monitoria.group_ud_monitoria_coord_disciplina"
-            if not self.user_has_groups(cr, uid, grupos):
-                states.append("demanda")
-            if states:
-                domain = [("state", "not in", states)] + (domain or [])
-        return super(ProcessoSeletivo, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby)
-
     def default_get(self, cr, uid, fields_list, context=None):
         """
         === Extensão do método osv.Model.default_get

@@ -48,28 +48,6 @@ class DocumentosDiscente(osv.Model):
             )
         return res
 
-    def get_frequencia_controle(self, cr, uid, ids, campo, args, context=None):
-        """
-        Verifica se a frequência pode ser editável a partir dos seguintes critérios:
-          - Usuário é coordenador geral ou administrador e o semestre está ativo;
-          - Disciplina está ativa, o usuário é o próprio discente e está dentro do prazo de envio de frequências.
-        """
-        res = {}
-        hoje = data_hoje(self, cr, uid)
-        for doc in self.browse(cr, SUPERUSER_ID, ids, context):
-            if self.user_has_groups(
-                    cr, uid, 'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador'
-            ) and doc.disciplina_id.bolsas_curso_id.semestre_id.is_active:
-                res[doc.id] = True
-            elif doc.disciplina_id.is_active and self.user_has_groups(
-                    cr, uid, 'ud_monitoria.group_ud_monitoria_monitor'
-            ) and doc.discente_id.user_id.id == uid:
-                    data = datetime.strptime(doc.disciplina_id.semestre_id.data_i_frequencia, DEFAULT_SERVER_DATE_FORMAT).date()
-                    res[doc.id] = data <= hoje <= (data + timedelta(doc.disciplina_id.semestre_id.intervalo_frequencia))
-            else:
-                res[doc.id] = False
-        return res
-
     def get_is_active(self, cr, uid, ids, campo, args, context=None):
         hoje = data_hoje(self, cr)
         res = {}
@@ -121,7 +99,6 @@ class DocumentosDiscente(osv.Model):
         'state': fields.selection(_STATES, u'Status', required=True),
         'is_active': fields.function(get_is_active, type='boolean', string='Ativo?'),
         # Campos de Controle
-        'frequencia_controle': fields.function(get_frequencia_controle, type='boolean', string=u'Controle'),
         'certificado_nome': fields.char(u'Nome Certificado'),
         'declaracao_nome': fields.char(u'Nome Declaração'),
         'relatorio_nome': fields.char(u'Nome Relatório'),
@@ -132,6 +109,7 @@ class DocumentosDiscente(osv.Model):
     ]
     _constraints = [
         (lambda cls, *a, **k: cls.valida_vagas(*a, **k), u'Vagas insuficientes.', [u'Disciplina']),
+        (lambda cls, *a, **k: cls.valida_arquivos(*a, **k), u'Arquivo(s) inválido(s).', [u'Documentos']),
     ]
 
     # Métodos Sobrescritos
@@ -212,58 +190,6 @@ class DocumentosDiscente(osv.Model):
                                {"is_bolsista": False, "perfis_bolsa": False, "valor_bolsa": False}, context)
         return True
 
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        """
-        === Extensão do método osv.Model.search
-        São definidos os seguintes filtros, caso existam em 'context':
-            - filtrar_discente: filtra os documentos do discente a partir do usuário logado;
-            - documentos_ativos: filtra todos os documentos que estão ativos.
-
-        Obs.: Enquanto a disciplina correspondente estiver ativa, o documento também estará.
-        """
-        context = context or {}
-        if context.get('filtrar_discente', False):
-            pessoa_id = get_ud_pessoa_id(self, cr, uid)
-            if not pessoa_id:
-                return []
-            args = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
-                cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
-            ))] + (args or [])
-        if 'documentos_ativos' in context:
-            hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            if context['documentos_ativos']:
-                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
-                    cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
-                )
-            else:
-                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
-                    cr, SUPERUSER_ID, ['|', ('data_inicial', '>', hoje), ('data_final', '<', hoje)]
-                )
-            args = [('disciplina_id', 'in', disciplina_ids)] + (args or [])
-        return super(DocumentosDiscente, self).search(cr, uid, args, offset, limit, order, context, count)
-
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False):
-        context = context or {}
-        if context.get('filtrar_discente', False):
-            pessoa_id = get_ud_pessoa_id(self, cr, uid)
-            if not pessoa_id:
-                return []
-            domain = [('perfil_id', 'in', self.pool.get('ud.perfil').search(
-                cr, SUPERUSER_ID, [('ud_papel_id', '=', pessoa_id)], context=context
-            ))] + (domain or [])
-        if 'documentos_ativos' in context:
-            hoje = data_hoje(self, cr).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            if context['documentos_ativos']:
-                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
-                    cr, SUPERUSER_ID, [('data_inicial', '<=', hoje), ('data_final', '>=', hoje)]
-                )
-            else:
-                disciplina_ids = self.pool.get('ud_monitoria.disciplina').search(
-                    cr, SUPERUSER_ID, ['|', ('data_inicial', '>', hoje), ('data_final', '<', hoje)]
-                )
-            domain = [('disciplina_id', 'in', disciplina_ids)] + (domain or [])
-        return super(DocumentosDiscente, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby)
-
     # Validadores
     def valida_vagas(self, cr, uid, ids, context=None):
         """
@@ -288,6 +214,16 @@ class DocumentosDiscente(osv.Model):
                         u'Erro de Validação',
                         u'Não há vagas disponíveis para novos colaboradores.'
                     )
+        return True
+
+    def valida_arquivos(self, cr, uid, ids, context=None):
+        for doc in self.browse(cr, uid, ids, context):
+            if doc.relatorio_nome and not doc.relatorio_nome.endswith('.pdf'):
+                raise orm.except_orm(u'Erro de Validação', u'O relatório anexado deve ser um PDF.')
+            elif doc.declaracao_nome and not doc.declaracao_nome.endswith('.pdf'):
+                raise orm.except_orm(u'Erro de Validação', u'A declaração anexada deve ser um PDF.')
+            elif doc.certificado_nome and not doc.certificado_nome.endswith('.pdf'):
+                raise orm.except_orm(u'Erro de Validação', u'O certificado anexado deve ser um PDF.')
         return True
 
     # Métodos de manipulação do grupo de segurança
@@ -382,7 +318,7 @@ class DocumentosDiscente(osv.Model):
 
 class Horario(osv.Model):
     _name = "ud_monitoria.horario"
-    _description = u"Horário do monitori (UD)"
+    _description = u"Horário do monitoria (UD)"
     _order = "CASE WHEN dia = 'seg' THEN 1 " \
              "WHEN dia = 'ter' THEN 2 " \
              "WHEN dia = 'qua' THEN 3 " \
@@ -474,7 +410,7 @@ class Horario(osv.Model):
                 clausulas = " ORDER BY " + ",".join([(clausulas or ""), (res and res[10:] or "")]).strip(",")
         return clausulas or ''
 
-    # Método de validação
+    # Validadores
     def valida_hora(self, cr, uid, ids, context=None):
         """
         Verifica se o padrão de horas inseridas estão corretas com horas de 0 à 23 e minutos de 0 até 59 e se a hora
@@ -495,58 +431,64 @@ class Horario(osv.Model):
 
 
 class Frequencia(osv.Model):
-    _name = "ud_monitoria.frequencia"
-    _description = u"Frequência do monitor/tutor UD)"
-    _order = "state"
+    _name = 'ud_monitoria.frequencia'
+    _description = u'Frequência do monitor/tutor (UD)'
+    _order = 'state'
 
-    _STATES = [("analise", u"Em Análise"), ("rejeitado", u"Rejeitado"), ("aceito", u"Aceito")]
+    _STATES = [('analise', u'Em Análise'), ('rejeitado', u'Rejeitado'), ('aceito', u'Aceito')]
+
+    def get_disponivel(self, cr, uid, ids, campos, args, context=None):
+        res = {}
+        hoje = data_hoje(self, cr, uid)
+        for freq in self.browse(cr, uid, ids):
+            data = datetime.strptime(freq.mes_id.data_inicial, DEFAULT_SERVER_DATE_FORMAT).date()
+            res[freq.id] = data <= hoje <= data + timedelta(freq.mes_id.intervalo)
+        return res
 
     _columns = {
-        "mes": fields.selection(_MESES, u"Mês", required=True),
-        "ano": fields.integer(u"Ano", required=True),
-        "state": fields.selection(_STATES, u"Status"),
-        "frequencia": fields.binary(u"Frequência", required=True),
-        "frequencia_nome": fields.char(u"Nome da Frequência"),
-        "documentos_id": fields.many2one("ud_monitoria.documentos_discente", u"Documentos", ondelete="cascade",
-                                         help=u"Documentos de um Discente", invisible=True),
+        'id': fields.integer(u'ID', readonly=True, invisible=True),
+        'mes_id': fields.many2one('ud_monitoria.mes_frequencia', u'Mês', required=True, ondelete='cascade'),
+        'frequencia': fields.binary(u'Frequência', required=True),
+        'frequencia_nome': fields.char(u'Nome da Frequência'),
+        'state': fields.selection(_STATES, u'Status'),
+        'documentos_id': fields.many2one('ud_monitoria.documentos_discente', u'Documentos', ondelete='cascade',
+                                         help=u'Documentos de um Discente', invisible=True),
+        'disponivel': fields.function(get_disponivel, type='boolean', string=u'Disponível'),
     }
 
-    _defaults = {
-        "ano": datetime.today().year,
-    }
-
-    # Validadores
-    def valida_status(self, cr, uid, ids, context=None):
-        """
-        Verifica se há mais de uma frequência com status "analise", "aceito" ou uma com status "analise" e outra "aceito".
-        """
-        for freq in self.browse(cr, uid, ids, context):
-            analise, aceita = 0, 0
-            for f in freq.documentos_id.frequencia_ids:
-                if freq.mes == f.mes:
-                    if f.state == "analise":
-                        analise += 1
-                    elif f.state == "aceito":
-                        aceita += 1
-            if analise and aceita or analise > 1 or aceita > 1:
-                return False
-        return True
-
-    def valida_data(self, cr, uid, ids, context=None):
-        """
-        Verifica se ainda está dentro do prazo para inserção de novas frequências.
-        """
-        hoje = datetime.utcnow().date()
-        for freq in self.browse(cr, SUPERUSER_ID, ids, context):
-            data = datetime.strptime(freq.documentos_id.disciplina_id.semestre_id.data_i_frequencia, DEFAULT_SERVER_DATE_FORMAT).date()
-            if not (data <= hoje <= (data + timedelta(freq.documentos_id.disciplina_id.semestre_id.intervalo_frequencia))):
-                return False
-        return True
+    _sql_constraints = [
+        ('mes_doc_unico', 'unique(mes_id, documentos_id)',
+         u'Não é permitido duplicar frequências para o mesmo mês, mas é possível editar caso o registro tenha sido rejeitado.')
+    ]
 
     _constraints = [
-        (valida_status, u"Não é possível criar novas frequências para meses que possuam outros registros em análise ou aceitos.", [u"Mês"]),
-        (valida_data, u"Inclusão de novas frequências deve está dentro do prazo.", [u"Frequência"]),
+        (lambda cls, *a, **k: cls.valida_data(*a, **k), u"Inclusão de novas frequências deve está dentro do prazo.", [u"Frequência"]),
+        (lambda cls, *a, **k: cls.valida_arquivo(*a, **k), u"Arquivo inválido", [u"Frequência"]),
     ]
+
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        res = super(Frequencia, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar, submenu)
+        if 'mes_id' in res['fields']:
+            context = context or {}
+            if res['fields']['mes_id']['domain']:
+                domain = '{}'.format(res['fields']['mes_id']['domain'])
+                domain.lstrip(' [')
+                domain = '[{}, ' + domain
+            else:
+                domain = '[{}]'
+            if context.get('semestre_id', False):
+                mes_model = self.pool.get('ud_monitoria.mes_frequencia')
+                hoje = data_hoje(self, cr, uid).strftime(DEFAULT_SERVER_DATE_FORMAT)
+                ids = mes_model.search(cr, uid, [('semestre_id', '=', context['semestre_id']), ('data_inicial', '<=', hoje)])
+                if ids:
+                    ids = [
+                        mes.id
+                        for mes in mes_model.browse(cr, uid, ids) if mes.disponivel
+                    ]
+                    res['fields']['mes_id']['domain'] = domain.format(('id', 'in', ids))
+            else:
+                res['fields']['mes_id']['domain'] = domain.format(('id', '=', False))
+        return res
 
     def create(self, cr, uid, vals, context=None):
         """
@@ -556,18 +498,46 @@ class Frequencia(osv.Model):
         vals["state"] = "analise"
         return super(Frequencia, self).create(cr, uid, vals, context)
 
+    def write(self, cr, uid, ids, vals, context=None):
+        if 'frequencia' in vals:
+            vals['state'] = 'analise'
+        return super(Frequencia, self).write(cr, uid, ids, vals, context)
+
+    # Validadores
+    def valida_data(self, cr, uid, ids, context=None):
+        """
+        Verifica se ainda está dentro do prazo para inserção de novas frequências.
+        """
+        for freq in self.browse(cr, SUPERUSER_ID, ids, context):
+            if not freq.mes_id.disponivel:
+                return False
+        return True
+
+    def valida_arquivo(self, cr, uid, ids, context=None):
+        for freq in self.browse(cr, SUPERUSER_ID, ids, context):
+            if freq.frequencia_nome and not (freq.frequencia_nome.endswith('.pdf') or freq.frequencia_nome.endswith('.jpg') or freq.frequencia_nome.endswith('jpeg')):
+                raise orm.except_orm(
+                    u'Erro de Validação',
+                    u'A frequência anexada de %s não está não é um PDF ou uma imagem JPG/JPEG.'
+                    % freq.mes_id.name_get()[0][1]
+                )
+        return True
+
+    # Ações de botões
     def botao_aceitar(self, cr, uid, ids, context=None):
         """
         Altera o status para "aceito".
         """
         for freq in self.browse(cr, uid, ids, context):
             args = [
-                ('state', '=', 'rejeitado'), ('mes', '=', freq.mes), ('ano', '=', freq.ano)
+                ('state', '=', 'rejeitado'), ('mes', '=', freq.mes_id.id),
             ]
             freq_ids = self.search(cr, uid, args)
             if freq_ids:
                 self.unlink(cr, SUPERUSER_ID, freq_ids)
-            if freq.documentos_id.orientador_id.user_id.id != uid and not self.user_has_groups(cr, uid, 'ud_monitoria.group_ud_monitoria_coordenador'):
+            if freq.documentos_id.orientador_id.user_id.id != uid and not self.user_has_groups(
+                    cr, uid, 'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador'
+            ):
                 raise orm.except_orm(u'Permissão Negada!',
                                      u'Você não possui permissão para validar frequências desse discente')
         return self.write(cr, uid, ids, {"state": "aceito"}, context)
@@ -577,7 +547,9 @@ class Frequencia(osv.Model):
         Altera o status para "rejeitado".
         """
         for freq in self.browse(cr, uid, ids, context):
-            if freq.documentos_id.orientador_id.user_id.id != uid and not self.user_has_groups(cr, uid, 'ud_monitoria.group_ud_monitoria_coordenador'):
+            if freq.documentos_id.orientador_id.user_id.id != uid and not self.user_has_groups(
+                    cr, uid, 'ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador'
+            ):
                 raise orm.except_orm(u'Permissão Negada!',
                                      u'Você não possui permissão para validar frequências desse discente')
         return self.write(cr, uid, ids, {"state": "rejeitado"}, context)

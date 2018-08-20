@@ -13,11 +13,17 @@
         </record>
 
         <record id="action_ud_monitoria_documentos_orientador_coordenacao" model="ir.actions.act_window">
-            <field name="name">Documentos/Orientadores</field>
+            <field name="name">Orientadores</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.documentos_orientador</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('semestre_id.is_active', '=', True)]</field>
+            <field name="help" type="html">
+                <div>
+                    Aqui serão mostrados todos os documentos de orientadores para os semestres ativos.
+                </div>
+            </field>
         </record>
 
         <record id="ud_monitoria_documentos_orientador_tree" model="ir.ui.view">
@@ -25,7 +31,7 @@
             <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Documentos" colors="blue:is_active==True">
+                <tree string="Documentos" create="false" colors="blue:is_active==True">
                     <field name="disciplina_id"/>
                     <field name="curso_id"/>
                     <field name="perfil_id" groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
@@ -41,7 +47,7 @@
             <field name="model">ud_monitoria.documentos_orientador</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Documento" version="7.0" delete="false">
+                <form string="Documento" version="7.0" create="false" delete="false">
                     <field name="id" invisible="1"/>
                     <group name="info" col="4">
                         <field name="orientador_id" colspan="4" readonly="1"

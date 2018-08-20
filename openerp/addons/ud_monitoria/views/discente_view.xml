@@ -9,15 +9,22 @@
             <field name="res_model">ud_monitoria.documentos_discente</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{"filtrar_discente": True}</field>
+            <field name="domain">[('perfil_id.ud_papel_id.user_id.id', '=', uid)]</field>
+            <field name="context">{}</field>
         </record>
 
         <record id="action_ud_monitoria_documentos_discente_coordenador" model="ir.actions.act_window">
-            <field name="name">Documentos/Discentes</field>
+            <field name="name">Discentes</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.documentos_discente</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('semestre_id.is_active', '=', True)]</field>
+            <field name="help" type="html">
+                <div>
+                    Aqui serão mostrados todos os documentos de discentes, monitores ou tutores, para os semestres ativos.
+                </div>
+            </field>
         </record>
 
         <record id="action_ud_monitoria_horarios_discente" model="ir.actions.act_window">
@@ -26,11 +33,14 @@
             <field name="res_model">ud_monitoria.documentos_discente</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', 'in', ['bolsista', 'n_bolsista'])]</field>
-            <field name="context">{"documentos_ativos": True}</field>
+            <field name="domain">
+                [('disciplina_id.data_inicial', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                ('disciplina_id.data_final', '&gt;=', context_today().strftime('%Y-%m-%d'))]
+            </field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <div>
-                    Todos os horários dos monitores e tutores ativos serão mostrados aqui.
+                    Visualize aqui todos os horários dos monitores e tutores ativos.
                 </div>
             </field>
         </record>
@@ -58,13 +68,13 @@
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
                 <field name="discente_id" position="after">
-                    <field name="semestre_id"/>
+                    <field name="semestre_id" invisible="context.get('ocultar_semestre', False)"/>
                 </field>
                 <field name="disciplina_id" position="attributes">
                     <attribute name="invisible">context.get('ocultar_disciplina', False)</attribute>
                 </field>
                 <field name="tutor" position="after">
-                    <field name="state"/>
+                    <field name="state" invisible="context.get('ocultar_status', False)"/>
                     <field name="is_active"/>
                     <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action"
                             groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
@@ -102,7 +112,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Documentos" create="false" delete="false" version="7.0">
-                    <field name="frequencia_controle" invisible="1"/>
+                    <field name="certificado_nome" invisible="1"/>
+                    <field name="declaracao_nome" invisible="1"/>
+                    <field name="relatorio_nome" invisible="1"/>
                     <header>
                         <button name="%(ud_monitoria.ud_monitoria_desligamento_wizard_action)d" type="action" string="Desligar"
                                 groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
@@ -119,6 +131,7 @@
                         <field name="discente_id" colspan="2" readonly="1" options="{'no_open': true}"/>
                         <field name="tutor" colspan="2" readonly="1"/>
                         <field name="dados_bancarios_id" colspan="2" options="{'no_open': true}"
+                               attrs="{'required': [('state', '=', 'bolsista')]}"
                                context="{'form_view_ref': 'ud.ud_dados_bancarios_usuario_form', 'proprietario_conta': discente_id}"/>
                         <field name="curso_id" colspan="2" readonly="1"/>
                         <field name="disciplina_id" colspan="2" readonly="1"/>
@@ -131,11 +144,8 @@
                         <field name="relatorio" filename="relatorio_nome" colspan="2" attrs="{'readonly': [('is_active', '=', False)]}"/>
                     </group>
                     <group string="Frequências" col="4">
-                        <div style="color:red;" colspan="4" attrs="{'invisible': ['|', ('is_active', '=', False), ('frequencia_controle', '=', False)]}">
-                            <strong>Atenção:</strong> Você pode adicionar novas frequências.
-                        </div>
-                        <field name="frequencia_ids" nolabel="1" colspan="4"
-                               attrs="{'readonly': ['|', ('frequencia_controle', '=', False), ('is_active', '=', False)]}"/>
+                        <field name="frequencia_ids" nolabel="1" colspan="4" context="{'semestre_id': semestre_id}"
+                               attrs="{'readonly': [('is_active', '=', False)]}" options="{'no_open': True}"/>
                     </group>
                     <group string="Horários">
                         <field name="horario_ids" nolabel="1" readonly="1"/>
@@ -174,6 +184,9 @@
                 <field name="certificado" position="attributes">
                     <attribute name="readonly"/>
                     <attribute name="attrs">{'readonly': [('declaracao', '!=', False)]}</attribute>
+                </field>
+                <field name="discente_id" position="attributes">
+                    <attribute name="options"/><attribute name="context">{'form_view_ref': 'ud_monitoria.ud_employee_info_basicas_form_view'}</attribute>
                 </field>
             </field>
         </record>
@@ -234,12 +247,16 @@
                     <field name="discente_id"/>
 
                     <filter string="Ativos" name="ativos" help="Mostra os documentos ativos."
-                            context="{'documentos_ativos': True}"/>
+                            domain="[('disciplina_id.data_inicial', '&lt;=', context_today().strftime('%%Y-%%m-%%d')), ('disciplina_id.data_final', '&gt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
                     <filter string="Inativos" name="inativos" help="Mostra os documentos inativos."
-                            context="{'documentos_ativos': False}"/>
+                            domain="['|', ('disciplina_id.data_inicial', '&gt;', context_today().strftime('%%Y-%%m-%%d')), ('disciplina_id.data_final', '&lt;', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Tutores" name="tutores" help="Mostra os documentos de Tutores." domain="[('tutor', '=', True)]"/>
+                    <filter string="Monitores" name="monitores" help="Mostra os documentos de Monitores." domain="[('tutor', '=', False)]"/>
                     <filter string="Bolsistas" name="bolsistas" help="Mostra os documentos de bolsistas."
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                             domain="[('state', '=', 'bolsista')]"/>
                     <filter string="Colaboradores" name="colaboradores" help="Mostra os documentos de colaboradores."
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                             domain="[('state', '=', 'n_bolsista')]"/>
                     <filter string="Cadastro de Reserva" name="cadastro_reserva" help="Mostra os documentos no cadastro de reserva."
                             groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
@@ -249,9 +266,9 @@
                             domain="[('state', '=', 'desligado')]"/>
 
                     <group expand="0" string="Agrupar por...">
-                        <filter string="Status" name="state" context="{'group_by': 'state'}"
-								help="Agrupar por status"/>
-                        <filter string="Semestre" name="semestre" context="{'group_by': 'semestre_id'}"
+                        <filter string="Status" name="state" context="{'group_by': 'state', 'ocultar_status': True}" help="Agrupar por status"
+                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"/>
+                        <filter string="Semestre" name="semestre" context="{'group_by': 'semestre_id', 'ocultar_semestre': True}"
 								help="Agrupar por semestre"/>
                         <filter string="Curso" name="curso" help="Agrupar por curso"
                                 context="{'group_by': 'curso_id', 'ocultar_curso': True}"/>
@@ -319,15 +336,14 @@
             <field name="arch" type="xml">
                 <tree string="Frequências" delete="false" colors="red:state=='rejeitado';blue:state=='analise';green:state=='aceito'">
                     <field name="frequencia_nome" invisible="1"/>
-                    <field name="mes"/>
-                    <field name="ano"/>
+                    <field name="mes_id"/>
                     <field name="frequencia" filename="frequencia_nome"/>
                     <field name="state"/>
                     <button name="botao_aceitar" string="Aceitar" type="object" icon="STOCK_APPLY"
-                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador"
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                             confirm="Deseja aceitar a frequência?" states="analise"/>
                     <button name="botao_rejeitar" string="Rejeitar" type="object" icon="STOCK_CANCEL"
-                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador"
+                            groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                             confirm="Deseja rejeitar a frequência?" states="analise"/>
                 </tree>
             </field>
@@ -339,10 +355,9 @@
             <field name="inherit_id" ref="ud_monitoria_frequencia_tree"/>
             <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
             <field name="arch" type="xml">
-                <field name="state" position="after">
-                    <button name="unlink" string="Apagar" type="object" icon="gtk-delete"
-                            confirm="Você têm certeza que deseja excluir esse registro? Essa ação não poderá ser desfeita."/>
-                </field>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="delete"/>
+                </xpath>
             </field>
         </record>
 
@@ -352,20 +367,20 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Frequência" version="7.0">
+                    <field name="id" invisible="1"/>
                     <field name="frequencia_nome" invisible="1"/>
                     <header>
                         <button name="botao_aceitar" string="Aceitar" type="object"
-                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador"
+                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                                 confirm="Deseja aceitar a frequência?" states="analise"/>
                         <button name="botao_rejeitar" string="Rejeitar" type="object"
-                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador"
+                                groups="ud_monitoria.group_ud_monitoria_orientador,ud_monitoria.group_ud_monitoria_coordenador,ud_monitoria.group_ud_monitoria_administrador"
                                 confirm="Deseja rejeitar a frequência?" states="analise"/>
                         <field name="state" widget="statusbar" states="analise,rejeitado,aceito"/>
                     </header>
                     <group col="4">
-                        <field name="mes" colspan="2"/>
-                        <field name="ano" colspan="2"/>
-                        <field name="frequencia" colspan="4" filename="frequencia_nome"/>
+                        <field name="mes_id" colspan="2" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="frequencia" colspan="2" attrs="{'readonly': [('state', 'in', ['analise', 'aceito'])]}" filename="frequencia_nome"/>
                     </group>
                 </form>
             </field>

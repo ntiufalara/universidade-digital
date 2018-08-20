@@ -30,12 +30,13 @@
                     <group>
                         <field name="disc_monit_id" on_change="onchange_disciplina_monitoria(disc_monit_id)"
                                attrs="{'readonly': [('id', '!=', False)]}"
-                               context="{'semestre_id': context.get('semestre_id', False), 'coordenador_monitoria_curso': context.get('coordenador_monitoria_curso', False)}"
+                               domain="[('bolsas_curso_id.coord_monitoria_id.user_id', '=', uid)]"
+                               context="{'semestre_id': context.get('semestre_id', False)}"
                                options="{'no_open': true, 'create': false, 'create_edit': false, 'm2o_dialog': false}"/>
                     </group>
                     <div style="color: red">
-                        <strong>Atenção:</strong> As informações mostradas estão diretamente relacionadas ao
-                        semestre, não ao processo seletivo. Isso quer dizer que elas podem ser atualizadas posteriormente.
+                        <strong>Atenção:</strong> Essas informações estão diretamente relacionadas ao semestre,
+                        não ao processo seletivo. Isso quer dizer que eventuais atualizações podem ocorrer.
                     </div>
                     <group string="Detalhes" col="4" attrs="{'invisible': [('disc_monit_id', '=', False)]}">
                         <field name="semestre_id" colspan="2" readonly="1" options="{'no_open': true}"/>
@@ -66,6 +67,19 @@
                         </field>
                     </group>
                 </form>
+            </field>
+        </record>
+
+        <record id="ud_monitoria_disciplina_ps_coordenador_admin_form" model="ir.ui.view">
+            <field name="name">ud_monitoria.disciplina_ps.coordenador_admin.form</field>
+            <field name="model">ud_monitoria.disciplina_ps</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="ud_monitoria_disciplina_ps_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('ud_monitoria.group_ud_monitoria_coordenador'), ref('ud_monitoria.group_ud_monitoria_administrador')])]"/>
+            <field name="arch" type="xml">
+                <field name="disc_monit_id" position="attributes">
+                    <attribute name="domain"/>
+                </field>
             </field>
         </record>
 
@@ -177,7 +191,7 @@
             <field name="name">Processos Seletivos</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.processo_seletivo</field>
-            <field name="context">{'filtro_coordenador': True}</field>
+            <field name="context">{}</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
@@ -232,8 +246,13 @@
                         <page string="Anexos">
                             <field name="anexos_ids" nolabel="1"/>
                         </page>
-                        <page string="Disciplinas" attrs="{'invisible': [('state', '=', False)]}">
-                            <field name="disciplinas_ids" nolabel="1" context="{'semestre_id': semestre_id}"
+                        <page string="Disciplinas" attrs="{'invisible': [('state', '=', False)]}" col="4">
+                            <div style="color: red" colspan="2">
+                                <strong>Atenção:</strong> As informações das disciplinas estão diretamente relacionadas
+                                ao semestre, não ao processo seletivo. Isso quer dizer que eventuais atualizações podem
+                                ocorrer mesmo após o encerramento do processo seletivo.
+                            </div>
+                            <field name="disciplinas_ids" nolabel="1"  colspan="2" context="{'semestre_id': semestre_id}"
                                    attrs="{'readonly': [('state', 'in', ['novo', 'andamento', 'encerrado'])]}"/>
                         </page>
                         <page string="Critérios Avaliativos">
@@ -384,10 +403,10 @@
             <field name="name">Solicitação de Disciplinas</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ud_monitoria.processo_seletivo</field>
-            <field name="context">{'coordenador_monitoria_curso': True}</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('state', '=', 'demanda')]</field>
+            <field name="context">{'coordenador_monitoria_curso': True}</field>
             <field name="help" type="html">
                 <div>
                     <p>

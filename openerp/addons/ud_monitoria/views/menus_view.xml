@@ -32,10 +32,13 @@
                   action="action_ud_monitoria_inscricao_view" sequence="3"/>
         <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_disciplina_ativa_menu"
                   action="action_ud_monitoria_disciplina_ativa" sequence="5"/>
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_discente_coordenacao_menu"
-                  action="action_ud_monitoria_documentos_discente_coordenador" sequence="7"/>
-        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_documentos_orientador_coordenacao_menu"
-                  action="action_ud_monitoria_documentos_orientador_coordenacao" sequence="9"/>
+        <menuitem parent="ud_monitoria_coordenacao_menu" id="ud_monitoria_docs_orient_disc_menu" name="Documentos" sequence="7"/>
+
+
+        <menuitem parent="ud_monitoria_docs_orient_disc_menu" id="ud_monitoria_discente_coordenacao_menu"
+                  action="action_ud_monitoria_documentos_discente_coordenador" sequence="1"/>
+        <menuitem parent="ud_monitoria_docs_orient_disc_menu" id="ud_monitoria_documentos_orientador_coordenacao_menu"
+                  action="action_ud_monitoria_documentos_orientador_coordenacao" sequence="3"/>
 
         <!-- Menu Interno Discente -->
         <menuitem parent="ud_monitoria_discente_menu" id="ud_monitoria_documentos_discente_menu"
