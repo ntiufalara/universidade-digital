@@ -401,9 +401,6 @@ class Disciplina(osv.osv):
         (lambda cls, *args, **kwargs: cls.valida_periodo(*args, **kwargs),
          u"Período deve ser maior que 0", [u"Período"]),
     ]
-    _defaults = {
-        'periodo': -1,
-    }
 
     def valida_ch(self, cr, uid, ids, context=None):
         for disc in self.browse(cr, uid, ids, context):
