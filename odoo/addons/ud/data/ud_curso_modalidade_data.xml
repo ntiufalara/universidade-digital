@@ -6,6 +6,9 @@
         <record id="curso_modalidade_licenciatura" model="ud.curso.modalidade">
             <field name="name">Licenciatura</field>
         </record>
+        <record id="curso_modalidade_licenciatura_plena" model="ud.curso.modalidade">
+            <field name="name">Licenciatura Plena</field>
+        </record>
         <record id="curso_modalidade_bacharelado" model="ud.curso.modalidade">
             <field name="name">Bacharelado</field>
         </record>

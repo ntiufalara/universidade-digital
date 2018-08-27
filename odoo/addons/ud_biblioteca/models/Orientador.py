@@ -69,15 +69,19 @@ class Orientador(models.Model):
             if orientador.get('titulacao_id') and not titulacao_obj:
                 continue
             orientador_obj = self.search([('name', '=', orientador['name'])])
+            # Separa os nomes juntos em "primeiro nome" e "último nome"
             full_name = orientador['name'].split(',')
-            name = full_name[1].strip()
-            ultimo_nome = full_name[0][:-1]
+            try:
+                name = full_name[1].strip()
+                ultimo_nome = full_name[0][:-1]
 
-            data = {
-                'name': name,
-                'ultimo_nome': ultimo_nome,
-            }
-            if titulacao_obj:
-                data['titulacao_id'] = titulacao_obj.id
-            if not orientador_obj:
-                self.create(data)
+                data = {
+                    'name': name,
+                    'ultimo_nome': ultimo_nome,
+                }
+                if titulacao_obj:
+                    data['titulacao_id'] = titulacao_obj.id
+                if not orientador_obj:
+                    self.create(data)
+            except IndexError:
+                continue

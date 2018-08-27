@@ -13,5 +13,55 @@
             <field name="function">load_from_openerp7_cron</field>
         </record>
 
+        <record id="load_campus_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os campi com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.campus</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
+        <record id="load_polo_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os polos com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.polo</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
+        <record id="load_setor_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os setores com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.setor</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
+        <record id="load_curso_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os cursos com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.curso</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
+        <record id="load_bloco_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os blocos com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.bloco</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
     </data>
 </odoo>
