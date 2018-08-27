@@ -4,58 +4,63 @@
     <template id="ud_biblioteca_website.home_repositorio">
 
         <t t-call="ud_website.layout">
-            <div class="jumbotron bg-primary text-light shadow-sm">
-                <h1 class="display-4 text-center">Repositório Institucional</h1>
-                <h4 class="text-center">Campus Arapiraca</h4>
-                <form>
-                    <div class="row">
-                        <div class="col-8 mx-auto">
-                            <div class="form-group mx-auto pt-3">
-                                <div class="row">
-                                    <div class="col-sm-10 p-0">
-                                        <input class="form-control form-control-lg" type="text"
-                                               placeholder="Digite para buscar"/>
-                                    </div>
-                                    <div class="col-sm-2 p-0 mx-auto">
-                                        <button type="submit" class="btn btn-secondary btn-lg btn-block">Buscar</button>
+            <div class="col-12">
+                <div class="jumbotron bg-primary text-light shadow-sm">
+                    <h1 class="display-4 text-center">Repositório Institucional</h1>
+                    <h4 class="text-center">Campus Arapiraca</h4>
+                    <form>
+                        <div class="row">
+                            <div class="col-8 mx-auto">
+                                <div class="form-group mx-auto pt-3">
+                                    <div class="row">
+                                        <div class="col-sm-10 p-0">
+                                            <input class="form-control form-control-lg" type="text"
+                                                   placeholder="Digite para buscar"/>
+                                        </div>
+                                        <div class="col-sm-2 p-0 mx-auto">
+                                            <button type="submit" class="btn btn-secondary btn-lg btn-block">
+                                                Buscar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card-deck">
-                <div class="card">
-                    <div class="card-header">
-                        Cursos
-                    </div>
-                    <div class="card-body">
-                        <a t-foreach="cursos" t-as="curso" t-attf-href="/repositorio/publicacoes?curso={{ curso.id }}">
-                            <button class="btn btn-outline-secondary btn-lg" t-esc="curso.name"></button>
-                        </a>
-                    </div>
-                    <div class="card-footer text-muted">
-                        <button class="btn btn-primary">
-                            Ver mais
-                        </button>
-                    </div>
+                    </form>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        Assuntos
+                <div class="card-deck">
+                    <div class="card">
+                        <div class="card-header">
+                            Cursos
+                        </div>
+                        <div class="card-body">
+                            <a t-foreach="cursos" t-as="curso"
+                               t-attf-href="/repositorio/publicacoes?curso={{ curso.id }}">
+                                <button class="btn btn-outline-secondary btn-lg" t-esc="curso.name"></button>
+                            </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <button class="btn btn-primary">
+                                Ver mais
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <a t-foreach="palavras_chave" t-as="p" href="">
-                            <button class="btn btn-outline-secondary btn-lg" t-esc="p.name"></button>
-                        </a>
-                    </div>
-                    <div class="card-footer text-muted">
-                        <button class="btn btn-primary">
-                            Ver mais
-                        </button>
+
+                    <div class="card">
+                        <div class="card-header">
+                            Assuntos
+                        </div>
+                        <div class="card-body">
+                            <a t-foreach="palavras_chave" t-as="p" href="">
+                                <button class="btn btn-outline-secondary btn-lg" t-esc="p.name"></button>
+                            </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <button class="btn btn-primary">
+                                Ver mais
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

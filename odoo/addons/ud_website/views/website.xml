@@ -52,7 +52,9 @@
                 </nav>
 
                 <section class="container" id="content">
-                    <t t-raw="0"></t>
+                    <div class="row justify-content-md-center">
+                        <t t-raw="0"></t>
+                    </div>
                 </section>
 
                 <footer id="site-footer" class="mt-5 p-5">
@@ -91,9 +93,7 @@
 
     <template id="ud_website.home">
         <t t-call="ud_website.layout">
-            <div id="icones_inicio" class="card-group">
-
-            </div>
+            <div style="display: none;" id="icones_inicio" class="card-group"></div>
         </t>
     </template>
 
