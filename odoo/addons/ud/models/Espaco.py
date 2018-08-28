@@ -1,5 +1,9 @@
 # encoding: UTF-8
+import logging
+
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class Espaco(models.Model):
@@ -27,3 +31,52 @@ class Espaco(models.Model):
         for campo in campos:
             valores[campo] = ""
         return {'value': valores}
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização dos Espaços com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando os espaços com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        server_oe7 = self.env['ud.server.openerp7'].search([('db', '=', 'ud')])
+        url, db, username, password = server_oe7.url, server_oe7.db, server_oe7.username, server_oe7.password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        espaco_ids = server.execute(db, uid, password, 'ud.espaco', 'search', [])
+        espaco_objs = server.execute_kw(db, uid, password, 'ud.espaco', 'read', [espaco_ids])
+
+        for espaco in espaco_objs:
+            print(espaco)
+            new_espaco = self.search([('name', '=', espaco['name'])])
+            if not espaco['local_polo']:
+                continue
+
+            polo_id = self.env['ud.polo'].search([('name', '=', espaco['local_polo'][1])])
+            # # Se polo ainda não existir, pule
+            if not polo_id:
+                continue
+            campus_id = polo_id.campus_id
+
+            # Busca o bloco no banco de dados
+            bloco_id = self.env['ud.bloco'].search([('name', '=', espaco['local_bloco_polo'][1])])
+            if not bloco_id:
+                continue
+
+            if not new_espaco:
+                self.create({
+                    'name': espaco['name'],
+                    'polo_id': polo_id.id,
+                    'bloco_id': bloco_id.id,
+                    'campus_id': campus_id.id,
+                    'capacidade': espaco['capacidade'],
+                    'permite_reserva': espaco['permite_reserva'],
+                    'informacoes_adicionais': espaco['informacoes_adicionais'] if espaco.get(
+                        'informacoes_adicionais') else '',
+
+                })

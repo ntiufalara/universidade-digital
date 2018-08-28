@@ -63,5 +63,15 @@
             <field name="function">load_from_openerp7_cron</field>
         </record>
 
+        <record id="load_espaco_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os espaços com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.espaco</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
     </data>
 </odoo>
