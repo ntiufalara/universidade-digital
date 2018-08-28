@@ -125,6 +125,7 @@ class Publicacao(models.Model):
             uid = auth.login(db, username, password)
         except:
             # Se não conectar, saia da função
+            _logger.error(u'A conexão com o servidor Openerp7 não foi bem sucedida')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         # busca as publicações
@@ -150,7 +151,7 @@ class Publicacao(models.Model):
                                                      [pub['orientador_ids']])
                 orientadores_old_names = [o['name'] for o in orientadores_old]
                 orientadores = self.env['ud.biblioteca.publicacao.orientador'].search(
-                    [('nome_orientador', 'in', orientadores_old_names)]
+                    [('display_name', 'in', orientadores_old_names)]
                 )
                 # Caso nem todas os orientadores estejam no banco, pula
                 if len(orientadores) != len(orientadores_old_names):
@@ -160,7 +161,7 @@ class Publicacao(models.Model):
                                                        [pub['coorientador_ids']])
                 coorientadores_old_names = [o['name'] for o in coorientadores_old]
                 coorientadores = self.env['ud.biblioteca.publicacao.orientador'].search(
-                    [('nome_orientador', 'in', coorientadores_old_names)]
+                    [('display_name', 'in', coorientadores_old_names)]
                 )
                 # Caso nem todas os orientadores estejam no banco, pula
                 if len(coorientadores) != len(coorientadores_old_names):

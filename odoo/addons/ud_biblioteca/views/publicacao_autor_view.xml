@@ -23,7 +23,7 @@
             <field name="model">ud.biblioteca.publicacao.autor</field>
             <field name="arch" type="xml">
                 <tree string="Autores">
-                    <field name="name"/>
+                    <field name="display_name"/>
                     <field name="contato"/>
                 </tree>
             </field>
@@ -35,6 +35,7 @@
             <field name="arch" type="xml">
                 <search string="Buscar">
                     <field name="name" filter_domain="" string="Nome"/>
+                    <field name="ultimo_nome" filter_domain="" string="Nome"/>
                     <field name="contato" filter_domain="" string="Contato"/>
                 </search>
             </field>

@@ -14,7 +14,7 @@ class Autor(models.Model):
     _description = 'Autor'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(u'Nome', compute='get_name')
+    display_name = fields.Char(u'Nome', compute='get_name', store=True)
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')
@@ -41,13 +41,31 @@ class Autor(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.error(u'A conexão com o servidor Openerp7 não foi bem sucedida')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         # busca as publicações
-        pc_ids = server.execute(db, uid, password, 'ud.biblioteca.publicacao.autor', 'search', [])
-        pcs = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao.autor', 'read', [pc_ids])
+        autor_ids = server.execute(db, uid, password, 'ud.biblioteca.publicacao.autor', 'search', [])
+        autores = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao.autor', 'read', [autor_ids])
 
-        for pc in pcs:
-            pc_obj = self.search([('name', '=', pc['name'])])
-            if not pc_obj:
-                self.create({'name': pc['name']})
+        for autor in autores:
+            try:
+                full_name = autor['name'].split(',')
+                name = full_name[1].strip()
+                ultimo_nome = full_name[0][:-1]
+            except IndexError:
+                _logger.error(u'O Orientador: {}, não pode ser salvo'.format(auth['name']))
+                continue
+
+            autor_obj = self.search([('name', '=', name), ('ultimo_nome', '=', ultimo_nome)])
+            # Separa os nomes juntos em "primeiro nome" e "último nome"
+            if not autor_obj:
+                try:
+                    data = {
+                        'name': name,
+                        'ultimo_nome': ultimo_nome,
+                    }
+                    self.create(data)
+                except IndexError:
+                    _logger.error(u'O autor: {}, não pode ser salvo'.format(autor['name']))
+                    continue

@@ -17,7 +17,7 @@ class OrientadorTitulacao(models.Model):
 
     def load_from_openerp7_cron(self):
         """
-        Realiza a sincronização das publicações com o Openerp 7
+        Realiza a sincronização das titulações com o Openerp 7
         :return:
         """
         _logger.info(u'Sincronizando orientador.titulacao com o Openerp 7')
@@ -29,13 +29,14 @@ class OrientadorTitulacao(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.error(u'A conexão com o servidor Openerp7 não foi bem sucedida')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         # busca as publicações
-        titulacao_ids = server.execute(db, uid, password, 'ud.biblioteca.pc', 'search', [])
-        titulacoes = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read', [titulacao_ids])
+        titulacao_ids = server.execute(db, uid, password, 'ud.biblioteca.orientador.titulacao', 'search', [])
+        titulacoes = server.execute_kw(db, uid, password, 'ud.biblioteca.orientador.titulacao', 'read', [titulacao_ids])
 
         for titulacao in titulacoes:
             titulacao_obj = self.search([('name', '=', titulacao['name'])])
             if not titulacao_obj:
-                self.create({'name': titulacao['name'], 'sigla': 'Id'})
+                self.create({'name': titulacao['name'], 'sigla': titulacao['name']})

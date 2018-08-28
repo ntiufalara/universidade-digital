@@ -55,6 +55,7 @@ class Orientador(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.error(u'A conexão com o servidor Openerp7 não foi bem sucedida')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         # busca as publicações
@@ -67,21 +68,22 @@ class Orientador(models.Model):
                 titulacao_obj = self.env['ud.biblioteca.orientador.titulacao'].search(
                     [('name', '=', orientador.get('titulacao_id')[1])])
             if orientador.get('titulacao_id') and not titulacao_obj:
+                _logger.error(u'A titulação "{}" para o orientador ainda não foi cadastrada, não pode ser salvo'.format(
+                    orientador.get('titulacao_id')))
                 continue
-            orientador_obj = self.search([('name', '=', orientador['name'])])
-            # Separa os nomes juntos em "primeiro nome" e "último nome"
-            full_name = orientador['name'].split(',')
+
             try:
+                full_name = orientador['name'].split(',')
                 name = full_name[1].strip()
                 ultimo_nome = full_name[0][:-1]
+            except IndexError:
+                _logger.error(u'O Orientador: {}, não pode ser salvo'.format(orientador['name']))
+                continue
 
-                data = {
-                    'name': name,
-                    'ultimo_nome': ultimo_nome,
-                }
+            orientador_obj = self.search([('name', '=', name), ('ultimo_nome', '=', ultimo_nome)])
+            # Separa os nomes juntos em "primeiro nome" e "último nome"
+            if not orientador_obj:
+                data = {'name': name, 'ultimo_nome': ultimo_nome}
                 if titulacao_obj:
                     data['titulacao_id'] = titulacao_obj.id
-                if not orientador_obj:
-                    self.create(data)
-            except IndexError:
-                continue
+                self.create(data)

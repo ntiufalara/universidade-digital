@@ -52,6 +52,10 @@ class Portaria(models.Model):
                 setor = self.env['ud.setor'].search([('name', '=', portaria['setor_id'][1])])
                 setor_destino = self.env['ud.setor'].search([('name', '=', portaria['setor_destino_id'][1])])
                 responsavel = self.env['res.users'].search([('name', '=', portaria['responsavel_id'][1])])
+
+                if not polo or setor or setor_destino or responsavel:
+                    continue
+
                 self.create({
                     'nro_portaria': portaria['nro_portaria'],
                     'descricao': portaria['descricao'],

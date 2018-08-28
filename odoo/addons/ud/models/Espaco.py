@@ -52,7 +52,6 @@ class Espaco(models.Model):
         espaco_objs = server.execute_kw(db, uid, password, 'ud.espaco', 'read', [espaco_ids])
 
         for espaco in espaco_objs:
-            print(espaco)
             new_espaco = self.search([('name', '=', espaco['name'])])
             if not espaco['local_polo']:
                 continue
