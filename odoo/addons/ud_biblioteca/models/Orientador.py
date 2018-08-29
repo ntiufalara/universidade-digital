@@ -80,7 +80,9 @@ class Orientador(models.Model):
                 _logger.error(u'O Orientador: {}, não pode ser salvo'.format(orientador['name']))
                 continue
 
-            orientador_obj = self.search([('name', '=', name), ('ultimo_nome', '=', ultimo_nome)])
+            orientador_obj = self.search(
+                [('name', '=', name), ('ultimo_nome', '=', ultimo_nome), ('titulacao_id', '=', titulacao_obj.id if titulacao_obj else False)]
+            )
             # Separa os nomes juntos em "primeiro nome" e "último nome"
             if not orientador_obj:
                 data = {'name': name, 'ultimo_nome': ultimo_nome}
