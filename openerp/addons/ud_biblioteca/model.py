@@ -220,7 +220,7 @@ class ud_biblioteca_orientador(osv.osv):
     """
     _name = 'ud.biblioteca.orientador'
     _columns = {'name': fields.char('Nome', size=64, required=True),
-                'titulacao_id': fields.many2one('ud.biblioteca.orientador.titulacao', "Titulação", required=True),
+                'titulacao_id': fields.many2one('ud.biblioteca.orientador.titulacao', u"Titulação", required=False),
                 'publicacao_orientador_id': fields.many2many('ud.biblioteca.publicacao',
                                                              'ud_biblioteca_publicacao_orientador_rel', 'orientador_id',
                                                              'pub_id', string=u'Orientador em'),
