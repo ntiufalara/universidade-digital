@@ -14,7 +14,7 @@ class Autor(models.Model):
     _description = 'Autor'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(u'Nome', compute='get_name', store=True)
+    display_name = fields.Char(u'Nome', compute='get_name')
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')
@@ -52,9 +52,9 @@ class Autor(models.Model):
             try:
                 full_name = autor['name'].split(',')
                 name = full_name[1].strip()
-                ultimo_nome = full_name[0][:-1]
+                ultimo_nome = full_name[0]
             except IndexError:
-                _logger.error(u'O Orientador: {}, não pode ser salvo'.format(auth['name']))
+                _logger.error(u'O autor: {}, não pode ser salvo'.format(autor['name']))
                 continue
 
             autor_obj = self.search([('name', '=', name), ('ultimo_nome', '=', ultimo_nome)])

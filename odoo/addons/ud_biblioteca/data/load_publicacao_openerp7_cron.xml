@@ -63,5 +63,15 @@
             <field name="function">load_from_openerp7_cron</field>
         </record>
 
+        <record id="load_responsavel_biblioteca_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza os responsaveis por biblioteca com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.biblioteca.responsavel</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
     </data>
 </odoo>

@@ -1,6 +1,9 @@
 # encoding: UTF-8
+import logging
 
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class Responsavel(models.Model):
@@ -29,3 +32,48 @@ class Responsavel(models.Model):
         group_gerente_servico = self.env.ref('ud_biblioteca.group_biblioteca_bibliotecario')
         res.pessoa_id.groups_id |= group_gerente_servico
         return res
+
+    def load_from_openerp7_cron(self):
+        """
+        Realiza a sincronização dos Responsáveis por publicação com o Openerp 7
+        :return:
+        """
+        _logger.info(u'Sincronizando Responsáveis (Biblioteca) com o Openerp 7')
+        import xmlrpclib
+        # Conectando ao servidor externo
+        server_oe7 = self.env['ud.server.openerp7'].search([('db', '=', 'ud')])
+        url, db, username, password = server_oe7.url, server_oe7.db, server_oe7.username, server_oe7.password
+        try:
+            auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
+            uid = auth.login(db, username, password)
+        except:
+            _logger.error(u'A conexão com o servidor Openerp7 não foi bem sucedida')
+            return
+        server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
+        # busca as publicações
+        responsavel_ids = server.execute(db, uid, password, 'ud.biblioteca.responsavel', 'search', [])
+        responsaveis = server.execute_kw(db, uid, password, 'ud.biblioteca.responsavel', 'read', [responsavel_ids])
+
+        for responsavel in responsaveis:
+            new_responsavel = self.search([('pessoa_id.name', '=', responsavel['employee_id'][1])])
+            if not new_responsavel:
+                admin_campus = responsavel['admin_campus'] or False
+                pessoa = self.env['res.users'].search([('name', '=', responsavel['employee_id'][1])])
+                if not pessoa:
+                    _logger.error(u'Não foi possível encontrar a Pessoa: {}'.format(responsavel['employee_id'][1]))
+                    continue
+                campus = self.env['ud.campus'].search([('name', '=', responsavel['campus_id'][1])])
+                if not campus:
+                    _logger.error(u'Não foi possível encontrar o Campus: {}'.format(responsavel['campus_id'][1]))
+                    continue
+                polo = self.env['ud.polo'].search([('name', '=', responsavel['polo_id'][1])])
+                if not polo:
+                    _logger.error(u'Não foi possível encontrar o Polo: {}'.format(responsavel['polo_id'][1]))
+                    continue
+                self.create({
+                    'name': responsavel['name'],
+                    'campus_id': campus.id,
+                    'polo_id': polo.id,
+                    'pessoa_id': pessoa.id,
+                    'admin_campus': admin_campus
+                })

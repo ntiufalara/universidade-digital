@@ -43,7 +43,7 @@ class Orientador(models.Model):
 
     def load_from_openerp7_cron(self):
         """
-        Realiza a sincronização das publicações com o Openerp 7
+        Realiza a sincronização dos Orientadores com o Openerp 7
         :return:
         """
         _logger.info(u'Sincronizando orientadores com o Openerp 7')
@@ -75,9 +75,9 @@ class Orientador(models.Model):
             try:
                 full_name = orientador['name'].split(',')
                 name = full_name[1].strip()
-                ultimo_nome = full_name[0][:-1]
+                ultimo_nome = full_name[0]
             except IndexError:
-                _logger.error(u'O Orientador: {}, não pode ser salvo'.format(orientador['name']))
+                _logger.error(u'O Orientador: {}; não está com o nome no formato "Sobrenome, Nome"'.format(orientador['name']))
                 continue
 
             orientador_obj = self.search(
