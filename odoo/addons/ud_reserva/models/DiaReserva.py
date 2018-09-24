@@ -17,7 +17,7 @@ class DiaReserva(models.Model):
     data_inicio = fields.Datetime(u'Data/Hora de início', required=True)
     data_fim = fields.Datetime(u'Data/Hora de fim', required=True)
     reserva_id = fields.Many2one('ud.reserva', u'Reserva', ondelete='cascade')
-    espaco_id = fields.Many2one('ud.espaco', u'Espaço', required=True)
+    espaco_id = fields.Many2one('ud.espaco', u'Espaço', required=True, ondelete='cascade')
     name_reserva = fields.Char(u'Reserva', related='reserva_id.name')
     state = fields.Selection(utils.STATUS_RESERVA, string=u'Status', related='reserva_id.state')
 
