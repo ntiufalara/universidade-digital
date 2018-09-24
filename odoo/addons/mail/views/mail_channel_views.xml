@@ -182,13 +182,13 @@
             }&quot;"/>
         </record>
 
-    <menuitem
-        id="mail.mail_channel_menu_root_chat"
-        name="Discuss"
-        action="mail_channel_action_client_chat"
-        web_icon="mail,static/description/icon.png"
-        groups="base.group_user"
-        sequence="1"/>
+    <!--<menuitem-->
+        <!--id="mail.mail_channel_menu_root_chat"-->
+        <!--name="Discuss"-->
+        <!--action="mail_channel_action_client_chat"-->
+        <!--web_icon="mail,static/description/icon.png"-->
+        <!--groups="base.group_user"-->
+        <!--sequence="1"/>-->
 
     </data>
 </odoo>

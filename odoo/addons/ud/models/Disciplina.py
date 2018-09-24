@@ -3,6 +3,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
+# TODO: Continuar migração dos espaços e das disciplinas
 class Disciplina(models.Model):
     """
     Classe que representa os campos do formulário Disciplina (Associada com a classe Curso).

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <template id="ud_biblioteca_website.detalhes_publicacao">
+            <t t-call="ud_website.layout">
+                <div class="row mx-auto">
+                    <div class="container">
+                        <div class="container my-5">
+                            <div class="row justify-content-center">
+                                <h4 class="px-5">Publicação
+                                    <t t-esc="pub.id"></t>
+                                </h4>
+                            </div>
+                            <hr/>
+
+                            <t t-call="ud_website.navigation"></t>
+
+                            <div class="list-group mt-4">
+                                <ul class="list-group" id="detalhes">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Título:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.name"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Autor:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.autor_id.display_name"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Ano de publicação:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.ano_pub"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Curso:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.curso_id.name"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Tipo:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.tipo_id.name"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Local:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p>
+                                                    Campus: <t t-esc="pub.campus_id.name"></t>, Polo:
+                                                    <t t-esc="pub.polo_id.name"></t>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Orientadores:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <t t-foreach="pub.orientador_ids" t-as="orientador">
+                                                    <span t-esc="orientador.display_name"></span><t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">;<br/></t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li t-if="pub.coorientador_ids" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Coorientadores:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <t t-foreach="pub.coorientador_ids" t-as="coorientador">
+                                                    <span t-esc="coorientador.display_name"></span><t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">;<br/></t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Palavras-chave:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
+                                                    <span t-esc="palavra.name"></span><t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">.<br/></t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li t-if="pub.area_ids" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Áreas do trabalho:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <t t-foreach="pub.area_ids" t-as="area">
+                                                    <span t-esc="area.name"></span><t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">,<br/></t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li t-if="pub.anexo_ids" class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Anexos:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <t t-foreach="pub.anexo_ids" t-as="anexo">
+                                                    <a style="padding: 0 5px;"
+                                                       class="text-primary"
+                                                       t-esc="anexo.name"
+                                                       t-attf-href="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;download=true&amp;filename_field=name"></a>
+                                                    <t t-if="len(pub.anexo_ids) > 1 and anexo != pub.anexo_ids[-1]">
+                                                        <br/>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-12 col-md-2 text-md-right">
+                                                <p>
+                                                    <strong>Visualizações:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-10">
+                                                <p t-esc="pub.visualizacoes"></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

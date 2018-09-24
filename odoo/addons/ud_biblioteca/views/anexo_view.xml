@@ -12,11 +12,6 @@
                     <field name="name" invisible="1"/>
                     <field name="arquivo" filename="name"/>
                     <field name="publicacao_id" invisible="1"/>
-                    <footer>
-                        <group>
-                            <button string="Salvar" name=""/>
-                        </group>
-                    </footer>
                 </form>
             </field>
         </record>
@@ -26,7 +21,7 @@
             <field name="model">ud.biblioteca.anexo</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-                <tree string="Anexos" editable="top" delete="1">
+                <tree string="Anexos" delete="1">
                     <field name="name" invisible="1"/>
                     <field name="arquivo" filename="name"/>
                     <field name="publicacao_id" invisible="1"/>

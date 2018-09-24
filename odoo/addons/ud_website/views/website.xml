@@ -2,6 +2,20 @@
 
 <odoo>
 
+    <template id="ud_website.scripts">
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+                integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+                crossorigin="anonymous"></script>
+    </template>
+
     <template id="ud_website.layout">
         <head>
             <!-- Required meta tags -->
@@ -52,9 +66,7 @@
                 </nav>
 
                 <section class="container" id="content">
-                    <div class="row justify-content-md-center">
-                        <t t-raw="0"></t>
-                    </div>
+                    <t t-raw="0"></t>
                 </section>
 
                 <footer id="site-footer" class="mt-5 p-5">
@@ -77,24 +89,56 @@
             </header>
             <!-- Navbar - FIM -->
 
-            <!-- Optional JavaScript -->
-            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                    crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-                    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-                    crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
-                    integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
-                    crossorigin="anonymous"></script>
+            <t t-call="ud_website.scripts"></t>
         </body>
     </template>
 
     <template id="ud_website.home">
         <t t-call="ud_website.layout">
-            <div style="display: none;" id="icones_inicio" class="card-group"></div>
+            <div class="row justify-content-md-center">
+                <div style="display: none;" id="icones_inicio" class="card-group"></div>
+            </div>
         </t>
+    </template>
+
+    <template id="ud_website.pagination">
+
+        <t t-if="prev_page or next_page">
+            <div class="col-12">
+                <ul style="justify-content: center;" class="pagination">
+                    <li class="page-item">
+                        <a id="prev_page" t-if="prev_page" t-attf-data-prev="{{ prev_page }}" href="#"
+                           class="page-link text-secondary">Anterior
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <span class="page-link text-secondary">
+                            Página <t t-esc="page_num"></t> de <t t-esc="last_page"></t>.
+                        </span>
+                    </li>
+                    <li class="page-item">
+                        <a id="next_page" t-if="next_page" t-attf-data-next="{{ next_page }}" href="#"
+                           class="page-link text-secondary">Próxima
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </t>
+
+    </template>
+
+    <template id="ud_website.navigation">
+        <div class="row">
+            <div class="col-12">
+
+                <ul id="site-nav" class="nav p-2 shadow-sm rounded">
+                    <li class="nav-item">
+                        <a class="btn btn-sm btn-primary" onclick="window.history.back();" href="#">Voltar</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
     </template>
 
 </odoo>

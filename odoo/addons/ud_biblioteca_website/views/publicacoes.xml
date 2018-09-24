@@ -4,59 +4,111 @@
     <template id="ud_biblioteca_website.publicacoes">
 
         <t t-call="ud_website.layout">
-            <div class="row mx-auto my-2">
+            <div class="row mx-auto my-4">
                 <div class="col-12 text-center">
-                    <h5>Publicações</h5>
+                    <h4>Publicações</h4>
                 </div>
             </div>
-
             <div class="row mx-auto">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Filtrar
+                <div class="col-md-12">
+                    <div class="row">
+                        <!-- Card - BUSCAR -->
+                        <div class="card col-sm-4 p-0">
+                            <button class="btn btn-link card-header" data-toggle="collapse" data-target=".card-busca">
+                                Buscar
+                            </button>
+                            <div class="card-body collapse card-busca">
+                                <form>
+                                    <div>
+                                        <div class="form-group">
+                                            <label for="buscar">Buscar</label>
+                                            <input id="buscar" name="q" class="form-control"/>
+                                        </div>
+                                        <button class="btn btn-primary btn-block">Buscar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <form method="post">
-                                <div class="form-group">
-                                    <label for="buscar">Buscar</label>
-                                    <input id="buscar" name="buscar" class="form-control" />
+                        <!-- Card - FILTRAR -->
+                        <div class="card col-sm-8 p-0">
+                            <button class="btn btn-link card-header" data-toggle="collapse" data-target=".card-busca">
+                                Filtrar
+                            </button>
+                            <div class="card-body collapse card-busca">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="filtrar-curso">Curso</label>
+                                            <select id="filtrar-curso" class="form-control filtrar-curso">
+                                                <option selected="" disabled="">- Selecione um curso -</option>
+                                                <option t-foreach="cursos" t-as="_curso"
+                                                        t-esc="_curso.name"
+                                                        t-attf-value="{{ _curso.id }}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="filtrar-ano">Ano</label>
+                                            <select id="filtrar-ano" class="form-control filtrar-ano">
+                                                <option selected="" disabled="">- Selecione um ano -</option>
+                                                <option t-foreach="anos" t-as="_ano" t-esc="_ano"></option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <button class="btn btn-primary btn-block">Buscar</button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+            </div>
+            <div class="row mx-auto my-2">
+                <div class="col-md-12">
                     <div class="list-group">
-                        <a href="#" t-foreach="publicacoes" t-as="publicacao"
+                        <a t-attf-href="/publicacoes/{{ publicacao.id }}"
+                           t-foreach="publicacoes" t-as="publicacao"
                            class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1" t-esc="publicacao.name"></h5>
-                                <small t-esc="publicacao.create_date" t-options='{"widget": "date"}'></small>
                             </div>
                             <p>
-                                <strong>Autor</strong>
-                                <span t-esc="publicacao.autor_id.name"></span>
+                                <strong>Ano de publicação:</strong>
+                                <t t-esc="publicacao.ano_pub"></t>
                                 <br/>
-                                <strong>Curso</strong>
-                                <span t-esc="publicacao.curso_id.name"></span>
+                                <strong>Autor:</strong>
+                                <t t-esc="publicacao.autor_id.display_name"></t>
                                 <br/>
-                                <strong>Tipo</strong>
-                                <span t-esc="publicacao.tipo_id.name"></span>
+                                <strong>Curso:</strong>
+                                <t t-esc="publicacao.curso_id.name"></t>
                                 <br/>
-                                <strong>Ano de publicação</strong>
-                                <span t-esc="publicacao.ano_pub"></span>
+                                <strong>Tipo:</strong>
+                                <t t-esc="publicacao.tipo_id.name"></t>
                                 <br/>
-                                <strong>Visualizações</strong>
-                                <span t-esc="publicacao.visualizacoes"></span>
+                                <strong>Orientadores:</strong>
+                                <t t-foreach="publicacao.orientador_ids" t-as="orientador">
+                                    <t t-esc="orientador.display_name"></t><t t-if="len(publicacao.orientador_ids) > 1 and orientador != publicacao.orientador_ids[-1]">;<br/></t>
+                                </t>
+                                <br/>
+                                <t t-if="publicacao.coorientador_ids">
+                                    <strong>Coorientadores:</strong>
+                                    <t t-foreach="publicacao.coorientador_ids" t-as="coorientador">
+                                        <t t-esc="coorientador.display_name"></t><t t-if="len(publicacao.coorientador_ids) > 1 and coorientador != publicacao.coorientador_ids[-1]">;<br/></t>
+                                    </t>
+                                    <br/>
+                                </t>
+                                <strong>Palavras-chave:</strong>
+                                <t t-foreach="publicacao.palavras_chave_ids" t-as="palavra">
+                                    <t t-esc="palavra.name"></t><t t-if="len(publicacao.palavras_chave_ids) > 1 and palavra != publicacao.palavras_chave_ids[-1]">.</t>
+                                </t>
                             </p>
                         </a>
                     </div>
                 </div>
             </div>
+
+            <t t-call="ud_website.pagination"></t>
+
         </t>
 
     </template>
