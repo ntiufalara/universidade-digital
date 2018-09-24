@@ -33,13 +33,13 @@ class ListaPublicacoesCurso(http.Controller):
         if kwargs.get('q'):
             busca = kwargs.get('q')
             # Pesquisa principal 'Intercessão com filtros anteriores'
-            publicacoes = publicacoes & Publicacao.search([('name', 'ilike', busca)])
+            publicacoes2 = Publicacao.search([('name', 'ilike', busca)])
             # Pesquisas secundárias 'União com pesquisa principal'
             # Busca primeiro pelo autor, depois pela palavra-chave
-            publicacoes = publicacoes | Publicacao.search([('autor_id.name', 'ilike', busca)])
-            publicacoes = publicacoes | Publicacao.search([('palavras_chave_ids.name', 'ilike', busca), ])
+            publicacoes2 = publicacoes2 | Publicacao.search([('autor_id.name', 'ilike', busca)])
+            publicacoes2 = publicacoes2 | Publicacao.search([('palavras_chave_ids.name', 'ilike', busca), ])
             # Buscar por quaisquer outras correspondências
-            publicacoes = publicacoes | Publicacao.search([
+            publicacoes2 = publicacoes2 | Publicacao.search([
                 '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|',
                 ('autor_id.ultimo_nome', 'ilike', busca),
                 ('ano_pub', 'ilike', busca),
@@ -54,6 +54,7 @@ class ListaPublicacoesCurso(http.Controller):
                 ('categoria_cnpq_id.name', 'ilike', busca),
                 ('area_ids.name', 'ilike', busca),
             ])
+            publicacoes = publicacoes & publicacoes2 if publicacoes else publicacoes2
 
         # Exibe lista de anos disponíveis para filtro
         anos = list({pub.ano_pub for pub in publicacoes})

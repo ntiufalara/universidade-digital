@@ -8,13 +8,14 @@
                 <div class="jumbotron bg-light shadow-sm">
                     <h1 class="display-5 text-center">Repositório Institucional</h1>
                     <h4 class="text-center">Campus Arapiraca</h4>
-                    <form>
+                    <form method="get" action="repositorio/publicacoes">
                         <div class="row">
                             <div class="col-8 mx-auto">
                                 <div class="form-group mx-auto pt-3">
                                     <div class="row">
                                         <div class="col-md-8 col-lg-10 p-0">
-                                            <input class="form-control form-control-lg" type="text"
+                                            <input class="form-control form-control-lg"
+                                                   name="q"
                                                    placeholder="Digite para buscar"/>
                                         </div>
                                         <div class="col-md-4 col-lg-2 p-0 mx-auto">
@@ -105,7 +106,7 @@
                         </div>
                         <div class="modal-body">
                             <div style="padding: 0;" class="list-group">
-                                <a t-foreach="palavras_chave" t-as="_p"
+                                <a t-foreach="todas_palavras_chave" t-as="_p"
                                    class="list-group-item list-group-item-action"
                                    t-esc="_p.name"
                                    t-attf-href="/repositorio/publicacoes?p_chave={{ _p.id }}">

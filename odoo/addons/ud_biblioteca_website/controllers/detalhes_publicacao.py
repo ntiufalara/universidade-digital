@@ -3,7 +3,7 @@ from odoo import http
 
 
 class DetalhesPublicacao(http.Controller):
-    @http.route('/publicacoes/<int:pub_id>', auth='public')
+    @http.route('/repositorio/publicacoes/<int:pub_id>', auth='public')
     def index(self, pub_id, **kwargs):
         Publicacao = http.request.env['ud.biblioteca.publicacao']
         pub = Publicacao.search([('id', '=', pub_id)])

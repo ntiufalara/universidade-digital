@@ -15,7 +15,7 @@ class Publicacao(models.Model):
 
     __polo_id = 0
 
-    _order = "create_date desc"
+    _order = "ano_pub desc"
 
     name = fields.Char(u'Título', required=True)
     autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=True)
@@ -210,8 +210,6 @@ class Publicacao(models.Model):
                     )
                 # Caso nem todas os orientadores estejam no banco, pula
                 if len(coorientadores) < len(coorientadores_old_names):
-                    print(coorientadores)
-                    print(coorientadores_old_names)
                     _logger.error(
                         u'Nem todas os coorientadores desta publicação estão cadastradas. Publicação: {}'.format(
                             pub['name']
