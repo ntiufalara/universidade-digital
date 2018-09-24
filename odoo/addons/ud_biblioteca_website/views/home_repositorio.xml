@@ -5,19 +5,19 @@
 
         <t t-call="ud_website.layout">
             <div class="col-12">
-                <div class="jumbotron bg-primary text-light shadow-sm">
-                    <h1 class="display-4 text-center">Repositório Institucional</h1>
+                <div class="jumbotron bg-light shadow-sm">
+                    <h1 class="display-5 text-center">Repositório Institucional</h1>
                     <h4 class="text-center">Campus Arapiraca</h4>
                     <form>
                         <div class="row">
                             <div class="col-8 mx-auto">
                                 <div class="form-group mx-auto pt-3">
                                     <div class="row">
-                                        <div class="col-sm-10 p-0">
+                                        <div class="col-md-8 col-lg-10 p-0">
                                             <input class="form-control form-control-lg" type="text"
                                                    placeholder="Digite para buscar"/>
                                         </div>
-                                        <div class="col-sm-2 p-0 mx-auto">
+                                        <div class="col-md-4 col-lg-2 p-0 mx-auto">
                                             <button type="submit" class="btn btn-secondary btn-lg btn-block">
                                                 Buscar
                                             </button>
@@ -34,14 +34,15 @@
                         <div class="card-header">
                             Cursos
                         </div>
-                        <div class="card-body">
-                            <a t-foreach="cursos" t-as="curso"
-                               t-attf-href="/repositorio/publicacoes?curso={{ curso.id }}">
-                                <button class="btn btn-outline-secondary btn-lg" t-esc="curso.name"></button>
+                        <div style="padding: 0;" class="card-body list-group">
+                            <a class="list-group-item list-group-item-action"
+                               t-foreach="cursos" t-as="curso"
+                               t-attf-href="/repositorio/publicacoes?curso_id={{ curso.id }}"
+                               t-esc="curso.name">
                             </a>
                         </div>
                         <div class="card-footer text-muted">
-                            <button class="btn btn-primary">
+                            <button data-toggle="modal" data-target="#mais-cursos" class="btn btn-primary">
                                 Ver mais
                             </button>
                         </div>
@@ -51,15 +52,65 @@
                         <div class="card-header">
                             Assuntos
                         </div>
-                        <div class="card-body">
-                            <a t-foreach="palavras_chave" t-as="p" href="">
-                                <button class="btn btn-outline-secondary btn-lg" t-esc="p.name"></button>
+                        <div style="padding: 0;" class="card-body list-group">
+                            <a t-foreach="palavras_chave" t-as="p"
+                               class="list-group-item list-group-item-action"
+                               t-esc="p.name"
+                               t-attf-href="/repositorio/publicacoes?p_chave={{ p.id }}">
                             </a>
                         </div>
                         <div class="card-footer text-muted">
-                            <button class="btn btn-primary">
+                            <button data-toggle="modal" data-target="#mais-assuntos" class="btn btn-primary">
                                 Ver mais
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal - MAIS CURSOS -->
+            <div class="modal fade" id="mais-cursos" tabindex="-1" role="dialog" aria-labelledby="maisCursos"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="maisCursos">Todos os cursos</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="padding: 0;" class="list-group">
+                                <a class="list-group-item list-group-item-action"
+                                   t-foreach="todos_cursos_arapiraca" t-as="_curso"
+                                   t-attf-href="/repositorio/publicacoes?curso_id={{ _curso.id }}"
+                                   t-esc="_curso.name">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal - MAIS ASSUNTOS -->
+            <div class="modal fade" id="mais-assuntos" tabindex="-1" role="dialog" aria-labelledby="maisAssuntos"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="maisAssuntos">Mais Assuntos</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="padding: 0;" class="list-group">
+                                <a t-foreach="palavras_chave" t-as="_p"
+                                   class="list-group-item list-group-item-action"
+                                   t-esc="_p.name"
+                                   t-attf-href="/repositorio/publicacoes?p_chave={{ _p.id }}">
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,3 +1,3 @@
 import home_repositorio
-import lista_publicacoes_curso
+import lista_publicacoes
 import detalhes_publicacao

@@ -18,5 +18,6 @@
         'views/home.xml',
         'views/home_repositorio.xml',
         'views/publicacoes.xml',
+        'views/detalhes_publicacao.xml',
     ],
 }

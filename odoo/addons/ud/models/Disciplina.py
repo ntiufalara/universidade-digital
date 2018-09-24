@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 _logger = logging.getLogger(__name__)
 
 
+# TODO: Continuar migração dos espaços e das disciplinas
 class Disciplina(models.Model):
     """
     Classe que representa os campos do formulário Disciplina (Associada com a classe Curso).
