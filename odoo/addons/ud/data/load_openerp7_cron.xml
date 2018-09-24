@@ -53,6 +53,16 @@
             <field name="function">load_from_openerp7_cron</field>
         </record>
 
+        <record id="load_disciplina_openerp7_cron" model="ir.cron">
+            <field name="name">Sincroniza as disciplinas com o servidor openerp7</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model">ud.disciplina</field>
+            <field name="function">load_from_openerp7_cron</field>
+        </record>
+
         <record id="load_bloco_openerp7_cron" model="ir.cron">
             <field name="name">Sincroniza os blocos com o servidor openerp7</field>
             <field name="interval_number">1</field>

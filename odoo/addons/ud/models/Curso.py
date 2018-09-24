@@ -6,7 +6,6 @@ from odoo import models, fields
 
 _logger = logging.getLogger(__name__)
 
-# TODO: Continuar migração dos espaços e das disciplinas
 
 class Curso(models.Model):
     """

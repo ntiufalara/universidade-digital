@@ -66,6 +66,7 @@ class Publicacao(models.Model):
         self.sudo().visualizacoes = self.sudo().visualizacoes + 1
 
     @api.model
+    @api.one
     def create(self, vals):
         if 'polo_txt' in vals and not vals.get('polo_id'):
             vals['polo_id'] = vals.get('polo_txt')
@@ -139,6 +140,14 @@ class Publicacao(models.Model):
                 p_chave = pub.get('palavras_chave_ids')
                 if not p_chave:
                     p_chave = pub.get('palavras-chave_ids')
+
+                # Pula publicações sem palavras-chave, sem orientadores
+                if not p_chave:
+                    print(pub['name'])
+                    continue
+                if not pub['orientador_ids']:
+                    print(pub['name'])
+                    continue
                 p_chave_old = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read',
                                                 [p_chave])
                 p_chave_old_names = [p['name'] for p in p_chave_old]
@@ -172,7 +181,7 @@ class Publicacao(models.Model):
                          ('ultimo_nome', '=', orientadores_old_ultimos_nomes[i])]
                     )
                 # Caso nem todas os orientadores estejam no banco, pula
-                if len(orientadores) != len(orientadores_old_names):
+                if len(orientadores) < len(orientadores_old_names):
                     _logger.error(
                         u'Nem todas os orientadores desta publicação estão cadastradas. Publicação: {}'.format(
                             pub['name']
@@ -200,7 +209,9 @@ class Publicacao(models.Model):
                          ('ultimo_nome', '=', coorientadores_old_ultimos_nomes[i])]
                     )
                 # Caso nem todas os orientadores estejam no banco, pula
-                if len(coorientadores) != len(coorientadores_old_names):
+                if len(coorientadores) < len(coorientadores_old_names):
+                    print(coorientadores)
+                    print(coorientadores_old_names)
                     _logger.error(
                         u'Nem todas os coorientadores desta publicação estão cadastradas. Publicação: {}'.format(
                             pub['name']
@@ -223,8 +234,11 @@ class Publicacao(models.Model):
                     continue
                 # autor
                 full_name = pub['autor_id'][1].split(',')
-                name = full_name[1].strip()
-                ultimo_nome = full_name[0]
+                name = full_name
+                ultimo_nome = ''
+                if len(full_name) > 1:
+                    name = full_name[1].strip()
+                    ultimo_nome = full_name[0]
                 autor = self.env['ud.biblioteca.publicacao.autor'].search(
                     [('name', '=', name), ('ultimo_nome', '=', ultimo_nome)])
                 # Caso nem todas os orientadores estejam no banco, pula
