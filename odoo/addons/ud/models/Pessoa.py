@@ -92,8 +92,8 @@ class Pessoa(models.Model):
         pessoas = server.execute_kw(db, uid, password, 'ud.employee', 'read', [pessoa_ids])
 
         for p in pessoas:
-            p_obj = self.search([('cpf', '=', p['cpf']), ('cpf', '!=', False)])
             p = self.clean_openerp7_data(p)
+            p_obj = self.search([('cpf', '=', p['cpf']), ('cpf', '!=', False)])
             data = {
                 'name': p['resource_id'][1],
                 'cpf': p['cpf'],
@@ -107,10 +107,7 @@ class Pessoa(models.Model):
                 'orgaoexpedidor': p['orgaoexpedidor']
             }
             if not p_obj:
-                try:
-                    self.create(data)
-                except IntegrityError:
-                    continue
+                self.create(data)
 
     def clean_openerp7_data(self, src_data):
         """

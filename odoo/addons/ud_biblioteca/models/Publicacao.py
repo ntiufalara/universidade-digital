@@ -66,7 +66,6 @@ class Publicacao(models.Model):
         self.sudo().visualizacoes = self.sudo().visualizacoes + 1
 
     @api.model
-    @api.one
     def create(self, vals):
         if 'polo_txt' in vals and not vals.get('polo_id'):
             vals['polo_id'] = vals.get('polo_txt')
@@ -134,6 +133,7 @@ class Publicacao(models.Model):
         pubs = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao', 'read', [pub_ids])
 
         # busca os campos relacionais e cria nova publicacao se necessário
+        cont = 0
         for pub in pubs:
             pub_obj = self.search([('name', '=', pub['name'])])
             if not pub_obj:
@@ -143,10 +143,10 @@ class Publicacao(models.Model):
 
                 # Pula publicações sem palavras-chave, sem orientadores
                 if not p_chave:
-                    print(pub['name'])
+                    _logger.warning(u'Palavra-chave não encontrada: {}'.format(pub['name']))
                     continue
                 if not pub['orientador_ids']:
-                    print(pub['name'])
+                    _logger.warning(u'Orientadores não encontrados: {}'.format(pub['name']))
                     continue
                 p_chave_old = server.execute_kw(db, uid, password, 'ud.biblioteca.pc', 'read',
                                                 [p_chave])
@@ -168,6 +168,8 @@ class Publicacao(models.Model):
                 orientadores_old_ultimos_nomes = []
                 for o in orientadores_old:
                     full_name = o['name'].split(',')
+                    if len(full_name) <= 1:
+                        continue
                     name = full_name[1].strip()
                     ultimo_nome = full_name[0]
                     orientadores_old_names.append(name)
@@ -247,7 +249,7 @@ class Publicacao(models.Model):
                         )
                     )
                     continue
-                obj = self.create({
+                pub_data = {
                     'name': pub['name'],
                     'campus_id': campus.id,
                     'polo_id': polo.id,
@@ -256,7 +258,11 @@ class Publicacao(models.Model):
                     'autor_id': autor.id,
                     'ano_pub': pub['ano_pub'],
                     'autorizar_publicacao': pub['autorizar_publicacao'],
-                })
-                obj.orientador_ids |= orientadores
-                obj.coorientador_ids |= coorientadores
-                obj.palavras_chave_ids |= p_chave
+                }
+                obj = self.create(pub_data)
+                cont += 1
+                if obj:
+                    obj.orientador_ids |= orientadores
+                    obj.coorientador_ids |= coorientadores
+                    obj.palavras_chave_ids |= p_chave
+        _logger.warning(cont)
