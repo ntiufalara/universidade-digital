@@ -81,7 +81,9 @@ class Orientador(models.Model):
                 continue
 
             orientador_obj = self.search(
-                [('name', '=', name), ('ultimo_nome', '=', ultimo_nome), ('titulacao_id', '=', titulacao_obj.id if titulacao_obj else False)]
+                [('name', '=', name),
+                 ('ultimo_nome', '=', ultimo_nome),
+                 ('titulacao_id', '=', titulacao_obj.id if titulacao_obj else False)]
             )
             # Separa os nomes juntos em "primeiro nome" e "último nome"
             if not orientador_obj:
