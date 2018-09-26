@@ -33,6 +33,7 @@ class Bloco(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.warning(u'Não foi possível conectar com o servidor Openerp 7')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         bloco_ids = server.execute(db, uid, password, 'ud.bloco', 'search', [])
@@ -41,11 +42,15 @@ class Bloco(models.Model):
         for bloco in bloco_objs:
             new_bloco = self.search([('name', '=', bloco['name'])])
             if not bloco['ud_bloco_ids']:
+                _logger.warning(u'O bloco não possui polo associado. Bloco: {}'.format(bloco))
                 continue
             polo_id = self.env['ud.polo'].search([('name', '=', bloco['ud_bloco_ids'][1])])
 
             # Se polo ainda não existir, pule
             if not polo_id:
+                _logger.warning(u'Não foi possível encontrar o polo: {}'.format(
+                    bloco['ud_bloco_ids']
+                ))
                 continue
 
             if not new_bloco:

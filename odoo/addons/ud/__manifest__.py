@@ -30,6 +30,7 @@
         'views/server_openerp7_view.xml',
         'views/pessoa_contato_view.xml',
         'views/pessoa_endereco_view.xml',
+        'views/bloco_view.xml',
         'views/menus.xml',
     ],
     "installable": True,

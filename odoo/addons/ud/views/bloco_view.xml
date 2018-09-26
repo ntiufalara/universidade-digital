@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record id="ud_bloco_action" model="ir.actions.act_window">
+            <field name="name">Blocos</field>
+            <field name="res_model">ud.bloco</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_polo': 1}</field>
+        </record>
+
+        <record id="ud_bloco_form" model="ir.ui.view">
+            <field name="name">Bloco</field>
+            <field name="model">ud.bloco</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Espaço">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="name"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="campus_id"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ud_bloco_tree" model="ir.ui.view">
+            <field name="name">Blocos</field>
+            <field name="model">ud.bloco</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Espaço">
+                    <field name="name" />
+                    <field name="campus_id" />
+                    <field name="polo_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="ud_bloco_filter" model="ir.ui.view">
+            <field name="name">Buscar bloco</field>
+            <field name="model">ud.bloco</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Setor">
+                    <field name="name"/>
+                    <field name="polo_id"/>
+                    <field name="campus_id"/>
+
+                    <group expand="0" string="Agrupar por...">
+                        <filter string="Polo" icon="terp-personal" domain="" name="polo"
+                                context="{'group_by':'polo_id'}"/>
+                        <filter string="Campus" icon="terp-personal" domain="" name="campus"
+                                context="{'group_by':'campus_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

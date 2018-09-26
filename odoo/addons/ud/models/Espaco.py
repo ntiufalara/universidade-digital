@@ -52,21 +52,24 @@ class Espaco(models.Model):
         espaco_objs = server.execute_kw(db, uid, password, 'ud.espaco', 'read', [espaco_ids])
 
         for espaco in espaco_objs:
-            new_espaco = self.search([('name', '=', espaco['name'])])
             if not espaco['local_polo']:
+                _logger.warning(u'O espaço não possui polo associado. Espaço: {}'.format(espaco))
                 continue
 
             polo_id = self.env['ud.polo'].search([('name', '=', espaco['local_polo'][1])])
             # # Se polo ainda não existir, pule
             if not polo_id:
+                _logger.warning(u'O polo não foi encontrado: {}'.format(espaco['local_polo']))
                 continue
             campus_id = polo_id.campus_id
 
             # Busca o bloco no banco de dados
             bloco_id = self.env['ud.bloco'].search([('name', '=', espaco['local_bloco_polo'][1])])
             if not bloco_id:
+                _logger.warning(u'O bloco não foi encontrado: {}'.format(espaco['local_bloco_polo']))
                 continue
 
+            new_espaco = self.search([('name', '=', espaco['name']), ('polo_id', '=', polo_id.id)])
             if not new_espaco:
                 self.create({
                     'name': espaco['name'],
