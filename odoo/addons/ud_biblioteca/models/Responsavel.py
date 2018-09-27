@@ -75,7 +75,7 @@ class Responsavel(models.Model):
                 self.create({
                     'name': responsavel['name'],
                     'campus_id': campus.id,
-                    'polo_id': polo.id,
+                    'polo_id': polo.id if polo else False,
                     'pessoa_id': pessoa.id,
                     'admin_campus': admin_campus
                 })
