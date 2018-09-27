@@ -20,5 +20,5 @@
         <menuitem id="menu_pessoa" parent="ud_root" action="ud_pessoa_action" sequence="8" groups="base.admin_ud"/>
         <menuitem id="menu_config_server_openerp7" name="Servidor OE7" parent="base.menu_administration" action="server_openerp7_action" />
 
-    </data>
+    </data>*9
 </odoo>

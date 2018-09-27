@@ -66,10 +66,11 @@ class Responsavel(models.Model):
                 if not campus:
                     _logger.error(u'Não foi possível encontrar o Campus: {}'.format(responsavel['campus_id'][1]))
                     continue
-                polo = self.env['ud.polo'].search([('name', '=', responsavel['polo_id'][1])])
-                if not polo:
-                    _logger.error(u'Não foi possível encontrar o Polo: {}'.format(responsavel['polo_id'][1]))
-                    continue
+                if responsavel.get('polo_id'):
+                    polo = self.env['ud.polo'].search([('name', '=', responsavel['polo_id'][1])])
+                    if not polo:
+                        _logger.error(u'Não foi possível encontrar o Polo: {}'.format(responsavel['polo_id'][1]))
+                        continue
                 self.create({
                     'name': responsavel['name'],
                     'campus_id': campus.id,
