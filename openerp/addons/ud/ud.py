@@ -309,7 +309,7 @@ class Bloco(osv.osv):
 
     _columns = {
         'name': fields.char(u'Bloco', size=80, required=True),
-        'ud_bloco_ids': fields.many2one('ud.polo', u'Polo', ondelete='cascade', invisible=True),
+        'ud_bloco_ids': fields.many2one('ud.polo', u'Polo', ondelete='cascade'),
     }
 
     _order = "name"
@@ -356,8 +356,6 @@ class Curso(osv.osv):
     """
     _name = 'ud.curso'
     _description = u'Curso'
-    _order = 'name'
-
     _order = 'name asc'
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
