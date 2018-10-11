@@ -36,12 +36,14 @@ class Publicacao(models.Model):
 
     orientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_orientador_rel',
                                       string=u'Orientadores', required=True)
+    orientadores_txt = fields.Char(u'Orientadores')
     coorientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_coorientador_rel',
                                         string='Coorientadores')
+    coorientadores_txt = fields.Char(u'Coorientadores')
     anexo_ids = fields.One2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF')
     categoria_cnpq_id = fields.Many2one('ud.biblioteca.publicacao.categoria_cnpq', u'Categoria CNPQ')
     tipo_id = fields.Many2one('ud.biblioteca.publicacao.tipo', u"Tipo", required=True)
-    autorizar_publicacao = fields.Boolean(u"Autorizar publicação")
+    autorizar_publicacao = fields.Boolean(u"Não embargado")
     visualizacoes = fields.Integer(u'Visualizações', required=True, default=0)
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
                                 string=u'Áreas do trabalho')
@@ -69,7 +71,6 @@ class Publicacao(models.Model):
     def create(self, vals):
         if 'polo_txt' in vals and not vals.get('polo_id'):
             vals['polo_id'] = vals.get('polo_txt')
-
         # Salvando contato do autor
         self.env['ud.biblioteca.publicacao.autor'].browse(vals.get('autor_id')).write({'contato': vals.get('contato')})
         return super(Publicacao, self).create(vals)

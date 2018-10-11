@@ -46,6 +46,7 @@ class Espaco(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.warning(u'Não foi possível se conectar com o seridor Openerp 7')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         espaco_ids = server.execute(db, uid, password, 'ud.espaco', 'search', [])

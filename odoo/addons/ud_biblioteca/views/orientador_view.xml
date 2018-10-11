@@ -29,10 +29,11 @@
             </field>
         </record>
 
-        <!-- Usado no formulário de gerenciamento de orientadores -->
+        <!-- Usado no formulário de gerenciamento de orientadores - PRIORIDADE MAIOR -->
         <record id="ud_biblioteca_orientador_form" model="ir.ui.view">
             <field name="name">Orientador</field>
             <field name="model">ud.biblioteca.publicacao.orientador</field>
+            <field name="priority" eval="1" />
             <field name="arch" type="xml">
                 <form string="Orientador">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">
@@ -71,11 +72,10 @@
             </field>
         </record>
 
-        <!-- Prioridade maior, usado para adicionar rapidamente orientador -->
+        <!-- Prioridade menor, usado para adicionar rapidamente orientador -->
         <record id="ud_biblioteca_orientador_form2" model="ir.ui.view">
             <field name="name">Orientador</field>
             <field name="model">ud.biblioteca.publicacao.orientador</field>
-            <field name="priority" eval="1" />
             <field name="arch" type="xml">
                 <form string="Orientador">
                     <div class="form-horizontal sheet col-sm-12 col-xs-12">

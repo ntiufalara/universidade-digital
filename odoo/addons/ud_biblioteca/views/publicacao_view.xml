@@ -62,18 +62,18 @@
                                     <field name="tipo_id"/>
                                 </div>
                             </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="autorizar_publicacao"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="autorizar_publicacao"/>
+                                </div>
+                            </div>
                             <div class="col-md-6 col-lg-6 form-group"
                                  attrs="{'invisible' : [('autorizar_publicacao', '=', True )]}">
                                 <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="contato"
                                            attrs="{'required' : [('autorizar_publicacao', '=', False)] }"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="autorizar_publicacao"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="autorizar_publicacao"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
