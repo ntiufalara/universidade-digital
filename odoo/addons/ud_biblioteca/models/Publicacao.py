@@ -19,7 +19,6 @@ class Publicacao(models.Model):
 
     name = fields.Char(u'Título', required=True)
     autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=True)
-    nome_autor = fields.Char(related='autor_id.display_name', string=u"Nome do autor")
     contato = fields.Char(related='autor_id.contato', string=u"E-mail para contato")
     ano_pub = fields.Char(u'Ano de publicação', required=True)
     campus_id = fields.Many2one("ud.campus", u"Campus", required=True, ondelete='set null',
@@ -47,6 +46,7 @@ class Publicacao(models.Model):
     visualizacoes = fields.Integer(u'Visualizações', required=True, default=0)
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
                                 string=u'Áreas do trabalho')
+    bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False)
 
     def name_get(self):
         """

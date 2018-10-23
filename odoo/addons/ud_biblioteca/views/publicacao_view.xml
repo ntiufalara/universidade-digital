@@ -34,7 +34,6 @@
                                            attrs="{'readonly': [('polo_id', '!=', False)]}"/>
                                 </div>
                             </div>
-                            <field name="polo_txt" invisible="1"/>
                         </fieldset>
                         <fieldset>
                             <legend>Informações da publicação</legend>
@@ -68,12 +67,10 @@
                                     <field name="autorizar_publicacao"/>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-6 form-group"
-                                 attrs="{'invisible' : [('autorizar_publicacao', '=', True )]}">
+                            <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="contato"
-                                           attrs="{'required' : [('autorizar_publicacao', '=', False)] }"/>
+                                    <field name="contato"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -127,10 +124,16 @@
                             </div>
                         </fieldset>
                         <fieldset>
+                            <legend>Observações</legend>
                             <div class="col-md-12 col-lg-12 form-group">
-                                <legend>Observações</legend>
                                 <div class="col-md-12 col-sm-12">
                                     <field name="observacoes"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="bibliotecario_responsavel"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="bibliotecario_responsavel"/>
                                 </div>
                             </div>
                         </fieldset>
@@ -145,7 +148,9 @@
             <field name="arch" type="xml">
                 <search string="Buscar publicação">
                     <field name="name"/>
-                    <field name="nome_autor"/>
+                    <field name="orientador_ids"/>
+                    <field name="autor_id"/>
+                    <field name="coorientador_ids"/>
                     <field name="ano_pub"/>
                     <field name="polo_id"/>
                     <field name="curso_id"/>

@@ -1,6 +1,7 @@
 # encoding: UTF-8
 import logging
 from odoo import models, fields
+
 _logger = logging.getLogger(__name__)
 
 
@@ -20,7 +21,7 @@ class Anexo(models.Model):
         Realiza a sincronização das publicações com o Openerp 7
         :return:
         """
-        _logger.info(u'Sincronizando palavras-chave com o Openerp 7')
+        _logger.info(u'Sincronizando anexos com o Openerp 7')
         import xmlrpclib
         # Conectando ao servidor externo
         server_oe7 = self.env['ud.server.openerp7'].search([('db', '=', 'ud')])
@@ -34,14 +35,25 @@ class Anexo(models.Model):
         # busca as publicações
         anexo_ids = server.execute(db, uid, password, 'ud.biblioteca.anexo', 'search', [('publicacao_id', '!=', False)])
 
+        cont_new = 0
+        cont_old = 0
         for anexo_id in anexo_ids:
-            anexo_old = server.execute_kw(db, uid, password, 'ud.biblioteca.anexo', 'read', [anexo_id])
+            anexo_old = server.execute_kw(db, uid, password, 'ud.biblioteca.anexo', 'read', [anexo_id],
+                                          {'fields': ['name', 'publicacao_id']})
             anexo_new = self.env['ud.biblioteca.anexo'].search([('name', '=', anexo_old['name'])])
             if not anexo_new:
+                cont_new += 1
+                _logger.info(u'Anexo ainda não cadastrado... {}'.format(anexo_old['publicacao_id'][1]))
+                anexo_old = server.execute_kw(db, uid, password, 'ud.biblioteca.anexo', 'read', [anexo_id])
                 publicacao = self.env['ud.biblioteca.publicacao'].search([('name', '=', anexo_old['publicacao_id'][1])])
                 self.create({
                     'name': anexo_old['name'],
                     'arquivo': anexo_old['arquivo'],
                     'publicacao_id': publicacao.id
                 })
-
+            else:
+                cont_old += 1
+                _logger.info(u'Anexo já cadastrado: {}'.format(anexo_old['publicacao_id'][1]))
+        _logger.info(u'Total: {}'.format(len(anexo_ids)))
+        _logger.info(u'Arquivos criados: {}'.format(cont_new))
+        _logger.info(u'Arquivos já existentes: {}'.format(cont_old))

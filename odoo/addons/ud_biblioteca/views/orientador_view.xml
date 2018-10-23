@@ -52,7 +52,7 @@
                         <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="titulacao_id"/>
+                                <field name="titulacao_id" attrs="{'readonly': [('titulacao_id', '!=', False)]}"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-12 form-group">
@@ -94,7 +94,7 @@
                         <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="titulacao_id"/>
+                                <field name="titulacao_id" attrs="{'readonly': [('titulacao_id', '!=', False)]}"/>
                             </div>
                         </div>
                     </div>

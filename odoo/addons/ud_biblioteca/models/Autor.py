@@ -14,7 +14,7 @@ class Autor(models.Model):
     _description = 'Autor'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(u'Nome', compute='get_name')
+    display_name = fields.Char(u'Nome', compute='get_name', store=True)
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')
@@ -26,6 +26,10 @@ class Autor(models.Model):
         :return:
         """
         self.display_name = u"{}, {}".format(self.ultimo_nome, self.name)
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        return super(Autor, self).name_search(name, args, operator, limit)
 
     def load_from_openerp7_cron(self):
         """
