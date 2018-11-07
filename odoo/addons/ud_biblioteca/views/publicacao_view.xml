@@ -117,6 +117,18 @@
                         </fieldset>
                         <fieldset>
                             <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Resumo</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="resumo"/>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 form-group">
+                                <legend>Abstract</legend>
+                                <div class="col-md-12 col-sm-12">
+                                    <field name="abstract"/>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 form-group">
                                 <legend>Anexos</legend>
                                 <div class="col-md-12 col-sm-12">
                                     <field name="anexo_ids"/>

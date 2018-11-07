@@ -47,6 +47,8 @@ class Publicacao(models.Model):
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
                                 string=u'Áreas do trabalho')
     bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False)
+    resumo = fields.Text(u'Resumo')
+    abstract = fields.Text(u'Abstract')
 
     def name_get(self):
         """
