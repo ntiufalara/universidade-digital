@@ -33,6 +33,8 @@ class CadastroMonitoria(http.Controller):
         main.Session().authenticate(req, db, user, password)
         # busca os campi para adicionar ao select do formulário
         Campus = req.session.model('ud.campus')
+        Pessoa = req.session.model('ud.employee')
+        User = req.session.model('res.users')
         campi = Campus.read(Campus.search([]))
         if req.httprequest.method == 'GET':
             cadastro_ativo = True
@@ -46,9 +48,11 @@ class CadastroMonitoria(http.Controller):
             try:
                 # Valida todos os campos
                 self.validate(kwargs)
+                if User.search([('login', '=', kwargs.get('login'))]):
+                    raise ValueError(
+                        u'Um usuário foi encontrado para o CPF: {}. '
+                        u'Acesse a área de login para entrar ou recuperar sua senha'.format(kwargs.get('login')))
                 # Conclui o cadastro
-                Pessoa = req.session.model('ud.employee')
-
                 # Busca pelo grupo de permissões "Monitor/Tutor"
                 ir_model_obj = req.session.model('ir.model.data')
                 grupo_monitor_recs = ir_model_obj.get_object_reference('base', 'usuario_ud')
@@ -73,7 +77,7 @@ class CadastroMonitoria(http.Controller):
                 return template.render({
                     'campi': campi,
                     'erro': u"Aconteceu um erro inesperado, por favor, entre em contato com o NTI do Campus Arapiraca "
-                            u"para mais informações. marcos.neto@nti.ufal.br",
+                            u'para mais informações, informando o nome completo e o CPF. "marcos.neto@nti.ufal.br" ',
                     'values': kwargs
                 })
 
@@ -88,6 +92,7 @@ class CadastroMonitoria(http.Controller):
         # valida CPF
         Utils.validar_cpf(data.get('cpf').decode('UTF-8').replace('.', '').replace('-', ''))
         data['login'] = data.get('cpf').decode('UTF-8').replace('.', '').replace('-', '')
+
         # valida o número de telefone
         if len(data.get('celular').replace('(', '').replace(')', '').replace(' ', '').replace('-', '')) < 11:
             raise ValueError(u'Verifique se o número de celular está correto e tente novamente')
