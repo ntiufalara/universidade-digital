@@ -224,13 +224,16 @@ class ud_biblioteca_orientador(osv.osv):
                 'publicacao_orientador_id': fields.many2many('ud.biblioteca.publicacao',
                                                              'ud_biblioteca_publicacao_orientador_rel', 'orientador_id',
                                                              'pub_id', string=u'Orientador em'),
-                'publicacao_coorientador_id': fields.many2many('ud.biblioteca.publicacao', 'coorientador_ids',
+                'publicacao_coorientador_id': fields.many2many('ud.biblioteca.publicacao',
+                                                               'ud_biblioteca_publicacao_coorientador_rel',
+                                                               'coorientador_id', 'pub_id',
                                                                string=u'Coorientador em'), }
 
     def name_get(self, cr, uid, ids, context=None):
         objs = self.browse(cr, uid, ids, context)
-        return [(obj.id, u"{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else u"{}".format(obj.name))
-                for obj in objs]
+        return [
+            (obj.id, u"{} {}".format(obj.titulacao_id.name, obj.name) if obj.titulacao_id else u"{}".format(obj.name))
+            for obj in objs]
         # return "{} {}".format(titulacao, name)
 
 

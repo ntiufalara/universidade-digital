@@ -193,6 +193,14 @@
             </field>
         </record>
 
+        <!-- BLOCO -->
+        <record id="ud_bloco_action" model="ir.actions.act_window">
+            <field name="name">Blocos</field>
+            <field name="res_model">ud.bloco</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="view_bloco_filter" model="ir.ui.view">
             <field name="name">Bloco</field>
             <field name="model">ud.bloco</field>
@@ -207,6 +215,37 @@
                 </search>
             </field>
         </record>
+
+        <record id="view_bloco_tree" model="ir.ui.view">
+            <field name="name">Blocos</field>
+            <field name="model">ud.bloco</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Blocos">
+                    <field name="name"/>
+                    <field name="ud_bloco_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_bloco_form" model="ir.ui.view">
+            <field name="name">Bloco</field>
+            <field name="model">ud.bloco</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Bloco" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="ud_bloco_ids"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- BLOCO - FIM -->
 
         <!-- SETOR -->
         <record id="ud_setor_action" model="ir.actions.act_window">

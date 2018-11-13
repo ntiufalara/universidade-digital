@@ -12,7 +12,11 @@
         <menuitem id="menu_curso" parent="menu_nucleo" action="ud_curso_action" sequence="4"/>
         <menuitem id="menu_setor" parent="menu_nucleo" action="ud_setor_action" sequence="5" groups="base.admin_ud"/>
         <menuitem id="menu_projeto" parent="menu_nucleo" action="ud_projeto_action" sequence="6" groups="base.admin_ud"/>
-        <menuitem id="menu_espaco" parent="menu_nucleo" action="ud_espaco_action" sequence="7"
+        <menuitem id="menu_espaco_root" name="Espaços" parent="menu_nucleo" sequence="7"
+                  groups="base.gerente_espaco_ud,base.admin_ud"/>
+        <menuitem id="menu_espaco" parent="menu_espaco_root" action="ud_espaco_action" sequence="7"
+                  groups="base.gerente_espaco_ud,base.admin_ud"/>
+        <menuitem id="menu_bloco" parent="menu_espaco_root" action="ud_bloco_action" sequence="7"
                   groups="base.gerente_espaco_ud,base.admin_ud"/>
 
         <!--<menuitem id="menu_nucleo_gerente_espaco" parent="menu_point_root" name="Núcleo" sequence="1"-->

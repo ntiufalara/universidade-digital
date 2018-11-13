@@ -265,8 +265,7 @@ class Espaco(osv.osv):
         'permite_reserva': fields.boolean(u'Permitir Reserva'),
         'campus_id': fields.many2one('ud.campus', 'Campus', required=True),
         'local_polo': fields.many2one('ud.polo', u'Polo', required=True, ondelete='cascade'),
-        'local_bloco_polo': fields.many2one('ud.bloco', u'Bloco', required=True, ondelete='cascade',
-                                            domain="[('ud_bloco_ids','=',local_polo)]"),
+        'local_bloco_polo': fields.many2one('ud.bloco', u'Bloco', required=True, ondelete='cascade',),
         'informacoes_adicionais': fields.text(u'Descrição'),
         'responsavel_ids': fields.many2many('ud.employee', 'ud_espaco_responsavel', 'eid', 'pid', 'Responsável')
     }
@@ -309,7 +308,7 @@ class Bloco(osv.osv):
 
     _columns = {
         'name': fields.char(u'Bloco', size=80, required=True),
-        'ud_bloco_ids': fields.many2one('ud.polo', u'Polo', ondelete='cascade', invisible=True),
+        'ud_bloco_ids': fields.many2one('ud.polo', u'Polo', ondelete='cascade'),
     }
 
     _order = "name"
@@ -356,8 +355,6 @@ class Curso(osv.osv):
     """
     _name = 'ud.curso'
     _description = u'Curso'
-    _order = 'name'
-
     _order = 'name asc'
 
     _TURNO = [("d", u"Diurno"), ("m", u"Matutino"),
