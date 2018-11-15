@@ -4,185 +4,161 @@
     <data>
 
         <template id="ud_biblioteca_website.detalhes_publicacao">
-            <t t-call="ud_website.layout">
-                <div class="row mx-auto">
+            <t t-call="ud_biblioteca_website.layout_repositorio">
+                <div id="publicacoes-topo"
+                     class="d-flex justify-content-center align-items-center flex-column flex-sm-row mx-auto">
                     <div class="container">
-                        <div class="container my-5">
-                            <div class="row justify-content-center">
-                                <h4 class="px-5">Publicação
-                                    <t t-esc="pub.id"></t>
-                                </h4>
+                        <h3 id="pub-titulo" class="ml-3 text-white mt-3 mt-sm-0 text-center text-uppercase">
+                            Sistema para gerenciamento de solicitações de ordem de serviço para a Universidade Federal
+                            de Alagoas,
+                            Campus Arapiraca
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- DETALHES PUBLICAÇÃO -->
+                <div class="container">
+                    <div class="row bg-light my-3">
+                        <div class="col-12">
+                            <ul id="site-nav" class="nav p-2 shadow-sm rounded">
+                                <li class="nav-item">
+                                    <a class="btn btn-sm btn-outline-primary mr-1" onclick="window.history.back();" href="#">Voltar
+                                    </a>
+                                    <a class="btn btn-sm btn-primary mr-1" onclick="window.history.back();" href="#">Baixar PDF
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Autor</strong>
+                                <div class="col-sm-8">
+                                    Diogo Cabral da Silva
+                                </div>
                             </div>
-                            <hr/>
-
-                            <t t-call="ud_website.navigation"></t>
-
-                            <div class="list-group mt-4">
-                                <ul class="list-group" id="detalhes">
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Título:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.name"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Autor:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.autor_id.display_name"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Ano de publicação:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.ano_pub"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Curso:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.curso_id.name"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Tipo:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.tipo_id.name"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Local:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p>
-                                                    Campus: <t t-esc="pub.campus_id.name"></t>, Polo:
-                                                    <t t-esc="pub.polo_id.name"></t>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Orientadores:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <t t-foreach="pub.orientador_ids" t-as="orientador">
-                                                    <span t-esc="orientador.display_name"></span><t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">;<br/></t>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li t-if="pub.coorientador_ids" class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Coorientadores:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <t t-foreach="pub.coorientador_ids" t-as="coorientador">
-                                                    <span t-esc="coorientador.display_name"></span><t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">;<br/></t>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Palavras-chave:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
-                                                    <span t-esc="palavra.name"></span><t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">.<br/></t>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li t-if="pub.area_ids" class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Áreas do trabalho:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <t t-foreach="pub.area_ids" t-as="area">
-                                                    <span t-esc="area.name"></span><t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">,<br/></t>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li t-if="pub.anexo_ids" class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Anexos:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <t t-foreach="pub.anexo_ids" t-as="anexo">
-                                                    <a style="padding: 0 5px;"
-                                                       class="text-primary"
-                                                       t-esc="anexo.name"
-                                                       t-attf-href="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;download=true&amp;filename_field=name"></a>
-                                                    <t t-if="len(pub.anexo_ids) > 1 and anexo != pub.anexo_ids[-1]">
-                                                        <br/>
-                                                    </t>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12 col-md-2 text-md-right">
-                                                <p>
-                                                    <strong>Visualizações:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <p t-esc="pub.visualizacoes"></p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Ano de publicação</strong>
+                                <div class="col-sm-8">
+                                    2018
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Curso</strong>
+                                <div class="col-sm-8">
+                                    Ciência da Computação
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Tipo</strong>
+                                <div class="col-sm-8">
+                                    TCC - Trabalho de Conclusão de Curso
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Local</strong>
+                                <div class="col-sm-8">
+                                    Campus Arapiraca, Arapiraca
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Resumo</strong>
+                                <div class="col-sm-8">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus finibus mauris,
+                                    ut fringilla
+                                    erat sodales sed. Nulla mi nibh, vestibulum sit amet ullamcorper id, eleifend
+                                    suscipit dolor.
+                                    Suspendisse condimentum nec turpis a ornare. Donec rhoncus ante in quam laoreet, id
+                                    ornare nulla
+                                    ultricies. Nullam diam leo, convallis at leo ac, vehicula dapibus arcu. Cras varius
+                                    nibh odio,
+                                    ac pharetra urna tincidunt a. Integer faucibus sapien quis lobortis posuere. Proin
+                                    rhoncus
+                                    dapibus laoreet. Phasellus ut rutrum sapien. Suspendisse potenti. Sed eu consequat
+                                    justo.
+                                    Praesent porttitor, lacus eget blandit sollicitudin, nunc nisi ornare justo, id
+                                    gravida nisl dui
+                                    et leo. Sed hendrerit, mi a ullamcorper tristique, quam lacus vulputate ligula, eu
+                                    malesuada est
+                                    turpis id est. Aliquam erat volutpat. Aliquam erat volutpat. Cras nisi magna,
+                                    sodales sit amet
+                                    commodo et, feugiat vitae orci.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Abstract</strong>
+                                <div class="col-sm-8">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus finibus mauris,
+                                    ut fringilla
+                                    erat sodales sed. Nulla mi nibh, vestibulum sit amet ullamcorper id, eleifend
+                                    suscipit dolor.
+                                    Suspendisse condimentum nec turpis a ornare. Donec rhoncus ante in quam laoreet, id
+                                    ornare nulla
+                                    ultricies. Nullam diam leo, convallis at leo ac, vehicula dapibus arcu. Cras varius
+                                    nibh odio,
+                                    ac pharetra urna tincidunt a. Integer faucibus sapien quis lobortis posuere. Proin
+                                    rhoncus
+                                    dapibus laoreet. Phasellus ut rutrum sapien. Suspendisse potenti. Sed eu consequat
+                                    justo.
+                                    Praesent porttitor, lacus eget blandit sollicitudin, nunc nisi ornare justo, id
+                                    gravida nisl dui
+                                    et leo. Sed hendrerit, mi a ullamcorper tristique, quam lacus vulputate ligula, eu
+                                    malesuada est
+                                    turpis id est. Aliquam erat volutpat. Aliquam erat volutpat. Cras nisi magna,
+                                    sodales sit amet
+                                    commodo et, feugiat vitae orci.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Orientadores</strong>
+                                <div class="col-sm-8">
+                                    Oliveira, Rômulo Nunes de
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Palavras-chave</strong>
+                                <div class="col-sm-8">
+                                    Ordem de serviço.
+                                    <br/>
+                                    Sistema.
+                                    <br/>
+                                    Gerenciamento.
+                                    <br/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Anexos</strong>
+                                <div class="col-sm-8">
+                                    Trabalho de Conclusão de Curso.pdf
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <strong class="col-sm-4 text-sm-right">Visualizações</strong>
+                                <div class="col-sm-8">
+                                    5
+                                </div>
                             </div>
                         </div>
                     </div>

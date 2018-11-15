@@ -1,26 +1,27 @@
 /* Copyright 2016 LasLabs Inc.
  * License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). */
 
-odoo.define('web_responsive', function(require) {
+odoo.define('web_responsive', function (require) {
     'use strict';
 
-/*    var $ = require('$'); */
+    /*    var $ = require('$'); */
     var Menu = require('web.Menu');
     var Class = require('web.Class');
     var SearchView = require('web.SearchView');
     var core = require('web.core');
+    var FieldBinaryFile = core.form_widget_registry.get('binary');
 
     Menu.include({
 
         // Force all_outside to prevent app icons from going into more menu
-        reflow: function() {
+        reflow: function () {
             this._super('all_outside');
         },
 
         /* Overload to collapse unwanted visible submenus
          * @param allow_open bool Switch to allow submenus to be opened
          */
-        open_menu: function(id, allowOpen) {
+        open_menu: function (id, allowOpen) {
             this._super(id);
             if (allowOpen) return;
             var $clicked_menu = this.$secondary_menus.find('a[data-menu=' + id + ']');
@@ -39,7 +40,7 @@ odoo.define('web_responsive', function(require) {
         },
 
         // It prevents focusing of search el on mobile
-        preventMobileFocus: function(event) {
+        preventMobileFocus: function (event) {
             if (this.isMobile()) {
                 event.preventDefault();
             }
@@ -47,7 +48,7 @@ odoo.define('web_responsive', function(require) {
 
         // For lack of Modernizr, TouchEvent will do
         isMobile: function () {
-            try{
+            try {
                 document.createEvent('TouchEvent');
                 return true;
             } catch (ex) {
@@ -71,7 +72,7 @@ odoo.define('web_responsive', function(require) {
         dropdownHeightFactor: 0.90,
         initialized: false,
 
-        init: function() {
+        init: function () {
             this.directionCodes = {
                 'left': this.LEFT,
                 'right': this.RIGHT,
@@ -84,21 +85,21 @@ odoo.define('web_responsive', function(require) {
             };
             this.initDrawer();
             var $clickZones = $('.o_main, ' +
-                                'a.oe_menu_leaf, ' +
-                                'a.oe_menu_toggler'
-                                );
+                'a.oe_menu_leaf, ' +
+                'a.oe_menu_toggler'
+            );
             $clickZones.click($.proxy(this.handleClickZones, this));
             core.bus.on('resize', this, this.handleWindowResize);
             core.bus.on('keydown', this, this.handleNavKeys);
         },
 
         // It provides initialization handlers for Drawer
-        initDrawer: function() {
+        initDrawer: function () {
             this.$el = $('.drawer');
             this.$el.drawer();
             this.$el.one('drawer.opened', $.proxy(this.onDrawerOpen, this));
-            this.$el.on('drawer.opened', function setIScrollProbes(){
-                var onIScroll = function() {
+            this.$el.on('drawer.opened', function setIScrollProbes() {
+                var onIScroll = function () {
                     var transform = (this.iScroll.y) ? this.iScroll.y * -1 : 0;
                     $(this).find('#appDrawerAppPanelHead').css(
                         'transform', 'matrix(1, 0, 0, 1, 0, ' + transform + ')'
@@ -111,7 +112,7 @@ odoo.define('web_responsive', function(require) {
         },
 
         // It provides handlers to hide drawer when "unfocused"
-        handleClickZones: function() {
+        handleClickZones: function () {
             this.$el.drawer('close');
             $('.o_sub_menu_content')
                 .parent()
@@ -119,15 +120,15 @@ odoo.define('web_responsive', function(require) {
         },
 
         // It resizes bootstrap dropdowns for screen
-        handleWindowResize: function() {
+        handleWindowResize: function () {
             $('.dropdown-scrollable').css(
                 'max-height', $(window).height() * this.dropdownHeightFactor
             );
         },
 
         // It provides keyboard shortcuts for app drawer nav
-        handleNavKeys: function(e) {
-            if (!this.isOpen){
+        handleNavKeys: function (e) {
+            if (!this.isOpen) {
                 return;
             }
             var directionCode = $.hotkeys.specialKeys[e.keyCode.toString()];
@@ -148,7 +149,7 @@ odoo.define('web_responsive', function(require) {
         /* It adds to keybuffer, sets expire timer, and returns buffer
          * @returns str of current buffer
          */
-        handleKeyBuffer: function(keyCode) {
+        handleKeyBuffer: function (keyCode) {
             this.keyBuffer += String.fromCharCode(keyCode);
             if (this.keyBufferTimeoutEvent) {
                 clearTimeout(this.keyBufferTimeoutEvent);
@@ -160,7 +161,7 @@ odoo.define('web_responsive', function(require) {
             return this.keyBuffer;
         },
 
-        clearKeyBuffer: function() {
+        clearKeyBuffer: function () {
             this.keyBuffer = '';
         },
 
@@ -168,7 +169,7 @@ odoo.define('web_responsive', function(require) {
          * @fires ``drawer.closed`` to the ``core.bus``
          * @listens ``drawer.opened`` and sends to onDrawerOpen
          */
-        onDrawerClose: function() {
+        onDrawerClose: function () {
             core.bus.trigger('drawer.closed');
             this.$el.one('drawer.opened', $.proxy(this.onDrawerOpen, this));
             this.isOpen = false;
@@ -180,7 +181,7 @@ odoo.define('web_responsive', function(require) {
          * @fires ``drawer.opened`` to the ``core.bus``
          * @listens ``drawer.closed`` and sends to :meth:``onDrawerClose``
          */
-        onDrawerOpen: function() {
+        onDrawerOpen: function () {
             this.$appLinks = $('.app-drawer-icon-app').parent();
             this.selectAppLink($(this.$appLinks[0]));
             this.$el.one('drawer.closed', $.proxy(this.onDrawerClose, this));
@@ -189,7 +190,7 @@ odoo.define('web_responsive', function(require) {
         },
 
         // It selects an app link visibly
-        selectAppLink: function($appLink) {
+        selectAppLink: function ($appLink) {
             if ($appLink) {
                 $appLink.focus();
             }
@@ -199,8 +200,8 @@ odoo.define('web_responsive', function(require) {
          * @param query str to search
          * @return jQuery obj
          */
-        searchAppLinks: function(query) {
-            return this.$appLinks.filter(function() {
+        searchAppLinks: function (query) {
+            return this.$appLinks.filter(function () {
                 return $(this).data('menuName').toUpperCase().startsWith(query);
             }).first();
         },
@@ -217,12 +218,12 @@ odoo.define('web_responsive', function(require) {
          * @param direction str of direction to go (constants LEFT, UP, etc.)
          * @return jQuery obj for adjacent applink
          */
-        findAdjacentAppLink: function($appLink, direction) {
+        findAdjacentAppLink: function ($appLink, direction) {
 
             var obj = [],
                 $objs = this.$appLinks;
 
-            switch(direction){
+            switch (direction) {
                 case this.LEFT:
                     obj = $objs[$objs.index($appLink) - 1];
                     if (!obj) {
@@ -264,15 +265,16 @@ odoo.define('web_responsive', function(require) {
          * @param $grid jQuery objects representing grid
          * @return $objs jQuery objects of row
          */
-        getRowObjs: function($obj, $grid) {
+        getRowObjs: function ($obj, $grid) {
             // Filter by object which middle lies within left/right bounds
             function filterWithin(left, right) {
-                return function() {
+                return function () {
                     var $this = $(this),
                         thisMiddle = $this.offset().left + ($this.width() / 2);
                     return thisMiddle >= left && thisMiddle <= right;
                 };
             }
+
             var left = $obj.offset().left,
                 right = left + $obj.outerWidth();
             return $grid.filter(filterWithin(left, right));
@@ -284,6 +286,54 @@ odoo.define('web_responsive', function(require) {
     core.bus.on('web_client_ready', null, function () {
         new AppDrawer();
         $('.drawer').drawer('open');
+    });
+
+    FieldBinaryFile.include({
+        on_file_change: function (e) {
+            var self = this;
+            var file_node = e.target;
+            if ((this.useFileAPI && file_node.files.length) || (!this.useFileAPI && $(file_node).val() !== '')) {
+                if (this.useFileAPI) {
+                    var file = file_node.files[0];
+                    var filereader = new FileReader();
+                    filereader.readAsDataURL(file);
+                    filereader.onloadend = function (upload) {
+                        var data = upload.target.result;
+                        data = data.split(',')[1];
+                        self.on_file_uploaded(file.size, file.name, file.type, data);
+                    };
+                } else {
+                    this.$('form.o_form_binary_form input[name=session_id]').val(this.session.session_id);
+                    this.$('form.o_form_binary_form').submit();
+                }
+                this.$('.o_form_binary_progress').show();
+                this.$('button').hide();
+            }
+        },
+    });
+
+    FieldBinaryFile.include({
+        render_value: function () {
+            var filename = this.view.datarecord[this.node.attrs.filename];
+            if (this.get("effective_readonly")) {
+                this.do_toggle(!!this.get('value'));
+                if (this.get('value')) {
+                    this.$el.empty().append($("<span/>").addClass('fa fa-download'));
+                    if (filename) {
+                        this.$el.append(" " + filename);
+                    }
+                }
+            } else {
+                if (this.get('value')) {
+                    this.$el.children().removeClass('o_hidden');
+                    this.$('.o_select_file_button').first().addClass('o_hidden');
+                    this.$input.val(filename || 'Pronto para enviar.');
+                } else {
+                    this.$el.children().addClass('o_hidden');
+                    this.$('.o_select_file_button').first().removeClass('o_hidden');
+                }
+            }
+        }
     });
 
     return {

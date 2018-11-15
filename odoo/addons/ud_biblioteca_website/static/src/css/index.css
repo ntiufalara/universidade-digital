@@ -1,0 +1,189 @@
+:root {
+    --cor-tema: #0e0c79;
+    --cor-tema-destaque: #141493;
+    --primary: #007bff;
+}
+
+body {
+    margin-top: 71px;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.ud-logo-top {
+    height: 60px;
+}
+
+.navbar {
+    padding: 0;
+}
+
+.navbar-light {
+    box-shadow: 0 0 6px #000;
+}
+
+.navbar-light .navbar-nav .active > .nav-link,
+.navbar-light .navbar-nav .nav-link.active,
+.navbar-light .navbar-nav .nav-link.show,
+.navbar-light .navbar-nav .show > .nav-link {
+    color: var(--primary);
+}
+
+#topo {
+    background: url("../img/bg-topo.png") center no-repeat;
+    background-size: cover;
+    min-height: 430px;
+}
+
+.ribca-logo {
+    height: 80px;
+}
+
+h1.contador {
+    font-size: 50pt;
+    margin-bottom: 0;
+    color: var(--cor-tema);
+}
+
+p.contador-label {
+    margin-top: -15px;
+}
+
+.bg-tema {
+    background: var(--cor-tema);
+}
+
+.btn-tema {
+    background: var(--cor-tema-destaque) !important;
+    border-color: var(--cor-tema-destaque) !important;
+}
+
+.section-title {
+    text-transform: uppercase;
+}
+
+.buscar-sombra {
+    box-shadow: 1px 3px 10px #000000;
+}
+
+.acesse-vector {
+    height: 250px;
+}
+
+@media screen and (max-width: 856px) {
+    .acesse-vector {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .acesse-vector {
+        height: 150px;
+    }
+}
+
+.card-curso {
+    border-left: 10px solid #a30000;
+    height: 80px;
+}
+
+.card-curso p {
+    text-transform: uppercase;
+    font-size: 11pt;
+}
+
+.card-curso a {
+    text-decoration: none;
+}
+
+.card-wrapper {
+    margin-bottom: 12px;
+}
+
+.card-header {
+    background: var(--cor-tema);
+    color: white;
+}
+
+.publicacao-detalhes {
+    border-left: 3px solid #a30000;
+    padding: 0 0 0 15px;
+    margin-bottom: 8px;
+    font-size: 10pt;
+}
+
+
+/* Card Slider */
+
+/* equal card height */
+.row-equal > div[class*='col-'] {
+    display: flex;
+    flex: 1 0 auto;
+}
+
+.row-equal .card {
+    width: 100%;
+}
+
+/* ensure equal card height inside carousel */
+.carousel-inner>.row-equal.active,
+.carousel-inner>.row-equal.next,
+.carousel-inner>.row-equal.prev {
+    display: flex;
+}
+
+/* prevent flicker during transition */
+.carousel-inner>.row-equal.active.left,
+.carousel-inner>.row-equal.active.right {
+    opacity: 0.5;
+    display: flex;
+}
+
+
+/* control image height */
+.card-img-top-250 {
+    max-height: 250px;
+    overflow:hidden;
+}
+
+.logo-biblioteca {
+    height: 100px;
+}
+
+.logo-nti {
+    height: 70px;
+}
+
+.nti-label {
+    font-size: 8pt;
+}
+
+.card-curso .card-body {
+    padding: 1px 1px 1px 10px;
+}
+
+#publicacoes-topo {
+    background: url("../img/bg-topo-publicacoes.png") center no-repeat;
+    background-size: cover;
+    min-height: 200px;
+}
+
+.card-busca {
+    border-left: 10px solid #a30000;
+}
+
+.card-content label {
+    font-size: 10pt;;
+}
+
+.container-check {
+    padding-left: 20px;
+}
+
+#pub-titulo {
+    font-size: 16pt;
+    text-shadow: 0 0 15px #000000;
+    text-transform: none !important;
+}

@@ -3,111 +3,229 @@
 <odoo>
     <template id="ud_biblioteca_website.publicacoes">
 
-        <t t-call="ud_website.layout">
-            <div class="row mx-auto my-4">
-                <div class="col-12 text-center">
-                    <h4>Publicações</h4>
-                </div>
+        <t t-call="ud_biblioteca_website.layout_repositorio">
+            <div id="publicacoes-topo"
+                 class="d-flex justify-content-center align-items-center flex-column flex-sm-row mx-auto">
+                <h3 class="ml-3 mt-3 mt-sm-0 text-white text-center text-uppercase">
+                    Publicações
+                </h3>
             </div>
-            <div class="row mx-auto">
-                <div class="col-md-12">
-                    <div class="row">
-                        <!-- Card - BUSCAR -->
-                        <div class="card col-sm-4 p-0">
-                            <button class="btn btn-link card-header" data-toggle="collapse" data-target=".card-busca">
-                                Buscar
-                            </button>
-                            <div class="card-body collapse card-busca">
-                                <form>
-                                    <div>
-                                        <div class="form-group">
-                                            <label for="buscar">Buscar</label>
-                                            <input id="buscar" name="q" class="form-control"/>
+
+            <!-- PUBLICAÇÕES-->
+            <div class="container py-4">
+                <div class="row flex-row-reverse">
+                    <div class="col-md-4">
+                        <div class="card card-busca mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Buscar</h5>
+                                <form class="card-content">
+                                    <div class="form-row container-check">
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="todos" name="todos"/>
+                                            <label class="form-check-label" for="todos">Todos</label>
                                         </div>
-                                        <button class="btn btn-primary btn-block">Buscar
-                                        </button>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="titulo" name="titulo"/>
+                                            <label class="form-check-label" for="titulo">Título</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="autor" name="autor"/>
+                                            <label class="form-check-label" for="autor">Autor</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="tipo" name="tipo"/>
+                                            <label class="form-check-label" for="tipo">Tipo</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="palavra_chave"
+                                                   name="palavra_chave"/>
+                                            <label class="form-check-label" for="palavra_chave">Palavra-chave</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="orientador"
+                                                   name="autor"/>
+                                            <label class="form-check-label" for="orientador">
+                                                Orientador
+                                                e Coorientador
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-3 mb-0 d-flex justify-content-center flex-row">
+                                        <input id="q" name="q" class="form-control" title="buscar"
+                                               placeholder="DIGITE A BUSCA"/>
+                                        <button class="btn btn-primary btn-tema">BUSCAR</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        <!-- Card - FILTRAR -->
-                        <div class="card col-sm-8 p-0">
-                            <button class="btn btn-link card-header" data-toggle="collapse" data-target=".card-busca">
-                                Filtrar
-                            </button>
-                            <div class="card-body collapse card-busca">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="filtrar-curso">Curso</label>
-                                            <select id="filtrar-curso" class="form-control filtrar-curso">
-                                                <option selected="" disabled="">- Selecione um curso -</option>
-                                                <option t-foreach="cursos" t-as="_curso"
-                                                        t-esc="_curso.name"
-                                                        t-attf-value="{{ _curso.id }}"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="filtrar-ano">Ano</label>
-                                            <select id="filtrar-ano" class="form-control filtrar-ano">
-                                                <option selected="" disabled="">- Selecione um ano -</option>
-                                                <option t-foreach="anos" t-as="_ano" t-esc="_ano"></option>
-                                            </select>
-                                        </div>
-                                    </div>
+                        <div class="card card-busca mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Filtrar</h5>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control">
+                                        <option selected="" disabled="">CURSO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control">
+                                        <option selected="" disabled="">CAMPUS</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control">
+                                        <option selected="" disabled="">POLO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control">
+                                        <option selected="" disabled="">ANO DE PUBLICAÇÃO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control">
+                                        <option selected="" disabled="">TIPO DE PUBLICAÇÃO</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row mx-auto my-2">
-                <div class="col-md-12">
-                    <div class="list-group">
-                        <a t-attf-href="/repositorio/publicacoes/{{ publicacao.id }}"
-                           t-foreach="publicacoes" t-as="publicacao"
-                           class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1" t-esc="publicacao.name"></h5>
+                    <div class="col-md-8">
+                        <div class="card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    <a href="/repositorio/publicacoes/1" class="text-white">
+                                        Sistemas para gerenciamento de solicitações de ordem de serviços para a
+                                        Universidade Federal
+                                        de
+                                        Alagoas, Campus Arapiraca
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        Ciência da computação
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Silva, Diogo Cabral da
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
                             </div>
-                            <p>
-                                <strong>Ano de publicação:</strong>
-                                <t t-esc="publicacao.ano_pub"></t>
-                                <br/>
-                                <strong>Autor:</strong>
-                                <t t-esc="publicacao.autor_id.display_name"></t>
-                                <br/>
-                                <strong>Curso:</strong>
-                                <t t-esc="publicacao.curso_id.name"></t>
-                                <br/>
-                                <strong>Tipo:</strong>
-                                <t t-esc="publicacao.tipo_id.name"></t>
-                                <br/>
-                                <strong>Orientadores:</strong>
-                                <t t-foreach="publicacao.orientador_ids" t-as="orientador">
-                                    <t t-esc="orientador.display_name"></t><t t-if="len(publicacao.orientador_ids) > 1 and orientador != publicacao.orientador_ids[-1]">;<br/></t>
-                                </t>
-                                <br/>
-                                <t t-if="publicacao.coorientador_ids">
-                                    <strong>Coorientadores:</strong>
-                                    <t t-foreach="publicacao.coorientador_ids" t-as="coorientador">
-                                        <t t-esc="coorientador.display_name"></t><t t-if="len(publicacao.coorientador_ids) > 1 and coorientador != publicacao.coorientador_ids[-1]">;<br/></t>
-                                    </t>
-                                    <br/>
-                                </t>
-                                <strong>Palavras-chave:</strong>
-                                <t t-foreach="publicacao.palavras_chave_ids" t-as="palavra">
-                                    <t t-esc="palavra.name"></t><t t-if="len(publicacao.palavras_chave_ids) > 1 and palavra != publicacao.palavras_chave_ids[-1]">.</t>
-                                </t>
-                            </p>
-                        </a>
+                        </div>
+                        <div class="card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <t t-call="ud_website.pagination"></t>
                     </div>
+
                 </div>
             </div>
-
-            <t t-call="ud_website.pagination"></t>
 
         </t>
 

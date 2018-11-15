@@ -15,6 +15,7 @@
         # security
         'security/ir.model.access.csv',
         # 'views/assets.xml',
+        'views/layout_repositorio.xml',
         'views/home.xml',
         'views/home_repositorio.xml',
         'views/publicacoes.xml',

@@ -3,120 +3,245 @@
 <odoo>
     <template id="ud_biblioteca_website.home_repositorio">
 
-        <t t-call="ud_website.layout">
-            <div class="col-12">
-                <div class="jumbotron bg-light shadow-sm">
-                    <h1 class="display-5 text-center">Repositório Institucional</h1>
-                    <h4 class="text-center">Campus Arapiraca</h4>
-                    <form method="get" action="repositorio/publicacoes">
-                        <div class="row">
-                            <div class="col-8 mx-auto">
-                                <div class="form-group mx-auto pt-3">
-                                    <div class="row">
-                                        <div class="col-md-8 col-lg-10 p-0">
-                                            <input class="form-control form-control-lg"
-                                                   name="q"
-                                                   placeholder="Digite para buscar"/>
+        <t t-call="ud_biblioteca_website.layout_repositorio">
+            <section id="content">
+                <!-- CABEÇALHO -->
+                <div id="topo" class="d-flex justify-content-center align-items-center flex-column flex-sm-row mx-auto">
+                    <img class="ribca-logo" src="/ud_biblioteca_website/static/src/img/logo-bca.svg"/>
+                    <h3 class="ml-3 text-white text-sm-left mt-3 mt-sm-0 text-center text-sm-left">
+                        Repositório Institucional
+                        <br/>
+                        Biblioteca Campus de Arapiraca
+                    </h3>
+                </div>
+
+                <!-- CONTADORES -->
+                <div id="contadores" class="row my-5 mx-auto">
+                    <div class="col-sm-4 text-center">
+                        <h1 class="contador">
+                            <strong t-esc="unidades_count"></strong>
+                        </h1>
+                        <p class="contador-label">Unidades</p>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <h1 class="contador">
+                            <strong t-esc="publicacoes_count"></strong>
+                        </h1>
+                        <p class="contador-label">Publicações cadastradas</p>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <h1 class="contador">
+                            <strong t-esc="assuntos_count"></strong>
+                        </h1>
+                        <p class="contador-label">Assuntos disponíveis</p>
+                    </div>
+                </div>
+
+                <!-- Campos de busca -->
+                <div class="bg-tema py-4">
+                    <div class="buscar text-center text-white">
+                        <h3 class="section-title pt-3 font-weight-bold">Encontre no repositório</h3>
+                        <p class="font-weight-bold">Realizar uma busca nas <t t-esc="publicacoes_count"></t> publicações
+                            leva apenas alguns segundos
+                        </p>
+                        <div class="d-flex justify-content-center">
+                            <form class="form-inline">
+                                <div class="buscar-input">
+                                    <label class="sr-only" for="q">Name</label>
+                                    <input type="text" class="form-control mb-2 mr-0 buscar-sombra " id="q" name="q"
+                                           placeholder="DIGITE SUA BUSCA"/>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-tema mb-2 buscar-sombra">BUSCAR
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TODAS AS PUBLICAÇÕES -->
+                <div class="container py-4">
+                    <div class="py-3 d-flex justify-content-center align-items-center flex-column flex-sm-row mx-auto">
+                        <div>
+                            <object class="acesse-vector mx-4"
+                                    data="/ud_biblioteca_website/static/src/img/biblioteca-vector.svg"
+                                    type="image/svg+xml"></object>
+                        </div>
+                        <div class="text-center text-sm-left">
+                            <h3>Veja todas as publicações</h3>
+                            <p>Consulte e faça o download dos TCC's, artigos e outras publicações disponíveis na BCA -
+                                Biblioteca
+                                Campus de Arapiraca da Universidade Federal de Alagoas
+                            </p>
+                            <a href="/repositorio/publicacoes/">
+                                <button class="btn btn-primary btn-tema mb-2">Acessar publicações</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DEPARTAMENTOS -->
+                <div class="bg-tema py-4">
+                    <div class="buscar text-center text-white container">
+                        <h3 class="section-title pt-3 font-weight-bold">Departamentos</h3>
+                        <p class="font-weight-bold">Encontre publicações selecionando um departamento abaixo</p>
+
+                        <div class="text-dark text-left">
+
+                            <div class="row mb-2">
+                                <div class="col-md-4 card-wrapper"
+                                     t-foreach="cursos" t-as="curso">
+                                    <div class="card card-curso">
+                                        <div class="card-body d-flex">
+                                            <p class="mb-0 font-weight-bold my-auto">
+                                                <a href="" class="text-dark" t-field="curso.name"></a>
+                                            </p>
                                         </div>
-                                        <div class="col-md-4 col-lg-2 p-0 mx-auto">
-                                            <button type="submit" class="btn btn-secondary btn-lg btn-block">
-                                                Buscar
-                                            </button>
-                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ÚLTIMAS PUBLICAÇÕES-->
+                <div class="container py-4">
+                    <h3 class="section-title py-3 font-weight-bold text-center">Últimas publicações</h3>
+
+                    <div class="row">
+                        <div class="col-md-4 card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Sistemas para gerenciamento de solicitações de ordem de serviços para a Universidade
+                                    Federal de
+                                    Alagoas, Campus Arapiraca
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        Ciência da computação
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Silva, Diogo Cabral da
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-
-                <div class="card-deck">
-                    <div class="card">
-                        <div class="card-header">
-                            Cursos
+                        <div class="col-md-4 card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="padding: 0;" class="card-body list-group">
-                            <a class="list-group-item list-group-item-action"
-                               t-foreach="cursos" t-as="curso"
-                               t-attf-href="/repositorio/publicacoes?curso_id={{ curso.id }}"
-                               t-esc="curso.name">
-                            </a>
+                        <div class="col-md-4 card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer text-muted">
-                            <button data-toggle="modal" data-target="#mais-cursos" class="btn btn-primary">
-                                Ver mais
-                            </button>
+                        <div class="col-md-4 card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            Assuntos
-                        </div>
-                        <div style="padding: 0;" class="card-body list-group">
-                            <a t-foreach="palavras_chave" t-as="p"
-                               class="list-group-item list-group-item-action"
-                               t-esc="p.name"
-                               t-attf-href="/repositorio/publicacoes?p_chave={{ p.id }}">
-                            </a>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <button data-toggle="modal" data-target="#mais-assuntos" class="btn btn-primary">
-                                Ver mais
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal - MAIS CURSOS -->
-            <div class="modal fade" id="mais-cursos" tabindex="-1" role="dialog" aria-labelledby="maisCursos"
-                 aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="maisCursos">Todos os cursos</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div style="padding: 0;" class="list-group">
-                                <a class="list-group-item list-group-item-action"
-                                   t-foreach="todos_cursos_arapiraca" t-as="_curso"
-                                   t-attf-href="/repositorio/publicacoes?curso_id={{ _curso.id }}"
-                                   t-esc="_curso.name">
-                                </a>
+                        <div class="col-md-4 card-wrapper">
+                            <div class="card">
+                                <div class="card-header">
+                                    Funções analíticas e aplicações às n-selas
+                                </div>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Departamento:</strong>
+                                        TCC - Trabalho de conclusão de curso
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        Hollanda, Karollayne Stefany de Farias
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        Campus Arapiraca, Arapiraca
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Modal - MAIS ASSUNTOS -->
-            <div class="modal fade" id="mais-assuntos" tabindex="-1" role="dialog" aria-labelledby="maisAssuntos"
-                 aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="maisAssuntos">Mais Assuntos</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div style="padding: 0;" class="list-group">
-                                <a t-foreach="todas_palavras_chave" t-as="_p"
-                                   class="list-group-item list-group-item-action"
-                                   t-esc="_p.name"
-                                   t-attf-href="/repositorio/publicacoes?p_chave={{ _p.id }}">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            </section>
         </t>
 
     </template>

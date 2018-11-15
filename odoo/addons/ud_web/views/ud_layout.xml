@@ -1,60 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <odoo>
-    <template id="web.layout" name="Web layout">&lt;!DOCTYPE html&gt;
-        <html t-att="html_data or {}">
-            <head>
-                <meta charset="utf-8"/>
-                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <template id="ud_web.layout" inherit_id="web.layout">
+        <xpath expr="//title" position="before">
+            <t t-set="title" t-value="'RI FERA'"></t>
+        </xpath>
 
-                <title t-esc="title or 'Universidade Digital'"/>
-                <link type="image/x-icon" rel="shortcut icon" t-att-href="x_icon or '/web/static/src/img/favicon.ico'"/>
-
-                <script type="text/javascript">
-                    var odoo = {
-                    csrf_token: "<t t-esc="request.csrf_token(None)"/>",
-                    };
-                </script>
-
-                <t t-raw="head or ''"/>
-            </head>
-            <body t-att-class="body_classname">
-                <t t-raw="0"/>
-            </body>
-        </html>
+        <xpath expr="//link[@type='image/x-icon']" position="replace">
+            <link rel="apple-touch-icon" sizes="57x57" href="/ud_web/static/src/img/icons/apple-icon-57x57.png"/>
+            <link rel="apple-touch-icon" sizes="60x60" href="/ud_web/static/src/img/icons/apple-icon-60x60.png"/>
+            <link rel="apple-touch-icon" sizes="72x72" href="/ud_web/static/src/img/icons/apple-icon-72x72.png"/>
+            <link rel="apple-touch-icon" sizes="76x76" href="/ud_web/static/src/img/icons/apple-icon-76x76.png"/>
+            <link rel="apple-touch-icon" sizes="114x114" href="/ud_web/static/src/img/icons/apple-icon-114x114.png"/>
+            <link rel="apple-touch-icon" sizes="120x120" href="/ud_web/static/src/img/icons/apple-icon-120x120.png"/>
+            <link rel="apple-touch-icon" sizes="144x144" href="/ud_web/static/src/img/icons/apple-icon-144x144.png"/>
+            <link rel="apple-touch-icon" sizes="152x152" href="/ud_web/static/src/img/icons/apple-icon-152x152.png"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/ud_web/static/src/img/icons/apple-icon-180x180.png"/>
+            <link rel="icon" type="image/png" sizes="192x192"
+                  href="/ud_web/static/src/img/icons/android-icon-192x192.png"/>
+            <link rel="icon" type="image/png" sizes="32x32" href="/ud_web/static/src/img/icons/favicon-32x32.png"/>
+            <link rel="icon" type="image/png" sizes="96x96" href="/ud_web/static/src/img/icons/favicon-96x96.png"/>
+            <link rel="icon" type="image/png" sizes="16x16" href="/ud_web/static/src/img/icons/favicon-16x16.png"/>
+            <link rel="manifest" href="/ud_web/static/src/img/icons/manifest.json"/>
+            <meta name="msapplication-TileColor" content="#dc3545"/>
+            <meta name="msapplication-TileImage" content="/ud_web/static/src/img/icons/ms-icon-144x144.png"/>
+            <meta name="theme-color" content="#dc3545"/>
+        </xpath>
     </template>
 
-    <template id="web.login_layout" name="Login Layout">
-        <t t-call="web.layout">
-            <t t-set="html_data" t-value="{'style': 'height: 100%;'}"/>
+    <template id="ud_web.login_layout" inherit_id="web.login_layout">
+        <xpath expr="//div" position="before">
+            <t t-set="disable_footer" t-value="True"></t>
+
             <t t-set="head">
                 <t t-call-assets="web.assets_common" t-js="false"/>
                 <t t-call-assets="web.assets_frontend" t-js="false"/>
                 <t t-call-assets="web.assets_common" t-css="false"/>
                 <t t-call-assets="web.assets_frontend" t-css="false"/>
+                <link rel="stylesheet" href="/ud_web/static/src/css/main.css"/>
             </t>
-            <t t-set="body_classname" t-value="'container'"/>
+        </xpath>
 
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3 o_database_list">
-                    <div class="text-center">
-                        <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"/>
+        <xpath expr="//div[@class='row']" position="replace">
+            <div class="row text-center">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <img style="max-width: 130px;" src="/ud_web/static/src/img/fera-logo.png" alt="Logo"/>
+                            <hr/>
+                            <div class="box text-left">
+                                <t t-raw="0"></t>
+                            </div>
+                        </div>
                     </div>
-                    <t t-raw="0"/>
                 </div>
             </div>
-        </t>
+        </xpath>
     </template>
 
-    <template id="web.login" name="Login">
-        <t t-call="web.login_layout">
+    <template id="ud_web.login" inherit_id="web.login">
+        <xpath expr="//form" position="replace">
             <form class="oe_login_form" role="form" t-attf-action="/web/login{{ '?debug' if debug else '' }}"
                   method="post" onsubmit="this.action = this.action + location.hash">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
                 <div class="form-group field-db" t-if="databases and len(databases) &gt; 1">
-                    <label for="db" class="control-label">Database</label>
+                    <label for="db" class="control-label">Banco de dados</label>
                     <div class="input-group">
                         <input type="text" name="db" t-att-value="request.db" id="db" class="form-control"
                                required="required" readonly="readonly"/>
@@ -67,13 +78,13 @@
                 </div>
 
                 <div class="form-group field-login">
-                    <label for="login" class="control-label">Email</label>
+                    <label for="login" class="control-label">E-mail</label>
                     <input type="text" name="login" t-att-value="login" id="login" class="form-control"
                            required="required" autofocus="autofocus" autocapitalize="off"/>
                 </div>
 
                 <div class="form-group field-password">
-                    <label for="password" class="control-label">Password</label>
+                    <label for="password" class="control-label">Senha</label>
                     <input type="password" name="password" id="password" class="form-control" required="required"
                            autocomplete="current-password" t-att-autofocus="'autofocus' if login else None"
                            maxlength="4096"/>
@@ -88,10 +99,12 @@
 
                 <input type="hidden" name="redirect" t-att-value="redirect"/>
                 <div class="clearfix oe_login_buttons">
-                    <button type="submit" class="btn btn-primary">Log in</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                    <a t-if="reset_password_enabled" t-attf-href="/web/reset_password?{{ keep_query() }}"
+                       class="btn btn-link pull-right">Recuperar senha
+                    </a>
                 </div>
             </form>
-        </t>
+        </xpath>
     </template>
-
 </odoo>

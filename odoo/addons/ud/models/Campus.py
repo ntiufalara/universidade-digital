@@ -27,6 +27,7 @@ class Campus(models.Model):
             auth = xmlrpclib.ServerProxy("{}/xmlrpc/common".format(url))
             uid = auth.login(db, username, password)
         except:
+            _logger.error(u'Não foi possível conectar-se com o servidor OpenERP 7')
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
         campus_ids = server.execute(db, uid, password, 'ud.campus', 'search', [])
