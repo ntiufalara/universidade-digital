@@ -51,6 +51,8 @@ class ListaPublicacoesCurso(http.Controller):
         params = copy(query)
         if 'q' in params:
             params.pop('q')
+        if 'page_num' in params:
+            params.pop('page_num')
         domain_and = []
         domain_or = []
         # Curso
