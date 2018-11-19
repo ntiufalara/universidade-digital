@@ -14,7 +14,7 @@ class Autor(models.Model):
     _description = 'Autor'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(u'Nome', compute='get_name', store=True)
+    display_name = fields.Char(u'Nome', compute='get_name')
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')

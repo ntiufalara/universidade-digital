@@ -14,7 +14,53 @@
 
             <link rel="stylesheet" href="/ud_biblioteca_website/static/src/css/index.css"/>
 
-            <title>Repositório Institucional</title>
+            <link rel="apple-touch-icon" sizes="57x57"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-57x57.png"/>
+            <link rel="apple-touch-icon" sizes="60x60"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-60x60.png"/>
+            <link rel="apple-touch-icon" sizes="72x72"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-72x72.png"/>
+            <link rel="apple-touch-icon" sizes="76x76"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-76x76.png"/>
+            <link rel="apple-touch-icon" sizes="114x114"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-114x114.png"/>
+            <link rel="apple-touch-icon" sizes="120x120"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-120x120.png"/>
+            <link rel="apple-touch-icon" sizes="144x144"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-144x144.png"/>
+            <link rel="apple-touch-icon" sizes="152x152"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-152x152.png"/>
+            <link rel="apple-touch-icon" sizes="180x180"
+                  href="/ud_biblioteca_website/static/src/img/icons/apple-icon-180x180.png"/>
+            <link rel="icon" type="image/png" sizes="192x192"
+                  href="/ud_biblioteca_website/static/src/img/icons/android-icon-192x192.png"/>
+            <link rel="icon" type="image/png" sizes="32x32"
+                  href="/ud_biblioteca_website/static/src/img/icons/favicon-32x32.png"/>
+            <link rel="icon" type="image/png" sizes="96x96"
+                  href="/ud_biblioteca_website/static/src/img/icons/favicon-96x96.png"/>
+            <link rel="icon" type="image/png" sizes="16x16"
+                  href="/ud_biblioteca_website/static/src/img/icons/favicon-16x16.png"/>
+            <link rel="manifest" href="/ud_biblioteca_website/static/src/img/icons/manifest.json"/>
+            <meta name="msapplication-TileColor" content="#dc3545"/>
+            <meta name="msapplication-TileImage"
+                  content="/ud_biblioteca_website/static/src/img/icons/ms-icon-144x144.png"/>
+            <meta name="theme-color" content="#dc3545"/>
+
+            <title>Repositório - UFAL Campus Arapiraca</title>
+
+            <!-- Optional JavaScript -->
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                    crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                    crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+                    crossorigin="anonymous"></script>
+            <script src="/ud_website/static/src/js/utils.js"></script>
+            <script src="/ud_biblioteca_website/static/src/js/repositorio.js"></script>
         </head>
         <body>
 
@@ -22,7 +68,8 @@
                 <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white px-2 px-sm-0">
                     <div class="container">
                         <a class="navbar-brand" href="#">
-                            <img src="/ud_biblioteca_website/static/src/img/logo-ud.svg" class="ud-logo-top" title="logo universidade digital"/>
+                            <img src="/ud_biblioteca_website/static/src/img/logo-ud.svg" class="ud-logo-top"
+                                 title="logo universidade digital"/>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent"
@@ -76,24 +123,13 @@
                             </div>
                         </div>
                         <div class="col-sm-6 text-center text-sm-right">
-                            <img class="logo-biblioteca" src="/ud_biblioteca_website/static/src/img/logo-biblioteca-ufal.svg"/>
+                            <img class="logo-biblioteca"
+                                 src="/ud_biblioteca_website/static/src/img/logo-biblioteca-ufal.svg"/>
                         </div>
                     </div>
                 </div>
             </footer>
 
-
-            <!-- Optional JavaScript -->
-            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                    crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-                    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-                    crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-                    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-                    crossorigin="anonymous"></script>
         </body>
     </template>
 </odoo>

@@ -83,21 +83,22 @@
                 <!-- DEPARTAMENTOS -->
                 <div class="bg-tema py-4">
                     <div class="buscar text-center text-white container">
-                        <h3 class="section-title pt-3 font-weight-bold">Departamentos</h3>
-                        <p class="font-weight-bold">Encontre publicações selecionando um departamento abaixo</p>
+                        <h3 class="section-title pt-3 font-weight-bold">Opções de pesquisa</h3>
+                        <p class="font-weight-bold">Encontre publicações selecionando uma opção de pesquisa abaixo</p>
 
                         <div class="text-dark text-left">
 
                             <div class="row mb-2">
                                 <div class="col-md-4 card-wrapper"
                                      t-foreach="cursos" t-as="curso">
-                                    <div class="card card-curso">
-                                        <div class="card-body d-flex">
-                                            <p class="mb-0 font-weight-bold my-auto">
-                                                <a href="" class="text-dark" t-field="curso.name"></a>
-                                            </p>
+                                    <a t-attf-href="/repositorio/publicacoes/?curso_id__id={{ curso.id }}">
+                                        <div class="card card-curso">
+                                            <div class="card-body d-flex">
+                                                <p class="mb-0 font-weight-bold my-auto text-dark"
+                                                   t-field="curso.name"></p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
 
                             </div>
@@ -112,133 +113,39 @@
                     <h3 class="section-title py-3 font-weight-bold text-center">Últimas publicações</h3>
 
                     <div class="row">
-                        <div class="col-md-4 card-wrapper">
+
+                        <div class="col-md-4 card-wrapper" t-foreach="ultimas_publicacoes" t-as="pub">
                             <div class="card">
-                                <div class="card-header">
-                                    Sistemas para gerenciamento de solicitações de ordem de serviços para a Universidade
-                                    Federal de
-                                    Alagoas, Campus Arapiraca
-                                </div>
+                                <a t-attf-href="/repositorio/publicacoes/{{ pub.id }}">
+                                    <div class="card-header" t-field="pub.name"></div>
+                                </a>
+
                                 <div class="card-body">
                                     <div class="publicacao-detalhes">
                                         <strong>Tipo:</strong>
-                                        TCC - Trabalho de conclusão de curso
+                                        <t t-esc="pub.tipo_id.name"></t>
                                     </div>
                                     <div class="publicacao-detalhes">
-                                        <strong>Departamento:</strong>
-                                        Ciência da computação
+                                        <strong>Curso/Outros:</strong>
+                                        <t t-esc="pub.curso_id.name"></t>
                                     </div>
                                     <div class="publicacao-detalhes">
                                         <strong>Autor(es):</strong>
-                                        Silva, Diogo Cabral da
+                                        <t t-esc="pub.autor_id.display_name"></t>
                                     </div>
                                     <div class="publicacao-detalhes">
                                         <strong>Local:</strong>
-                                        Campus Arapiraca, Arapiraca
+                                        <t t-esc="pub.campus_id.name"></t>,
+                                        <t t-esc="pub.polo_id.name"></t>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Data de inclusão:</strong>
+                                        <span t-field="pub.create_date" t-options="{'format': 'dd/MM/yyyy'}"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 card-wrapper">
-                            <div class="card">
-                                <div class="card-header">
-                                    Funções analíticas e aplicações às n-selas
-                                </div>
-                                <div class="card-body">
-                                    <div class="publicacao-detalhes">
-                                        <strong>Tipo:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Departamento:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Autor(es):</strong>
-                                        Hollanda, Karollayne Stefany de Farias
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Local:</strong>
-                                        Campus Arapiraca, Arapiraca
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card-wrapper">
-                            <div class="card">
-                                <div class="card-header">
-                                    Funções analíticas e aplicações às n-selas
-                                </div>
-                                <div class="card-body">
-                                    <div class="publicacao-detalhes">
-                                        <strong>Tipo:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Departamento:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Autor(es):</strong>
-                                        Hollanda, Karollayne Stefany de Farias
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Local:</strong>
-                                        Campus Arapiraca, Arapiraca
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card-wrapper">
-                            <div class="card">
-                                <div class="card-header">
-                                    Funções analíticas e aplicações às n-selas
-                                </div>
-                                <div class="card-body">
-                                    <div class="publicacao-detalhes">
-                                        <strong>Tipo:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Departamento:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Autor(es):</strong>
-                                        Hollanda, Karollayne Stefany de Farias
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Local:</strong>
-                                        Campus Arapiraca, Arapiraca
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card-wrapper">
-                            <div class="card">
-                                <div class="card-header">
-                                    Funções analíticas e aplicações às n-selas
-                                </div>
-                                <div class="card-body">
-                                    <div class="publicacao-detalhes">
-                                        <strong>Tipo:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Departamento:</strong>
-                                        TCC - Trabalho de conclusão de curso
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Autor(es):</strong>
-                                        Hollanda, Karollayne Stefany de Farias
-                                    </div>
-                                    <div class="publicacao-detalhes">
-                                        <strong>Local:</strong>
-                                        Campus Arapiraca, Arapiraca
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </section>

@@ -1,4 +1,6 @@
 # encoding: UTF-8
+from copy import copy
+
 from odoo import http
 from odoo.addons.ud_biblioteca_website.controllers import utils
 
@@ -9,52 +11,20 @@ class ListaPublicacoesCurso(http.Controller):
         itens_per_page = 10
         Publicacao = http.request.env['ud.biblioteca.publicacao']
 
-        # Filtra e lista por curso
+        publicacoes = Publicacao.search(self.make_domain(kwargs))
+
         Curso = http.request.env['ud.curso']
-        curso = None
+        Campus = http.request.env['ud.campus']
+        Polo = http.request.env['ud.polo']
+        TipoPublicacao = http.request.env['ud.biblioteca.publicacao.tipo']
         cursos = Curso.search([])
-        if kwargs.get('curso_id'):
-            publicacoes = Publicacao.search([('curso_id.id', '=', kwargs.get('curso_id'))])
-            curso = cursos.search([('id', '=', kwargs.get('curso_id'))])
-        else:
-            publicacoes = Publicacao.search([])
-
-        # Filtra lista por ano
-        if kwargs.get('ano'):
-            cursos = cursos.search([('publicacao_ids.ano_pub', '=', kwargs.get('ano'))])
-            publicacoes = publicacoes & Publicacao.search([('ano_pub', '=', kwargs.get('ano'))])
-
-        # Filtra lista por ano
-        if kwargs.get('p_chave'):
-            cursos = cursos.search([('publicacao_ids.palavras_chave_ids.id', '=', kwargs.get('p_chave'))])
-            publicacoes = publicacoes & Publicacao.search([('palavras_chave_ids.id', '=', kwargs.get('p_chave'))])
-
-        # Filtra e lista por busca
-        if kwargs.get('q'):
-            busca = kwargs.get('q')
-            # Pesquisa principal 'Intercessão com filtros anteriores'
-            publicacoes2 = Publicacao.search([('name', 'ilike', busca)])
-            # Pesquisas secundárias 'União com pesquisa principal'
-            # Busca primeiro pelo autor, depois pela palavra-chave
-            publicacoes2 = publicacoes2 | Publicacao.search([('autor_id.name', 'ilike', busca)])
-            publicacoes2 = publicacoes2 | Publicacao.search([('palavras_chave_ids.name', 'ilike', busca), ])
-            # Buscar por quaisquer outras correspondências
-            publicacoes2 = publicacoes2 | Publicacao.search([
-                '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|',
-                ('autor_id.ultimo_nome', 'ilike', busca),
-                ('ano_pub', 'ilike', busca),
-                ('campus_id.name', 'ilike', busca),
-                ('polo_id.name', 'ilike', busca),
-                ('curso_id.name', 'ilike', busca),
-                ('orientador_ids.name', 'ilike', busca),
-                ('orientador_ids.ultimo_nome', 'ilike', busca),
-                ('coorientador_ids.name', 'ilike', busca),
-                ('coorientador_ids.ultimo_nome', 'ilike', busca),
-                ('tipo_id.name', 'ilike', busca),
-                ('categoria_cnpq_id.name', 'ilike', busca),
-                ('area_ids.name', 'ilike', busca),
-            ])
-            publicacoes = publicacoes & publicacoes2 if publicacoes else publicacoes2
+        curso = Curso.search([('id', '=', kwargs.get('curso_id__id'))]) if kwargs.get('curso_id__id') else None
+        campi = Campus.search([])
+        campus = Campus.search([('id', '=', kwargs.get('campus_id__id'))]) if kwargs.get('campus_id__id') else None
+        polos = Polo.search([])
+        polo = Polo.search([('id', '=', kwargs.get('polo_id__id'))]) if kwargs.get('polo_id__id') else None
+        tipos = TipoPublicacao.search([])
+        tipo = TipoPublicacao.search([('id', '=', kwargs.get('tipo_id__id'))]) if kwargs.get('tipo_id__id') else None
 
         # Exibe lista de anos disponíveis para filtro
         anos = list({pub.ano_pub for pub in publicacoes})
@@ -62,11 +32,43 @@ class ListaPublicacoesCurso(http.Controller):
         page_data = utils.paginacao(publicacoes, itens_per_page, kwargs.get('page_num'))
         context = {
             'publicacoes': publicacoes[page_data.get('start'):page_data.get('end')],
+            'campi': campi,
+            'campus': campus,
             'cursos': cursos,
+            'curso': curso,
             'anos': anos,
             'ano': kwargs.get('ano'),
-            'curso': curso
+            'polos': polos,
+            'polo': polo,
+            'tipos': tipos,
+            'tipo': tipo
         }
         context.update(page_data)
 
         return http.request.render('ud_biblioteca_website.publicacoes', context)
+
+    def make_domain(self, query):
+        params = copy(query)
+        if 'q' in params:
+            params.pop('q')
+        domain_and = []
+        domain_or = []
+        # Curso
+        for p in params:
+            if params.get(p):
+                # Converte a notação __ para .
+                # Ex: ('curso_id__id', '=', 1) => ('curso_id.id', '=', 1)
+                attribute = p.replace('__', '.')
+                if params.get(p).isdigit():
+                    condition = (attribute, '=', params.get(p))
+                    domain_and.append(condition)
+                else:
+                    condition = (attribute, 'ilike', params.get(p))
+                    domain_or.append(condition)
+        print(domain_or)
+        if domain_or:
+            for i in range(len(domain_or) - 1):
+                domain_and.append('|')
+            domain_and.extend(domain_or)
+        print(domain_and)
+        return domain_and

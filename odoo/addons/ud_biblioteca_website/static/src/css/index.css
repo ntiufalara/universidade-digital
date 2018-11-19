@@ -110,7 +110,7 @@ p.contador-label {
 .publicacao-detalhes {
     border-left: 3px solid #a30000;
     padding: 0 0 0 15px;
-    margin-bottom: 8px;
+    margin-bottom: 1px;
     font-size: 10pt;
 }
 
@@ -186,4 +186,8 @@ p.contador-label {
     font-size: 16pt;
     text-shadow: 0 0 15px #000000;
     text-transform: none !important;
+}
+
+select option:disabled {
+    color: #9ea3a9;
 }

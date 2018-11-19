@@ -10,17 +10,12 @@ class HomeRepositorio(http.Controller):
         Polo = http.request.env['ud.polo']
 
         cursos_arapiraca = Cursos.search([('polo_id.campus_id.name', 'ilike', 'arapiraca')], order='name asc')
-        palavras_chave = Pc.search([], order="write_date", limit=10)
-
-        todos_cursos_arapiraca = Cursos.search([('polo_id.campus_id.name', 'ilike', 'arapiraca')], order='write_date')
-        todas_palavras_chave = Pc.search([], order="write_date", limit=50)
+        ultimas_publicacoes = Publicacao.search([], order='create_date desc', limit=6)
 
         return http.request.render('ud_biblioteca_website.home_repositorio', {
             'cursos': cursos_arapiraca,
             'assuntos_count': '{:,}'.format(Pc.search_count([])).replace(',', '.'),
             'publicacoes_count': '{:,}'.format(Publicacao.search_count([])).replace(',', '.'),
             'unidades_count': Polo.search_count([]),
-            'palavras_chave': palavras_chave,
-            'todos_cursos_arapiraca': todos_cursos_arapiraca,
-            'todas_palavras_chave': todas_palavras_chave
+            'ultimas_publicacoes': ultimas_publicacoes
         })

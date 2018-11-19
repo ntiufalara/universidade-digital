@@ -3,7 +3,7 @@
 <odoo>
     <template id="ud_web.layout" inherit_id="web.layout">
         <xpath expr="//title" position="before">
-            <t t-set="title" t-value="'RI FERA'"></t>
+            <t t-set="title" t-value="'Universidade Digital'"></t>
         </xpath>
 
         <xpath expr="//link[@type='image/x-icon']" position="replace">
@@ -46,7 +46,7 @@
                 <div class="col-sm-6 col-sm-offset-3">
                     <div class="jumbotron">
                         <div class="container">
-                            <img style="max-width: 130px;" src="/ud_web/static/src/img/fera-logo.png" alt="Logo"/>
+                            <img style="max-width: 130px;" src="/ud_web/static/src/img/logo.svg" alt="Logo"/>
                             <hr/>
                             <div class="box text-left">
                                 <t t-raw="0"></t>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="ud_biblioteca_website.publicacoes">
+
+        <t t-call="ud_biblioteca_website.layout_repositorio">
+            <div id="publicacoes-topo"
+                 class="d-flex justify-content-center align-items-center flex-column flex-sm-row mx-auto">
+                <h3 class="ml-3 mt-3 mt-sm-0 text-white text-center text-uppercase">
+                    Publicações
+                </h3>
+            </div>
+
+            <!-- PUBLICAÇÕES-->
+            <div class="container py-4">
+                <div class="row flex-row-reverse">
+                    <div class="col-md-4">
+                        <div class="card card-busca mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Buscar</h5>
+                                <div class="card-content">
+                                    <div class="form-row container-check">
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="todos" name="todos"/>
+                                            <label class="form-check-label" for="todos">Todos</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="titulo" name="name"/>
+                                            <label class="form-check-label" for="titulo">Título</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="autor" name="autor_id__name"/>
+                                            <label class="form-check-label" for="autor">Autor</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="tipo" name="tipo_id__name"/>
+                                            <label class="form-check-label" for="tipo">Tipo</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="palavra_chave"
+                                                   name="palavras_chave_ids__name"/>
+                                            <label class="form-check-label" for="palavra_chave">Palavra-chave</label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="orientador"
+                                                   name="orientador_ids__name"/>
+                                            <label class="form-check-label" for="orientador">
+                                                Orientador
+                                            </label>
+                                        </div>
+                                        <div class="form-check col-lg-6 mb-1">
+                                            <input type="checkbox" class="form-check-input" id="coorientador"
+                                                   name="coorientador_ids__name"/>
+                                            <label class="form-check-label" for="coorientador">
+                                                Coorientador
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="erro_msg" class="alert alert-warning d-none">
+                                        Por favor, escolha uma das opções de busca acima
+                                    </div>
+                                    <div class="form-group mt-3 mb-0 d-flex justify-content-center flex-row">
+                                        <input id="q" name="q" class="form-control" title="buscar"
+                                               placeholder="DIGITE A BUSCA"/>
+                                        <button id="bt_buscar" class="btn btn-primary btn-tema">BUSCAR</button>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <button id="limpar_busca" class="btn btn-primary btn-block">
+                                            LIMPAR BUSCA
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-busca mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">Filtrar</h5>
+                                <div class="form-group">
+                                    <select title="curso" class="form-control" name="curso_id__id">
+                                        <option selected="" value="">CURSO/OUTROS</option>
+                                        <t t-foreach="cursos" t-as="curso">
+                                            <option t-attf-value="{{ curso.id }}" t-field="curso.name"></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="campus" class="form-control" name="campus_id__id">
+                                        <option selected="" value="">CAMPUS</option>
+                                        <t t-foreach="campi" t-as="campus">
+                                            <option t-attf-value="{{ campus.id }}" t-field="campus.name"></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="polo" class="form-control" name="polo_id__id">
+                                        <option selected="" value="">POLO</option>
+                                        <t t-foreach="polos" t-as="polo">
+                                            <option t-attf-value="{{ polo.id }}" t-field="polo.name"></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="ano" class="form-control" name="ano_pub">
+                                        <option selected="" value="">ANO DE PUBLICAÇÃO</option>
+                                        <t t-foreach="anos" t-as="ano">
+                                            <option t-attf-value="{{ ano }}" t-esc="ano"></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select title="tipo" class="form-control" name="tipo_id__id">
+                                        <option selected="" value="">TIPO DE PUBLICAÇÃO</option>
+                                        <t t-foreach="tipos" t-as="tipo">
+                                            <option t-attf-value="{{ tipo.id }}" t-field="tipo.name"></option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-wrapper" t-foreach="publicacoes" t-as="pub">
+                            <div class="card">
+                                <a t-attf-href="/repositorio/publicacoes/{{ pub.id }}"
+                                   class="text-white">
+                                    <div class="card-header" t-field="pub.name"></div>
+                                </a>
+                                <div class="card-body">
+                                    <div class="publicacao-detalhes">
+                                        <strong>Tipo:</strong>
+                                        <t t-esc="pub.tipo_id.name"></t>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Curso/Outros:</strong>
+                                        <t t-esc="pub.curso_id.name"></t>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Autor(es):</strong>
+                                        <t t-esc="pub.autor_id.display_name"></t>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Local:</strong>
+                                        <t t-esc="pub.campus_id.name"></t>,
+                                        <t t-esc="pub.polo_id.name"></t>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Data de inclusão:</strong>
+                                        <span t-field="pub.create_date" t-options="{'format': 'dd/MM/yyyy'}"></span>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Orientador(es):</strong>
+                                        <t t-foreach="pub.orientador_ids" t-as="orientador">
+                                            <span t-esc="orientador.display_name"></span>
+                                            <t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">
+                                                ;
+                                                <br/>
+                                            </t>
+                                        </t>
+                                    </div>
+                                    <div t-if="pub.coorientador_ids" class="publicacao-detalhes">
+                                        <strong>Coorientador(es):</strong>
+                                        <t t-foreach="pub.coorientador_ids" t-as="coorientador">
+                                            <span t-esc="coorientador.display_name"></span>
+                                            <t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">
+                                                ;
+                                                <br/>
+                                            </t>
+                                        </t>
+                                        <br/>
+                                    </div>
+                                    <div class="publicacao-detalhes">
+                                        <strong>Palavras-chave::</strong>
+                                        <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
+                                            <span t-esc="palavra.name"></span>
+                                            <t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">
+                                                .
+                                            </t>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <t t-call="ud_website.pagination"></t>
+                    </div>
+
+                </div>
+            </div>
+
+        </t>
+
+    </template>
+</odoo>

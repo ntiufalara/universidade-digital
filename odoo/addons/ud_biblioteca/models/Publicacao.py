@@ -45,10 +45,10 @@ class Publicacao(models.Model):
     autorizar_publicacao = fields.Boolean(u"Não embargado")
     visualizacoes = fields.Integer(u'Visualizações', required=True, default=0)
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
-                                string=u'Áreas do trabalho')
+                                string=u'Áreas do conhecimento/Localização')
     bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False)
-    resumo = fields.Text(u'Resumo')
-    abstract = fields.Text(u'Abstract')
+    resumo = fields.Html(u'Resumo')
+    abstract = fields.Html(u'Abstract')
 
     def name_get(self):
         """

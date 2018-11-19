@@ -1,75 +1,97 @@
 $(function () {
-    // Explicitly save/update a url parameter using HTML5's replaceState().
-    function updateQueryStringParam(param, value) {
-        var baseUrl = [location.protocol, '//', location.host, location.pathname].join('');
-        var urlQueryString = document.location.search;
-        var newParam = param + '=' + value,
-            params = '?' + newParam;
-
-        // If the "search" string exists, then build params from it
-        if (urlQueryString) {
-            var keyRegex = new RegExp('([\?&])' + param + '[^&]*');
-            // If param exists already, update it
-            if (urlQueryString.match(keyRegex) !== null) {
-                params = urlQueryString.replace(keyRegex, "$1" + newParam);
-            } else { // Otherwise, add it to end of query string
-                params = urlQueryString + '&' + newParam;
-            }
-        }
-        window.history.replaceState({}, "", baseUrl + params);
-    }
-
-    // Read a page's GET URL variables and return them as an associative array.
-    function getUrlVars() {
-        var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-        return vars;
-    }
-
-    // Filtros na lista de publicações - CURSO
-    $('.filtrar-curso').change(function (e) {
-        var curso_id = $(this).val();
-
-        updateQueryStringParam('curso_id', curso_id);
-        location.reload();
-    });
-
-    // Filtros na lista de publicações - ANO
-    $('.filtrar-ano').change(function () {
-        var ano = $(this).val();
-
-        updateQueryStringParam('ano', ano);
-        location.reload();
-    });
-
-    // Avança ou volta na paginação
-    $('#prev_page').click(function () {
-        var prev = $(this).attr('data-prev');
-
-        updateQueryStringParam('page_num', prev);
-        location.reload();
-    });
-    $('#next_page').click(function () {
-        var next = $(this).attr('data-next');
-
-        updateQueryStringParam('page_num', next);
-        location.reload();
-    });
-
     // Preenche os campos de acordo com a querystring
     var params = getUrlVars();
+
+    // Filtros de busca
+    var q_filter = [];
+
+    // Adicione campos filtráveis e buscáveis nas listas abaixo
+    var filter_fields = [
+        'campus_id__id',
+        'polo_id__id',
+        'curso_id__id',
+        'ano',
+        'tipo_id__id',
+    ];
+    // Campo de busca
     if ('q' in params) {
-        $('#buscar').val(decodeURIComponent(params.q));
+        $('input[name=q]').val(decodeURIComponent(params.q));
     }
-    if ('curso_id' in params) {
-        $('#filtrar-curso').val(params.curso_id);
-    }
-    if ('ano' in params) {
-        $('#filtrar-ano').val(params.ano);
-    }
+
+    filter_fields.forEach(function (item) {
+        if (item in params) {
+            $('select[name=' + item + ']').val(params[item]);
+        }
+    });
+
+    // Seleção de busca
+    $('input[type=checkbox]').change(function () {
+        var name = $(this).attr('name');
+        var checked = $(this).is(':checked');
+
+        // Marca e desmarca ao selecionar todos
+        var checks = $('input[type=checkbox]:not(input[name="todos"])');
+        if (name === 'todos' && checked === true) {
+            checks.prop('checked', true);
+            checks.prop('disabled', true);
+        } else if (name === 'todos' && checked === false) {
+            checks.prop('checked', false);
+            checks.prop('disabled', false);
+        }
+
+        checks.each(function (i) {
+            var c_name = $(checks[i]).attr('name');
+            var c_value = $(checks[i]).prop('checked');
+
+            // Adiciona ou remove a seleção da lista de filtros
+            if (c_value && !q_filter.includes(c_name)) {
+                q_filter.push(c_name);
+            } else if (!c_value && q_filter.includes(c_name)) {
+                q_filter.splice(
+                    q_filter.indexOf(c_name), 1
+                );
+            }
+        });
+
+    });
+
+    // Seleciona todos na busca por padrão
+    $('input[type=checkbox][name="todos"]').prop('checked', true).trigger('change');
+
+    // Filtros na lista de publicações
+    $('select').change(function (e) {
+        var name = $(this).prop('name');
+        var value = $(this).val();
+
+        updateQueryStringParam(name, value);
+        location.reload();
+    });
+
+    // Buscar
+    $('#bt_buscar').click(function () {
+        // obriga o usuário a selecionar um checkbox
+        if (q_filter.length < 1) {
+            $('#q').addClass('is-invalid');
+            $('#erro_msg').removeClass('d-none');
+        } else {
+            // remove o erro
+            $('#q').removeClass('is-invalid');
+            $('#erro_msg').addClass('d-none');
+
+            // executa a busca
+            for (var i in q_filter) {
+                updateQueryStringParam(q_filter[i], $('#q').val());
+            }
+            updateQueryStringParam('q', $('#q').val());
+            location.reload();
+        }
+    });
+
+    $('#limpar_busca').click(function () {
+        for (var i in q_filter) {
+            updateQueryStringParam(q_filter[i], '');
+        }
+        updateQueryStringParam('q', '');
+        location.reload();
+    });
 });

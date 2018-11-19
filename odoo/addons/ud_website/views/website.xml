@@ -14,6 +14,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
                 integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
                 crossorigin="anonymous"></script>
+        <script src="/ud_website/static/src/js/utils.js"></script>
     </template>
 
     <template id="ud_website.layout">
@@ -32,6 +33,8 @@
             <link rel="stylesheet" href="/ud_website/static/src/css/style.css"/>
 
             <title>Universidade Digital</title>
+
+            <t t-call="ud_website.scripts"></t>
         </head>
 
         <body>
@@ -88,8 +91,6 @@
                 </footer>
             </header>
             <!-- Navbar - FIM -->
-
-            <t t-call="ud_website.scripts"></t>
         </body>
     </template>
 
@@ -123,22 +124,10 @@
                     </li>
                 </ul>
             </div>
+
+            <script src="/ud_website/static/src/js/pagination.js"></script>
         </t>
 
-    </template>
-
-    <template id="ud_website.navigation">
-        <div class="row">
-            <div class="col-12">
-
-                <ul id="site-nav" class="nav p-2 shadow-sm rounded">
-                    <li class="nav-item">
-                        <a class="btn btn-sm btn-primary" onclick="window.history.back();" href="#">Voltar</a>
-                    </li>
-                </ul>
-
-            </div>
-        </div>
     </template>
 
 </odoo>

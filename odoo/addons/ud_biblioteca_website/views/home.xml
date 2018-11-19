@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <odoo>
-    <!-- Adicionando script do site da biblioteca -->
-    <template id="ud_biblioteca_website.scripts" inherit_id="ud_website.scripts">
-        <xpath expr=".">
-            <script type="text/javascript" src="/ud_biblioteca_website/static/src/js/repositorio.js"></script>
-        </xpath>
-    </template>
 
     <template id="ud_biblioteca_website.home" inherit_id="ud_website.home">
         <xpath expr="//div[@id='icones_inicio']" position="after">
