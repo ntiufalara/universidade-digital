@@ -3,6 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:9.4
+	restart: always
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
@@ -11,6 +12,7 @@ services:
       - "../db_data/:/var/lib/postgresql/data"
       - "../db_backup/:/db_backup/"
   web:
+	restart: always
     build: .
     volumes:
       - ".:/src"
