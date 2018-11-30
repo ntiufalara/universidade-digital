@@ -1,5 +1,7 @@
 # encoding: UTF-8
 import logging
+from pprint import pprint
+
 from odoo import models, fields
 
 _logger = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ class Anexo(models.Model):
         except:
             return
         server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
-        # busca as publicações
+        # busca os anexos
         anexo_ids = server.execute(db, uid, password, 'ud.biblioteca.anexo', 'search', [('publicacao_id', '!=', False)])
 
         cont_new = 0
@@ -46,6 +48,7 @@ class Anexo(models.Model):
                 _logger.info(u'Anexo ainda não cadastrado... {}'.format(anexo_old['publicacao_id'][1]))
                 anexo_old = server.execute_kw(db, uid, password, 'ud.biblioteca.anexo', 'read', [anexo_id])
                 publicacao = self.env['ud.biblioteca.publicacao'].search([('name', '=', anexo_old['publicacao_id'][1])])
+                pprint(publicacao)
                 self.create({
                     'name': anexo_old['name'],
                     'arquivo': anexo_old['arquivo'],

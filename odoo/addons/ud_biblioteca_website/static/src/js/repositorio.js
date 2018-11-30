@@ -13,10 +13,6 @@ $(function () {
         'ano',
         'tipo_id__id',
     ];
-    // Campo de busca
-    if ('q' in params) {
-        $('input[name=q]').val(decodeURIComponent(params.q));
-    }
 
     filter_fields.forEach(function (item) {
         if (item in params) {
@@ -94,4 +90,11 @@ $(function () {
         updateQueryStringParam('q', '');
         location.reload();
     });
+
+    // Campo de busca
+    if ('q' in params) {
+        $('input[name=q]').val(decodeURIComponent(params.q));
+        if (params.length === 1) $('#bt_buscar').click();
+    }
+
 });

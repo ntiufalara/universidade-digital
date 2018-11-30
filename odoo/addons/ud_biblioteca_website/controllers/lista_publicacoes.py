@@ -67,10 +67,8 @@ class ListaPublicacoesCurso(http.Controller):
                 else:
                     condition = (attribute, 'ilike', params.get(p))
                     domain_or.append(condition)
-        print(domain_or)
         if domain_or:
             for i in range(len(domain_or) - 1):
                 domain_and.append('|')
             domain_and.extend(domain_or)
-        print(domain_and)
         return domain_and
