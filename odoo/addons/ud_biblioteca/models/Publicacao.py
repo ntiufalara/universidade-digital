@@ -260,7 +260,6 @@ class Publicacao(models.Model):
                     'polo_id': polo.id,
                     'curso_id': curso.id,
                     'tipo_id': tipo.id,
-                    'autor_id': autor.id,
                     'ano_pub': pub['ano_pub'],
                     'autorizar_publicacao': pub['autorizar_publicacao'],
                 }
@@ -270,4 +269,5 @@ class Publicacao(models.Model):
                     obj.orientador_ids |= orientadores
                     obj.coorientador_ids |= coorientadores
                     obj.palavras_chave_ids |= p_chave
+                    obj.autor_ids |= autor
         _logger.warning(cont)
