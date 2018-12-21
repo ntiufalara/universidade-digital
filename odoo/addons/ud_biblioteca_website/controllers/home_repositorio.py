@@ -9,7 +9,11 @@ class HomeRepositorio(http.Controller):
         Publicacao = http.request.env['ud.biblioteca.publicacao']
         Polo = http.request.env['ud.polo']
 
-        cursos_arapiraca = Cursos.search([('polo_id.campus_id.name', 'ilike', 'arapiraca')], order='name asc')
+        cursos_arapiraca = Cursos.search(
+            [('polo_id.campus_id.name', 'ilike', 'arapiraca'),
+             ('publicacao_ids', '!=', None)],
+            order='name asc'
+        )
         ultimas_publicacoes = Publicacao.search([], order='create_date desc', limit=6)
 
         return http.request.render('ud_biblioteca_website.home_repositorio', {
