@@ -18,7 +18,9 @@ class Publicacao(models.Model):
     _order = "ano_pub desc"
 
     name = fields.Char(u'Título', required=True)
-    autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=True)
+    autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=False)
+    autor_ids = fields.Many2many('ud.biblioteca.publicacao.autor', 'ud_biblioteca_publicacao_autores', 'pub_id',
+                                 'autor_id', u'Autores')
     contato = fields.Char(related='autor_id.contato', string=u"E-mail para contato")
     ano_pub = fields.Char(u'Ano de publicação', required=True)
     campus_id = fields.Many2one("ud.campus", u"Campus", required=True, ondelete='set null',

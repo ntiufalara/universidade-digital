@@ -50,9 +50,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="autor_id"></label>
+                                <label class="col-md-4 col-sm-4 control-label" for="autor_ids"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="autor_id"/>
+                                    <field name="autor_ids" widget="many2many_tags"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
