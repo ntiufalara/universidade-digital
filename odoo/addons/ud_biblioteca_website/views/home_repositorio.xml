@@ -50,6 +50,12 @@
                                     <label class="sr-only" for="q">Name</label>
                                     <input type="text" class="form-control mb-2 mr-0 buscar-sombra " id="q" name="q"
                                            placeholder="DIGITE SUA BUSCA"/>
+                                    <input type="hidden" value="on" name="q_name"/>
+                                    <input type="hidden" value="on" name="q_autor_ids__name"/>
+                                    <input type="hidden" value="on" name="q_tipo_id__name"/>
+                                    <input type="hidden" value="on" name="q_palavras_chave_ids__name"/>
+                                    <input type="hidden" value="on" name="q_orientador_ids__name"/>
+                                    <input type="hidden" value="on" name="q_coorientador_ids__name"/>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary btn-tema mb-2 buscar-sombra">BUSCAR

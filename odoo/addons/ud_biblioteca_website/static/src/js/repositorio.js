@@ -10,7 +10,7 @@ $(function () {
         'campus_id__id',
         'polo_id__id',
         'curso_id__id',
-        'ano',
+        'ano_pub',
         'tipo_id__id',
     ];
 
@@ -19,40 +19,6 @@ $(function () {
             $('select[name=' + item + ']').val(params[item]);
         }
     });
-
-    // Seleção de busca
-    $('input[type=checkbox]').change(function () {
-        var name = $(this).attr('name');
-        var checked = $(this).is(':checked');
-
-        // Marca e desmarca ao selecionar todos
-        var checks = $('input[type=checkbox]:not(input[name="todos"])');
-        if (name === 'todos' && checked === true) {
-            checks.prop('checked', true);
-            checks.prop('disabled', true);
-        } else if (name === 'todos' && checked === false) {
-            checks.prop('checked', false);
-            checks.prop('disabled', false);
-        }
-
-        checks.each(function (i) {
-            var c_name = $(checks[i]).attr('name');
-            var c_value = $(checks[i]).prop('checked');
-
-            // Adiciona ou remove a seleção da lista de filtros
-            if (c_value && !q_filter.includes(c_name)) {
-                q_filter.push(c_name);
-            } else if (!c_value && q_filter.includes(c_name)) {
-                q_filter.splice(
-                    q_filter.indexOf(c_name), 1
-                );
-            }
-        });
-
-    });
-
-    // Seleciona todos na busca por padrão
-    $('input[type=checkbox][name="todos"]').prop('checked', true).trigger('change');
 
     // Filtros na lista de publicações
     $('select').change(function (e) {
@@ -63,38 +29,74 @@ $(function () {
         location.reload();
     });
 
-    // Buscar
-    $('#bt_buscar').click(function () {
-        // obriga o usuário a selecionar um checkbox
-        if (q_filter.length < 1) {
-            $('#q').addClass('is-invalid');
-            $('#erro_msg').removeClass('d-none');
+    var marcado = false;
+
+    // Seleção de busca
+    $('#marcar_todos').click(function () {
+        // Marca e desmarca ao selecionar todos
+        var checks = $('input[type=checkbox]');
+        if (marcado === false) {
+            checks.prop('checked', true);
+            $(this).text('Desmarcar todos');
+            marcado = true;
         } else {
-            // remove o erro
-            $('#q').removeClass('is-invalid');
-            $('#erro_msg').addClass('d-none');
-
-            // executa a busca
-            for (var i in q_filter) {
-                updateQueryStringParam(q_filter[i], $('#q').val());
-            }
-            updateQueryStringParam('q', $('#q').val());
-            location.reload();
+            checks.prop('checked', false);
+            $(this).text('Marcar todos');
+            marcado = false;
         }
     });
 
-    $('#limpar_busca').click(function () {
-        for (var i in q_filter) {
-            updateQueryStringParam(q_filter[i], '');
+    // Valida o formulário antes de enviar
+    $('#bt_buscar').click(function (e) {
+        var checks = $('input[type=checkbox]');
+
+        var checks_bool = [];
+
+        checks.each(function (index, item) {
+            checks_bool.push($(item).prop('checked'));
+        });
+
+        // Berifica se existe algum checkbox marcado
+        if (!~checks_bool.indexOf(true)) {
+            $('#error_msg').removeClass('d-none');
+            e.preventDefault();
         }
-        updateQueryStringParam('q', '');
-        location.reload();
     });
+
+    // Seleciona todos na busca por padrão
+    // $('input[type=checkbox][name="todos"]').prop('checked', true).trigger('change');
+
+    // Buscar
+    // $('#bt_buscar').click(function () {
+    //     // obriga o usuário a selecionar um checkbox
+    //     if (q_filter.length < 1) {
+    //         $('#q').addClass('is-invalid');
+    //         $('#erro_msg').removeClass('d-none');
+    //     } else {
+    //         // remove o erro
+    //         $('#q').removeClass('is-invalid');
+    //         $('#erro_msg').addClass('d-none');
+    //
+    //         // executa a busca
+    //         for (var i in q_filter) {
+    //             updateQueryStringParam(q_filter[i], $('#q').val());
+    //         }
+    //         updateQueryStringParam('q', $('#q').val());
+    //         location.reload();
+    //     }
+    // });
+
+    // function limparBusca () {
+    //     for (var i in q_filter) {
+    //         updateQueryStringParam(q_filter[i], '');
+    //     }
+    //     updateQueryStringParam('q', '');
+    // }
 
     // Campo de busca
-    if ('q' in params) {
-        $('input[name=q]').val(decodeURIComponent(params.q));
-        if (params.length === 1) $('#bt_buscar').click();
-    }
+    // if ('q' in params) {
+    //     $('input[name=q]').val(decodeURIComponent(params.q).replace('+', ' '));
+    //     if (params.length === 1) $('#bt_buscar').click();
+    // }
 
 });

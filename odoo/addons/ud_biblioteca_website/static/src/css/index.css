@@ -112,6 +112,7 @@ p.contador-label {
     padding: 0 0 0 15px;
     margin-bottom: 1px;
     font-size: 10pt;
+    color: #0D0D0D;
 }
 
 
@@ -190,4 +191,20 @@ p.contador-label {
 
 select option:disabled {
     color: #9ea3a9;
+}
+
+.filtros {
+    margin: 5px;
+    padding: 0 0 5px 0;
+}
+
+.filtros span {
+    font-size: 12pt;
+}
+
+.badge-tema {
+    background-color: var(--cor-tema);
+    color: #ffffff;
+    padding: 6px 10px;
+    margin-bottom: 2px;
 }
