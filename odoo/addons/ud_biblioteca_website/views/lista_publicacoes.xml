@@ -186,7 +186,7 @@
                                         </div>
                                         <div class="publicacao-detalhes">
                                             <strong>Autor(es):</strong>
-                                            <t t-foreach="autor_ids" t-as="autor">
+                                            <t t-foreach="pub.autor_ids" t-as="autor">
                                                 <span t-esc="autor.display_name"></span><t t-if="len(pub.autor_ids) > 1 and autor != pub.autor_ids[-1]">;<br/></t>
                                             </t>
                                         </div>
