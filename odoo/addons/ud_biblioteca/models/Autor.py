@@ -12,12 +12,18 @@ class Autor(models.Model):
     """
     _name = 'ud.biblioteca.publicacao.autor'
     _description = 'Autor'
-    _rec_name = 'display_name'
 
-    display_name = fields.Char(u'Nome', compute='get_name')
+    display_name = fields.Char(u'Nome', compute='get_name', stored=True)
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)
     contato = fields.Char(u'E-mail')
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            result.append((record.id, record.display_name))
+        return result
 
     @api.one
     def get_name(self):
@@ -26,10 +32,6 @@ class Autor(models.Model):
         :return:
         """
         self.display_name = u"{}, {}".format(self.ultimo_nome, self.name)
-
-    @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
-        return super(Autor, self).name_search(name, args, operator, limit)
 
     def load_from_openerp7_cron(self):
         """

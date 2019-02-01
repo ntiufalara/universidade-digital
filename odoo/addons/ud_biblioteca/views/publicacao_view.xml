@@ -92,6 +92,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="categoria_cnpq_id"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="categoria_cnpq_id" widget="many2many_tags"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="orientador_ids"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="orientador_ids"
@@ -161,7 +168,7 @@
                 <search string="Buscar publicação">
                     <field name="name"/>
                     <field name="orientador_ids"/>
-                    <field name="autor_id"/>
+                    <field name="autor_ids"/>
                     <field name="coorientador_ids"/>
                     <field name="ano_pub"/>
                     <field name="polo_id"/>
@@ -189,7 +196,8 @@
             <field name="arch" type="xml">
                 <tree string="Publicações">
                     <field name="name"/>
-                    <field name="autor_id"/>
+                    <field name="autor_ids"/>
+                    <field name="orientador_ids" />
                     <field name="curso_id"/>
                     <field name="ano_pub"/>
                     <field name="visualizacoes"/>

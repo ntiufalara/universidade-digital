@@ -1,2 +1,4 @@
-- Verificar problema com a execução do script de migração de autores.
-
+- Atualizar datas e anos de publicação;
+- Verificar problema ao salvar;
+- Adicionar menu para gerenciar os autores;
+- Agrupar menus de gerenciar em um dropdown.

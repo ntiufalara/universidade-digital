@@ -29,7 +29,7 @@
                                         <div class="col-12 mb-2 p-0">
                                             <button type="button" id="marcar_todos"
                                                     class="btn btn-sm btn-primary btn-tema btn-block">
-                                                Marcar todos
+                                                MARCAR TODAS
                                             </button>
                                         </div>
                                         <div class="form-row container-check">
