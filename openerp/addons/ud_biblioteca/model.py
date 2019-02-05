@@ -48,6 +48,7 @@ class ud_biblioteca_publicacao(osv.osv):
         u'visualizacoes': fields.integer(u'Visualizações', required=True),
         u'area_ids': fields.many2many('ud.biblioteca.publicacao.area', 'publicacao_ids',
                                       string=u'Áreas do trabalho', ),
+        'create_date': fields.datetime('Date Created', readonly=True),
     }
 
     _order = "ano_pub desc"
