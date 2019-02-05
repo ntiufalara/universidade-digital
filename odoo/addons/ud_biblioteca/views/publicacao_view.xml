@@ -127,6 +127,12 @@
                                     <field name="bibliotecario_responsavel"/>
                                 </div>
                             </div>
+                            <div class="col-md-6 col-lg-6 form-group">
+                                <label class="col-md-4 col-sm-4 control-label" for="create_date"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <field name="create_date"/>
+                                </div>
+                            </div>
                         </fieldset>
                         <fieldset>
                             <div class="col-md-12 col-lg-12 form-group">
@@ -200,7 +206,7 @@
                     <field name="orientador_ids" />
                     <field name="curso_id"/>
                     <field name="ano_pub"/>
-                    <field name="visualizacoes"/>
+                    <field name="visualizacoes" sum="Total de visualizações"/>
                 </tree>
             </field>
         </record>

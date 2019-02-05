@@ -1,8 +1,22 @@
 # encoding: utf-8
 
 
-def update_date(pubs_old):
-    pass
+# Executar esta correção no shell
+# > from odoo.addons.ud_biblioteca.migracao.corrige_data_inclusao import *
+# > run(env)
+
+
+def update(env, pubs_old):
+    Publicacao = env['ud.biblioteca.publicacao']
+    for p in pubs_old:
+        pub = Publicacao.search([('name', '=', p['name'])])
+        print u'Atualizando: {}'.format(pub['name'])
+        if pub:
+            pub.visualizacoes += int(p['visualizacoes'])
+            pub.create_date = p['create_date']
+        else:
+            print(u'Publicação não cadastrada.')
+        print
 
 
 def get_pubs_old(env):
@@ -20,8 +34,14 @@ def get_pubs_old(env):
         return
     server = xmlrpclib.ServerProxy("{}/xmlrpc/object".format(url))
     # busca as publicações
-    pub_ids = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [])
-    pubs = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao', 'read', [pub_ids])
+    pub_ids = server.execute(db, uid, password, 'ud.biblioteca.publicacao', 'search', [('name', '!=', False)])
+    pubs = server.execute_kw(db, uid, password, 'ud.biblioteca.publicacao', 'read', [pub_ids], {
+        'fields': ['name', 'visualizacoes', 'create_date']
+    })
     return pubs
 
 
+def run(env):
+    pubs = get_pubs_old(env)
+    update(env, pubs)
+    env.cr.commit()
