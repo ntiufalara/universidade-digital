@@ -17,23 +17,29 @@
 
                 <!-- CONTADORES -->
                 <div id="contadores" class="row my-5 mx-auto">
-                    <div class="col-sm-4 text-center">
+                    <div class="col-md-3 text-center">
                         <h1 class="contador">
                             <strong t-esc="unidades_count"></strong>
                         </h1>
                         <p class="contador-label">Unidades</p>
                     </div>
-                    <div class="col-sm-4 text-center">
+                    <div class="col-md-3 text-center">
                         <h1 class="contador">
                             <strong t-esc="publicacoes_count"></strong>
                         </h1>
                         <p class="contador-label">Publicações cadastradas</p>
                     </div>
-                    <div class="col-sm-4 text-center">
+                    <div class="col-md-3 text-center">
                         <h1 class="contador">
                             <strong t-esc="assuntos_count"></strong>
                         </h1>
                         <p class="contador-label">Assuntos disponíveis</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h1 class="contador">
+                            <strong t-esc="assuntos_count"></strong>
+                        </h1>
+                        <p class="contador-label">Visualizações em publicações</p>
                     </div>
                 </div>
 

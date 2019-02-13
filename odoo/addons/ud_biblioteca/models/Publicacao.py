@@ -42,7 +42,8 @@ class Publicacao(models.Model):
                                         string='Coorientadores')
     coorientadores_txt = fields.Char(u'Coorientadores')
     anexo_ids = fields.One2many('ud.biblioteca.anexo', 'publicacao_id', u'Anexos em PDF')
-    categoria_cnpq_id = fields.Many2one('ud.biblioteca.publicacao.categoria_cnpq', u'Categoria CNPQ')
+    categoria_cnpq_id = fields.Many2many('ud.biblioteca.publicacao.categoria_cnpq', 'categoria_cnpq_ids',
+                                         string=u'Categoria CNPQ')
     tipo_id = fields.Many2one('ud.biblioteca.publicacao.tipo', u"Tipo", required=True)
     autorizar_publicacao = fields.Boolean(u"Não embargado")
     visualizacoes = fields.Integer(u'Visualizações', required=True, default=0)
@@ -51,6 +52,7 @@ class Publicacao(models.Model):
     bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False)
     resumo = fields.Html(u'Resumo')
     abstract = fields.Html(u'Abstract')
+    create_date = fields.Datetime(u'Data de inclusão')
 
     def name_get(self):
         """
@@ -67,6 +69,10 @@ class Publicacao(models.Model):
             result_list.append(obj_list)
         return result_list
 
+    # TODO
+    # def visualizacoes_totais(self):
+    #     return self.env.cr.
+
     @api.one
     def visualizacoes_plus(self):
         self.sudo().visualizacoes = self.sudo().visualizacoes + 1
@@ -75,8 +81,6 @@ class Publicacao(models.Model):
     def create(self, vals):
         if 'polo_txt' in vals and not vals.get('polo_id'):
             vals['polo_id'] = vals.get('polo_txt')
-        # Salvando contato do autor
-        self.env['ud.biblioteca.publicacao.autor'].browse(vals.get('autor_id')).write({'contato': vals.get('contato')})
         return super(Publicacao, self).create(vals)
 
     @api.onchange('polo_id')

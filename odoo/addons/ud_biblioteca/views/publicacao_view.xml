@@ -130,7 +130,7 @@
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="create_date"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="create_date"/>
+                                    <field name="create_date" readonly="1"/>
                                 </div>
                             </div>
                         </fieldset>
