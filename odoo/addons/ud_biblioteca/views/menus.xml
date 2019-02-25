@@ -9,21 +9,42 @@
                   web_icon="ud_biblioteca,static/description/icon.png"/>
 
         <menuitem string="Publicações" action="ud_biblioteca_publicacao_action"
-                  id="cadsatro_publicacao" parent="biblioteca_top"
+                  id="cadsatro_publicacao" parent="biblioteca_top" sequence="0"
                   groups="ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario,ud_biblioteca.group_biblioteca_visitante"/>
 
-        <menuitem name="Responsável" id="ud_biblioteca_responsavel" parent="biblioteca_top"
+
+        <menuitem id="biblioteca_gerenciar" name="Gerenciar" parent="biblioteca_top" sequence="1" />
+
+        <menuitem name="Responsável por biblioteca" id="ud_biblioteca_responsavel" parent="biblioteca_gerenciar"
                   action="ud_biblioteca_responsavel_action"
                   groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin"/>
 
-
-        <menuitem name="Gerenciar palavras-chave" id="ud_biblioteca_p_chave" parent="biblioteca_top"
+        <menuitem name="Gerenciar palavras-chave" id="ud_biblioteca_p_chave" parent="biblioteca_gerenciar"
                   action="ud_biblioteca_p_chave_action"
                   groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
 
-
-        <menuitem name="Gerenciar orientadores" id="ud_biblioteca_orientador" parent="biblioteca_top"
+        <menuitem name="Gerenciar orientadores" id="ud_biblioteca_orientador" parent="biblioteca_gerenciar"
                   action="ud_biblioteca_orientador_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+        <menuitem name="Gerenciar titulações" id="ud_biblioteca_titulacao" parent="biblioteca_gerenciar"
+                  action="ud_biblioteca_orientador_titulacao_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+        <menuitem name="Gerenciar autores" id="ud_biblioteca_autor" parent="biblioteca_gerenciar"
+                  action="ud_biblioteca_publicacao_autor_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+        <menuitem name="Gerenciar tipos de publicação" id="ud_biblioteca_tipo_publicacao" parent="biblioteca_gerenciar"
+                  action="ud_biblioteca_publicacao_tipo_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+        <menuitem name="Gerenciar áreas de publicação" id="ud_biblioteca_area_publicacao" parent="biblioteca_gerenciar"
+                  action="ud_biblioteca_publicacao_area_action"
+                  groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
+
+        <menuitem name="Gerenciar categorias CNPQ" id="ud_biblioteca_categoria_cnpq" parent="biblioteca_gerenciar"
+                  action="ud_biblioteca_publicacao_categoria_cnpq_action"
                   groups="base.admin_ud,ud_biblioteca.group_biblioteca_bibliotecario_admin,ud_biblioteca.group_biblioteca_bibliotecario"/>
 
     </data>

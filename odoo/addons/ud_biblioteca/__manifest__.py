@@ -21,6 +21,7 @@
         "views/publicacao_tipo_view.xml",
         "views/publicacao_area_view.xml",
         "views/publicacao_autor_view.xml",
+        "views/publicacao_categoria_cnpq.xml",
         'views/pessoa_override_view.xml',
         "wizards/substituir_orientador_view.xml",
         "wizards/substituir_p_chave_view.xml",
