@@ -220,6 +220,10 @@
                                                 </span><t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">.</t>
                                             </t>
                                         </div>
+                                        <div class="publicacao-detalhes">
+                                            <strong>Visualizações:</strong>
+                                            <t t-esc="pub.visualizacoes"></t>
+                                        </div>
                                     </div>
                                 </div>
                             </a>

@@ -21,6 +21,6 @@ class HomeRepositorio(http.Controller):
             'assuntos_count': '{:,}'.format(Pc.search_count([])).replace(',', '.'),
             'publicacoes_count': '{:,}'.format(Publicacao.search_count([])).replace(',', '.'),
             'unidades_count': Polo.search_count([]),
-            'visualizacoes_count': Publicacao.search([]),
+            'visualizacoes_count': '{:,}'.format(Publicacao.visualizacoes_totais()).replace(',', '.'),
             'ultimas_publicacoes': ultimas_publicacoes,
         })

@@ -69,9 +69,16 @@ class Publicacao(models.Model):
             result_list.append(obj_list)
         return result_list
 
-    # TODO
-    # def visualizacoes_totais(self):
-    #     return self.env.cr.
+    def visualizacoes_totais(self):
+        self.env.cr.execute('''
+            SELECT SUM(visualizacoes) FROM ud_biblioteca_publicacao;
+        ''')
+        result = self.env.cr.fetchall()
+        try:
+            result = result[0][0]
+        except IndexError:
+            result = 0
+        return result
 
     @api.one
     def visualizacoes_plus(self):

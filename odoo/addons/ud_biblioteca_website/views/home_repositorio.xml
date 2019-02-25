@@ -37,7 +37,7 @@
                     </div>
                     <div class="col-md-3 text-center">
                         <h1 class="contador">
-                            <strong t-esc="assuntos_count"></strong>
+                            <strong t-esc="visualizacoes_count"></strong>
                         </h1>
                         <p class="contador-label">Visualizações em publicações</p>
                     </div>
