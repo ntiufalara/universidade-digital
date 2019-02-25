@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="corrigir_titulacao_orientador_action">
+            <field name="name">Corrigir titulação</field>
+            <field name="res_model">ud.biblioteca.corrigir_titulacao.orientador.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="corrigir_titulacao_orientador_form">
+            <field name="name">Corrigir titulação</field>
+            <field name="model">ud.biblioteca.corrigir_titulacao.orientador.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Corrigir titulação">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="alert alert-info">
+                            Para cadastrar ou alterar o cadastro de titulações, acesse <strong>Gerenciar titulações</strong>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="titulacao_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button name="substituir_titulacao" string="Corrigir" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.values" id="substituir_titulacao_orientador">
+            <field name="name">Corrigir titulação</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value"
+                   eval="'ir.actions.act_window,' + str(ref('corrigir_titulacao_orientador_action'))"/>
+            <field name="key">action</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+        </record>
+
+    </data>
+</odoo>
