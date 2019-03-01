@@ -16,6 +16,7 @@ class Orientador(models.Model):
     # Nome preenchido pelo usuário
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Ultimo nome', required=True)
+    ativo = fields.Boolean(u'Ativo', default=True)
     # Nome de exibição
     display_name = fields.Char(u'Nome', compute='get_name')
     titulacao_id = fields.Many2one('ud.biblioteca.orientador.titulacao', u'Titulação')

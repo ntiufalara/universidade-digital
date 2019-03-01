@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_biblioteca_atualizar_titulacao_orientador_action">
+            <field name="name">Atualizar titulação</field>
+            <field name="res_model">ud.biblioteca.atualizar_titulacao.orientador.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_atualizar_titulacao_orientador_form">
+            <field name="name">Atualizar titulação</field>
+            <field name="model">ud.biblioteca.atualizar_titulacao.orientador.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Titulação">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="titulacao_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="titulacao_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <button name="atualizar_titulacao" string="Atualizar" type="object" class="oe_highlight"/>
+                        ou
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.values" id="atualizar_titulacao_orientador">
+            <field name="name">Atualizar titulação</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value"
+                   eval="'ir.actions.act_window,' + str(ref('ud_biblioteca_atualizar_titulacao_orientador_action'))"/>
+            <field name="key">action</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+        </record>
+
+    </data>
+</odoo>

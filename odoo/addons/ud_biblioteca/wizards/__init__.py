@@ -1,3 +1,4 @@
 import substituir_orientador
 import substituir_p_chave
 import corrigir_titulacao_orientador
+import atualizar_titulacao_orientador

@@ -8,6 +8,7 @@
             <field name="res_model">ud.biblioteca.publicacao.orientador</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_ativo': True}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Clque para cadastrar um orientador
@@ -25,7 +26,20 @@
             <field name="arch" type="xml">
                 <tree string="Orientadores">
                     <field name="display_name" />
+                    <field name="ativo" />
                 </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_biblioteca_orientador_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.biblioteca.publicacao.orientador</field>
+            <field name="arch" type="xml">
+                <search string="Buscar orientador">
+                    <field name="name" string="Nome"/>
+                    <field name="ultimo_nome" string="Último nome"/>
+                    <field name="ativo"/>
+                </search>
             </field>
         </record>
 
@@ -58,13 +72,13 @@
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Orientador em:</legend>
                             <div class="col-md-12 col-sm-12">
-                                <field name="publicacao_orientador_ids"/>
+                                <field name="publicacao_orientador_ids" readonly="1"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-12 form-group">
                             <legend>Coorientador em:</legend>
                             <div class="col-md-12 col-sm-12">
-                                <field name="publicacao_coorientador_ids"/>
+                                <field name="publicacao_coorientador_ids" readonly="1"/>
                             </div>
                         </div>
                     </div>

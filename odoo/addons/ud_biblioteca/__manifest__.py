@@ -26,6 +26,7 @@
         "wizards/substituir_orientador_view.xml",
         "wizards/substituir_p_chave_view.xml",
         'wizards/corrigir_titulacao_orientador.xml',
+        'wizards/atualizar_titulacao_orientador.xml',
         "views/menus.xml",
         # Dados
         "data/ud_biblioteca_publicacao_tipo_data.xml",

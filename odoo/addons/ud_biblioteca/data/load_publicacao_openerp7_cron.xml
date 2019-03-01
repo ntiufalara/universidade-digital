@@ -3,85 +3,85 @@
 <odoo>
     <data>
 
-        <record id="load_publicacao_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza as publicações com o servidor openerp7</field>
-            <field name="interval_number">5</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.publicacao</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_publicacao_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza as publicações com o servidor openerp7</field>-->
+            <!--<field name="interval_number">5</field>-->
+            <!--<field name="interval_type">minutes</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.publicacao</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_p_chave_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza as palavras-chave com o servidor openerp7</field>
-            <field name="interval_number">5</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.p_chave</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_p_chave_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza as palavras-chave com o servidor openerp7</field>-->
+            <!--<field name="interval_number">5</field>-->
+            <!--<field name="interval_type">minutes</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.p_chave</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_orientador_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza os orientadores com o servidor openerp7</field>
-            <field name="interval_number">5</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.publicacao.orientador</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_orientador_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza os orientadores com o servidor openerp7</field>-->
+            <!--<field name="interval_number">5</field>-->
+            <!--<field name="interval_type">minutes</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.publicacao.orientador</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_orientador_titulacao_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza as titulações com o servidor openerp7</field>
-            <field name="interval_number">5</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.orientador.titulacao</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_orientador_titulacao_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza as titulações com o servidor openerp7</field>-->
+            <!--<field name="interval_number">5</field>-->
+            <!--<field name="interval_type">minutes</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.orientador.titulacao</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_autor_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza os autores com o servidor openerp7</field>
-            <field name="interval_number">5</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.publicacao.autor</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_autor_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza os autores com o servidor openerp7</field>-->
+            <!--<field name="interval_number">5</field>-->
+            <!--<field name="interval_type">minutes</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.publicacao.autor</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_anexo_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza os anexos com o servidor openerp7</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.anexo</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_anexo_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza os anexos com o servidor openerp7</field>-->
+            <!--<field name="interval_number">1</field>-->
+            <!--<field name="interval_type">days</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.anexo</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_responsavel_biblioteca_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza os responsaveis por biblioteca com o servidor openerp7</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.responsavel</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_responsavel_biblioteca_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza os responsaveis por biblioteca com o servidor openerp7</field>-->
+            <!--<field name="interval_number">1</field>-->
+            <!--<field name="interval_type">days</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.responsavel</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
-        <record id="load_tipo_publicacao_openerp7_cron" model="ir.cron">
-            <field name="name">Sincroniza os tipos de publicação com o servidor openerp7</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
-            <field name="model">ud.biblioteca.publicacao.tipo</field>
-            <field name="function">load_from_openerp7_cron</field>
-        </record>
+        <!--<record id="load_tipo_publicacao_openerp7_cron" model="ir.cron">-->
+            <!--<field name="name">Sincroniza os tipos de publicação com o servidor openerp7</field>-->
+            <!--<field name="interval_number">1</field>-->
+            <!--<field name="interval_type">days</field>-->
+            <!--<field name="numbercall">-1</field>-->
+            <!--<field name="doall" eval="False" />-->
+            <!--<field name="model">ud.biblioteca.publicacao.tipo</field>-->
+            <!--<field name="function">load_from_openerp7_cron</field>-->
+        <!--</record>-->
 
     </data>
 </odoo>
