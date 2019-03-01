@@ -23,7 +23,9 @@ class AtualizaTitulacaoOrientador(models.TransientModel):
             orientador.ativo = False
             orientador.copy({
                 'titulacao_id': self.titulacao_id.id,
-                'ativo': True
+                'ativo': True,
+                'publicacao_orientador_ids': [],
+                'publicacao_coorientador_ids': [],
             })
 
         orientador = orientadores if len(orientadores) == 1 else False

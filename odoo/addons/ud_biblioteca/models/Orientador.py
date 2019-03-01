@@ -36,7 +36,7 @@ class Orientador(models.Model):
     def get_name(self):
         display_name = u''
         if self.titulacao_id:
-            display_name += u'{}. '.format(self.titulacao_id.sigla).replace('..', '.')
+            display_name += u'{} '.format(self.titulacao_id.sigla).replace('..', '.')
         if self.ultimo_nome:
             display_name += u'{}, '.format(self.ultimo_nome)
         display_name += self.name
