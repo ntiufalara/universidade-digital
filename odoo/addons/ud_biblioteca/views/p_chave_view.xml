@@ -50,6 +50,12 @@
                                 <field name="name"/>
                             </div>
                         </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Publicações</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="publicacao_id"/>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </field>

@@ -18,7 +18,8 @@
                     <div class="col-12">
                         <ul id="site-nav" class="nav p-2 shadow-sm rounded">
                             <li class="nav-item">
-                                <a class="btn btn-sm btn-outline-primary mr-1" onclick="window.history.back();" href="#">Voltar
+                                <a class="btn btn-sm btn-outline-primary mr-1" onclick="window.history.back();"
+                                   href="#">Voltar
                                 </a>
                             </li>
                         </ul>
@@ -31,7 +32,10 @@
                             <strong class="col-sm-4 text-sm-right">Autor(es)</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.autor_ids" t-as="autor">
-                                    <span t-esc="autor.display_name"></span><t t-if="len(pub.autor_ids) > 1 and autor != pub.autor_ids[-1]">;<br/></t>
+                                    <span t-esc="autor.display_name"></span>
+                                    <t t-if="len(pub.autor_ids) > 1 and autor != pub.autor_ids[-1]">;
+                                        <br/>
+                                    </t>
                                 </t>
                             </div>
                         </div>
@@ -58,7 +62,8 @@
                         <div class="row">
                             <strong class="col-sm-4 text-sm-right">Local</strong>
                             <div class="col-sm-8">
-                                <t t-esc="pub.campus_id.name"></t>, <t t-esc="pub.polo_id.name"></t>
+                                <t t-esc="pub.campus_id.name"></t>,
+                                <t t-esc="pub.polo_id.name"></t>
                             </div>
                         </div>
                     </div>
@@ -83,7 +88,10 @@
                             <strong class="col-sm-4 text-sm-right">Orientadores</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.orientador_ids" t-as="orientador">
-                                    <span t-esc="orientador.display_name"></span><t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">;<br/></t>
+                                    <span t-esc="orientador.display_name"></span>
+                                    <t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">;
+                                        <br/>
+                                    </t>
                                 </t>
                             </div>
                         </div>
@@ -93,7 +101,11 @@
                             <strong class="col-sm-4 text-sm-right">Corientadores</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.coorientador_ids" t-as="coorientador">
-                                    <span t-esc="coorientador.display_name"></span><t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">;<br/></t>
+                                    <span t-esc="coorientador.display_name"></span>
+                                    <t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">
+                                        ;
+                                        <br/>
+                                    </t>
                                 </t>
                             </div>
                         </div>
@@ -102,8 +114,12 @@
                         <div class="row">
                             <strong class="col-sm-4 text-sm-right">Palavras-chave</strong>
                             <div class="col-sm-8">
-                               <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
-                                    <span t-esc="palavra.name"></span><t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">.<br/></t>
+                                <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
+                                    <span t-esc="palavra.name"></span>
+                                    <t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">
+                                        .
+                                        <br/>
+                                    </t>
                                 </t>
                             </div>
                         </div>
@@ -112,8 +128,11 @@
                         <div class="row">
                             <strong class="col-sm-4 text-sm-right">Áreas do Conhecimento/Localização</strong>
                             <div class="col-sm-8">
-                               <t t-foreach="pub.area_ids" t-as="area">
-                                    <span t-esc="area.name"></span><t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">,<br/></t>
+                                <t t-foreach="pub.area_ids" t-as="area">
+                                    <span t-esc="area.name"></span>
+                                    <t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">,
+                                        <br/>
+                                    </t>
                                 </t>
                             </div>
                         </div>
@@ -141,6 +160,11 @@
                         </div>
                     </div>
                 </div>
+
+                <!--<object style="width: 100%; heoght: 100%;" type="application/pdf"-->
+                        <!--data="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;filename_field=name">-->
+                    <!--<p>Insert your error message here, if the PDF cannot be displayed.</p>-->
+                <!--</object>-->
             </div>
         </t>
     </template>
