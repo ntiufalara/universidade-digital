@@ -6,7 +6,7 @@
     "category": u"Universidade Digital",
     "description": u"""Repositório institucional controlado pela biblioteca do campus.""",
     "author": "NTI UFAL Arapiraca",
-    "depends": ["ud"],
+    "depends": ["ud", 'mail'],
     "data": [
         # Segurança
         "security/ud_biblioteca_security.xml",

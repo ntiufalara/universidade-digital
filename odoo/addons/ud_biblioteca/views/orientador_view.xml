@@ -70,9 +70,15 @@
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="contato"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
                             <label class="col-md-4 col-sm-4 control-label" for="ativo"></label>
                             <div class="col-md-7 col-sm-7">
-                                <field name="ativo"/>
+                                <field name="ativo" readonly="1"/>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-12 form-group">

@@ -53,6 +53,7 @@ class Publicacao(models.Model):
     resumo = fields.Html(u'Resumo')
     abstract = fields.Html(u'Abstract')
     create_date = fields.Datetime(u'Data de inclusão')
+    pessoas_notificadas = fields.Boolean(u'Notificações enviadas?')
 
     def name_get(self):
         """
@@ -88,7 +89,62 @@ class Publicacao(models.Model):
     def create(self, vals):
         if 'polo_txt' in vals and not vals.get('polo_id'):
             vals['polo_id'] = vals.get('polo_txt')
-        return super(Publicacao, self).create(vals)
+        obj = super(Publicacao, self).create(vals)
+        self.notifica_interessados(obj)
+        return obj
+
+    def notifica_interessados(self, obj):
+        """
+        Envia e-mail notificando autores, orientadores e coorientadores ao criar uma nova publicação
+        :param obj:
+        :return:
+        """
+        mail = self.env['mail.mail']
+
+        template_html = '''
+        <img height="37px" width="140px" style="display:block" alt="Logo UD" title="Logo UD" 
+        src="https://i.ibb.co/8DBzkj9/logo-ud-svg.png"/>
+        <p>Olá,<br/><br/>
+        Você foi adicionado como {tipo} em uma publicação cadastrada no Repositório da Biblioteca Campus 
+        Arapiraca<br/>
+        Para ver a publicação, acesse o link: <a href="{link}">{link}</a>
+        '''
+
+        template_data = {
+            'subject': 'Nova publicação cadastrada.',
+            'email_from': 'universidade.digital.notify@gmail.com',
+            'auto_delete': True,
+        }
+
+        emails = [autor.contato for autor in obj.autor_ids if autor.contato]
+        template_data['body_html'] = template_html.format(**{
+            'tipo': 'autor',
+            'link': 'https://ud10.arapiraca.ufal.br/repositorio/publicacoes/' + str(obj.id),
+        })
+        template_data['email_to'] = ', '.join(emails)
+        m = mail.create(template_data)
+        m.send()
+
+        emails = [orientador.contato for orientador in obj.orientador_ids if orientador.contato]
+        template_data['body_html'] = template_html.format(**{
+            'tipo': 'orientador',
+            'link': 'https://ud10.arapiraca.ufal.br/repositorio/publicacoes/' + str(obj.id),
+        })
+        template_data['email_to'] = ', '.join(emails)
+        m = mail.create(template_data)
+        m.send()
+
+        emails = [coorientador.contato for coorientador in obj.coorientador_ids if coorientador.contato]
+        template_data['body_html'] = template_html.format(**{
+            'tipo': 'coorientador',
+            'link': 'https://ud10.arapiraca.ufal.br/repositorio/publicacoes/' + str(obj.id),
+        })
+        template_data['email_to'] = ', '.join(emails)
+        m = mail.create(template_data)
+        m.send()
+
+        # Marca como notificado
+        obj.pessoas_notificadas = True
 
     @api.onchange('polo_id')
     def onchange_polo_id(self):

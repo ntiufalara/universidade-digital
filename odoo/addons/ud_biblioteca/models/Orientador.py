@@ -19,6 +19,7 @@ class Orientador(models.Model):
     ativo = fields.Boolean(u'Ativo', default=True)
     # Nome de exibição
     display_name = fields.Char(u'Nome', compute='get_name')
+    contato = fields.Char(u'E-mail')
     titulacao_id = fields.Many2one('ud.biblioteca.orientador.titulacao', u'Titulação')
     publicacao_orientador_ids = fields.Many2many('ud.biblioteca.publicacao', 'publicacao_orientador_rel',
                                                  string=u'Orientador em')
