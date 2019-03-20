@@ -162,7 +162,7 @@
                 </div>
 
                 <t t-foreach="pub.anexo_ids" t-as="anexo">
-                    <object style="width: 100%;" height="600px" type="application/pdf"
+                    <object t-if="anexo.exibir_pdf" style="width: 100%;" height="600px" type="application/pdf"
                             t-attf-data="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;filename_field=name">
                         <p style="margin-top: 15px; margin-left: 15px;">Não foi possível exibir o PDF</p>
                     </object>
