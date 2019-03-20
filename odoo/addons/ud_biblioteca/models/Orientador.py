@@ -13,6 +13,8 @@ class Orientador(models.Model):
     _name = 'ud.biblioteca.publicacao.orientador'
     _description = 'Orientador'
 
+    _order = 'name asc'
+
     # Nome preenchido pelo usuário
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Ultimo nome', required=True)

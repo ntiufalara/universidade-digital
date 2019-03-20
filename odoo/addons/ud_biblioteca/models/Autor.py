@@ -13,6 +13,8 @@ class Autor(models.Model):
     _name = 'ud.biblioteca.publicacao.autor'
     _description = 'Autor'
 
+    _order = 'name asc'
+
     display_name = fields.Char(u'Nome', compute='get_name', stored=True)
     name = fields.Char(u'Nome', required=True)
     ultimo_nome = fields.Char(u'Último nome', required=True)

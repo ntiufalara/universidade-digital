@@ -9,3 +9,4 @@ import Publicacao
 import Responsavel
 import TipoPublicacao
 import Curso_override
+import Pessoa_override
