@@ -22,5 +22,12 @@
         <menuitem id="almoxarifado_solicitacao_produto" name="Solicitação de produto" parent="almoxarifado_root"
                   action="ud_almoxarifado_solicitacao_produto_action"/>
 
+        <menuitem id="almoxarifado_relatorios" name="Relatórios" parent="almoxarifado_root"/>
+        <menuitem id="almoxarifado_relatorio_entrada" name="Entradas" parent="almoxarifado_relatorios"
+                  action="ud_almoxarifado_estoque_entrada_graph_action"/>
+        <menuitem id="almoxarifado_relatorio_saida" name="Saídas" parent="almoxarifado_relatorios"
+                  action="ud_almoxarifado_estoque_saida_graph_action"/>
+
+
     </data>
 </odoo>

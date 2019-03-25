@@ -32,7 +32,7 @@ a {
 }
 
 #topo {
-    background: url("../img/bg-topo.png") center no-repeat;
+    background: url("../img/bg-topo.png") center no-repeat var(--cor-tema);
     background-size: cover;
     min-height: 430px;
 }
@@ -166,7 +166,7 @@ p.contador-label {
 }
 
 #publicacoes-topo {
-    background: url("../img/bg-topo-publicacoes.png") center no-repeat;
+    background: url("../img/bg-topo-publicacoes.png") center no-repeat var(--cor-tema);
     background-size: cover;
     min-height: 200px;
 }

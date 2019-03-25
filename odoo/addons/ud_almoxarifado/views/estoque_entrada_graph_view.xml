@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_estoque_entrada_graph_action">
+            <field name="name">Relatórios</field>
+            <field name="res_model">ud.almoxarifado.entrada</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph,tree</field>
+            <field name="context">{'search_default_tipo': 'fornecedor'}</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoarifado_estoque_entrada_graph">
+            <field name="name">Entradas</field>
+            <field name="model">ud.almoxarifado.entrada</field>
+            <field name="arch" type="xml">
+                <graph type="bar" string="Entradas por período">
+                    <field name="estoque_id"/>
+                    <field name="quantidade" type="measure"/>
+                    <field name="data_entrada"/>
+                </graph>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

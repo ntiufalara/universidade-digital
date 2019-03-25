@@ -43,10 +43,18 @@
                     <field name="data_entrada" filter_domain="" string="Data de entrada"/>
                     <field name="tipo" filter_domain="" string="Tipo"/>
                     <field name="fornecedor_id" filter_domain="" string="Fornecedor"/>
+                    <field name="almoxarifado_id"/>
+                    <field name="solicitacao_id"/>
                     <group expand="0" string="Agrupar por:">
-                        <filter string="Estoque" icon="terp-personal" domain="[]" context="{'group_by':'estoque_id'}"/>
+                        <filter string="Produto" icon="terp-personal" domain="[]" context="{'group_by':'estoque_id'}"/>
                         <filter string="Fornecedor" icon="terp-personal" domain="[]"
                                 context="{'group_by':'fornecedor_id'}"/>
+                        <filter string="Data" icon="terp-personal" domain="[]"
+                                context="{'group_by':'data_entrada'}"/>
+                        <filter string="Tipo" icon="terp-personal" domain="[]"
+                                context="{'group_by':'tipo'}"/>
+                        <filter string="Almoxarifado" icon="terp-personal" domain="[]"
+                                context="{'group_by':'almoxarifado_id'}"/>
                     </group>
                 </search>
             </field>

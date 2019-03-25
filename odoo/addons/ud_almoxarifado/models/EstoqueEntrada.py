@@ -65,5 +65,5 @@ class EstoqueEntrada(models.Model):
 
     @api.constrains('remessa_id', 'almoxarifado_id', 'name')
     def verifica_almoxarifado(self):
-        if self.almoxarifado_id.id != self.remessa_id.almoxarifado_id.id:
+        if self.remessa_id and self.almoxarifado_id.id != self.remessa_id.almoxarifado_id.id:
             raise ValidationError('O almoxarifado da entrada {} precisa ser o mesmo da remessa'.format(self.name))
