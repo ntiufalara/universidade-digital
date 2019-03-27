@@ -17,7 +17,9 @@ class ListaPublicacoesCurso(http.Controller):
         Curso = http.request.env['ud.curso']
         Campus = http.request.env['ud.campus']
         Polo = http.request.env['ud.polo']
+        CategoriaCNPQ = http.request.env['ud.biblioteca.publicacao.categoria_cnpq']
         TipoPublicacao = http.request.env['ud.biblioteca.publicacao.tipo']
+        # Filtros
         cursos = Curso.search([])
         curso = Curso.search([('id', '=', kwargs.get('curso_id__id'))]) if kwargs.get('curso_id__id') else None
         campi = Campus.search([])
@@ -26,6 +28,9 @@ class ListaPublicacoesCurso(http.Controller):
         polo = Polo.search([('id', '=', kwargs.get('polo_id__id'))]) if kwargs.get('polo_id__id') else None
         tipos = TipoPublicacao.search([])
         tipo = TipoPublicacao.search([('id', '=', kwargs.get('tipo_id__id'))]) if kwargs.get('tipo_id__id') else None
+        categorias_cnpq = CategoriaCNPQ.search([])
+        categoria_cnpq = CategoriaCNPQ.search([('id', '=', kwargs.get('categoria_cnpq_id__id'))]) if kwargs.get(
+            'categoria_cnpq_id__id') else None
 
         # Exibe lista de anos disponíveis para filtro
         anos = list({pub.ano_pub.strip() for pub in publicacoes})
@@ -44,6 +49,8 @@ class ListaPublicacoesCurso(http.Controller):
             'polo': polo,
             'tipos': tipos,
             'tipo': tipo,
+            'categorias_cnpq': categorias_cnpq,
+            'categoria_cnpq': categoria_cnpq
         }
         context.update(page_data)
 

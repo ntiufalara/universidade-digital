@@ -68,12 +68,6 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
-                                <label class="col-md-4 col-sm-4 control-label" for="contato"></label>
-                                <div class="col-md-7 col-sm-7">
-                                    <field name="contato"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="visualizacoes"></label>
                                 <div class="col-md-7 col-sm-7">
                                     <field name="visualizacoes" readonly="1"/>
@@ -122,7 +116,7 @@
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="bibliotecario_responsavel"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="bibliotecario_responsavel"/>
+                                    <field name="bibliotecario_responsavel" readonly="1"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">
@@ -180,7 +174,6 @@
                     <field name="palavras_chave_ids"/>
                     <field name="tipo_id"/>
                     <field name="categoria_cnpq_id"/>
-                    <field name="contato"/>
                     <field name="area_ids"/>
                     <group string="Agrupar Por...">
                         <filter string="Autor" domain="[]" context="{'group_by' : 'autor_id'}"/>

@@ -75,6 +75,8 @@ class SolicitacaoProduto(models.Model):
             entrada_model.sudo().create({
                 'quantidade': produto.quantidade,
                 'estoque_id': produto.estoque_id.id,
+                'produto_id': produto.estoque_id.produto_id.id,
+                'almoxarifado_id': produto.almoxarifado_id.id,
                 'solicitacao_id': self.id,
                 'observacao': 'Solicitação cancelada',
                 'tipo': 'devolucao'

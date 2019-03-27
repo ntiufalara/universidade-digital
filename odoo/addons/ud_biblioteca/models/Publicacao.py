@@ -13,15 +13,12 @@ class Publicacao(models.Model):
     """
     _name = 'ud.biblioteca.publicacao'
 
-    __polo_id = 0
-
     _order = "ano_pub desc"
 
     name = fields.Char(u'Título', required=True)
     # autor_id = fields.Many2one('ud.biblioteca.publicacao.autor', u'Autor', required=False)
     autor_ids = fields.Many2many('ud.biblioteca.publicacao.autor', 'ud_biblioteca_publicacao_autores', 'pub_id',
                                  'autor_id', u'Autores')
-    contato = fields.Char(string=u"E-mail para contato")
     ano_pub = fields.Char(u'Ano de publicação', required=True)
     campus_id = fields.Many2one("ud.campus", u"Campus", required=True, ondelete='set null',
                                 default=lambda self: self.busca_campus())
@@ -36,7 +33,7 @@ class Publicacao(models.Model):
     polo_txt = fields.Char(u'Polo id')
 
     orientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_orientador_rel',
-                                      string=u'Orientadores', required=True)
+                                      string=u'Orientadores', required=False)
     orientadores_txt = fields.Char(u'Orientadores')
     coorientador_ids = fields.Many2many('ud.biblioteca.publicacao.orientador', 'publicacao_coorientador_rel',
                                         string='Coorientadores')
@@ -49,7 +46,8 @@ class Publicacao(models.Model):
     visualizacoes = fields.Integer(u'Visualizações', required=True, default=0)
     area_ids = fields.Many2many('ud.biblioteca.publicacao.area', 'area_publicacao_real',
                                 string=u'Áreas do conhecimento/Localização')
-    bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False)
+    bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False,
+                                                default=lambda self: self.get_bibliotecario())
     resumo = fields.Html(u'Resumo')
     abstract = fields.Html(u'Abstract')
     create_date = fields.Datetime(u'Data de inclusão')
@@ -70,7 +68,16 @@ class Publicacao(models.Model):
             result_list.append(obj_list)
         return result_list
 
+    @api.model
+    def get_bibliotecario(self):
+        for resp in self.env.user.biblioteca_responsavel_ids:
+            return resp.id
+
     def visualizacoes_totais(self):
+        """
+        Retorna a quantidade de visualizações de todas as publicações do repositório
+        :return:
+        """
         self.env.cr.execute('''
             SELECT SUM(visualizacoes) FROM ud_biblioteca_publicacao;
         ''')
@@ -87,8 +94,6 @@ class Publicacao(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'polo_txt' in vals and not vals.get('polo_id'):
-            vals['polo_id'] = vals.get('polo_txt')
         obj = super(Publicacao, self).create(vals)
         self.notifica_interessados(obj)
         return obj
@@ -106,7 +111,7 @@ class Publicacao(models.Model):
         src="https://i.ibb.co/8DBzkj9/logo-ud-svg.png"/>
         <p>Olá,<br/><br/>
         Você foi adicionado como {tipo} em uma publicação cadastrada no Repositório da Biblioteca Campus 
-        Arapiraca<br/>
+        Arapiraca<br/><br/>
         Para ver a publicação, acesse o link: <a href="{link}">{link}</a>
         '''
 
@@ -153,7 +158,7 @@ class Publicacao(models.Model):
         Fields disabled não são enviados ao servidor
         :return:
         """
-        self.polo_txt = self.polo_id.id
+        self.___polo_id = self.polo_id.id
 
     @api.model
     def busca_campus(self):

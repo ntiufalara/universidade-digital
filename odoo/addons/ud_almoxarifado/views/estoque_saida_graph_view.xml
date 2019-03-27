@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_estoque_saida_graph_action">
+            <field name="name">Relatórios</field>
+            <field name="res_model">ud.almoxarifado.saida</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph,tree</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoarifado_estoque_saida_graph">
+            <field name="name">Saídas</field>
+            <field name="model">ud.almoxarifado.saida</field>
+            <field name="arch" type="xml">
+                <graph type="bar" string="Saídas por período">
+                    <field name="estoque_id"/>
+                    <field name="quantidade" type="measure"/>
+                    <field name="data_saida"/>
+                </graph>
+            </field>
+        </record>
+
+    </data>
+</odoo>

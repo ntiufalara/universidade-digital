@@ -15,7 +15,8 @@ class Anexo(models.Model):
     _name = 'ud.biblioteca.anexo'
 
     name = fields.Char(u'Anexo', required=True)
-    arquivo = fields.Binary(u'Arquivo PDF', filter='*.pdf')
+    arquivo = fields.Binary(u'Arquivo PDF')
+    exibir_pdf = fields.Boolean(u'Exibir PDF')
     publicacao_id = fields.Many2one('ud.biblioteca.publicacao', u'Publicação')
 
     def load_from_openerp7_cron(self):

@@ -36,10 +36,17 @@
             <field name="model">ud.almoxarifado.saida</field>
             <field name="arch" type="xml">
                 <search string="Buscar">
+                    <field name="name"/>
                     <field name="estoque_id" filter_domain="" string="Produto"/>
                     <field name="data_saida" filter_domain="" string="Data de saída"/>
+                    <field name="almoxarifado_id" />
+                    <field name="solicitacao_id" />
                     <group expand="0" string="Agrupar por:">
                         <filter string="Produto" icon="terp-personal" domain="[]" context="{'group_by':'estoque_id'}"/>
+                        <filter string="Data" icon="terp-personal" domain="[]"
+                                context="{'group_by':'data_saida'}"/>
+                        <filter string="Almoxarifado" icon="terp-personal" domain="[]"
+                                context="{'group_by':'almoxarifado_id'}"/>
                     </group>
                 </search>
             </field>

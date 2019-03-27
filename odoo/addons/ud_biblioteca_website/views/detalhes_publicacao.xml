@@ -32,9 +32,10 @@
                             <strong class="col-sm-4 text-sm-right">Autor(es)</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.autor_ids" t-as="autor">
-                                    <span t-esc="autor.display_name"></span>
-                                    <t t-if="len(pub.autor_ids) > 1 and autor != pub.autor_ids[-1]">;
-                                        <br/>
+                                    <span t-esc="autor.display_name"></span>.
+                                    <br/>
+                                    <t t-if="autor.contato">
+                                        &lt;<span t-esc="autor.contato"></span>&gt;
                                     </t>
                                 </t>
                             </div>
@@ -88,10 +89,8 @@
                             <strong class="col-sm-4 text-sm-right">Orientadores</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.orientador_ids" t-as="orientador">
-                                    <span t-esc="orientador.display_name"></span>
-                                    <t t-if="len(pub.orientador_ids) > 1 and orientador != pub.orientador_ids[-1]">;
-                                        <br/>
-                                    </t>
+                                    <span t-esc="orientador.display_name"></span>.
+                                    <br/>
                                 </t>
                             </div>
                         </div>
@@ -101,11 +100,8 @@
                             <strong class="col-sm-4 text-sm-right">Corientadores</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.coorientador_ids" t-as="coorientador">
-                                    <span t-esc="coorientador.display_name"></span>
-                                    <t t-if="len(pub.coorientador_ids) > 1 and coorientador != pub.coorientador_ids[-1]">
-                                        ;
-                                        <br/>
-                                    </t>
+                                    <span t-esc="coorientador.display_name"></span>.
+                                    <br/>
                                 </t>
                             </div>
                         </div>
@@ -115,11 +111,8 @@
                             <strong class="col-sm-4 text-sm-right">Palavras-chave</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
-                                    <span t-esc="palavra.name"></span>
-                                    <t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">
-                                        .
-                                        <br/>
-                                    </t>
+                                    <span t-esc="palavra.name"></span>.
+                                    <br/>
                                 </t>
                             </div>
                         </div>
@@ -129,10 +122,19 @@
                             <strong class="col-sm-4 text-sm-right">Áreas do Conhecimento/Localização</strong>
                             <div class="col-sm-8">
                                 <t t-foreach="pub.area_ids" t-as="area">
-                                    <span t-esc="area.name"></span>
-                                    <t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">,
-                                        <br/>
-                                    </t>
+                                    <span t-esc="area.name"></span>.
+                                    <br/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div t-if="pub.categoria_cnpq_id" class="list-group-item">
+                        <div class="row">
+                            <strong class="col-sm-4 text-sm-right">Categorias CNPQ</strong>
+                            <div class="col-sm-8">
+                                <t t-foreach="pub.categoria_cnpq_id" t-as="categoria">
+                                    <span t-esc="categoria.name"></span>.
+                                    <br/>
                                 </t>
                             </div>
                         </div>
@@ -140,15 +142,13 @@
                     <div class="list-group-item" t-if="pub.autorizar_publicacao">
                         <div class="row">
                             <strong class="col-sm-4 text-sm-right">Anexos</strong>
-                            <div class="col-sm-8">
+                            <div class="col-sm-8" style="overflow-x: scroll;">
                                 <t t-foreach="pub.anexo_ids" t-as="anexo">
                                     <a style="padding: 0 5px;"
                                        class="text-primary"
                                        t-esc="anexo.name"
                                        t-attf-href="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;download=true&amp;filename_field=name"></a>
-                                    <t t-if="len(pub.anexo_ids) > 1 and anexo != pub.anexo_ids[-1]">
-                                        <br/>
-                                    </t>
+                                    <br/>
                                 </t>
                             </div>
                         </div>
@@ -161,10 +161,12 @@
                     </div>
                 </div>
 
-                <!--<object style="width: 100%; heoght: 100%;" type="application/pdf"-->
-                        <!--data="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;filename_field=name">-->
-                    <!--<p>Insert your error message here, if the PDF cannot be displayed.</p>-->
-                <!--</object>-->
+                <t t-foreach="pub.anexo_ids" t-as="anexo">
+                    <object t-if="anexo.exibir_pdf" style="width: 100%;" height="600px" type="application/pdf"
+                            t-attf-data="/web/content?model=ud.biblioteca.anexo&amp;field=arquivo&amp;id={{ anexo.id }}&amp;filename_field=name">
+                        <p style="margin-top: 15px; margin-left: 15px;">Não foi possível exibir o PDF</p>
+                    </object>
+                </t>
             </div>
         </t>
     </template>

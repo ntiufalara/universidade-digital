@@ -9,6 +9,7 @@ $(function () {
         'curso_id__id',
         'ano_pub',
         'tipo_id__id',
+        'categoria_cnpq_id__id',
     ];
 
     filter_fields.forEach(function (item) {

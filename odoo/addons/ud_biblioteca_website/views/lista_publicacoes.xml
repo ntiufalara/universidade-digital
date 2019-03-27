@@ -11,6 +11,11 @@
                 </h3>
             </div>
 
+            <!--
+            PARA ADICIONAR CAMPOS BUSCÁVEIS E FILTRÁVEIS, ADICIONE ABAIXO E ADICIONE O NAME DO CAMPO AO ARRAY 'filter_fields'
+            NO ARQUIVO 'repositorio.js' EM 'ud_biblioteca_website/static/src/js/'
+             -->
+
             <!-- PUBLICAÇÕES-->
             <div class="container py-4">
                 <div class="row flex-row-reverse">
@@ -129,6 +134,14 @@
                                         </t>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <select title="categoria cnpq" class="form-control" name="categoria_cnpq_id__id">
+                                        <option selected="" value="">- CATEGORIA CNPQ -</option>
+                                        <t t-foreach="categorias_cnpq" t-as="_categoria">
+                                            <option t-attf-value="{{ _categoria.id }}" t-field="_categoria.name"></option>
+                                        </t>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -170,6 +183,7 @@
                             <span class="badge badge-tema" t-if="campus" t-field="campus.name"></span>
                             <span class="badge badge-tema" t-if="polo" t-field="polo.name"></span>
                             <span class="badge badge-tema" t-if="tipo" t-field="tipo.name"></span>
+                            <span class="badge badge-tema" t-if="categoria_cnpq" t-field="categoria_cnpq.name"></span>
                         </div>
                         <div class="card-wrapper" t-foreach="publicacoes" t-as="pub">
                             <a t-attf-href="/repositorio/publicacoes/{{ pub.id }}">
@@ -218,6 +232,20 @@
                                             <t t-foreach="pub.palavras_chave_ids" t-as="palavra">
                                                 <span t-esc="palavra.name">
                                                 </span><t t-if="len(pub.palavras_chave_ids) > 1 and palavra != pub.palavras_chave_ids[-1]">.</t>
+                                            </t>
+                                        </div>
+                                        <div class="publicacao-detalhes" t-if="pub.area_ids">
+                                            <strong>Área do conhecimento:</strong>
+                                            <t t-foreach="pub.area_ids" t-as="area">
+                                                <span t-esc="area.name">
+                                                </span><t t-if="len(pub.area_ids) > 1 and area != pub.area_ids[-1]">.</t>
+                                            </t>
+                                        </div>
+                                        <div class="publicacao-detalhes" t-if="pub.categoria_cnpq_id">
+                                            <strong>Categoria CNPQ:</strong>
+                                            <t t-foreach="pub.categoria_cnpq_id" t-as="categoria">
+                                                <span t-esc="categoria.name">
+                                                </span><t t-if="len(pub.categoria_cnpq_id) > 1 and categoria != pub.categoria_cnpq_id[-1]">.</t>
                                             </t>
                                         </div>
                                         <div class="publicacao-detalhes">
