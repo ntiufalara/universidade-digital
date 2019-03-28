@@ -15,7 +15,7 @@ class EstoqueSaida(models.Model):
     observacao = fields.Text(u'Observações')
     almoxarifado_id = fields.Many2one('ud.almoxarifado.almoxarifado', u'Almoxarifado',
                                       default=lambda self: self.get_almoxarifado())
-    estoque_id = fields.Many2one('ud.almoxarifado.estoque', u'Estoque', ondelete='cascade', required=True)
+    estoque_id = fields.Many2one('ud.almoxarifado.estoque', u'Item do estoque', ondelete='cascade', required=True)
     solicitacao_id = fields.Many2one('ud.almoxarifado.solicitacao', u'Solicitação')
     remessa_id = fields.Many2one('ud.almoxarifado.remessa_saida', u'Remessa')
 

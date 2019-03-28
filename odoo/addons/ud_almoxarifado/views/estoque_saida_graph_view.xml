@@ -4,7 +4,7 @@
     <data>
 
         <record model="ir.actions.act_window" id="ud_almoxarifado_estoque_saida_graph_action">
-            <field name="name">Relatórios</field>
+            <field name="name">Relatório de Saída</field>
             <field name="res_model">ud.almoxarifado.saida</field>
             <field name="view_type">form</field>
             <field name="view_mode">graph,tree</field>

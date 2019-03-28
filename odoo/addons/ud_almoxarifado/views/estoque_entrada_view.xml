@@ -22,7 +22,7 @@
             <field name="name">Entradas</field>
             <field name="model">ud.almoxarifado.entrada</field>
             <field name="arch" type="xml">
-                <tree string="Entradas">
+                <tree string="Entradas" create="0">
                     <field name="name"/>
                     <field name="estoque_id"/>
                     <field name="quantidade"/>

@@ -22,10 +22,11 @@
             <field name="name">Saídas</field>
             <field name="model">ud.almoxarifado.saida</field>
             <field name="arch" type="xml">
-                <tree string="Saídas">
+                <tree string="Saídas" create="0">
+                    <field name="name"/>
                     <field name="estoque_id"/>
-                    <field name="data_saida" />
                     <field name="quantidade" />
+                    <field name="data_saida" />
                     <field name="solicitacao_id"/>
                 </tree>
             </field>
