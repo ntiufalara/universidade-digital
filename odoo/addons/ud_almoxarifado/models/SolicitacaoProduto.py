@@ -11,9 +11,9 @@ class SolicitacaoProduto(models.Model):
     _name = 'ud.almoxarifado.solicitacao'
     _order = 'id desc'
 
-    _STATE = [("aguardando", "Aguardando Retirada"),
-              ("entregue", "Entregue"),
-              ("cancelada", "Cancelada")]
+    _STATE = [("aguardando", u"Aguardando Retirada"),
+              ("entregue", u"Entregue"),
+              ("cancelada", u"Cancelada")]
 
     name = fields.Char(u'Código', compute='get_name', readonly=True)
     produto_ids = fields.One2many('ud.almoxarifado.produto.qtd', 'solicitacao_id', string=u'Produtos',

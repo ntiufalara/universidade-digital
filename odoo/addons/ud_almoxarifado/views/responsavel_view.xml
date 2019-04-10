@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="ud_almoxarifado_responsavel_action">
+            <field name="name">Responsável</field>
+            <field name="res_model">ud.almoxarifado.responsavel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_responsavel_tree">
+            <field name="name">Responsáveis por almoxarifado</field>
+            <field name="model">ud.almoxarifado.responsavel</field>
+            <field name="arch" type="xml">
+                <tree string="Responsáveis por almoxarifado">
+                    <field name="name"/>
+                    <field name="campus_id" />
+                    <field name="polo_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_responsavel_search">
+            <field name="name">Busca</field>
+            <field name="model">ud.almoxarifado.responsavel</field>
+            <field name="arch" type="xml">
+                <search string="Buscar">
+                    <field name="name" string="Nome"/>
+                    <field name="pessoa_id" />
+                    <field name="campus_id" />
+                    <field name="polo_id" />
+                    <field name="almoxarifado_ids" />
+                    <group expand="0" string="Agrupar por:">
+                        <filter string="Campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_id'}"/>
+                        <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ud_almoxarifado_responsavel_form">
+            <field name="name">Responsável</field>
+            <field name="model">ud.almoxarifado.responsavel</field>
+            <field name="arch" type="xml">
+                <form string="Responsável">
+                    <div class="form-horizontal sheet col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="pessoa_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="pessoa_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="campus_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="campus_id"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 form-group">
+                            <label class="col-md-4 col-sm-4 control-label" for="polo_id"></label>
+                            <div class="col-md-7 col-sm-7">
+                                <field name="polo_id" domain="[('campus_id', '=', campus_id)]"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 form-group">
+                            <legend>Almoxarifados</legend>
+                            <div class="col-md-12 col-sm-12">
+                                <field name="almoxarifado_ids"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

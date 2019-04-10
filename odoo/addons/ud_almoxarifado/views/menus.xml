@@ -28,6 +28,9 @@
         <menuitem id="almoxarifado_relatorio_saida" name="Saídas" parent="almoxarifado_relatorios"
                   action="ud_almoxarifado_estoque_saida_graph_action"/>
 
+        <menuitem id="almoxarifado_gerenciar" name="Gerenciar" parent="almoxarifado_root"/>
+        <menuitem id="almoxarifado_responsavel" name="" parent="almoxarifado_gerenciar" action="ud_almoxarifado_responsavel_action" />
+
 
     </data>
 </odoo>

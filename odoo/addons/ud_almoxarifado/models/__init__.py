@@ -5,10 +5,9 @@ import Estoque
 import EstoqueEntrada
 import EstoqueSaida
 import Almoxarifado
-import AlmoxarifadoResponsavel
 import Fabricante
 import ProdutoQuantidade
 import SolicitacaoProduto
 import RemessaEntrada
 import RemessaSaida
-
+import Responsavel

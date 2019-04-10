@@ -24,6 +24,7 @@
         "views/produto_categoria_view.xml",
         "views/solicitacao_produto_view.xml",
         "views/produto_quantidade_view.xml",
+        "views/responsavel_view.xml",
         "views/remessa_entrada_view.xml",
         "views/remessa_saida_view.xml",
         "views/menus.xml",
