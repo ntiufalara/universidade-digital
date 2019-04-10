@@ -116,7 +116,7 @@
                             <div class="col-md-6 col-lg-6 form-group">
                                 <label class="col-md-4 col-sm-4 control-label" for="bibliotecario_responsavel"></label>
                                 <div class="col-md-7 col-sm-7">
-                                    <field name="bibliotecario_responsavel" readonly="1"/>
+                                    <field name="bibliotecario_responsavel"/>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-6 form-group">

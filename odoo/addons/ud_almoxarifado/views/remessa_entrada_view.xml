@@ -45,7 +45,8 @@
                     <group expand="0" string="Agrupar por:">
                         <filter string="Campus" icon="terp-personal" domain="[]" context="{'group_by':'campus_id'}"/>
                         <filter string="Polo" icon="terp-personal" domain="[]" context="{'group_by':'polo_id'}"/>
-                        <filter string="Almoxarifado" icon="terp-personal" domain="[]" context="{'group_by':'almoxarifado_id'}"/>
+                        <filter string="Almoxarifado" icon="terp-personal" domain="[]"
+                                context="{'group_by':'almoxarifado_id'}"/>
                     </group>
                 </search>
             </field>
@@ -92,10 +93,20 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <div class="col-md-12 col-lg-12 form-group" attrs="{'invisible': [('almoxarifado_id', '=', False)]}">
+                        <div class="col-md-12 col-lg-12 form-group"
+                             attrs="{'invisible': [('almoxarifado_id', '=', False)]}">
                             <legend>Produtos</legend>
                             <div class="col-md-12 col-sm-12">
-                                <field name="entrada_ids" context="{'almoxarifado_id': almoxarifado_id}"/>
+                                <field name="entrada_ids" context="{'almoxarifado_id': almoxarifado_id}">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="estoque_id"/>
+                                        <field name="quantidade"/>
+                                        <field name="data_entrada"/>
+                                        <field name="tipo"/>
+                                        <field name="fornecedor_id"/>
+                                    </tree>
+                                </field>
                             </div>
                         </div>
                     </div>

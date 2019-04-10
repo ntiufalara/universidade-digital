@@ -113,6 +113,13 @@ class Publicacao(models.Model):
         Você foi adicionado como {tipo} em uma publicação cadastrada no Repositório da Biblioteca Campus 
         Arapiraca<br/><br/>
         Para ver a publicação, acesse o link: <a href="{link}">{link}</a>
+        
+        <!--
+        Logo RI
+        <img src="https://i.ibb.co/KxDKTfp/logo-bca-svg.png" alt="logo-bca-svg" border="0"></a>
+        Logo BCA
+        <a href="https://imgbb.com/"><img src="https://i.ibb.co/47W45RD/logo-biblioteca-ufal-svg.png" alt="logo-biblioteca-ufal-svg" border="0"></a>
+        -->
         '''
 
         template_data = {
