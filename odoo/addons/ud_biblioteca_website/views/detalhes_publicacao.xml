@@ -159,6 +159,12 @@
                             <div class="col-sm-8" t-esc="pub.visualizacoes"></div>
                         </div>
                     </div>
+                    <div class="list-group-item" t-if="pub.observacoes">
+                        <div class="row">
+                            <strong class="col-sm-4 text-sm-right">Observações</strong>
+                            <div class="col-sm-8" t-esc="pub.observacoes"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <t t-foreach="pub.anexo_ids" t-as="anexo">
