@@ -31,21 +31,38 @@ class Estoque(models.Model):
     def get_name(self):
         self.name = self.produto_id.name
 
+    def process_domain(self):
+        """
+        Usado para filtrar as listas apenas com itens aos quais o responsável tem acesso.
+        :return: [(), (),...]
+        """
+        user = self.env.user
+        grupo_gerente = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_gerente')
+        grupo_admin = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_administrador')
+        domain = []
+        if grupo_gerente in user.groups_id and grupo_admin not in user.groups_id:
+            alm_resposavel = []
+            for res in user.almoxarifado_responsavel_ids:
+                for alm in res.almoxarifado_ids:
+                    alm_resposavel.append(alm.id)
+            domain = [('almoxarifado_id', 'in', list(alm_resposavel))]
+        return domain
+
+    def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
+        domain = [] if not domain else domain
+        domain += self.process_domain()
+        return super(Estoque, self).search_read(domain, fields, offset, limit, order)
+
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
         """
         Remove a soma do total "estoque_min" na view list padrão (no topo da lista mostra a soma de todas as linhas)
-        :param domain:
-        :param fields:
-        :param groupby:
-        :param offset:
-        :param limit:
-        :param orderby:
-        :param lazy:
         :return:
         """
         if 'estoque_min' in fields:
             fields.remove('estoque_min')
+        domain = [] if not domain else domain
+        domain += self.process_domain()
         return super(Estoque, self).read_group(domain, fields, groupby, offset, limit, orderby, lazy)
 
     @api.constrains('estoque_min')

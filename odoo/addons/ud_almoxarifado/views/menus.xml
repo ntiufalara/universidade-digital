@@ -6,8 +6,6 @@
         <menuitem id="almoxarifado_root" name="Almoxarifado" web_icon="ud_almoxarifado,static/description/icon.png"/>
         <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"/>
 
-        <menuitem id="almoxarifado_almoxarifado" name="Gerenciar almoxarifados" parent="almoxarifado_almoxarifado_top"
-                  action="ud_almoxarifado_almoxarifado_action" sequence="1"/>
         <menuitem id="almoxarifado_produto" name="Produtos" parent="almoxarifado_almoxarifado_top"
                   action="ud_almoxarifado_produto_action" sequence="2"/>
         <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_almoxarifado_top"
@@ -22,15 +20,22 @@
         <menuitem id="almoxarifado_solicitacao_produto" name="Solicitação de produto" parent="almoxarifado_root"
                   action="ud_almoxarifado_solicitacao_produto_action"/>
 
-        <menuitem id="almoxarifado_relatorios" name="Relatórios" parent="almoxarifado_root"/>
+        <menuitem id="almoxarifado_gerenciar" name="Gerenciar" parent="almoxarifado_root"/>
+        <menuitem id="almoxarifado_responsavel" name="Responsável" parent="almoxarifado_gerenciar"
+                  action="ud_almoxarifado_responsavel_action" sequence="0"
+                  groups="group_ud_almoxarifado_administrador"/>
+
+        <menuitem id="almoxarifado_almoxarifado" name="Gerenciar almoxarifados" parent="almoxarifado_gerenciar"
+                  action="ud_almoxarifado_almoxarifado_action" sequence="1"
+                  groups="group_ud_almoxarifado_administrador"/>
+
+        <menuitem id="almoxarifado_relatorios" name="Relatórios" parent="almoxarifado_gerenciar"
+                  groups="group_ud_almoxarifado_administrador,group_ud_almoxarifado_gerente"/>
+
         <menuitem id="almoxarifado_relatorio_entrada" name="Entradas" parent="almoxarifado_relatorios"
                   action="ud_almoxarifado_estoque_entrada_graph_action"/>
+
         <menuitem id="almoxarifado_relatorio_saida" name="Saídas" parent="almoxarifado_relatorios"
                   action="ud_almoxarifado_estoque_saida_graph_action"/>
-
-        <menuitem id="almoxarifado_gerenciar" name="Gerenciar" parent="almoxarifado_root"/>
-        <menuitem id="almoxarifado_responsavel" name="" parent="almoxarifado_gerenciar" action="ud_almoxarifado_responsavel_action" />
-
-
     </data>
 </odoo>

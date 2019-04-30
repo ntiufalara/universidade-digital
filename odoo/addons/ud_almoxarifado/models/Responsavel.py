@@ -26,6 +26,6 @@ class Responsavel(models.Model):
     @api.model
     def create(self, vals):
         res = super(Responsavel, self).create(vals)
-        group_gerente_servico = self.env.ref('ud_biblioteca.group_biblioteca_bibliotecario')
+        group_gerente_servico = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_gerente')
         res.pessoa_id.groups_id |= group_gerente_servico
         return res
