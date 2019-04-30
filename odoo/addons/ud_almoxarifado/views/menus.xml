@@ -4,7 +4,8 @@
     <data>
 
         <menuitem id="almoxarifado_root" name="Almoxarifado" web_icon="ud_almoxarifado,static/description/icon.png"/>
-        <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"/>
+        <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"
+                  groups="group_ud_almoxarifado_administrador,group_ud_almoxarifado_gerente"/>
 
         <menuitem id="almoxarifado_produto" name="Produtos" parent="almoxarifado_almoxarifado_top"
                   action="ud_almoxarifado_produto_action" sequence="2"/>

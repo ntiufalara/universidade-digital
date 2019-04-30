@@ -31,13 +31,16 @@ class SolicitacaoProduto(models.Model):
         user = self.env.user
         grupo_gerente = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_gerente')
         grupo_admin = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_administrador')
+        grupo_solicitante = self.env.ref('ud_almoxarifado.group_ud_almoxarifado_usuario')
         domain = []
         if grupo_gerente in user.groups_id and grupo_admin not in user.groups_id:
             alm_resposavel = []
             for res in user.almoxarifado_responsavel_ids:
                 for alm in res.almoxarifado_ids:
                     alm_resposavel.append(alm.id)
-            domain = [('almoxarifado_id', 'in', list(alm_resposavel))]
+            domain = [('produto_ids.almoxarifado_id', 'in', list(alm_resposavel))]
+        elif grupo_solicitante in user.groups_id and grupo_gerente not in user.groups_id and grupo_admin not in user.groups_id:
+            domain = [('solicitante_id', '=', user.id)]
         return domain
 
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
