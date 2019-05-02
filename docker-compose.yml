@@ -3,6 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:9.4
+    network_mode: "host"
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
