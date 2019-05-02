@@ -15,7 +15,6 @@ services:
     volumes:
       - ".:/src"
       - "./storage:/root/.local/share/Odoo"
-    ports:
-      - "8000:8069"
+    network_mode: "host"
     depends_on:
       - db
