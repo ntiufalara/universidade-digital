@@ -37,6 +37,7 @@ class Pessoa(models.Model):
     nacionalidade = fields.Selection(utils.NACIONALIDADES, u'Nacionalidade', default='br')
     curriculo_lattes_link = fields.Char(u'Link do Currículo Lattes')
     perfil_ids = fields.One2many('ud.perfil', 'pessoa_id', u'Perfil')
+    perfil_principal = fields.Char(u'Perfil', compute="get_perfil")
 
     endereco_ids = fields.One2many('ud.pessoa.endereco', 'pessoa_id', u'Endereços')
     contato_ids = fields.One2many('ud.pessoa.contato', 'pessoa_id', u'Contatos')
@@ -45,6 +46,18 @@ class Pessoa(models.Model):
         ("ud_cpf_uniq", "unique(cpf)", u'Já existe CPF com esse número cadastrado.'),
         ("ud_rg_uniq", "unique(rg)", u'Já existe RG com esse número cadastrado.'),
     ]
+
+    @api.one
+    def get_perfil(self):
+        """
+        Atribui apenas o nome do primeiro perfil para exibição na lista de pessoas
+        :return:
+        """
+        perfil = None
+        for p in self.perfil_ids:
+            perfil = p
+            break
+        self.perfil_principal = perfil.tipo_id.name if perfil else '-'
 
     @api.model
     def create(self, vals):
