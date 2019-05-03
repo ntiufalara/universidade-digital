@@ -35,6 +35,7 @@ class RemessaSaida(models.Model):
             domain = [('almoxarifado_id', 'in', list(alm_resposavel))]
         return domain
 
+    @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
         domain = [] if not domain else domain
         domain += self.process_domain()
