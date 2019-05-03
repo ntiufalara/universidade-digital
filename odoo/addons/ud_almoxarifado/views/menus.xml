@@ -7,10 +7,10 @@
         <menuitem id="almoxarifado_almoxarifado_top" name="Almoxarifados" parent="almoxarifado_root" sequence="0"
                   groups="group_ud_almoxarifado_administrador,group_ud_almoxarifado_gerente"/>
 
+        <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_almoxarifado_top"
+                  action="ud_almoxarifado_estoque_action" sequence="1"/>
         <menuitem id="almoxarifado_produto" name="Produtos" parent="almoxarifado_almoxarifado_top"
                   action="ud_almoxarifado_produto_action" sequence="2"/>
-        <menuitem id="almoxarifado_estoque" name="Estoque" parent="almoxarifado_almoxarifado_top"
-                  action="ud_almoxarifado_estoque_action" sequence="3"/>
         <menuitem id="almoxarifado_fornecedor" name="Fornecedores" parent="almoxarifado_almoxarifado_top"
                   action="ud_almoxarifado_fornecedor_action" sequence="4"/>
         <menuitem id="almoxarifado_entrada" name="Entrada de estoque" parent="almoxarifado_almoxarifado_top"
