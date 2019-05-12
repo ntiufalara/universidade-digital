@@ -78,7 +78,7 @@
                     </div>
                     <div t-if="pub.abstract" class="list-group-item">
                         <div class="row">
-                            <strong class="col-sm-4 text-sm-right">Abstract</strong>
+                            <strong class="col-sm-4 text-sm-right" t-field="pub.titulo_abstract"></strong>
                             <div class="col-sm-8">
                                 <t t-raw="pub.abstract"></t>
                             </div>

@@ -49,7 +49,8 @@ class Publicacao(models.Model):
     bibliotecario_responsavel = fields.Many2one('ud.biblioteca.responsavel', u'Bibliotecário', required=False,
                                                 default=lambda self: self.get_bibliotecario())
     resumo = fields.Html(u'Resumo')
-    abstract = fields.Html(u'Abstract')
+    titulo_abstract = fields.Char(u'Título', default="Abstract")
+    abstract = fields.Html(u'Abstract', required=False)
     create_date = fields.Datetime(u'Data de inclusão')
     pessoas_notificadas = fields.Boolean(u'Notificações enviadas?')
 
