@@ -6,6 +6,8 @@ import utils
 import logging
 
 _logger = logging.getLogger(__name__)
+
+
 # http://www.odoo.com/documentation/10.0/reference/mixins.html
 
 
@@ -68,7 +70,7 @@ class Pessoa(models.Model):
         :return:
         """
         if vals.get('email') or vals.get('cpf'):
-            vals['login'] = vals['cpf'] or vals['email']
+            vals['login'] = vals['cpf'] if 'cpf' in vals else vals['email']
         obj_set = super(models.Model, self).create(vals)
         usuario_ud_group = self.env.ref('base.usuario_ud')
         obj_set.groups_id |= usuario_ud_group
@@ -81,7 +83,7 @@ class Pessoa(models.Model):
         :return:
         """
         if vals and type(vals) == dict and (vals.get('email') or vals.get('cpf')):
-            vals['login'] = vals['cpf'] or vals['email']
+            vals['login'] = vals['cpf'] if 'cpf' in vals else vals['email']
         return super(Pessoa, self).write(vals)
 
     def load_from_openerp7_cron(self):
@@ -130,7 +132,11 @@ class Pessoa(models.Model):
         """
         if type(src_data) is not dict:
             return
-        src_data['cpf'] = src_data['cpf'].replace('.', '').replace('-', '').replace(' ', '') if src_data.get('cpf') else ''
-        src_data['mobile_phone'] = src_data['mobile_phone'].replace('(', '').replace(')', '').replace('-', '').replace(' ', '') if src_data.get('mobile_phone') else ''
-        src_data['work_phone'] = src_data['work_phone'].replace('(', '').replace(')', '').replace('-', '').replace(' ', '') if src_data.get('work_phone') else ''
+        src_data['cpf'] = src_data['cpf'].replace('.', '').replace('-', '').replace(' ', '') if src_data.get(
+            'cpf') else ''
+        src_data['mobile_phone'] = src_data['mobile_phone'].replace('(', '').replace(')', '').replace('-', '').replace(
+            ' ', '') if src_data.get('mobile_phone') else ''
+        src_data['work_phone'] = src_data['work_phone'].replace('(', '').replace(')', '').replace('-', '').replace(' ',
+                                                                                                                   '') if src_data.get(
+            'work_phone') else ''
         return src_data

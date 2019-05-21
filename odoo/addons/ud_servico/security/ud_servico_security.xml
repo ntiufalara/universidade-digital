@@ -23,16 +23,16 @@
 		</record>
 
         <!-- Regras de acesso -->
-        <record model="ir.rule" id="solicitante_os_rule">
-            <field name="name">Registros do usuário</field>
-            <field name="model_id" ref="ud_servico.model_ud_servico_solicitacao"/>
-            <field name="domain_force">[('solicitante_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('base.solicitante_os'))]"/>
-            <field name="perm_write">True</field>
-            <field name="perm_unlink">True</field>
-            <field name="perm_read">False</field>
-            <field name="perm_create">False</field>
-        </record>
+<!--        <record model="ir.rule" id="solicitante_os_rule">-->
+<!--            <field name="name">Registros do usuário</field>-->
+<!--            <field name="model_id" ref="ud_servico.model_ud_servico_solicitacao"/>-->
+<!--            <field name="domain_force">[('solicitante_id', '=', user.id)]</field>-->
+<!--            <field name="groups" eval="[(4, ref('base.solicitante_os'))]"/>-->
+<!--            <field name="perm_write">True</field>-->
+<!--            <field name="perm_unlink">True</field>-->
+<!--            <field name="perm_read">False</field>-->
+<!--            <field name="perm_create">False</field>-->
+<!--        </record>-->
 
         <record model="ir.rule" id="responsavel_os_rule">
             <field name="name">Registros do responsável</field>
@@ -41,7 +41,7 @@
             <field name="groups" eval="[(4, ref('base.responsavel_os'))]"/>
             <field name="perm_write">True</field>
             <field name="perm_unlink">True</field>
-            <field name="perm_read">False</field>
+            <field name="perm_read">True</field>
             <field name="perm_create">False</field>
         </record>
 
