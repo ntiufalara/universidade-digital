@@ -39,3 +39,4 @@ access_ud_usuario_curso_modalidade,Usuário: ud.curso.modalidade,ud.model_ud_cur
 access_ud_usuario_espaco,Usuário: ud.espaco,ud.model_ud_espaco,base.usuario_ud,1,0,0,0
 access_ud_usuario_pessoa_endereco,Usuário: ud.pessoa.endereco,ud.model_ud_pessoa_endereco,base.usuario_ud,1,0,0,0
 access_ud_usuario_pessoa_contato,Usuário: ud.pessoa.contato,ud.model_ud_pessoa_contato,base.usuario_ud,1,0,0,0
+access_ud_usuario_setor,Usuário: ud.setor,ud.model_ud_setor,base.usuario_ud,1,0,0,0
