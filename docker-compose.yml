@@ -11,6 +11,8 @@ services:
     volumes:
       - "../db_data_odoo10/:/var/lib/postgresql/data"
       - "../db_backup_odoo10/:/db_backup/"
+    ports:
+      - "5432:5432"
   web:
     build: .
     volumes:
