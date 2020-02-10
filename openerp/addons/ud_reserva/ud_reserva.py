@@ -245,9 +245,27 @@ class ud_reserva(osv.osv):
 
     def _checar_reserva(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids)[0]
-        search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_entrada', '<=', obj.hora_saida),
-                                       ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id), ('id', '!=', obj.id)])
-        return True if not search else False
+        # search = self.search(cr, uid, [('hora_entrada', '>=', obj.hora_entrada), ('hora_entrada', '<=', obj.hora_saida),
+        #                                ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id), ('id', '!=', obj.id)])
+
+        inicio_fechado = self.search(cr, uid, [('data_inicio', '<=', obj.data_inicio), ('data_fim', '>=', obj.data_inicio),
+                                      ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                      ('id', '!=', obj.id)])
+        fim_fechado = self.search(cr, uid, [('data_inicio', '<=', obj.data_fim), ('data_fim', '>=', obj.data_fim),
+                                   ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                   ('id', '!=', obj.id)])
+        inicio_aberto = self.search(cr, uid, [('data_inicio', '>=', obj.data_inicio), ('data_inicio', '<=', obj.data_fim),
+                                     ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                     ('id', '!=', obj.id)])
+        fim_aberto = self.search(cr, uid, [('data_fim', '<=', obj.data_fim), ('data_fim', '>=', obj.data_inicio),
+                                  ('state', '!=', 'cancelada'), ('espaco_id', '=', obj.espaco_id.id),
+                                  ('id', '!=', obj.id)])
+        if inicio_fechado or fim_fechado or inicio_aberto or fim_aberto:
+            False
+        else:
+            True
+
+        # return True if not search else False
 
     def _checar_dia_reserva(self, cr, uid, ids, context=None):
         obj_data_reserva2 = self.pool.get('ud.reserva').browse(cr, uid, ids)
